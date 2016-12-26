@@ -18,11 +18,13 @@ abstract class HttpHeadersRule : Rule {
     override fun validate(swagger: Swagger): List<Violation> {
         fun <T> Collection<T>?.orEmpty() = this ?: emptyList()
 
+        fun <T> T?.toOption() = Optional.ofNullable<T>(this)
+
         fun Collection<Parameter>?.extractHeaders(path: String?) =
-                this.orEmpty().filter { it.`in` == "header" }.map { Pair(it.getName(), Optional.ofNullable(path)) }
+                this.orEmpty().filter { it.`in` == "header" }.map { Pair(it.getName(), path.toOption()) }
 
         fun Collection<Response>?.extractHeaders(path: String?) =
-                this.orEmpty().flatMap { it.headers?.keys.orEmpty() }.map { Pair(it, Optional.ofNullable(path)) }
+                this.orEmpty().flatMap { it.headers?.keys.orEmpty() }.map { Pair(it, path.toOption()) }
 
         val fromParams = swagger.parameters.orEmpty().values.extractHeaders(null)
         val fromPaths = swagger.paths.orEmpty().entries.flatMap { entry ->
