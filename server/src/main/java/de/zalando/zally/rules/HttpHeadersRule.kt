@@ -16,39 +16,23 @@ abstract class HttpHeadersRule : Rule {
     abstract fun isViolation(header: String): Boolean
 
     override fun validate(swagger: Swagger): List<Violation> {
-        val res = ArrayList<Violation>()
-        if (swagger.parameters != null) {
-            res.addAll(validateParameters(swagger.parameters.values, Optional.empty<String>()))
-        }
-        if (swagger.paths != null) {
-            for ((key, value) in swagger.paths) {
-                val pathName = Optional.of(key)
-                res.addAll(validateParameters(value.parameters, pathName))
-                for (operation in value.operations) {
-                    res.addAll(validateParameters(operation.parameters, pathName))
-                    res.addAll(validateHeaders(getResponseHeaders(operation.responses), pathName))
-                }
+        fun <T> Collection<T>?.orEmpty() = this ?: emptyList()
+
+        fun Collection<Parameter>?.extractHeaders(path: String?) =
+                this.orEmpty().filter { it.`in` == "header" }.map { Pair(it.getName(), Optional.ofNullable(path)) }
+
+        fun Collection<Response>?.extractHeaders(path: String?) =
+                this.orEmpty().flatMap { it.headers?.keys.orEmpty() }.map { Pair(it, Optional.ofNullable(path)) }
+
+        val fromParams = swagger.parameters.orEmpty().values.extractHeaders(null)
+        val fromPaths = swagger.paths.orEmpty().entries.flatMap { entry ->
+            val (name, path) = entry
+            path.parameters.extractHeaders(name) + path.operations.flatMap { operation ->
+                operation.parameters.extractHeaders(name) + operation.responses.values.extractHeaders(name)
             }
         }
-        res.addAll(validateHeaders(getResponseHeaders(swagger.responses), Optional.empty<String>()))
-        return res
-    }
-
-    private fun validateParameters(parameters: Collection<Parameter>?, path: Optional<String>): List<Violation> {
-        if (parameters == null) {
-            return emptyList()
-        }
-        return validateHeaders(parameters.filter { it.`in` == "header" }.map { it.getName() }, path)
-    }
-
-    private fun validateHeaders(headers: Collection<String>?, path: Optional<String>): List<Violation> {
-        return headers
-                ?.filter { p -> !PARAMETER_NAMES_WHITELIST.contains(p) && isViolation(p) }
-                ?.map { p -> createViolation(p, path) }
-                ?: emptyList()
-    }
-
-    private fun getResponseHeaders(responses: Map<String, Response>?): Set<String> =
-         responses?.values?.flatMap { it.headers?.keys ?: mutableSetOf() }?.toSet() ?: emptySet()
-
+        val allHeaders = fromParams + fromPaths
+        return allHeaders
+                .filter { !PARAMETER_NAMES_WHITELIST.contains(it.first) && isViolation(it.first) }
+                .map { createViolation(it.first, it.second) } }
 }
