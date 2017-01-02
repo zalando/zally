@@ -13,6 +13,9 @@ dependencies {
     compile 'org.json:json:20160810'
 
     testCompile 'junit:junit:4.12'
+    testCompile 'net.jadler:jadler-core:1.3.0'
+    testCompile 'net.jadler:jadler-jetty:1.3.0'
+    testCompile 'net.jadler:jadler-junit:1.3.0'
 }
 
 buildscript {
@@ -38,8 +41,7 @@ task zallyJar(type: OneJar) {
 task bin {
     dependsOn zallyJar
     copy {
-        from 'build/libs'
-        into 'bin'
-        include '**/zally.jar'
+        from 'build/libs/zally.jar'
+        into 'bin/'
     }
 }
