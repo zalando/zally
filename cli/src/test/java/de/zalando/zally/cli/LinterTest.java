@@ -2,10 +2,9 @@ package de.zalando.zally.cli;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
-import mockit.*;
-import mockit.integration.junit4.JMockit;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -13,17 +12,28 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 
-@RunWith(JMockit.class)
 public class LinterTest {
-    @Injectable
+
+    private ArgumentCaptor<List<JsonObject>> mustListCaptor = ArgumentCaptor.forClass(List.class);
+    private ArgumentCaptor<List<JsonObject>> shouldListCaptor = ArgumentCaptor.forClass(List.class);
+    private ArgumentCaptor<List<JsonObject>> couldListCaptor = ArgumentCaptor.forClass(List.class);
+
+    @Mock
     private ZallyApiClient client;
 
-    @Injectable
+    @Mock
     private ResultPrinter resultPrinter;
 
-    @Tested
+    @InjectMocks
     private Linter linter;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     public void returnsTrueWhenNoViolationsAreReturned() throws Exception {
@@ -31,29 +41,21 @@ public class LinterTest {
         JsonArray violations = new JsonArray();
         testResult.add("violations", violations);
 
-        new Expectations() {{
-            client.validate(anyString); result = testResult;
-        }};
+        Mockito.when(client.validate(anyString())).thenReturn(testResult);
 
         linter = new Linter(client, resultPrinter);
         Boolean result = linter.lint(getJsonReader());
 
         assertEquals(true, result);
 
-        new Verifications() {{
-            List<JsonObject> mustList;
-            List<JsonObject> shouldList;
-            List<JsonObject> couldList;
+        Mockito.verify(resultPrinter).printSummary();
+        Mockito.verify(resultPrinter, Mockito.times(1)).printViolations(mustListCaptor.capture(), eq("must"));
+        Mockito.verify(resultPrinter, Mockito.times(1)).printViolations(shouldListCaptor.capture(), eq("should"));
+        Mockito.verify(resultPrinter, Mockito.times(1)).printViolations(couldListCaptor.capture(), eq("could"));
 
-            resultPrinter.printViolations(mustList = withCapture(), "must");
-            resultPrinter.printViolations(shouldList = withCapture(), "should");
-            resultPrinter.printViolations(couldList = withCapture(), "could");
-            resultPrinter.printSummary();;
-
-            assertEquals(0, mustList.size());
-            assertEquals(0, shouldList.size());
-            assertEquals(0, couldList.size());
-        }};
+        assertEquals(0, mustListCaptor.getAllValues().get(0).size());
+        assertEquals(0, shouldListCaptor.getAllValues().get(0).size());
+        assertEquals(0, couldListCaptor.getAllValues().get(0).size());
     }
 
     @Test
@@ -64,32 +66,26 @@ public class LinterTest {
         violations.add(getViolation("could", "could"));
         testResult.add("violations", violations);
 
-        new Expectations() {{
-            client.validate(anyString); result = testResult;
-        }};
+        Mockito.when(client.validate(anyString())).thenReturn(testResult);
 
         linter = new Linter(client, resultPrinter);
         Boolean result = linter.lint(getJsonReader());
 
         assertEquals(true, result);
 
-        new Verifications() {{
-            List<JsonObject> mustList;
-            List<JsonObject> shouldList;
-            List<JsonObject> couldList;
+        Mockito.verify(resultPrinter).printSummary();
+        Mockito.verify(resultPrinter, Mockito.times(1)).printViolations(mustListCaptor.capture(), eq("must"));
+        Mockito.verify(resultPrinter, Mockito.times(1)).printViolations(shouldListCaptor.capture(), eq("should"));
+        Mockito.verify(resultPrinter, Mockito.times(1)).printViolations(couldListCaptor.capture(), eq("could"));
 
-            resultPrinter.printViolations(mustList = withCapture(), "must");
-            resultPrinter.printViolations(shouldList = withCapture(), "should");
-            resultPrinter.printViolations(couldList = withCapture(), "could");
-            resultPrinter.printSummary();;
+        List<JsonObject> shouldList = shouldListCaptor.getAllValues().get(0);
+        List<JsonObject> couldList = couldListCaptor.getAllValues().get(0);
 
-            assertEquals(0, mustList.size());
-            assertEquals(1, shouldList.size());
-            assertEquals(1, couldList.size());
-
-            assertEquals("should", shouldList.get(0).get("title").asString());
-            assertEquals("could", couldList.get(0).get("title").asString());
-        }};
+        assertEquals(0, mustListCaptor.getAllValues().get(0).size());
+        assertEquals(1, shouldList.size());
+        assertEquals(1, couldList.size());
+        assertEquals("should", shouldList.get(0).get("title").asString());
+        assertEquals("could", couldList.get(0).get("title").asString());
     }
 
     @Test
@@ -99,31 +95,24 @@ public class LinterTest {
         violations.add(getViolation("must", "must"));
         testResult.add("violations", violations);
 
-        new Expectations() {{
-            client.validate(anyString); result = testResult;
-        }};
+        Mockito.when(client.validate(anyString())).thenReturn(testResult);
 
         linter = new Linter(client, resultPrinter);
         Boolean result = linter.lint(getJsonReader());
 
         assertEquals(false, result);
 
-        new Verifications() {{
-            List<JsonObject> mustList;
-            List<JsonObject> shouldList;
-            List<JsonObject> couldList;
+        Mockito.verify(resultPrinter).printSummary();
+        Mockito.verify(resultPrinter, Mockito.times(1)).printViolations(mustListCaptor.capture(), eq("must"));
+        Mockito.verify(resultPrinter, Mockito.times(1)).printViolations(shouldListCaptor.capture(), eq("should"));
+        Mockito.verify(resultPrinter, Mockito.times(1)).printViolations(couldListCaptor.capture(), eq("could"));
 
-            resultPrinter.printViolations(mustList = withCapture(), "must");
-            resultPrinter.printViolations(shouldList = withCapture(), "should");
-            resultPrinter.printViolations(couldList = withCapture(), "could");
-            resultPrinter.printSummary();;
+        List<JsonObject> mustList = mustListCaptor.getAllValues().get(0);
 
-            assertEquals(1, mustList.size());
-            assertEquals(0, shouldList.size());
-            assertEquals(0, couldList.size());
-
-            assertEquals("must", mustList.get(0).get("title").asString());
-        }};
+        assertEquals(1, mustList.size());
+        assertEquals(0, shouldListCaptor.getAllValues().get(0).size());
+        assertEquals(0, couldListCaptor.getAllValues().get(0).size());
+        assertEquals("must", mustList.get(0).get("title").asString());
     }
 
     private SpecsReader getJsonReader() {
