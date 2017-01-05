@@ -5,7 +5,14 @@ import com.github.ryenus.rop.OptionParser.Option;
 
 import java.io.IOException;
 
-@OptionParser.Command(name = "zally", descriptions = "Lints the given swagger file using Zally service")
+
+@OptionParser.Command(name = "zally", descriptions = {
+        "Validates the given swagger specification using Zally service",
+        "\nUsage examples:",
+        "\tzally /path/to/swagger.yml",
+        "\tzally https://example.com/swagger.yml",
+        "\tzally /path/to/swagger.yml -t abcd-ef12-3456-7890 -l http://zally.example.com/",
+})
 public class Main {
 
     private static final String DEFAULT_ZALLY_URL = "http://localhost:8080/api-violations";
@@ -33,7 +40,7 @@ public class Main {
 
     private boolean lint(String[] args) throws RuntimeException {
         if (args.length < 1) {
-            throw new RuntimeException("Please provide a swagger file");
+            throw new RuntimeException("Please provide a swagger file path or URL");
         }
 
         final ZallyApiClient client = new ZallyApiClient(getZallyUrl(), getToken());
