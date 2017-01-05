@@ -10,7 +10,7 @@ public class Main {
 
     private static final String DEFAULT_ZALLY_URL = "http://localhost:8080/api-violations";
 
-    @Option(opt = {"-u", "--url"}, description = "ZALLY Service URL")
+    @Option(opt = {"-l", "--linter-service"}, description = "ZALLY Service URL")
     private String url;
 
     @Option(opt = {"-t", "--token"}, description = "OAuth2 Security Token")
