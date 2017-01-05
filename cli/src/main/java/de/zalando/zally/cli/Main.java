@@ -25,7 +25,12 @@ public class Main {
 
     public static void main(String[] args) {
         OptionParser parser = new OptionParser(Main.class);
-        parser.parse(args);
+        try {
+            parser.parse(args);
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
     }
 
     void run(String[] args) {
