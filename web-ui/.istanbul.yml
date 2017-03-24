@@ -1,0 +1,14 @@
+instrumentation:
+  root: src/server
+  extensions:
+    - .js
+  default-excludes: true
+  include-all-sources: true
+  excludes: ['/src/server/*.js']
+reporting:
+  reports:
+    - lcov
+    - cobertura
+  dir: ./target/unit/coverage
+  report-config:
+    cobertura: {file: cobertura.xml}
