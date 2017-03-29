@@ -1,6 +1,6 @@
 import React from 'react';
 import {Violations} from './violations.jsx'
-import {Msg} from './dress-code.jsx';
+import {CompleteMsg} from './complete-msg.jsx';
 
 const css = `
     .violations-container__spinner {
@@ -14,6 +14,7 @@ export default class Form extends React.Component {
     this.state = {
       error: null,
       loading: false,
+      ajaxComplete: false,
       inputValue: '',
       violations: [],
       violationsCount: {
@@ -26,19 +27,24 @@ export default class Form extends React.Component {
   }
 
   clearError() {
-    this.setState({ error: null });
+    this.setState({ error: null, ajaxComplete: false });
+  }
+
+  resetAjaxComplete() {
+    this.setState({ ajaxComplete: false });
   }
 
   handleFormSubmit(event) {
     event.preventDefault();
 
-    this.setState({ error: null, loading: true });
+    this.setState({ error: null, loading: true, ajaxComplete: false });
 
     this.props.RestService
       .getApiViolations(this.state.inputValue)
       .then((response) => {
         this.setState({
           loading: false,
+          ajaxComplete: true,
           violations: response.violations,
           violationsCount: response.violations_count
         })
@@ -47,6 +53,7 @@ export default class Form extends React.Component {
         console.error(error);
         this.setState({
           loading: false,
+          ajaxComplete: true,
           error: 'Ooops something went wrong!',
           violations: [],
           violationsCount: {
@@ -84,7 +91,7 @@ export default class Form extends React.Component {
           </button>
         </form>
 
-        { this.state.error ? <Msg type="error" title="ERROR" text={this.state.error} onCloseButtonClick={this.clearError.bind(this)} /> : "" }
+        <CompleteMsg error={this.state.error} violations={this.state.violations} ajaxComplete={this.state.ajaxComplete} onCloseError={this.clearError.bind(this)} onCloseSuccess={this.resetAjaxComplete.bind(this)}  />
 
         { this.state.loading ? <div className="violations-container__spinner"><div className="dc-spinner dc-spinner--small"></div></div>
           : <Violations violations={this.state.violations} violationsCount={this.state.violationsCount}/> }
