@@ -1,9 +1,9 @@
 import React from 'react';
-import {Violations} from './violations.jsx'
+import {ViolationsResult} from './violations.jsx'
 import {CompleteMsg} from './complete-msg.jsx';
 
 const css = `
-    .violations-container__spinner {
+    .violations-result__spinner {
         text-align:center;
     }
 `;
@@ -13,8 +13,8 @@ export default class Form extends React.Component {
     super(props);
     this.state = {
       error: null,
-      loading: false,
-      ajaxComplete: false,
+      pending: false,
+      complete: false,
       inputValue: '',
       violations: [],
       violationsCount: {
@@ -27,24 +27,20 @@ export default class Form extends React.Component {
   }
 
   clearError() {
-    this.setState({ error: null, ajaxComplete: false });
-  }
-
-  resetAjaxComplete() {
-    this.setState({ ajaxComplete: false });
+    this.setState({ error: null, complete: false });
   }
 
   handleFormSubmit(event) {
     event.preventDefault();
 
-    this.setState({ error: null, loading: true, ajaxComplete: false });
+    this.setState({ error: null, pending: true, complete: false });
 
     this.props.RestService
       .getApiViolations(this.state.inputValue)
       .then((response) => {
         this.setState({
-          loading: false,
-          ajaxComplete: true,
+          pending: false,
+          complete: true,
           violations: response.violations,
           violationsCount: response.violations_count
         })
@@ -52,8 +48,8 @@ export default class Form extends React.Component {
       .catch((error) => {
         console.error(error);
         this.setState({
-          loading: false,
-          ajaxComplete: true,
+          pending: false,
+          complete: true,
           error: 'Ooops something went wrong!',
           violations: [],
           violationsCount: {
@@ -73,7 +69,9 @@ export default class Form extends React.Component {
   render () {
     return (
       <div className="violations-container">
+
         <style>{css}</style>
+
         <form onSubmit={this.handleFormSubmit.bind(this)}>
           <label className="dc-label">Enter full path to your swagger file from repo </label>
           <input className="dc-input dc-input--block"
@@ -85,16 +83,20 @@ export default class Form extends React.Component {
                  required pattern="https?://.+" />
           <button
             type="submit"
-            disabled={this.state.loading}
-            className={"dc-btn dc-btn--primary  " + (this.state.loading ? "dc-btn--disabled" : "")}>
+            disabled={this.state.pending}
+            className={"dc-btn dc-btn--primary  " + (this.state.pending ? "dc-btn--disabled" : "")}>
             Submit
           </button>
         </form>
 
-        <CompleteMsg error={this.state.error} violations={this.state.violations} ajaxComplete={this.state.ajaxComplete} onCloseError={this.clearError.bind(this)} onCloseSuccess={this.resetAjaxComplete.bind(this)}  />
-
-        { this.state.loading ? <div className="violations-container__spinner"><div className="dc-spinner dc-spinner--small"></div></div>
-          : <Violations violations={this.state.violations} violationsCount={this.state.violationsCount}/> }
+        <ViolationsResult
+          pending={this.state.pending}
+          complete={this.state.complete}
+          violations={this.state.violations}
+          errorMsgText={this.state.error}
+          successMsgTitle="Good Job!"
+          successMsgText="No violations found in the analyzed schema."
+        />
 
       </div>
     )
