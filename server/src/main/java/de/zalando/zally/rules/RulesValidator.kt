@@ -17,8 +17,13 @@ class RulesValidator(@Autowired val rules: List<Rule>, @Autowired val rulesPolic
         val swagger = try {
             SwaggerParser().parse(swaggerContent)!!
         } catch (e: Exception) {
-            return listOf(Violation(InvalidSwaggerFileDummyRule(), "Given file is not OpenAPI 2.0 compliant",
-                    e.toString(), ViolationType.MUST, "", emptyList()))
+            return listOf(Violation(
+                    rule = InvalidSwaggerFileDummyRule(),
+                    title = "OpenAPI 2.0 schema",
+                    description = "Given file is not OpenAPI 2.0 compliant.",
+                    violationType = ViolationType.MUST,
+                    ruleLink = "",
+                    paths = emptyList()))
         }
         return rules
                 .filter { rule -> rulesPolicy.accepts(rule) }
