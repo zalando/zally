@@ -1,7 +1,6 @@
 package de.zalando.zally.rules
 
 import de.zalando.zally.Violation
-import de.zalando.zally.ViolationType
 import io.swagger.parser.SwaggerParser
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
