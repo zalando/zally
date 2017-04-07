@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 import de.zalando.zally.rules.InvalidApiSchemaRule;
-import de.zalando.zally.rules.Rule;
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer;
 import org.junit.After;
 import org.junit.Before;
