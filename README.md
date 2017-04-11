@@ -11,8 +11,8 @@ Minimalistic API linter of awesomeness, bringing order to a sea of APIs.
 - Ensures API definitions conform to
 [our standard REST guidelines](http://zalando.github.io/restful-api-guidelines/).
 - Does not require a deployed service, only an API definition.
-- Accepts [swagger](swagger.io) yaml and json formats.
-- Easy-to-use [CLI](cli/README.md) allows you to check your API *right now*.
+- Accepts [swagger](https://swagger.io) yaml and json formats.
+- Easy-to-use [CLI](https://github.com/zalando-incubator/zally/blob/master/cli/README.md) allows you to check your API *right now*.
 
 
 ### Core Technical Concepts
@@ -36,7 +36,7 @@ With Spring 5 we consider using Kotlin also on API side directly. Stay tuned.
 
 ### Installation and Usage
 
-You can find installation steps in the [Server Readme](server/README.md) and [CLI Readme](cli/README.md).
+You can find installation steps in the [Server Readme](https://github.com/zalando-incubator/zally/blob/master/server/README.md) and [CLI Readme](https://github.com/zalando-incubator/zally/blob/master/cli/README.md).
 
 If you just wanna try it out: first run the server locally, then just use the cli tool as it is provided.
 
@@ -56,7 +56,7 @@ Afterwards we focus on Github integration and more sophisticated features.
 
 ### Contributing
 
-We are happy to accept contributions. First, take a look at our [contributing guidelines](CONTRIBUTING.md).
+We are happy to accept contributions. First, take a look at our [contributing guidelines](https://github.com/zalando-incubator/zally/blob/master/CONTRIBUTING.md).
 
 You can see our current status in [this task board](https://github.com/zalando-incubator/zally/projects/1).
 
@@ -69,9 +69,9 @@ for contribution ideas.
 
 ### Contact
 
-Feel free to contact one the [maintainers](MAINTAINERS)
+Feel free to contact one the [maintainers](https://github.com/zalando-incubator/zally/blob/master/MAINTAINERS)
 
 
 ### License
 
-MIT license with an exception. See [license file](LICENSE).
+MIT license with an exception. See [license file](https://github.com/zalando-incubator/zally/blob/master/LICENSE).
