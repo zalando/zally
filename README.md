@@ -58,13 +58,7 @@ Afterwards we focus on Github integration and more sophisticated features.
 
 We are happy to accept contributions. First, take a look at our [contributing guidelines](https://github.com/zalando-incubator/zally/blob/master/CONTRIBUTING.md).
 
-You can see our current status in [this task board](https://github.com/zalando-incubator/zally/projects/1).
-
-
-### TODO
-
-Please check the [Issues Page](https://github.com/zalando-incubator/zally/issues)
-for contribution ideas.
+Please check our [Project Board](https://github.com/zalando-incubator/zally/projects/1) or [Issues Page](https://github.com/zalando-incubator/zally/issues) for contribution ideas.
 
 
 ### Contact
