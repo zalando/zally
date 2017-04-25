@@ -13,7 +13,7 @@ Minimalistic API linter of awesomeness, bringing order to a sea of APIs.
 - Does not require a deployed service, only an API definition.
 - Accepts [swagger](https://swagger.io) yaml and json formats.
 - Easy-to-use [CLI](https://github.com/zalando-incubator/zally/blob/master/cli/README.md) allows you to check your API *right now*.
-
+- [Web UI](https://github.com/zalando-incubator/zally/tree/master/web-ui) provides an intuitive web interface with tons of features.
 
 ### Core Technical Concepts
 
@@ -21,6 +21,7 @@ Minimalistic API linter of awesomeness, bringing order to a sea of APIs.
 - Written in Java 8 with [Spring Boot](https://github.com/spring-projects/spring-boot)
 - Zally comes with a server which lints your swagger files
 - Zally CLI is handy command-line tool, it uses the server in the background
+- Zally Web UI is another client build on top of React and Node.js
 - Rule changes only have to be applied in the server component
 
 **Tech Stack:** Zally server is written in Java 8 with Spring Boot. We made rule implementation
@@ -36,7 +37,7 @@ With Spring 5 we consider using Kotlin also on API side directly. Stay tuned.
 
 ### Installation and Usage
 
-You can find installation steps in the [Server Readme](https://github.com/zalando-incubator/zally/blob/master/server/README.md) and [CLI Readme](https://github.com/zalando-incubator/zally/blob/master/cli/README.md).
+You can find installation steps in the [Server Readme](https://github.com/zalando-incubator/zally/blob/master/server/README.md), [CLI Readme](https://github.com/zalando-incubator/zally/blob/master/cli/README.md) and [Web UI Readme](https://github.com/zalando-incubator/zally/tree/master/web-ui).
 
 If you just wanna try it out: first run the server locally, then just use the cli tool as it is provided.
 
