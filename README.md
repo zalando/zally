@@ -43,13 +43,14 @@ If you just wanna try it out: first run the server locally, then just use the cl
 
 ### Roadmap
 
-For [version 1.0](https://github.com/zalando-incubator/zally/milestone/1) we focus on these three main areas:
+For [version 1.1](https://github.com/zalando-incubator/zally/milestone/1) we focus on these three main areas:
 
 - improve rule implementations
 - improve CLI user experience
 - improve web UI
+- use better integration testing approaches
 
-Feel free to contribute on related issues for version 1.0.
+Feel free to contribute on related issues for version 1.1.
 
 Afterwards we focus on Github integration and more sophisticated features.
 
