@@ -55,6 +55,24 @@ Feel free to contribute on related issues for version 1.1.
 
 Afterwards we focus on Github integration and more sophisticated features.
 
+### Quick start guide
+
+```bash
+git clone git@github.com:zalando-incubator/zally.git zally
+cd zally
+
+# Disable authentication and start a local version of Zally server
+cd server
+echo "spring.profiles.active=dev" >> application.properties
+./gradlew clean build
+./gradlew bootRun > /dev/null &
+cd ..
+
+# Build and run Zally CLI
+cd cli/
+./gradlew clean build
+bin/zally /path/to/swagger/definition.yaml
+```
 
 ### Contributing
 
