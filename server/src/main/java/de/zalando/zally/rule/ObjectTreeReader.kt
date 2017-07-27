@@ -1,5 +1,6 @@
 package de.zalando.zally.rule
 
+import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
@@ -30,7 +31,15 @@ class ObjectTreeReader {
     fun readJson(jsonUrl: URL): JsonNode =
             jsonMapper.readTree(jsonUrl)
 
-    private fun isYaml(specContent: String): Boolean =
+    fun read(parser: JsonParser): JsonNode =
+            jsonMapper.readTree(parser)
+
+    fun isYaml(specContent: String): Boolean =
             !specContent.matches(jsonRegex)
 
+    fun getParser(specContent: String): JsonParser =
+            if (isYaml(specContent))
+                yamlMapper.factory.createParser(specContent)
+            else
+                jsonMapper.factory.createParser(specContent)
 }

@@ -2,6 +2,7 @@ package de.zalando.zally.apireview;
 
 import de.zalando.zally.dto.ApiDefinitionRequest;
 import de.zalando.zally.dto.ApiDefinitionResponse;
+import de.zalando.zally.dto.ApiDefinitionWrapper;
 import de.zalando.zally.dto.ViolationDTO;
 import de.zalando.zally.dto.ViolationType;
 import de.zalando.zally.dto.ViolationsCounter;
@@ -53,7 +54,8 @@ public class ApiViolationsController {
     public ApiDefinitionResponse validate(@RequestBody ApiDefinitionRequest request) {
         metricServices.increment("meter.api-reviews.requested");
 
-        String apiDefinition = retrieveApiDefinition(request);
+        ApiDefinitionWrapper apiDefWrapper = retrieveApiDefinition(request);
+        final String apiDefinition = apiDefWrapper.getApiDefinition();
         List<Violation> violations = rulesValidator.validate(apiDefinition, request.getIgnoreRules());
         apiReviewRepository.save(new ApiReview(request, apiDefinition, violations));
 
@@ -62,7 +64,7 @@ public class ApiViolationsController {
         return response;
     }
 
-    private String retrieveApiDefinition(ApiDefinitionRequest request) {
+    private ApiDefinitionWrapper retrieveApiDefinition(ApiDefinitionRequest request) {
         try {
             return apiDefinitionReader.read(request);
         } catch (MissingApiDefinitionException | UnaccessibleResourceUrlException e) {
