@@ -11,7 +11,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.LocalManagementPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -35,11 +34,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 )
 public class RestApiLineNumberTest extends RestApiBaseTest {
 
-    @LocalManagementPort
-    private int managementPort;
-
     @Autowired
     private WebApplicationContext wac;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Before
     public void setUp() {
@@ -50,9 +49,6 @@ public class RestApiLineNumberTest extends RestApiBaseTest {
     public void tearDown() {
         closeJadler();
     }
-
-    @Autowired
-    public ObjectMapper objectMapper;
 
     @Test
     public void shouldProvideCorrectLineNumbersForInRequestJson() throws Exception {

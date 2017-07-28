@@ -13,6 +13,6 @@ class SpecificationPointerProvider {
     fun getForPathKey(pathKey: String) = "/paths/" + escaped(pathKey)
 
     private fun escaped(path: String) =
-            path.replace("~", "~0")?.replace("/", "~1")
+            path.replace("~", "~0").replace("/", "~1")
 
 }

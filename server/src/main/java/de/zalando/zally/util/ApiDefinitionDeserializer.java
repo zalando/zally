@@ -29,11 +29,9 @@ public class ApiDefinitionDeserializer extends JsonDeserializer<ApiDefinitionWra
         mapper.setNodeFactory(locationListener);
 
         final JsonNode apiDefNode = mapper.readTree(parser);
-        if (apiContent == null) {
-            apiContent = mapper.writeValueAsString(apiDefNode);
-        }
+        final String apiDefinition = apiContent == null ? mapper.writeValueAsString(apiDefNode) : apiContent;
 
-        return new ApiDefinitionWrapper(apiContent, locationListener.createLocationResolver(apiDefNode));
+        return new ApiDefinitionWrapper(apiDefinition, locationListener.createLocationResolver(apiDefNode));
     }
 
 }
