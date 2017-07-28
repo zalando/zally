@@ -56,7 +56,7 @@ public class ApiViolationsController {
 
         ApiDefinitionWrapper apiDefWrapper = retrieveApiDefinition(request);
         final String apiDefinition = apiDefWrapper.getApiDefinition();
-        List<Violation> violations = rulesValidator.validate(apiDefinition, request.getIgnoreRules());
+        List<Violation> violations = rulesValidator.validate(apiDefinition, request.getIgnoreRules(), apiDefWrapper.getLineResolver());
         apiReviewRepository.save(new ApiReview(request, apiDefinition, violations));
 
         ApiDefinitionResponse response = buildApiDefinitionResponse(violations);

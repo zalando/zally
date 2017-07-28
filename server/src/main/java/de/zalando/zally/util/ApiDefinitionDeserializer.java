@@ -25,7 +25,7 @@ public class ApiDefinitionDeserializer extends JsonDeserializer<ApiDefinitionWra
 
     private static ApiDefinitionWrapper getApiDefinitionWrapper(JsonParser parser, String apiContent) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
-        final JsonNodeFactoryLocationListener locationListener = new JsonNodeFactoryLocationListener(parser);
+        final JsonNodeFactoryLocationListener locationListener = new JsonNodeFactoryLocationListener(parser, apiContent == null);
         mapper.setNodeFactory(locationListener);
 
         final JsonNode apiDefNode = mapper.readTree(parser);

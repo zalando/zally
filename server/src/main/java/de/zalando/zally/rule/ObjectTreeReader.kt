@@ -8,16 +8,14 @@ import java.net.URL
 
 class ObjectTreeReader {
 
-    private val jsonRegex = "^\\s*\\{".toRegex()
-
     private val jsonMapper = ObjectMapper()
     private val yamlMapper = ObjectMapper(YAMLFactory())
 
     fun read(content: String): JsonNode =
-            if (isYaml(content))
-                readYaml(content)
-            else
+            if (isJson(content))
                 readJson(content)
+            else
+                readYaml(content)
 
     fun readJson(content: String): JsonNode =
             jsonMapper.readTree(content)
@@ -34,12 +32,12 @@ class ObjectTreeReader {
     fun read(parser: JsonParser): JsonNode =
             jsonMapper.readTree(parser)
 
-    fun isYaml(specContent: String): Boolean =
-            !specContent.matches(jsonRegex)
+    fun isJson(specContent: String): Boolean =
+            specContent.firstOrNull { !it.isWhitespace() } == '{'
 
     fun getParser(specContent: String): JsonParser =
-            if (isYaml(specContent))
-                yamlMapper.factory.createParser(specContent)
-            else
+            if (isJson(specContent))
                 jsonMapper.factory.createParser(specContent)
+            else
+                yamlMapper.factory.createParser(specContent)
 }

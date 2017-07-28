@@ -8,7 +8,6 @@ data class Violation(
         val description: String,
         val violationType: ViolationType,
         val ruleLink: String,
-        val paths: List<String>
-) {
-    val linePath: List<String> = emptyList()
-}
+        val paths: List<String>,
+        val specPointers: List<String> = emptyList()
+)

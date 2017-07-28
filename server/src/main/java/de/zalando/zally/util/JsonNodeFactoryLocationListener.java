@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import com.fasterxml.jackson.databind.util.RawValue;
+import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
 import de.zalando.zally.dto.LocationResolver;
 import de.zalando.zally.dto.MapLocationResolver;
 
@@ -24,7 +25,7 @@ import java.util.Map;
 
 public class JsonNodeFactoryLocationListener extends JsonNodeFactory {
 
-    private static final int lineCorrection = -1;
+    private final int lineCorrection;
 
     private final JsonParser parser;
     // We cannot use Map or Set here since JsonNode has incorrect hashcode() till full tree is constructed
@@ -40,8 +41,11 @@ public class JsonNodeFactoryLocationListener extends JsonNodeFactory {
         }
     }
 
-    public JsonNodeFactoryLocationListener(final JsonParser parser) {
+    public JsonNodeFactoryLocationListener(final JsonParser parser, boolean nestedContent) {
         this.parser = parser;
+        final int yamlCorrection = (parser instanceof YAMLParser) ? -1 : 0;
+        final int nestedContentCorrection = nestedContent ? -1 : 0;
+        this.lineCorrection = yamlCorrection + nestedContentCorrection;
     }
 
     public LocationResolver createLocationResolver(JsonNode rootNode){

@@ -218,7 +218,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
     }
 
     @Test
-    public void shouldAcceptYamlAndRespondwithJson() throws Exception {
+    public void shouldAcceptYamlAndRespondWithJson() throws Exception {
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api-violations")
                 .contentType(WebMvcConfiguration.MEDIA_TYPE_APP_XYAML)
@@ -243,4 +243,5 @@ public class RestApiViolationsTest extends RestApiBaseTest {
 
         assertThat(result.getResponse().getStatus()).isEqualTo(400);
     }
+
 }

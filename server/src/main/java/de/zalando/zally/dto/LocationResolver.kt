@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode
 
 interface LocationResolver {
 
-    fun getLineNumber(path: String): Int?
+    fun getLineNumber(pointer: String): Int?
 
     companion object {
         val Empty = object : LocationResolver {
-            override fun getLineNumber(path: String): Int? = null
+            override fun getLineNumber(pointer: String): Int? = null
         }
     }
 
@@ -16,8 +16,8 @@ interface LocationResolver {
 
 class MapLocationResolver(val rootNode: JsonNode, val locationMap: Map<JsonNode, Int>) : LocationResolver {
 
-    override fun getLineNumber(path: String): Int? {
-        val node = rootNode.at(path)
+    override fun getLineNumber(pointer: String): Int? {
+        val node = rootNode.at(pointer)
         return if (!node.isMissingNode) locationMap[node] else null
     }
 }
