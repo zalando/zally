@@ -4,6 +4,8 @@ import io.swagger.models.ArrayModel
 import io.swagger.models.ComposedModel
 import io.swagger.models.Model
 import io.swagger.models.ModelImpl
+import io.swagger.models.Operation
+import io.swagger.models.Path
 import io.swagger.models.RefModel
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.BodyParameter
@@ -35,6 +37,18 @@ fun Swagger.getAllJsonObjects(): List<ObjectDefinition> {
     }
     return (fromPaths + fromDefinitions).toSet().toList()
 }
+
+fun Path.getVerb(operation: Operation): String =
+        when (operation) {
+            this.get -> "get"
+            this.put -> "put"
+            this.post -> "post"
+            this.head -> "head"
+            this.delete -> "delete"
+            this.patch -> "patch"
+            this.options -> "options"
+            else -> ""
+        }
 
 private fun Swagger.findJsonObjects(obj: Map<String, Property>?, path: String, visitedPaths: MutableSet<String>): List<ObjectDefinition> =
     if (path !in visitedPaths) {

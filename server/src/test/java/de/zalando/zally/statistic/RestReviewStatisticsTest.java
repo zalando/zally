@@ -1,6 +1,5 @@
 package de.zalando.zally.statistic;
 
-import de.zalando.zally.TestUtilKt;
 import de.zalando.zally.apireview.ApiReview;
 import de.zalando.zally.apireview.RestApiBaseTest;
 import de.zalando.zally.dto.ApiDefinitionRequest;
@@ -120,7 +119,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
     }
 
     private List<Violation> createRandomViolations() {
-        return Arrays.asList(new Violation(new AvoidTrailingSlashesRule(TestUtilKt.getTestSpecPointerProvider()), "", "", ViolationType.MUST, "", Arrays.asList("path"), Arrays.asList("path")));
+        return Arrays.asList(new Violation(new AvoidTrailingSlashesRule(), "", "", ViolationType.MUST, "", Arrays.asList("path"), Arrays.asList("path")));
     }
 
     private void assertBadRequestFor(Object from, Object to) {

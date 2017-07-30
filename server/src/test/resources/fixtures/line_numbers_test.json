@@ -159,7 +159,7 @@
           "202" : {
             "description" : "Accepted for asynchronous completion",
             "headers" : {
-              "Location" : {
+              "Link" : {
                 "type" : "string",
                 "format" : "url",
                 "description" : "A URL that can be used to get updated information on this request.\nFor `PATCH` requests, this URL will be the `/api/products/{product_id}/updates/{update_id}` path, where `update_id` is\nan internally generated identifier that correctly represents this specific request.\n"
@@ -467,8 +467,8 @@
       "type" : "string",
       "required" : false
     },
-    "XUseLegacyIds" : {
-      "name" : "X-Use-Legacy-Ids",
+    "Link" : {
+      "name" : "Link",
       "in" : "header",
       "description" : "Custom header to specify that product Ids in the request are allowed to be in a \"legacy\" format. Non legacy\nProduct Ids are enforced to be `UUID` values, however, products being mapped from legacy Catalog Service\nare allowed to retain legacy ID structure.\n\nFor more information please refer to: https://pages.github.bus.zalan.do/FashionInsightsCentre/spp-documentation/spp-design/mapping-catalog-articles/#articleproduct-identification\n\nNote, use of this header is only allowed for specific whitelisted Oauth `uid` values. Not all services are allowed\nto specify this - this restriction is being made to ensure appropriate ID choices.\n",
       "type" : "boolean",

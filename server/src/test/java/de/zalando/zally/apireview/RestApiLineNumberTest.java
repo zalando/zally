@@ -66,24 +66,9 @@ public class RestApiLineNumberTest extends RestApiBaseTest {
         String responseContent = response.getContentAsString();
         final ApiDefinitionResponse apiDefinitionResponse = objectMapper.readValue(responseContent, ApiDefinitionResponse.class);
 
-        final List<String> paths = apiDefinitionResponse.getViolations().stream()
-                .filter(v -> v.getTitle().equals("Avoid Trailing Slashes"))
-                .flatMap(v -> v.getPaths().stream())
-                .collect(Collectors.toList());
-
-        assertThat(paths).containsExactly(
-                "/products/\t\t[line#: 35]",
-                "/products/{product_id}/\t\t[line#: 79]",
-                "/request-groups/{request_group_id}/updates/\t\t[line#: 360]");
-
-        final List<String> schemaPaths = apiDefinitionResponse.getViolations().stream()
-                .filter(v -> v.getTitle().equals("OpenAPI 2.0 schema"))
-                .flatMap(v -> v.getPaths().stream())
-                .collect(Collectors.toList());
-
-        assertThat(schemaPaths).containsExactly(
-                "/definitions/Problem/properties/date/type\t\t[line#: 693]",
-                "/securityDefinitions/tinbox\t\t[line#: 22]");
+        checkForAvoidTrailingSlashesInJson(apiDefinitionResponse);
+        checkForSchemaInJson(apiDefinitionResponse);
+        checkForAvoidLinkHeadersRuleInJson(apiDefinitionResponse);
     }
 
     @Test
@@ -103,15 +88,7 @@ public class RestApiLineNumberTest extends RestApiBaseTest {
         String responseContent = response.getContentAsString();
         final ApiDefinitionResponse apiDefinitionResponse = objectMapper.readValue(responseContent, ApiDefinitionResponse.class);
 
-        final List<String> paths = apiDefinitionResponse.getViolations().stream()
-                .filter(v -> v.getTitle().equals("Avoid Trailing Slashes"))
-                .flatMap(v -> v.getPaths().stream())
-                .collect(Collectors.toList());
-
-        assertThat(paths).containsExactly(
-                "/products/\t\t[line#: 64]",
-                "/products/{product_id}/\t\t[line#: 127]",
-                "/request-groups/{request_group_id}/updates/\t\t[line#: 437]");
+        checkForAvoidTrailingSlashesInJaml(apiDefinitionResponse);
     }
 
     @Test
@@ -132,15 +109,7 @@ public class RestApiLineNumberTest extends RestApiBaseTest {
         String responseContent = response.getContentAsString();
         final ApiDefinitionResponse apiDefinitionResponse = objectMapper.readValue(responseContent, ApiDefinitionResponse.class);
 
-        final List<String> paths = apiDefinitionResponse.getViolations().stream()
-                .filter(v -> v.getTitle().equals("Avoid Trailing Slashes"))
-                .flatMap(v -> v.getPaths().stream())
-                .collect(Collectors.toList());
-
-        assertThat(paths).containsExactly(
-                "/products/\t\t[line#: 35]",
-                "/products/{product_id}/\t\t[line#: 79]",
-                "/request-groups/{request_group_id}/updates/\t\t[line#: 360]");
+        checkForAvoidTrailingSlashesInJson(apiDefinitionResponse);
     }
 
     @Test
@@ -161,6 +130,21 @@ public class RestApiLineNumberTest extends RestApiBaseTest {
         String responseContent = response.getContentAsString();
         final ApiDefinitionResponse apiDefinitionResponse = objectMapper.readValue(responseContent, ApiDefinitionResponse.class);
 
+        checkForAvoidTrailingSlashesInJaml(apiDefinitionResponse);
+    }
+
+    private void checkForSchemaInJson(final ApiDefinitionResponse apiDefinitionResponse) {
+        final List<String> schemaPaths = apiDefinitionResponse.getViolations().stream()
+                .filter(v -> v.getTitle().equals("OpenAPI 2.0 schema"))
+                .flatMap(v -> v.getPaths().stream())
+                .collect(Collectors.toList());
+
+        assertThat(schemaPaths).containsExactly(
+                "/definitions/Problem/properties/date/type\t\t[line#: 693]",
+                "/securityDefinitions/tinbox\t\t[line#: 22]");
+    }
+
+    private void checkForAvoidTrailingSlashesInJaml(final ApiDefinitionResponse apiDefinitionResponse) {
         final List<String> paths = apiDefinitionResponse.getViolations().stream()
                 .filter(v -> v.getTitle().equals("Avoid Trailing Slashes"))
                 .flatMap(v -> v.getPaths().stream())
@@ -171,4 +155,28 @@ public class RestApiLineNumberTest extends RestApiBaseTest {
                 "/products/{product_id}/\t\t[line#: 127]",
                 "/request-groups/{request_group_id}/updates/\t\t[line#: 437]");
     }
+
+    private void checkForAvoidTrailingSlashesInJson(final ApiDefinitionResponse apiDefinitionResponse) {
+        final List<String> paths = apiDefinitionResponse.getViolations().stream()
+                .filter(v -> v.getTitle().equals("Avoid Trailing Slashes"))
+                .flatMap(v -> v.getPaths().stream())
+                .collect(Collectors.toList());
+
+        assertThat(paths).containsExactly(
+                "/products/\t\t[line#: 35]",
+                "/products/{product_id}/\t\t[line#: 79]",
+                "/request-groups/{request_group_id}/updates/\t\t[line#: 360]");
+    }
+
+    private void checkForAvoidLinkHeadersRuleInJson(final ApiDefinitionResponse apiDefinitionResponse) {
+        final List<String> paths = apiDefinitionResponse.getViolations().stream()
+                .filter(v -> v.getTitle().equals("Avoid Link in Header Rule"))
+                .flatMap(v -> v.getPaths().stream())
+                .collect(Collectors.toList());
+
+        assertThat(paths).containsExactly(
+                "/parameters/Link Link\t\t[line#: 471]",
+                "/products/{product_id}//202 Link\t\t[line#: 162]");
+    }
+
 }

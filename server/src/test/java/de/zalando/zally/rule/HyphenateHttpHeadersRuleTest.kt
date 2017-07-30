@@ -20,7 +20,8 @@ class HyphenateHttpHeadersRuleTest {
     fun simpleNegativeCase() {
         val swagger = swaggerWithHeaderParams("CamelCaseName")
         val result = HyphenateHttpHeadersRule(testConfig).validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("parameters CamelCaseName"))
+        assertThat(result.paths).hasSameElementsAs(listOf("/parameters/CamelCaseName CamelCaseName"))
+        assertThat(result.specPointers).hasSameElementsAs(listOf("/parameters/CamelCaseName/name"))
     }
 
     @Test

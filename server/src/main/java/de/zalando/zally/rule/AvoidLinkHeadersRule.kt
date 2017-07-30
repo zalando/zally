@@ -15,7 +15,7 @@ class AvoidLinkHeadersRule(@Autowired rulesConfig: Config) : HttpHeadersRule(rul
 
     override fun isViolation(header: String) = header == "Link"
 
-    override fun createViolation(paths: List<String>): Violation {
-        return Violation(this, title, DESCRIPTION, violationType, url, paths)
+    override fun createViolation(paths: List<String>, specPointers: List<String>): Violation {
+        return Violation(this, title, DESCRIPTION, violationType, url, paths, specPointers)
     }
 }

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import de.zalando.zally.rule.ObjectTreeReader
-import de.zalando.zally.rule.SpecificationPointerProvider
 import io.swagger.models.ModelImpl
 import io.swagger.models.Operation
 import io.swagger.models.Path
@@ -27,10 +26,6 @@ val testMetricRegistry: MetricRegistry by lazy {
 
 val testMetricServices: DropwizardMetricServices by lazy {
     DropwizardMetricServices(testMetricRegistry)
-}
-
-val testSpecPointerProvider: SpecificationPointerProvider by lazy {
-    SpecificationPointerProvider()
 }
 
 fun getFixture(fileName: String): Swagger = SwaggerParser().read("fixtures/$fileName")

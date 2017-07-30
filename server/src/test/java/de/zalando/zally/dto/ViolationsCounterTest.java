@@ -1,6 +1,5 @@
 package de.zalando.zally.dto;
 
-import de.zalando.zally.TestUtilKt;
 import de.zalando.zally.rule.AvoidTrailingSlashesRule;
 import de.zalando.zally.rule.Violation;
 import org.junit.Test;
@@ -98,7 +97,7 @@ public class ViolationsCounterTest {
 
     private Violation generateViolation(ViolationType violationType) {
         return new Violation(
-                new AvoidTrailingSlashesRule(TestUtilKt.getTestSpecPointerProvider()),
+                new AvoidTrailingSlashesRule(),
                 "Test Name",
                 "Test Description",
                 violationType,
