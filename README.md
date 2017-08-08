@@ -52,8 +52,7 @@ For [version 1.2](https://github.com/zalando-incubator/zally/milestone/3) we foc
 - Consistency with [Zalando RESTful API Guidelines](http://zalando.github.io/restful-api-guidelines/)
 - Referential integrity with [Zalando RESTful API Guidelines](http://zalando.github.io/restful-api-guidelines/)
 - New rules
-- Improve quick start
-- Better integration testing approaches
+- New quick start script and better integration testing approaches
 
 Feel free to contribute on related issues for version 1.2.
 
@@ -66,7 +65,7 @@ cd zally
 # Disable authentication and start a local version of Zally server
 cd server
 ./gradlew clean build
-./gradlew bootRun
+./gradlew bootRun > /dev/null &
 cd ..
 
 # Build CLI tool
