@@ -38,8 +38,8 @@ script:
   - mkdir -p $ZALLY_GO_PATH
   - cp -R . $ZALLY_GO_PATH
   - cd $ZALLY_GO_PATH/cli/zally
-  - go get -t
-  - go test -v -cover ./...
+  - go get -v -t -tags=integration
+  - go test -v -tags=integration -cover ./...
   - go build
   - cd $TRAVIS_BUILD_DIR
 
