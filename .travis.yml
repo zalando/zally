@@ -39,8 +39,9 @@ script:
   - cp -R . $ZALLY_GO_PATH
   - cd $ZALLY_GO_PATH/cli/zally
   - go get -v -t -tags=integration
-  - go test -v -tags=integration -cover ./...
+  - ./test.sh integration
   - go build
+  - bash <(curl -s https://codecov.io/bash)
   - cd $TRAVIS_BUILD_DIR
 
   # Kill Zally server instace
