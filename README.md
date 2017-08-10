@@ -77,7 +77,7 @@ go build
 
 ### Contributing
 
-We are happy to accept contributions. First, take a look at our [contributing guidelines](CONTRIBUTING.md).
+We are happy to accept contributions. First, take a look at our [contributing guidelines](CONTRIBUTING).
 
 Please check our [Project Board](https://github.com/zalando-incubator/zally/projects/1) or [Issues Page](https://github.com/zalando-incubator/zally/issues) for contribution ideas.
 
