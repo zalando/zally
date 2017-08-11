@@ -38,8 +38,8 @@ script:
   - mkdir -p $ZALLY_GO_PATH
   - cp -R . $ZALLY_GO_PATH
   - cd $ZALLY_GO_PATH/cli/zally
-  - go get -t
-  - go test -v -cover ./...
+  - go get -v -t -tags=integration
+  - ./test.sh integration
   - go build
   - cd $TRAVIS_BUILD_DIR
 
@@ -53,8 +53,8 @@ script:
   - npm install -q
   - npm test
   - npm run build
-  - npm run codecov
   - cd $TRAVIS_BUILD_DIR
   
 after_success:
   - java -cp ~/codacy-coverage-reporter.jar com.codacy.CodacyCoverageReporter --language Java --coverageReport server/build/reports/jacoco/test/jacocoTestReport.xml -t $CODACY_PROJECT_TOKEN
+  - bash <(curl -s https://codecov.io/bash) -f $ZALLY_GO_PATH/cli/zally/coverage.txt -f $TRAVIS_BUILD_DIR/web-ui/target/coverage/lcov.info
