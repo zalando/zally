@@ -8,6 +8,11 @@
 
 Minimalistic API linter of awesomeness, bringing order to a sea of APIs.
 
+With the standard configuration, Zally checks your APIs against the rules defined in [Zalando RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/).
+You can configure rules and enable/disable them on the server side.
+Using `x-zally-ignore` extension in the API definition it's also possible to disable rules for a specific API.
+You can also implement your own rules in Kotlin (in this case you have to build the server).
+
 - Ensures API definitions conform to
 [our standard REST guidelines](http://zalando.github.io/restful-api-guidelines/).
 - Does not require a deployed service, only an API definition.
