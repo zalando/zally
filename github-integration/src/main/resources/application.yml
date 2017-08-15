@@ -23,6 +23,9 @@ twintip:
   mapping: /api
   yaml: "classpath:/api/zally-github-api.yaml"
 
+zally:
+  oauthToken: abcdef1234567890abcdef1234567890
+
 ---
 spring.profiles: local
 TOKEN_INFO_URI: https://auth.example.com/oauth2/tokeninfo
