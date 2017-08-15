@@ -1,0 +1,36 @@
+spring:
+  profiles:
+    active: production
+  datasource:
+    url: jdbc:hsqldb:mem:storage;sql.syntax_pgs=true
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  oauth2:
+    resource:
+      tokenInfoUri: ${TOKEN_INFO_URI}
+
+endpoints:
+  enabled: false
+  health:
+    enabled: true
+  metrics:
+    enabled: true
+    sensitive: false
+
+security:
+  basic:
+    enabled: false
+
+management.port: ${MANAGEMENT_PORT}
+
+twintip:
+  mapping: /api
+  yaml: "classpath:/api/zally-github-api.yaml"
+
+---
+spring.profiles: local
+TOKEN_INFO_URI: https://auth.example.com/oauth2/tokeninfo
+MANAGEMENT_PORT: 7979
