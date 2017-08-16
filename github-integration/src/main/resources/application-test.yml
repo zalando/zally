@@ -19,3 +19,7 @@ twintip:
 zally:
   oauthToken: abcdef1234567890abcdef1234567890
   secret: abcdef1234567890abcdef1234567890
+
+
+github:
+  apiUrl: http://localhost:8088

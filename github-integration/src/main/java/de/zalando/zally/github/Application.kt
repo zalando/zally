@@ -6,17 +6,18 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Lazy
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.zalando.twintip.spring.SchemaResource
 
 @Import(SchemaResource::class)
 @EnableScheduling
 @SpringBootApplication
-class Application
-{
-    @Bean
-    fun initializeGithub(@Value("\${zally.oauthToken}") oauthToken: String): GitHub {
-        return GitHub.connectUsingOAuth(oauthToken)
+class Application {
+    @Bean @Lazy
+    fun initializeGithub(@Value("\${zally.oauthToken}") oauthToken: String,
+                         @Value("\${github.apiUrl}") apiUrl: String): GitHub {
+        return GitHub.connectUsingOAuth(apiUrl, oauthToken)
     }
 }
 

@@ -2,16 +2,13 @@ package de.zalando.zally.github
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import de.zalando.zally.github.util.SecurityUtil
 import org.kohsuke.github.GHEventPayload
 import org.kohsuke.github.GitHub
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.security.crypto.codec.Hex
 import org.springframework.stereotype.Service
-
 import java.io.StringReader
 import java.security.MessageDigest
-import javax.crypto.Mac
-import javax.crypto.spec.SecretKeySpec
 
 
 @Service
@@ -36,13 +33,8 @@ constructor(private val gitHub: GitHub, @Value("\${zally.secret}") private val s
     }
 
     fun validatePayload(payload: String, signature: String) {
-        val keySpec = SecretKeySpec(secret.toByteArray(),"HmacSHA1")
-
-        val mac = Mac.getInstance("HmacSHA1")
-        mac.init(keySpec)
-        val result = mac.doFinal(payload.toByteArray())
-
-        if (!MessageDigest.isEqual(signature.toByteArray(), "sha1=${String(Hex.encode(result))}".toByteArray())) {
+        val expectedSignature = SecurityUtil.sign(secret, payload)
+        if (!MessageDigest.isEqual(signature.toByteArray(), expectedSignature.toByteArray())) {
             throw SecurityException("Signature mismatch")
         }
     }

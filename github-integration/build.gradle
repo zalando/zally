@@ -32,7 +32,6 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: "kotlin-spring"
 apply plugin: 'kotlin-allopen'
@@ -80,6 +79,10 @@ dependencies {
     compile("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("net.jadler:jadler-core:1.3.0")
+    testCompile("net.jadler:jadler-jdk:1.3.0")
+    testCompile("net.jadler:jadler-junit:1.3.0")
+
 
     ktlint("com.github.shyiko:ktlint:0.8.3")
 }
@@ -105,17 +108,4 @@ check.dependsOn ktlint
 
 bootRun {
     jvmArgs = ["-Dspring.profiles.active=dev"]
-}
-
-task downloadSwaggerSchema {
-    doFirst {
-        download {
-            src 'http://swagger.io/v2/schema.json'
-            dest "$rootDir/src/main/resources/schemas/swagger-schema.json"
-        }
-        download {
-            src 'http://json-schema.org/draft-04/schema'
-            dest "$rootDir/src/main/resources/schemas/json-schema.json"
-        }
-    }
 }

@@ -1,18 +1,14 @@
 package de.zalando.zally.github
 
+import de.zalando.zally.github.util.logger
 import org.kohsuke.github.GHCommitState
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
-class ApiValidationController
-constructor(private val githubService: GithubService) {
+class ApiValidationController(private val githubService: GithubService) {
+
+    val log by logger()
 
     @ResponseBody
     @PostMapping("/api-validation")
@@ -22,7 +18,7 @@ constructor(private val githubService: GithubService) {
                             @RequestHeader(value = "X-Hub-Signature") signature: String) {
 
         if (eventType != ApiValidationController.PULL_REQUEST_EVENT_NAME) {
-            LOG.info("Received unsupported event: {}", eventType)
+            log.info("Received unsupported event: {}", eventType)
             return
         }
 
@@ -32,7 +28,6 @@ constructor(private val githubService: GithubService) {
     }
 
     companion object {
-        private val LOG = LoggerFactory.getLogger(ApiValidationController::class.java)
         private val PULL_REQUEST_EVENT_NAME = "pull_request"
     }
 
