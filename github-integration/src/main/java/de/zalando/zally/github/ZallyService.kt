@@ -19,7 +19,7 @@ class ZallyService(@Qualifier("yamlObjectMapper") private val yamlObjectMapper: 
         val apiDefinitionsTree = yamlObjectMapper.readTree(swaggerFile)
 
         val wrapper = jsonNodeFactory.objectNode()
-        wrapper.set("apiDefinition", apiDefinitionsTree)
+        wrapper.set("api_definition", apiDefinitionsTree)
         val request = jsonObjectMapper.writeValueAsString(wrapper)
 
         val validationResult = zallyClient.validate(request)
