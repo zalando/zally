@@ -1,0 +1,3 @@
+swagger_path: swagger.json
+ignored_rules:
+  - foo

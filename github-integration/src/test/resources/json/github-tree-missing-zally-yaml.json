@@ -1,0 +1,14 @@
+{
+  "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "url": "https://api.github.com/repos/myUserName/zally/git/trees/109852e9412042240a7c6930fe31c522b44d6650",
+  "tree": [
+    {
+      "path": "server",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cdbc409a85d378f4933fc9b7148de11308937533",
+      "url": "https://api.github.com/repos/myUserName/zally/git/trees/cdbc409a85d378f4933fc9b7148de11308937533"
+    }
+  ],
+  "truncated": false
+}

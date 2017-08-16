@@ -4,6 +4,10 @@ import de.zalando.zally.github.util.logger
 import org.kohsuke.github.GHCommitState
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.ResponseBody
+import javax.servlet.http.HttpServletRequest
+
 
 @RestController
 class ApiValidationController(private val githubService: GithubService) {
@@ -22,9 +26,28 @@ class ApiValidationController(private val githubService: GithubService) {
             return
         }
 
+        log.info("Received webhook: {}", eventType)
+
         val pullRequest = githubService.parsePayload(payload, signature)
 
-        pullRequest.updateCommitState(GHCommitState.FAILURE, "https://127.0.0.1", "Hello", "Test")
+        if (!pullRequest.getConfiguration().isPresent) {
+            pullRequest.updateCommitState(GHCommitState.FAILURE, "https://127.0.0.1", "Hello", "Test")
+            return
+        }
+
+        if (!pullRequest.getSwaggerFile().isPresent) {
+            pullRequest.updateCommitState(GHCommitState.FAILURE, "https://127.0.0.1", "Hello", "Test")
+            return
+        }
+
+        log.info("Finished webhook processing")
+    }
+
+    @ExceptionHandler(Exception::class)
+    @ResponseBody
+    fun handleControllerException(request: HttpServletRequest, ex: Throwable): ResponseEntity<*> {
+        log.error("failed", ex)
+        return ResponseEntity<Any>(HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     companion object {
