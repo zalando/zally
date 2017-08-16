@@ -5,8 +5,12 @@ import net.jadler.JadlerMocker
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.`is`
-import org.junit.*
+import org.junit.After
+import org.junit.AfterClass
 import org.junit.Assert.assertThat
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -22,40 +26,49 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 
-
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = arrayOf(Application::class))
 @ActiveProfiles("test")
 class ApiValidationControllerIntegrationTest {
     companion object {
-        lateinit var mocker: JadlerMocker;
-        @BeforeClass @JvmStatic fun setup() {
-            mocker = JadlerMocker(JdkStubHttpServer(8088))
-            mocker.start()
-            
-            mocker.onRequest()
+        lateinit var githubMock: GithubMock
+        lateinit var zallyMock: ZallyMock
+        @BeforeClass
+        @JvmStatic
+        fun setup() {
+            githubMock = GithubMock(JadlerMocker(JdkStubHttpServer(8088)))
+            githubMock.start()
+
+            githubMock.onRequest()
                     .havingMethodEqualTo("GET")
                     .havingPathEqualTo("/user")
                     .respond()
                     .withStatus(OK.value())
                     .withHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .withBody("json/github-user-response.json".loadResource())
+
+            zallyMock = ZallyMock(JadlerMocker(JdkStubHttpServer(9099)))
+            zallyMock.start()
         }
 
-        @AfterClass @JvmStatic fun teardown() {
-            mocker.close()
+        @AfterClass
+        @JvmStatic
+        fun teardown() {
+            githubMock.close()
+            zallyMock.close()
         }
     }
 
     @Autowired
     lateinit var restTemplate: TestRestTemplate
 
-    @Value("\${zally.secret}")
+    @Value("\${github.secret}")
     lateinit var secret: String
 
     @Before
     fun setUp() {
-        mocker.reset()
+        githubMock.reset()
+        zallyMock.reset()
     }
 
     @After
@@ -71,11 +84,11 @@ class ApiValidationControllerIntegrationTest {
             add("X-Hub-Signature", SecurityUtil.sign(secret, body))
         }
 
-        val response = restTemplate.postForEntity("/api-validation",  HttpEntity(body, headers), String::class.java)
+        val response = restTemplate.postForEntity("/api-validation", HttpEntity(body, headers), String::class.java)
 
         assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
 
-        mocker.verifyThatRequest()
+        githubMock.verifyThatRequest()
                 .havingMethodEqualTo("POST")
                 .havingPath(Matchers.containsString("/statuses/"))
                 .receivedNever()
@@ -83,80 +96,130 @@ class ApiValidationControllerIntegrationTest {
 
     @Test
     fun shouldSetFailedStatusOnMissingZallyConfigurationFile() {
-        mocker.onRequest()
-                .havingMethodEqualTo("GET")
-                .havingPathEqualTo("/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                .respond()
-                .withStatus(OK.value())
-                .withHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody("json/github-tree-missing-zally-yaml.json".loadResource())
+        githubMock.mockGet(
+                "/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "json/github-tree-missing-zally-yaml.json")
 
-        mocker.onRequest()
-                .havingMethodEqualTo("POST")
-                .havingPathEqualTo("/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                .respond()
-                .withStatus(OK.value())
-                .withHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody("json/github-commit-status-change.json".loadResource())
+        githubMock.mockPost(
+                "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "json/github-commit-status-change.json")
 
         val body = "json/github-webhook-pullrequest.json".loadResource()
-
-        val headers = HttpHeaders().apply {
-            add("X-GitHub-Event", "pull_request")
-            add("X-Hub-Signature", SecurityUtil.sign(secret, body))
-        }
-
-        val response = restTemplate.postForEntity("/api-validation",  HttpEntity(body, headers), String::class.java)
+        val response = restTemplate.postForEntity("/api-validation", webhookRequest(body), String::class.java)
 
         assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
 
-        mocker.verifyThatRequest()
-                .havingMethodEqualTo("POST")
-                .havingPathEqualTo("/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                .receivedOnce()
+        githubMock.verifyPost(
+                "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                Matchers.containsString("error"))
     }
 
     @Test
     fun shouldSetFailedStatusOnMissingSwaggerFile() {
-        mocker.onRequest()
-                .havingMethodEqualTo("GET")
-                .havingPathEqualTo("/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                .respond()
-                .withStatus(OK.value())
-                .withHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody("json/github-tree-missing-swagger-file.json".loadResource())
+        githubMock.mockGet(
+                "/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "json/github-tree-missing-swagger-file.json")
 
-        mocker.onRequest()
-                .havingMethodEqualTo("POST")
-                .havingPathEqualTo("/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                .respond()
-                .withStatus(OK.value())
-                .withHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody("json/github-commit-status-change.json".loadResource())
+        githubMock.mockPost(
+                "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "json/github-commit-status-change.json")
 
-        mocker.onRequest()
-                .havingMethodEqualTo("GET")
-                .havingHeaderEqualTo("Accept", "application/vnd.github.VERSION.raw")
-                .havingPathEqualTo("/repos/myUserName/zally/git/blobs/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
-                .respond()
-                .withStatus(OK.value())
-                .withHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
-                .withBody("json/github-zally-yaml-blob.yaml".loadResource())
+        githubMock.mockGetBlob(
+                "/repos/myUserName/zally/git/blobs/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "json/github-zally-yaml-blob.yaml")
 
         val body = "json/github-webhook-pullrequest.json".loadResource()
-
-        val headers = HttpHeaders().apply {
-            add("X-GitHub-Event", "pull_request")
-            add("X-Hub-Signature", SecurityUtil.sign(secret, body))
-        }
-
-        val response = restTemplate.postForEntity("/api-validation",  HttpEntity(body, headers), String::class.java)
+        val response = restTemplate.postForEntity("/api-validation", webhookRequest(body), String::class.java)
 
         assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
 
-        mocker.verifyThatRequest()
-                .havingMethodEqualTo("POST")
-                .havingPathEqualTo("/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                .receivedOnce()
+        githubMock.verifyPost(
+                "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                Matchers.containsString("error"))
     }
+
+    @Test
+    fun shouldSetStatusSuccessOnValidZallyResponse() {
+        githubMock.mockGet(
+                "/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "json/github-tree.json")
+
+        githubMock.mockGetBlob(
+                "/repos/myUserName/zally/git/blobs/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "json/github-zally-yaml-blob.yaml")
+
+        githubMock.mockGetBlob(
+                "/repos/myUserName/zally/git/blobs/cccccccccccccccccccccccccccccccccccccccc",
+                "json/github-api-yaml-blob.yaml")
+
+        zallyMock.mockPost(
+                "/api-violations",
+                "json/zally-success-response.json")
+
+        githubMock.mockPost(
+                "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "json/github-commit-status-change.json")
+
+        val body = "json/github-webhook-pullrequest.json".loadResource()
+        val response = restTemplate.postForEntity("/api-validation", webhookRequest(body), String::class.java)
+
+        assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
+
+        zallyMock.verifyPost(
+                "/api-violations",
+                Matchers.containsString("Zalando's API Linter"))
+
+        githubMock.verifyPost(
+                "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                Matchers.containsString("success"))
+    }
+
+    @Test
+    fun shouldSetStatusErrorIfZallyResponseContainsMustViolations() {
+        githubMock.mockGet(
+                "/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "json/github-tree.json")
+
+        githubMock.mockGetBlob(
+                "/repos/myUserName/zally/git/blobs/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "json/github-zally-yaml-blob.yaml")
+
+        githubMock.mockGetBlob(
+                "/repos/myUserName/zally/git/blobs/cccccccccccccccccccccccccccccccccccccccc",
+                "json/github-api-yaml-blob.yaml")
+
+        zallyMock.mockPost(
+                "/api-violations",
+                "json/zally-error-response.json")
+
+        githubMock.mockPost(
+                "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "json/github-commit-status-change.json")
+
+        val body = "json/github-webhook-pullrequest.json".loadResource()
+
+        val response = restTemplate.postForEntity("/api-validation", webhookRequest(body), String::class.java)
+
+        assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
+
+        zallyMock.verifyPost(
+                "/api-violations",
+                Matchers.containsString("Zalando's API Linter"))
+
+        githubMock.verifyPost(
+                "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                Matchers.containsString("error"))
+    }
+
+    private fun webhookRequest(body: String): HttpEntity<String> {
+        return HttpEntity(body, webhookHeaders(body))
+    }
+
+    private fun webhookHeaders(body: String): HttpHeaders {
+        return HttpHeaders().apply {
+            add("X-GitHub-Event", "pull_request")
+            add("X-Hub-Signature", SecurityUtil.sign(secret, body))
+        }
+    }
+
 }

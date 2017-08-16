@@ -1,20 +1,19 @@
 package de.zalando.zally.github
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import de.zalando.zally.github.util.SecurityUtil
 import org.kohsuke.github.GHEventPayload
 import org.kohsuke.github.GitHub
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.io.StringReader
 import java.security.MessageDigest
 
-
 @Service
-class GithubService
-constructor(private val gitHub: GitHub, @Value("\${zally.secret}") private val secret: String) {
-    private val yamlMapper = ObjectMapper(YAMLFactory())
+class GithubService(private val gitHub: GitHub,
+                    @Value("\${github.secret}") private val secret: String,
+                    @Qualifier("yamlObjectMapper") private val yamlObjectMapper: ObjectMapper) {
 
     fun parsePayload(payload: String, signature: String): PullRequest {
         validatePayload(payload, signature)
@@ -29,7 +28,7 @@ constructor(private val gitHub: GitHub, @Value("\${zally.secret}") private val s
                 .head
                 .sha
 
-        return PullRequest(yamlMapper, pullRequestPayload.repository, commitHash)
+        return PullRequest(yamlObjectMapper, pullRequestPayload.repository, commitHash)
     }
 
     fun validatePayload(payload: String, signature: String) {

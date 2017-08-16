@@ -1,4 +1,4 @@
-package de.zalando.zally.github
+package de.zalando.zally.github.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
