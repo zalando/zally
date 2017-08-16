@@ -15,3 +15,7 @@ management.port: 0
 twintip:
   mapping: /api
   yaml: "classpath:/api/zally-github-api.yaml"
+
+zally:
+  oauthToken: abcdef1234567890abcdef1234567890
+  secret: abcdef1234567890abcdef1234567890
