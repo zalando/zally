@@ -37,24 +37,24 @@ class ApiValidationController(private val githubService: GithubService,
         val pullRequest = githubService.parsePayload(payload, signature)
 
         if (!pullRequest.getConfiguration().isPresent) {
-            pullRequest.updateCommitState(GHCommitState.ERROR, "https://127.0.0.1", "Hello", "Test")
+            pullRequest.updateCommitState(GHCommitState.ERROR, "https://127.0.0.1", "Could not find zally configuration file")
             return
         }
 
         val swaggerFile = pullRequest.getSwaggerFile()
         if (!swaggerFile.isPresent) {
-            pullRequest.updateCommitState(GHCommitState.ERROR, "https://127.0.0.1", "Hello", "Test")
+            pullRequest.updateCommitState(GHCommitState.ERROR, "https://127.0.0.1", "Could not find swagger file")
             return
         }
 
         val validate = zallyService.validate(swaggerFile.get())
         val invalid = validate.violations?.any { it.violationType == ViolationType.MUST } ?: false
         if (invalid) {
-            pullRequest.updateCommitState(GHCommitState.ERROR, "https://127.0.0.1", "Hello", "Test")
+            pullRequest.updateCommitState(GHCommitState.ERROR, "https://127.0.0.1", "Got violations")
             return
         }
 
-        pullRequest.updateCommitState(GHCommitState.SUCCESS, "https://127.0.0.1", "Hello", "Test")
+        pullRequest.updateCommitState(GHCommitState.SUCCESS, "https://127.0.0.1", "API passed all checks ${validate.violationsCount}")
         log.info("Finished webhook processing")
     }
 

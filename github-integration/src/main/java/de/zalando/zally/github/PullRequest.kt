@@ -13,8 +13,8 @@ class PullRequest(private val yamlMapper: ObjectMapper,
                   private val repository: GHRepository,
                   private val commitHash: String) {
 
-    fun updateCommitState(state: GHCommitState, url: String, description: String, context: String) {
-        repository.createCommitStatus(commitHash, state, url, description, context)
+    fun updateCommitState(state: GHCommitState, url: String, description: String) {
+        repository.createCommitStatus(commitHash, state, url, description, "Zally")
     }
 
     private fun getFileContents(path: String): Optional<String> {
