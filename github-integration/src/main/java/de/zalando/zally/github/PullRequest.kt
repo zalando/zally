@@ -18,7 +18,7 @@ class PullRequest(private val yamlMapper: ObjectMapper,
     }
 
     private fun getFileContents(path: String): Optional<String> {
-        return Optional.ofNullable(repository.getTree(commitHash).getEntry(path))
+        return Optional.ofNullable(repository.getTreeRecursive(commitHash, 1).getEntry(path))
                 .map { IOUtils.toString(it.readAsBlob(), StandardCharsets.UTF_8) }
     }
 
