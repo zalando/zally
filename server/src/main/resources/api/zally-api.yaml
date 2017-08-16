@@ -198,6 +198,10 @@ definitions:
         type: string
       violations_count:
         $ref: '#/definitions/ViolationsCount'
+      ignored_rules:
+        type: array
+        items:
+          $ref: '#/definitions/Rule'
 
   SupportedRulesResponse:
     type: object
@@ -208,7 +212,7 @@ definitions:
       supported_rules:
         type: array
         items:
-          $ref: '#/definitions/Rule'
+          $ref: '#/definitions/RuleDetails'
 
   ReviewStatisticsResponse:
     type: object
@@ -353,7 +357,6 @@ definitions:
       - code
       - type
       - url
-      - is_active
     properties:
       title:
         type: string
@@ -367,6 +370,15 @@ definitions:
       url:
         type: string
         example: 'https://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning'
-      is_active:
-        type: boolean
-        example: true
+
+  RuleDetails:
+    description: Rule Details
+    type: object
+    allOf:
+      - $ref: '#/definitions/Rule'
+      - required:
+        - is_active
+        properties:
+          is_active:
+            type: boolean
+            example: true
