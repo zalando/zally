@@ -24,6 +24,11 @@ script:
   - ./gradlew build --info
   - cd ..
 
+  # Unit-test and build integration server
+  - cd github-integration/
+  - ./gradlew build --info
+  - cd ..
+
   # Launch local zally server
   - cd server/
   - ./gradlew bootRun > /dev/null &
@@ -56,5 +61,9 @@ script:
   - cd $TRAVIS_BUILD_DIR
   
 after_success:
+  # Produce test code coverage report for Zally server
   - java -cp ~/codacy-coverage-reporter.jar com.codacy.CodacyCoverageReporter --language Java --coverageReport server/build/reports/jacoco/test/jacocoTestReport.xml -t $CODACY_PROJECT_TOKEN
+  # Produce test code coverage report for Zally integration server
+  - java -cp ~/codacy-coverage-reporter.jar com.codacy.CodacyCoverageReporter --language Java --coverageReport github-integration/build/reports/jacoco/test/jacocoTestReport.xml -t $CODACY_PROJECT_TOKEN
+  # Produce test code coverage report for Zally CLI
   - bash <(curl -s https://codecov.io/bash) -f $ZALLY_GO_PATH/cli/zally/coverage.txt -f $TRAVIS_BUILD_DIR/web-ui/target/coverage/lcov.info
