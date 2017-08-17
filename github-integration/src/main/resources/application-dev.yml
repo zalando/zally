@@ -16,11 +16,12 @@ twintip:
   yaml: "classpath:/api/zally-github-api.yaml"
 
 zally:
-  apiUrl: http://localhost:9099
+  apiUrl: http://localhost:8080
 
 github:
   apiUrl: http://localhost:8088
   oauthToken: abcdef1234567890abcdef1234567890
   secret: abcdef1234567890abcdef1234567890
 
-management.port: 8080
+server.port: 8081
+management.port: 8081
