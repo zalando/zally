@@ -1,6 +1,7 @@
-package de.zalando.zally.github
+package de.zalando.zally.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import de.zalando.zally.integration.zally.ZallyClient
 import feign.Feign
 import feign.jackson.JacksonDecoder
 import org.kohsuke.github.GitHub

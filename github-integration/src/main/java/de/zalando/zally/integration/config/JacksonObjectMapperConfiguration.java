@@ -1,4 +1,4 @@
-package de.zalando.zally.github.config;
+package de.zalando.zally.integration.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

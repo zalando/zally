@@ -1,9 +1,8 @@
-package de.zalando.zally.github
+package de.zalando.zally.integration.zally
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
-import de.zalando.zally.github.dto.ApiDefinitionResponse
-import de.zalando.zally.github.util.logger
+import de.zalando.zally.integration.config.logger
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 

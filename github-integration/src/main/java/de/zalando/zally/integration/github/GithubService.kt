@@ -1,7 +1,6 @@
-package de.zalando.zally.github
+package de.zalando.zally.integration.github
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import de.zalando.zally.github.util.SecurityUtil
 import org.kohsuke.github.GHEventPayload
 import org.kohsuke.github.GitHub
 import org.springframework.beans.factory.annotation.Qualifier

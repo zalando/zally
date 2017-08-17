@@ -1,13 +1,12 @@
-package de.zalando.zally.github
+package de.zalando.zally.integration.github
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import de.zalando.zally.github.dto.Configuration
+import de.zalando.zally.integration.zally.Configuration
 import org.apache.commons.io.IOUtils
 import org.kohsuke.github.GHCommitState
 import org.kohsuke.github.GHRepository
-
 import java.nio.charset.StandardCharsets
-import java.util.Optional
+import java.util.*
 
 class PullRequest(private val yamlMapper: ObjectMapper,
                   private val repository: GHRepository,

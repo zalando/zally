@@ -1,6 +1,5 @@
-package de.zalando.zally.github
+package de.zalando.zally.integration.zally
 
-import de.zalando.zally.github.dto.ApiDefinitionResponse
 import feign.Headers
 import feign.RequestLine
 

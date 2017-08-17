@@ -1,4 +1,4 @@
-package de.zalando.zally.github.util
+package de.zalando.zally.integration.github
 
 import org.springframework.security.crypto.codec.Hex
 import javax.crypto.Mac

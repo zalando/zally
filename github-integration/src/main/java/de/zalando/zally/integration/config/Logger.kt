@@ -1,4 +1,4 @@
-package de.zalando.zally.github.util
+package de.zalando.zally.integration.config
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

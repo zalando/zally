@@ -1,6 +1,6 @@
-package de.zalando.zally.github
+package de.zalando.zally.integration
 
-import de.zalando.zally.github.util.SecurityUtil
+import de.zalando.zally.integration.github.SecurityUtil
 import net.jadler.JadlerMocker
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
 import org.hamcrest.Matchers
@@ -84,7 +84,7 @@ class ApiValidationControllerIntegrationTest {
             add("X-Hub-Signature", SecurityUtil.sign(secret, body))
         }
 
-        val response = restTemplate.postForEntity("/api-validation", HttpEntity(body, headers), String::class.java)
+        val response = restTemplate.postForEntity("/github-webhook", HttpEntity(body, headers), String::class.java)
 
         assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
 
@@ -105,7 +105,7 @@ class ApiValidationControllerIntegrationTest {
                 "json/github-commit-status-change.json")
 
         val body = "json/github-webhook-pullrequest.json".loadResource()
-        val response = restTemplate.postForEntity("/api-validation", webhookRequest(body), String::class.java)
+        val response = restTemplate.postForEntity("/github-webhook", webhookRequest(body), String::class.java)
 
         assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
 
@@ -129,7 +129,7 @@ class ApiValidationControllerIntegrationTest {
                 "json/github-zally-yaml-blob.yaml")
 
         val body = "json/github-webhook-pullrequest.json".loadResource()
-        val response = restTemplate.postForEntity("/api-validation", webhookRequest(body), String::class.java)
+        val response = restTemplate.postForEntity("/github-webhook", webhookRequest(body), String::class.java)
 
         assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
 
@@ -161,7 +161,7 @@ class ApiValidationControllerIntegrationTest {
                 "json/github-commit-status-change.json")
 
         val body = "json/github-webhook-pullrequest.json".loadResource()
-        val response = restTemplate.postForEntity("/api-validation", webhookRequest(body), String::class.java)
+        val response = restTemplate.postForEntity("/github-webhook", webhookRequest(body), String::class.java)
 
         assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
 
@@ -198,7 +198,7 @@ class ApiValidationControllerIntegrationTest {
 
         val body = "json/github-webhook-pullrequest.json".loadResource()
 
-        val response = restTemplate.postForEntity("/api-validation", webhookRequest(body), String::class.java)
+        val response = restTemplate.postForEntity("/github-webhook", webhookRequest(body), String::class.java)
 
         assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
 

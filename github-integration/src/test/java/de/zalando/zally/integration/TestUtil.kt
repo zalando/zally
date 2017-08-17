@@ -1,4 +1,4 @@
-package de.zalando.zally.github
+package de.zalando.zally.integration
 
 import org.apache.commons.io.IOUtils
 

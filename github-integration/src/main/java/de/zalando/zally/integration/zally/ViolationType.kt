@@ -1,4 +1,4 @@
-package de.zalando.zally.github.dto
+package de.zalando.zally.integration.zally
 
 enum class ViolationType(private val metricIdentifier: String) {
 

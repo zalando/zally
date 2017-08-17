@@ -1,4 +1,4 @@
-package de.zalando.zally.github
+package de.zalando.zally.integration
 
 import net.jadler.JadlerMocker
 import net.jadler.mocking.Mocker
