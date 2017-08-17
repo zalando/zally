@@ -6,7 +6,7 @@ import org.apache.commons.io.IOUtils
 import org.kohsuke.github.GHCommitState
 import org.kohsuke.github.GHRepository
 import java.nio.charset.StandardCharsets
-import java.util.*
+import java.util.Optional
 
 class PullRequest(private val yamlMapper: ObjectMapper,
                   private val repository: GHRepository,
