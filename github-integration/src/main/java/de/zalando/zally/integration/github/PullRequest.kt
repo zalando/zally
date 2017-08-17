@@ -15,6 +15,8 @@ class PullRequest(private val yamlMapper: ObjectMapper,
                   private val commitHash: String,
                   private val changedFiles: PagedIterable<GHPullRequestFileDetail>) {
 
+    private val ZALLY_CONFIGURATION_PATH = ".zally.yaml"
+
     fun updateCommitState(state: GHCommitState, url: String, description: String) {
         repository.createCommitStatus(commitHash, state, url, description, "Zally")
     }
@@ -36,6 +38,8 @@ class PullRequest(private val yamlMapper: ObjectMapper,
         }
     }
 
+    fun getRepositoryUrl(): String = repository.url.toString()
+
     fun getChangedFiles(): Optional<List<String>> {
         return Optional.of(changedFiles.map { t -> t.filename })
     }
@@ -46,9 +50,5 @@ class PullRequest(private val yamlMapper: ObjectMapper,
             return true
         }
         return false
-    }
-
-    companion object {
-        private val ZALLY_CONFIGURATION_PATH = ".zally.yaml"
     }
 }

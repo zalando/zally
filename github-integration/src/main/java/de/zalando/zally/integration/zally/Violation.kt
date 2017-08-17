@@ -7,4 +7,5 @@ data class Violation(
         var violationType: ViolationType? = null,
         var ruleLink: String? = null,
         var paths: List<String>? = null
+
 )

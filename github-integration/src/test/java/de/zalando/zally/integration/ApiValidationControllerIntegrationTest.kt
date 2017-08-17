@@ -8,7 +8,6 @@ import net.jadler.JadlerMocker
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.`is`
-import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.ClassRule
@@ -29,7 +28,6 @@ import org.springframework.test.context.junit4.SpringRunner
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = arrayOf(Application::class))
 @ActiveProfiles("test")
 class ApiValidationControllerIntegrationTest {
-
     companion object {
         @ClassRule @JvmField val githubServer = JadlerRule(GithubMock(JadlerMocker(JdkStubHttpServer(8088)))) {
             it.mockGet("/user", "json/github-user-response.json")//required for app start
@@ -48,10 +46,6 @@ class ApiValidationControllerIntegrationTest {
     fun setUp() {
         githubServer.mock.reset()
         zallyServer.mock.reset()
-    }
-
-    @After
-    fun tearDown() {
     }
 
     @Test
