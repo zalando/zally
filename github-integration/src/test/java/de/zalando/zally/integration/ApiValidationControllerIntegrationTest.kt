@@ -1,15 +1,17 @@
 package de.zalando.zally.integration
 
 import de.zalando.zally.integration.github.SecurityUtil
+import de.zalando.zally.integration.jadler.GithubMock
+import de.zalando.zally.integration.jadler.JadlerRule
+import de.zalando.zally.integration.jadler.ZallyMock
 import net.jadler.JadlerMocker
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.`is`
 import org.junit.After
-import org.junit.AfterClass
 import org.junit.Assert.assertThat
 import org.junit.Before
-import org.junit.BeforeClass
+import org.junit.ClassRule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,10 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpHeaders.CONTENT_TYPE
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatus.OK
-import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 
@@ -30,33 +29,13 @@ import org.springframework.test.context.junit4.SpringRunner
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = arrayOf(Application::class))
 @ActiveProfiles("test")
 class ApiValidationControllerIntegrationTest {
+
     companion object {
-        lateinit var githubMock: GithubMock
-        lateinit var zallyMock: ZallyMock
-        @BeforeClass
-        @JvmStatic
-        fun setup() {
-            githubMock = GithubMock(JadlerMocker(JdkStubHttpServer(8088)))
-            githubMock.start()
-
-            githubMock.onRequest()
-                    .havingMethodEqualTo("GET")
-                    .havingPathEqualTo("/user")
-                    .respond()
-                    .withStatus(OK.value())
-                    .withHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .withBody("json/github-user-response.json".loadResource())
-
-            zallyMock = ZallyMock(JadlerMocker(JdkStubHttpServer(9099)))
-            zallyMock.start()
+        @ClassRule @JvmField val githubServer = JadlerRule(GithubMock(JadlerMocker(JdkStubHttpServer(8088)))) {
+            it.mockGet("/user", "json/github-user-response.json")//required for app start
         }
 
-        @AfterClass
-        @JvmStatic
-        fun teardown() {
-            githubMock.close()
-            zallyMock.close()
-        }
+        @ClassRule @JvmField val zallyServer = JadlerRule(ZallyMock(JadlerMocker(JdkStubHttpServer(9099))))
     }
 
     @Autowired
@@ -67,8 +46,8 @@ class ApiValidationControllerIntegrationTest {
 
     @Before
     fun setUp() {
-        githubMock.reset()
-        zallyMock.reset()
+        githubServer.mock.reset()
+        zallyServer.mock.reset()
     }
 
     @After
@@ -88,7 +67,7 @@ class ApiValidationControllerIntegrationTest {
 
         assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
 
-        githubMock.verifyThatRequest()
+        githubServer.mock.verifyThatRequest()
                 .havingMethodEqualTo("POST")
                 .havingPath(Matchers.containsString("/statuses/"))
                 .receivedNever()
@@ -96,11 +75,11 @@ class ApiValidationControllerIntegrationTest {
 
     @Test
     fun shouldSetFailedStatusOnMissingZallyConfigurationFile() {
-        githubMock.mockGet(
+        githubServer.mock.mockGet(
                 "/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "json/github-tree-missing-zally-yaml.json")
 
-        githubMock.mockPost(
+        githubServer.mock.mockPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "json/github-commit-status-change.json")
 
@@ -109,22 +88,22 @@ class ApiValidationControllerIntegrationTest {
 
         assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
 
-        githubMock.verifyPost(
+        githubServer.mock.verifyPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 Matchers.containsString("error"))
     }
 
     @Test
     fun shouldSetFailedStatusOnMissingSwaggerFile() {
-        githubMock.mockGet(
+        githubServer.mock.mockGet(
                 "/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "json/github-tree-missing-swagger-file.json")
 
-        githubMock.mockPost(
+        githubServer.mock.mockPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "json/github-commit-status-change.json")
 
-        githubMock.mockGetBlob(
+        githubServer.mock.mockGetBlob(
                 "/repos/myUserName/zally/git/blobs/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
                 "json/github-zally-yaml-blob.yaml")
 
@@ -133,30 +112,30 @@ class ApiValidationControllerIntegrationTest {
 
         assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
 
-        githubMock.verifyPost(
+        githubServer.mock.verifyPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 Matchers.containsString("error"))
     }
 
     @Test
     fun shouldSetStatusSuccessOnValidZallyResponse() {
-        githubMock.mockGet(
+        githubServer.mock.mockGet(
                 "/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "json/github-tree.json")
 
-        githubMock.mockGetBlob(
+        githubServer.mock.mockGetBlob(
                 "/repos/myUserName/zally/git/blobs/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
                 "json/github-zally-yaml-blob.yaml")
 
-        githubMock.mockGetBlob(
+        githubServer.mock.mockGetBlob(
                 "/repos/myUserName/zally/git/blobs/cccccccccccccccccccccccccccccccccccccccc",
                 "json/github-api-yaml-blob.yaml")
 
-        zallyMock.mockPost(
+        zallyServer.mock.mockPost(
                 "/api-violations",
                 "json/zally-success-response.json")
 
-        githubMock.mockPost(
+        githubServer.mock.mockPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "json/github-commit-status-change.json")
 
@@ -165,34 +144,34 @@ class ApiValidationControllerIntegrationTest {
 
         assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
 
-        zallyMock.verifyPost(
+        zallyServer.mock.verifyPost(
                 "/api-violations",
                 Matchers.containsString("Zalando's API Linter"))
 
-        githubMock.verifyPost(
+        githubServer.mock.verifyPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 Matchers.containsString("success"))
     }
 
     @Test
     fun shouldSetStatusErrorIfZallyResponseContainsMustViolations() {
-        githubMock.mockGet(
+        githubServer.mock.mockGet(
                 "/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "json/github-tree.json")
 
-        githubMock.mockGetBlob(
+        githubServer.mock.mockGetBlob(
                 "/repos/myUserName/zally/git/blobs/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
                 "json/github-zally-yaml-blob.yaml")
 
-        githubMock.mockGetBlob(
+        githubServer.mock.mockGetBlob(
                 "/repos/myUserName/zally/git/blobs/cccccccccccccccccccccccccccccccccccccccc",
                 "json/github-api-yaml-blob.yaml")
 
-        zallyMock.mockPost(
+        zallyServer.mock.mockPost(
                 "/api-violations",
                 "json/zally-error-response.json")
 
-        githubMock.mockPost(
+        githubServer.mock.mockPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "json/github-commit-status-change.json")
 
@@ -202,11 +181,11 @@ class ApiValidationControllerIntegrationTest {
 
         assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
 
-        zallyMock.verifyPost(
+        zallyServer.mock.verifyPost(
                 "/api-violations",
                 Matchers.containsString("Zalando's API Linter"))
 
-        githubMock.verifyPost(
+        githubServer.mock.verifyPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 Matchers.containsString("error"))
     }

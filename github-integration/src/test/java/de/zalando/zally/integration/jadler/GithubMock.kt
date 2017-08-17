@@ -1,5 +1,6 @@
-package de.zalando.zally.integration
+package de.zalando.zally.integration.jadler
 
+import de.zalando.zally.integration.loadResource
 import net.jadler.JadlerMocker
 import net.jadler.mocking.Mocker
 import net.jadler.stubbing.Stubber
