@@ -4,62 +4,38 @@
 
 <img src="logo.png" width="200" height="200" />
 
-### Zally - Zalando's API Linter loves you
+### Zally: A minimalistic, simple-to-use API linter
 
-Minimalistic API linter of awesomeness, bringing order to a sea of APIs.
+Zally brings order to your sea of APIs. Use it to:
+- enable/disable rules on the server side
+- configure (some) of existing rules
+- implement your own rules in Kotlin
 
-With the standard configuration, Zally checks your APIs against the rules defined in [Zalando RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/).
-You can configure rules and enable/disable them on the server side.
-Using `x-zally-ignore` extension in the API definition it's also possible to disable rules for a specific API.
-You can also implement your own rules in Kotlin (in this case you have to build the server).
+Its standard configuration will check your APIs against the rules defined in [Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/), but you can use it **out-of-the-box**.
 
-- Ensures API definitions conform to
-[our standard REST guidelines](http://zalando.github.io/restful-api-guidelines/).
-- Does not require a deployed service, only an API definition.
-- Accepts [swagger](https://swagger.io) yaml and json formats.
-- Easy-to-use [CLI](cli/README.md) allows you to check your API *right now*.
-- [Web UI](web-ui/README.md) provides an intuitive web interface with tons of features.
+Zally's easy-to-use [CLI](cli/README.md) uses the server in the background so that you can check your API *on the spot*. It also features an intuitive [Web UI](web-ui/README.md) that shows implemented rules, and lints external files and (with its online editor) API definitions.
 
-### Core Technical Concepts
+More about Zally:
+- Swagger-friendly: accepts [Swagger](https://swagger.io) .yaml and JSON formats; includes a server that lints your Swagger files; and parses Swagger files using [swagger-parser](https://github.com/swagger-api/swagger-parser)
+- Using `x-zally-ignore` extension in your API definition, you can disable rules for a specific API
+- Applying rule changes is only necessary in the server component
+- API-specific code written in Java 8 with [Spring Boot](https://github.com/spring-projects/spring-boot) for better integration
+- Rule implementation is optimal/possible in Kotlin
 
-- Parses swagger files using [swagger-parser](https://github.com/swagger-api/swagger-parser)
-- Written in Java 8 with [Spring Boot](https://github.com/spring-projects/spring-boot)
-- Zally comes with a server which lints your swagger files
-- Zally CLI is handy command-line tool, it uses the server in the background
-- Zally Web UI is another client build on top of React and Node.js
-- Rule changes only have to be applied in the server component
+### Technical Dependencies
 
-**Tech Stack:** Zally server is written in Java 8 with Spring Boot.
-We made rule implementation optional possible in Kotlin.
-API-specific code remains in Java 8 due to better integration with Spring Boot.
-Further details can be found [here](https://github.com/zalando-incubator/zally/pull/65#issuecomment-269474831).
-With Spring 5 we consider using Kotlin also on API side directly.
-Zally CLI is implemented in Golang.
+- Kotlin and Java 8 (server) with Spring Boot 
+- Golang 1.7+: for CLI
+- Node.js 7.6+: for web UI
 
-### Dependencies
-
-- Java 8 (Server)
-- Golang 1.7+ (CLI)
-- Node.js 7.6+ (Web-UI)
-
+Find further details [here](https://github.com/zalando-incubator/zally/pull/65#issuecomment-269474831).
+With Spring 5, we consider using Kotlin also on API side directly.
 
 ### Installation and Usage
 
-You can find installation steps in the [Server Readme](server/README.md), [CLI Readme](cli/README.md) and [Web UI Readme](web-ui/README.md).
+To give Zally a quick try, first run the server locally and then use the CLI tool.
 
-If you just wanna try it out: first run the server locally, then just use the CLI tool as it is provided.
-
-
-### Roadmap
-
-For [version 1.2](https://github.com/zalando-incubator/zally/milestone/3) we focus on these main areas:
-
-- Consistency with [Zalando RESTful API Guidelines](http://zalando.github.io/restful-api-guidelines/)
-- Referential integrity with [Zalando RESTful API Guidelines](http://zalando.github.io/restful-api-guidelines/)
-- New rules
-- New quick start script and better integration testing approaches
-
-Feel free to contribute on related issues for version 1.2.
+The [Server Readme](server/README.md), [CLI Readme](cli/README.md) and [Web UI Readme](web-ui/README.md) includes more detailed installation steps for each component.
 
 ### Quick start guide
 
@@ -82,14 +58,19 @@ go build
 
 ### Contributing
 
-We are happy to accept contributions. First, take a look at our [contributing guidelines](CONTRIBUTING).
+Zally welcomes contributions from the open source community. To get started, take a look at our [contributing guidelines](CONTRIBUTING). Then check our [Project Board](https://github.com/zalando-incubator/zally/projects/1) and [Issues Tracker](https://github.com/zalando-incubator/zally/issues) for ideas. 
 
-Please check our [Project Board](https://github.com/zalando-incubator/zally/projects/1) or [Issues Page](https://github.com/zalando-incubator/zally/issues) for contribution ideas.
+#### Roadmap
+For Zally [version 1.2](https://github.com/zalando-incubator/zally/milestone/3), we're focusing on:
+- generating new rules [rules for what?]
+- a new quickstart script
+- better integration testing approaches.
 
+If you have ideas for these items, please let us know.
 
 ### Contact
 
-Feel free to contact one the [maintainers](MAINTAINERS)
+Feel free to contact one the [maintainers](MAINTAINERS).
 
 
 ### License
