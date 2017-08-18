@@ -8,12 +8,12 @@
 
 Zally brings order to your sea of APIs. Use it to:
 - enable/disable rules on the server side
-- configure (some) of existing rules
-- implement your own rules in Kotlin
+- configure (some) of your existing rules
+- implement your own rules in [Kotlin](https://kotlinlang.org/)
 
-Its standard configuration will check your APIs against the rules defined in [Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/), but you can use it **out-of-the-box**.
+Its standard configuration will check your APIs against the rules defined in [Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/), but anyone can use it **out-of-the-box**.
 
-Zally's easy-to-use [CLI](cli/README.md) uses the server in the background so that you can check your API *on the spot*. It also features an intuitive [Web UI](web-ui/README.md) that shows implemented rules, and lints external files and (with its online editor) API definitions.
+Zally's easy-to-use [CLI](cli/README.md) uses the server in the background so that you can check your API *on the spot*. It also features an intuitive [Web UI](web-ui/README.md) that shows implemented rules and lints external files and (with its online editor) API definitions.
 
 More about Zally:
 - Swagger-friendly: accepts [Swagger](https://swagger.io) .yaml and JSON formats; includes a server that lints your Swagger files; and parses Swagger files using [swagger-parser](https://github.com/swagger-api/swagger-parser)
@@ -28,14 +28,13 @@ More about Zally:
 - Golang 1.7+: for CLI
 - Node.js 7.6+: for web UI
 
-Find further details [here](https://github.com/zalando-incubator/zally/pull/65#issuecomment-269474831).
-With Spring 5, we consider using Kotlin also on API side directly.
+Find additional details [here](https://github.com/zalando-incubator/zally/pull/65#issuecomment-269474831). With Spring 5, we consider using Kotlin also directly on the API side.
 
 ### Installation and Usage
 
 To give Zally a quick try, first run the server locally and then use the CLI tool.
 
-The [Server Readme](server/README.md), [CLI Readme](cli/README.md) and [Web UI Readme](web-ui/README.md) includes more detailed installation steps for each component.
+The [Server Readme](server/README.md), [CLI Readme](cli/README.md) and [Web UI Readme](web-ui/README.md) include more detailed installation steps for each component.
 
 ### Quick start guide
 
@@ -62,9 +61,9 @@ Zally welcomes contributions from the open source community. To get started, tak
 
 #### Roadmap
 For Zally [version 1.2](https://github.com/zalando-incubator/zally/milestone/3), we're focusing on:
-- generating new rules [rules for what?]
+- generating new rules
 - a new quickstart script
-- better integration testing approaches.
+- better integration testing approaches
 
 If you have ideas for these items, please let us know.
 
