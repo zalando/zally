@@ -9,6 +9,8 @@ import de.zalando.zally.integration.zally.ApiDefinitionResponse
 import de.zalando.zally.integration.zally.ViolationType
 import de.zalando.zally.integration.zally.ZallyService
 import org.kohsuke.github.GHCommitState
+import org.kohsuke.github.GHCommitState.ERROR
+import org.kohsuke.github.GHCommitState.SUCCESS
 import org.springframework.stereotype.Service
 
 
@@ -24,7 +26,8 @@ class ValidationService(private val githubService: GithubService,
         val pullRequest = githubService.parsePayload(payload, signature)
 
         if (!pullRequest.getConfiguration().isPresent) {
-            pullRequest.updateCommitState(GHCommitState.ERROR, "https://127.0.0.1", "Could not find zally configuration file")
+            storeResultAndUpdateStatus(
+                    RequestStatus.error("Could not find zally configuration file"), pullRequest, null, null)
             return
         }
 
@@ -36,32 +39,46 @@ class ValidationService(private val githubService: GithubService,
         val swaggerFile = pullRequest.getSwaggerFile()
 
         if (!swaggerFile.isPresent) {
-            pullRequest.updateCommitState(GHCommitState.ERROR, "https://127.0.0.1", "Could not find swagger file")
+            storeResultAndUpdateStatus(
+                    RequestStatus.error( "Could not find swagger file"), pullRequest, null, null)
             return
         }
 
         val apiDefinition = swaggerFile.get()
         val validationResult = zallyService.validate(apiDefinition)
-
-        storeValidationResults(pullRequest, apiDefinition, validationResult)
-
         val invalid = validationResult.violations?.any { it.violationType == ViolationType.MUST } ?: false
         if (invalid) {
-            pullRequest.updateCommitState(GHCommitState.ERROR, "https://127.0.0.1", "Got violations")
+            storeResultAndUpdateStatus(
+                    RequestStatus.error( "Got violations"), pullRequest, apiDefinition, validationResult)
             return
         }
 
-        pullRequest.updateCommitState(GHCommitState.SUCCESS, "https://127.0.0.1", "API passed all checks ${validationResult.violationsCount}")
+        storeResultAndUpdateStatus(
+                RequestStatus.success( "API passed all checks ${validationResult.violationsCount}"), pullRequest, apiDefinition, validationResult)
     }
 
-    private fun storeValidationResults(pullRequest: PullRequest, apiDefinitionString: String, validationResult: ApiDefinitionResponse) {
-        val validation = Validation().apply {
-            repositoryUrl = pullRequest.getRepositoryUrl()
-            apiDefinition = apiDefinitionString
-            violations = jsonObjectMapper.writeValueAsString(validationResult)
-        }
+    private fun storeResultAndUpdateStatus(status: RequestStatus,
+                                           pullRequest: PullRequest,
+                                           apiDefinition: String?,
+                                           reviewResponse: ApiDefinitionResponse?) {
+        storeValidationResults(pullRequest, apiDefinition, reviewResponse)
+        pullRequest.updateCommitState(status.commitState, "https://127.0.0.1", status.description)
+    }
 
-        validationRepository.save(validation)
+    private fun storeValidationResults(pullRequest: PullRequest, apiDefinitionString: String?, validationResult: ApiDefinitionResponse?) {
+        validationRepository.save(
+                Validation().apply {
+                    repositoryUrl = pullRequest.getRepositoryUrl()
+                    apiDefinition = apiDefinitionString
+                    violations = jsonObjectMapper.writeValueAsString(validationResult)
+                })
+    }
+
+    data class RequestStatus(val commitState: GHCommitState, val description: String) {
+        companion object {
+            fun success(description: String) = RequestStatus(SUCCESS, description)
+            fun error(description: String) = RequestStatus(ERROR, description)
+        }
     }
 
 }

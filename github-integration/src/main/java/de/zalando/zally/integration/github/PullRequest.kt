@@ -10,6 +10,9 @@ import org.kohsuke.github.PagedIterable
 import java.nio.charset.StandardCharsets
 import java.util.Optional
 
+open class PullRequest(private val yamlMapper: ObjectMapper,
+                       private val repository: GHRepository,
+                       private val commitHash: String) {
 class PullRequest(private val yamlMapper: ObjectMapper,
                   private val repository: GHRepository,
                   private val commitHash: String,
@@ -17,28 +20,24 @@ class PullRequest(private val yamlMapper: ObjectMapper,
 
     private val ZALLY_CONFIGURATION_PATH = ".zally.yaml"
 
-    fun updateCommitState(state: GHCommitState, url: String, description: String) {
+    open fun updateCommitState(state: GHCommitState, url: String, description: String) {
         repository.createCommitStatus(commitHash, state, url, description, "Zally")
     }
 
-    private fun getFileContents(path: String): Optional<String> {
-        return Optional.ofNullable(repository.getTreeRecursive(commitHash, 1).getEntry(path))
-                .map { IOUtils.toString(it.readAsBlob(), StandardCharsets.UTF_8) }
-    }
+    open fun getConfiguration(): Optional<Configuration> =
+            getFileContents(ZALLY_CONFIGURATION_PATH)
+            .map { yamlMapper.readValue(it, Configuration::class.java) }
 
-    fun getConfiguration(): Optional<Configuration> {
-        return getFileContents(ZALLY_CONFIGURATION_PATH).map {
-            yamlMapper.readValue(it, Configuration::class.java)
-        }
-    }
-
-    fun getSwaggerFile(): Optional<String> {
-        return getConfiguration().flatMap {
+    open fun getSwaggerFile(): Optional<String> =
+            getConfiguration().flatMap {
             getFileContents(it.swaggerPath)
-        }
     }
 
-    fun getRepositoryUrl(): String = repository.url.toString()
+    open fun getRepositoryUrl(): String = repository.url.toString()
+
+    private fun getFileContents(path: String): Optional<String> =
+            Optional.ofNullable(repository.getTreeRecursive(commitHash, 1).getEntry(path))
+            .map { IOUtils.toString(it.readAsBlob(), StandardCharsets.UTF_8) }
 
     fun getChangedFiles(): Optional<List<String>> {
         return Optional.of(changedFiles.map { t -> t.filename })

@@ -35,4 +35,5 @@ data class Validation(
 //TODO
 //            API name (info.title from the API definition)
 //            API version (info.version from the API definition)
+//            pull request author ?
 )

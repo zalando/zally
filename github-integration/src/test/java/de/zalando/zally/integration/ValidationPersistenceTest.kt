@@ -12,6 +12,7 @@ import net.jadler.JadlerMocker
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.notNullValue
+import org.hamcrest.Matchers.nullValue
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.ClassRule
@@ -25,11 +26,13 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = arrayOf(Application::class))
 @ActiveProfiles("test")
+@Sql(scripts = arrayOf("/sql/cleanup-data.sql"), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class ValidationPersistenceTest {
     companion object {
         @ClassRule @JvmField val githubServer = JadlerRule(GithubMock(JadlerMocker(JdkStubHttpServer(8088)))) {
@@ -58,7 +61,7 @@ class ValidationPersistenceTest {
     }
 
     @Test
-    fun shouldPersistValidation() {
+    fun shouldPersistSuccessfulValidation() {
         githubServer.mock.mockGet("/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "json/github-tree.json")
         githubServer.mock.mockGetBlob("/repos/myUserName/zally/git/blobs/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "json/github-zally-yaml-blob.yaml")
         githubServer.mock.mockGetBlob("/repos/myUserName/zally/git/blobs/cccccccccccccccccccccccccccccccccccccccc", "json/github-api-yaml-blob.yaml")
@@ -83,6 +86,27 @@ class ValidationPersistenceTest {
         assertThat(violations.violations!!.first().title, `is`("Some Violation"))
         assertThat(violations.violations!!.first().paths, `is`(listOf("/abcde/")))
         assertThat(violations.violations!!.first().violationType, `is`(ViolationType.SHOULD))
+    }
+
+    @Test
+    fun shouldPersistFailedValidation() {
+        githubServer.mock.mockGet("/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "json/github-tree-missing-zally-yaml.json")
+        githubServer.mock.mockPost("/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "json/github-commit-status-change.json")
+
+        val body = "json/github-webhook-pullrequest.json".loadResource()
+        val response = restTemplate.postForEntity("/github-webhook", webhookRequest(body), String::class.java)
+        assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
+
+        val validations = validationRepository.findAll()
+        assertThat(validations.size, `is`(1))
+
+        val validation = validations.first()
+        assertThat(validation.repositoryUrl, `is`("https://api.github.com/repos/myUserName/zally"))
+        assertThat(validation.apiDefinition, `is`(nullValue()))
+        assertThat(validation.createdOn, `is`(notNullValue()))
+
+        val violations = readToObject(validation.violations)
+        assertThat(violations, `is`(nullValue()))
     }
 
     private fun webhookRequest(body: String) = HttpEntity(body, HttpHeaders().apply {
