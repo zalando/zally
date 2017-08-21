@@ -45,8 +45,9 @@ task wrapper(type: Wrapper) {
 }
 
 jar {
-    baseName = 'zally-github-integration'
+    baseName = 'bark'
     version = '1.0.0'
+    archiveName = 'bark.jar'
 }
 
 repositories {
