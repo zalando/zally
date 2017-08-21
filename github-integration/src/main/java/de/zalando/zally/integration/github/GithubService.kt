@@ -19,17 +19,13 @@ class GithubService(private val gitHub: GitHub,
 
         val pullRequestPayload = gitHub.parseEventPayload(
                 StringReader(payload),
-                GHEventPayload.PullRequest::class.java
-        )
+                GHEventPayload.PullRequest::class.java)
 
-        val commitHash = pullRequestPayload
-                .pullRequest
-                .head
-                .sha
+        val pullRequestEvent = PullRequestEvent(pullRequestPayload)
 
         // Get the list of changed files and set here.
         val changedFiles = pullRequestPayload.pullRequest.listFiles()
-        return PullRequest(yamlObjectMapper, pullRequestPayload.repository, commitHash,changedFiles)
+        return PullRequest(yamlObjectMapper, pullRequestPayload.repository, pullRequestEvent, changedFiles)
     }
 
     fun validatePayload(payload: String, signature: String) {

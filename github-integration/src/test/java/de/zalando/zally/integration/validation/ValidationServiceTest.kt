@@ -12,11 +12,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.kohsuke.github.GHCommitState
-import org.mockito.Mock
 import org.mockito.BDDMockito
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.then
 import org.mockito.Matchers
+import org.mockito.Mock
 import org.mockito.runners.MockitoJUnitRunner
 import java.util.Optional
 

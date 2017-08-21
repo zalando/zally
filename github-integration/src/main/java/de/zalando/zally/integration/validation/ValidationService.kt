@@ -68,7 +68,7 @@ class ValidationService(private val githubService: GithubService,
     private fun storeValidationResults(pullRequest: PullRequest, apiDefinitionString: String?, validationResult: ApiDefinitionResponse?) {
         validationRepository.save(
                 Validation().apply {
-                    repositoryUrl = pullRequest.getRepositoryUrl()
+                    pullRequestInfo = jsonObjectMapper.writeValueAsString(pullRequest.eventInfo)
                     apiDefinition = apiDefinitionString
                     violations = jsonObjectMapper.writeValueAsString(validationResult)
                 })

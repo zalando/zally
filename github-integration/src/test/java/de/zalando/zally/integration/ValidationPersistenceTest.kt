@@ -6,8 +6,6 @@ import de.zalando.zally.integration.jadler.GithubMock
 import de.zalando.zally.integration.jadler.JadlerRule
 import de.zalando.zally.integration.jadler.ZallyMock
 import de.zalando.zally.integration.validation.ValidationRepository
-import de.zalando.zally.integration.zally.ApiDefinitionResponse
-import de.zalando.zally.integration.zally.ViolationType
 import net.jadler.JadlerMocker
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
 import org.hamcrest.Matchers.`is`
@@ -18,6 +16,7 @@ import org.junit.Before
 import org.junit.ClassRule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.skyscreamer.jsonassert.JSONAssert
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -76,16 +75,11 @@ class ValidationPersistenceTest {
         assertThat(validations.size, `is`(1))
 
         val validation = validations.first()
-        assertThat(validation.repositoryUrl, `is`("https://api.github.com/repos/myUserName/zally"))
         assertThat(validation.apiDefinition, `is`("json/github-api-yaml-blob.yaml".loadResource()))
         assertThat(validation.createdOn, `is`(notNullValue()))
 
-        val violations = readToObject(validation.violations)
-        assertThat(violations, `is`(readToObject("json/zally-success-response.json".loadResource())))
-        assertThat(violations.violations!!.size, `is`(1))
-        assertThat(violations.violations!!.first().title, `is`("Some Violation"))
-        assertThat(violations.violations!!.first().paths, `is`(listOf("/abcde/")))
-        assertThat(violations.violations!!.first().violationType, `is`(ViolationType.SHOULD))
+        JSONAssert.assertEquals("json/pull-request-info-content.json".loadResource(), validation.pullRequestInfo, true)
+        JSONAssert.assertEquals("json/zally-success-response.json".loadResource(), validation.violations, false)
     }
 
     @Test
@@ -101,19 +95,16 @@ class ValidationPersistenceTest {
         assertThat(validations.size, `is`(1))
 
         val validation = validations.first()
-        assertThat(validation.repositoryUrl, `is`("https://api.github.com/repos/myUserName/zally"))
         assertThat(validation.apiDefinition, `is`(nullValue()))
         assertThat(validation.createdOn, `is`(notNullValue()))
+        assertThat(validation.violations, `is`("null"))
 
-        val violations = readToObject(validation.violations)
-        assertThat(violations, `is`(nullValue()))
+        JSONAssert.assertEquals("json/pull-request-info-content.json".loadResource(), validation.pullRequestInfo, true)
     }
 
     private fun webhookRequest(body: String) = HttpEntity(body, HttpHeaders().apply {
             add("X-GitHub-Event", "pull_request")
             add("X-Hub-Signature", SecurityUtil.sign(secret, body))
         })
-
-    private fun readToObject(input: String?) = jacksonObjectMapper.readValue(input, ApiDefinitionResponse::class.java)
 
 }

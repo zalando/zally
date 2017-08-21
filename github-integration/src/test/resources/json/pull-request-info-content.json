@@ -1,0 +1,24 @@
+{
+  "pull_request": {
+    "url": "https://api.github.com/repos/myUserName/zally/pulls/1",
+    "title": "TEST",
+    "head": {
+      "ref": "experiment",
+      "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "user": {
+        "login": "myUserName",
+        "url": "https://api.github.com/users/myUserName",
+        "avatar_url": "https://avatars3.githubusercontent.com/u/189443?v=4"
+      }
+    }
+  },
+  "repository": {
+    "name": "zally",
+    "url": "https://api.github.com/repos/myUserName/zally"
+  },
+  "sender": {
+    "login": "myUserName",
+    "url": "https://api.github.com/users/myUserName",
+    "avatar_url": "https://avatars3.githubusercontent.com/u/189443?v=4"
+  }
+}

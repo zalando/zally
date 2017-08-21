@@ -15,13 +15,13 @@ open class PullRequest(private val yamlMapper: ObjectMapper,
                        private val commitHash: String) {
 class PullRequest(private val yamlMapper: ObjectMapper,
                   private val repository: GHRepository,
-                  private val commitHash: String,
+                  val eventInfo: PullRequestEvent,
                   private val changedFiles: PagedIterable<GHPullRequestFileDetail>) {
 
     private val ZALLY_CONFIGURATION_PATH = ".zally.yaml"
 
     open fun updateCommitState(state: GHCommitState, url: String, description: String) {
-        repository.createCommitStatus(commitHash, state, url, description, "Zally")
+        repository.createCommitStatus(commitHash(), state, url, description, "Zally")
     }
 
     open fun getConfiguration(): Optional<Configuration> =
@@ -33,10 +33,8 @@ class PullRequest(private val yamlMapper: ObjectMapper,
             getFileContents(it.swaggerPath)
     }
 
-    open fun getRepositoryUrl(): String = repository.url.toString()
-
     private fun getFileContents(path: String): Optional<String> =
-            Optional.ofNullable(repository.getTreeRecursive(commitHash, 1).getEntry(path))
+            Optional.ofNullable(repository.getTreeRecursive(commitHash(), 1).getEntry(path))
             .map { IOUtils.toString(it.readAsBlob(), StandardCharsets.UTF_8) }
 
     fun getChangedFiles(): Optional<List<String>> {
@@ -50,4 +48,5 @@ class PullRequest(private val yamlMapper: ObjectMapper,
         }
         return false
     }
+    private fun commitHash(): String = eventInfo.pullRequest.head.sha
 }

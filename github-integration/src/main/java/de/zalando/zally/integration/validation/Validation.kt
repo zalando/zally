@@ -20,7 +20,7 @@ data class Validation(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long? = null,
 
-        var repositoryUrl: String? = null,
+        var pullRequestInfo: String? = null,
 
         var apiDefinition: String? = null,
 
@@ -32,8 +32,4 @@ data class Validation(
                 parameters = arrayOf(Parameter(name = "javaZone", value = "UTC")))
         var createdOn: OffsetDateTime? = null
 
-//TODO
-//            API name (info.title from the API definition)
-//            API version (info.version from the API definition)
-//            pull request author ?
 )
