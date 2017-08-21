@@ -27,7 +27,9 @@ class GithubService(private val gitHub: GitHub,
                 .head
                 .sha
 
-        return PullRequest(yamlObjectMapper, pullRequestPayload.repository, commitHash)
+        // Get the list of changed files and set here.
+        val changedFiles = pullRequestPayload.pullRequest.listFiles()
+        return PullRequest(yamlObjectMapper, pullRequestPayload.repository, commitHash,changedFiles)
     }
 
     fun validatePayload(payload: String, signature: String) {

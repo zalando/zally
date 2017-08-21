@@ -4,13 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import de.zalando.zally.integration.zally.Configuration
 import org.apache.commons.io.IOUtils
 import org.kohsuke.github.GHCommitState
+import org.kohsuke.github.GHPullRequestFileDetail
 import org.kohsuke.github.GHRepository
+import org.kohsuke.github.PagedIterable
 import java.nio.charset.StandardCharsets
 import java.util.Optional
 
 class PullRequest(private val yamlMapper: ObjectMapper,
                   private val repository: GHRepository,
-                  private val commitHash: String) {
+                  private val commitHash: String,
+                  private val changedFiles: PagedIterable<GHPullRequestFileDetail>) {
 
     fun updateCommitState(state: GHCommitState, url: String, description: String) {
         repository.createCommitStatus(commitHash, state, url, description, "Zally")
@@ -31,6 +34,18 @@ class PullRequest(private val yamlMapper: ObjectMapper,
         return getConfiguration().flatMap {
             getFileContents(it.swaggerPath)
         }
+    }
+
+    fun getChangedFiles(): Optional<List<String>> {
+        return Optional.of(changedFiles.map { t -> t.filename })
+    }
+
+    fun isAPIChanged(): Boolean {
+        val changedFiles = getChangedFiles().get()
+        if (changedFiles.contains(ZALLY_CONFIGURATION_PATH) || changedFiles.contains(getConfiguration().get().swaggerPath)) {
+            return true
+        }
+        return false
     }
 
     companion object {
