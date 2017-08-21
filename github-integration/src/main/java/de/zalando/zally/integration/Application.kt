@@ -20,11 +20,11 @@ import org.zalando.twintip.spring.SchemaResource
 private val AUTHORIZATION_HEADER_NAME = "Authorization"
 private val BEARER = "Bearer "
 
-@Import(SchemaResource::class)
-@EnableScheduling
 @SpringBootApplication
+@EnableScheduling
 @EnableJpaRepositories
 @EnableJpaAuditing
+@Import(SchemaResource::class)
 class Application {
 
     @Bean

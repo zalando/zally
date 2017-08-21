@@ -3,26 +3,20 @@ package de.zalando.zally.integration
 import de.zalando.zally.integration.config.logger
 import de.zalando.zally.integration.validation.ValidationService
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import javax.servlet.http.HttpServletRequest
-
-private val PULL_REQUEST_EVENT_NAME = "pull_request"
 
 @RestController
-class ApiValidationController(private val validationService: ValidationService) {
+class ValidationController(private val validationService: ValidationService) {
+    private val PULL_REQUEST_EVENT_NAME = "pull_request"
 
     val log by logger()
 
-    @ResponseBody
     @PostMapping("/github-webhook")
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     fun validatePullRequest(@RequestBody payload: String,
                             @RequestHeader(value = "X-GitHub-Event") eventType: String,
                             @RequestHeader(value = "X-Hub-Signature") signature: String) {
@@ -39,10 +33,4 @@ class ApiValidationController(private val validationService: ValidationService) 
         log.info("Finished webhook processing")
     }
 
-    @ExceptionHandler(Exception::class)
-    @ResponseBody
-    fun handleControllerException(request: HttpServletRequest, ex: Throwable): ResponseEntity<*> {
-        log.error("failed", ex)
-        return ResponseEntity<Any>(HttpStatus.INTERNAL_SERVER_ERROR)
-    }
 }

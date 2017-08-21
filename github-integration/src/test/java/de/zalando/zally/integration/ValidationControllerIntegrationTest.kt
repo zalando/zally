@@ -27,7 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = arrayOf(Application::class))
 @ActiveProfiles("test")
-class ApiValidationControllerIntegrationTest {
+class ValidationControllerIntegrationTest {
     companion object {
         @ClassRule @JvmField val githubServer = JadlerRule(GithubMock(JadlerMocker(JdkStubHttpServer(8088)))) {
             it.mockGet("/user", "json/github-user-response.json")//required for app start
