@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Reports</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style>
+        .info {
+            text-align: center;
+            font-weight: 400;
+            font-size: 3rem;
+            line-height: 3rem;
+            padding: 20px;
+        }
+
+        .violation {
+            text-align: center;
+            font-weight: 300;
+            font-size: 2rem;
+            line-height: 2rem;
+            padding: 20px;
+        }
+
+        .api {
+            margin: auto;
+            width: 50%;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!--/*@thymesVar id="report" type="de.zalando.zally.integration.reports.Report"*/-->
+
+<div class="info">
+    Report <a href="#" th:href="'/reports/' + ${report.id}" th:text="'#' + ${report.id}"/>
+</div>
+
+<div class="info">
+    Pull request <a href="#" th:href="${report.pullRequestEvent?.pullRequest?.url}"
+                    th:text="${report.pullRequestEvent?.pullRequest?.title}"/>
+    <br/>
+    in repo <a href="#" th:href="${report.pullRequestEvent?.repository?.url}" th:text="${report.pullRequestEvent?.repository?.name}"/>
+    <br/>
+    by <img th:src="${report.pullRequestEvent?.sender?.avatarUrl}" th:width="50" th:height="50"/>
+    <a href="#" th:href="${report.pullRequestEvent?.sender?.url}" th:text="${report.pullRequestEvent?.sender?.login}"/>
+</div>
+
+<div class="violation">
+    <div th:each="violation : ${report.apiDefinitionResponse?.violations}">
+        <p th:text="${violation?.violationType}">violationType</p>
+        <a href="#" th:href="${violation?.ruleLink}" th:text="${violation?.title}"/>
+        <p th:text="${violation?.description}">description</p>
+        <div th:each="path: ${violation?.paths}">
+            <p th:text="${path}">path</p>
+        </div>
+    </div>
+</div>
+
+<pre class="api" th:text="${report.apiDefinition}"/>
+
+</body>
+</html>
