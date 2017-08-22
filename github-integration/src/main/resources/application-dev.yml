@@ -40,3 +40,6 @@ tokens:
 
 server.port: 8081
 management.port: 8081
+
+bark:
+  serverUrl: http://localhost:8081

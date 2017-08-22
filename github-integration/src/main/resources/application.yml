@@ -47,6 +47,8 @@ github:
   oauthToken: ${GITHUB_OAUTH_TOKEN}
   secret: ${GITHUB_SECRET}
 
+bark:
+  serverUrl: ${BARK_SERVER_URL}
 ---
 spring.profiles: local
 TOKEN_INFO_URI: https://auth.example.com/oauth2/tokeninfo
@@ -57,3 +59,4 @@ GITHUB_SECRET: abcdef1234567890abcdef1234567890
 ZALLY_URL: http://localhost:9099
 OAUTH_TOKEN_ACCESS_URI: https://auth.example.com/oauth2/access_token?realm=testing
 CREDENTIALS_DIR: /meta/credentials
+BARK_SERVER_URL: http://localhost:8080

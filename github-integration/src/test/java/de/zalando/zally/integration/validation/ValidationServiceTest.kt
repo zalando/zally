@@ -34,7 +34,8 @@ class ValidationServiceTest {
     @Before
     fun setUp() {
         jsonObjectMapper = ObjectMapper()
-        validationService = ValidationService(githubService, zallyService, validationRepository, jsonObjectMapper)
+        validationService = ValidationService(githubService, zallyService, validationRepository, jsonObjectMapper, "http://bark:5000")
+        given(validationRepository.save(any<Validation>())).willReturn(Validation(id = 10))
         given(githubService.parsePayload("", "")).willReturn(pullRequest)
     }
 
@@ -44,7 +45,7 @@ class ValidationServiceTest {
 
         validationService.validatePullRequest("", "")
 
-        then(pullRequest).should().updateCommitState(GHCommitState.ERROR, "https://127.0.0.1", "Could not find zally configuration file")
+        then(pullRequest).should().updateCommitState(GHCommitState.ERROR, "http://bark:5000/reports/10", "Could not find zally configuration file")
         then(validationRepository).should().save(any<Validation>())
     }
 
@@ -55,7 +56,7 @@ class ValidationServiceTest {
 
         validationService.validatePullRequest("", "")
 
-        then(pullRequest).should().updateCommitState(GHCommitState.ERROR, "https://127.0.0.1", "Could not find swagger file")
+        then(pullRequest).should().updateCommitState(GHCommitState.ERROR, "http://bark:5000/reports/10", "Could not find swagger file")
         then(validationRepository).should().save(any<Validation>())
     }
 
@@ -67,7 +68,7 @@ class ValidationServiceTest {
 
         validationService.validatePullRequest("", "")
 
-        then(pullRequest).should().updateCommitState(GHCommitState.SUCCESS, "https://127.0.0.1", "API passed all checks {should=1}")
+        then(pullRequest).should().updateCommitState(GHCommitState.SUCCESS, "http://bark:5000/reports/10", "API passed all checks {should=1}")
         then(validationRepository).should().save(any<Validation>())
     }
 
@@ -79,7 +80,7 @@ class ValidationServiceTest {
 
         validationService.validatePullRequest("", "")
 
-        then(pullRequest).should().updateCommitState(GHCommitState.ERROR, "https://127.0.0.1", "Got violations")
+        then(pullRequest).should().updateCommitState(GHCommitState.ERROR, "http://bark:5000/reports/10", "Got violations")
         then(validationRepository).should().save(any<Validation>())
     }
 

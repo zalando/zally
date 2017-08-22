@@ -40,3 +40,6 @@ github:
   apiUrl: http://localhost:8088
   oauthToken: abcdef1234567890abcdef1234567890
   secret: abcdef1234567890abcdef1234567890
+
+bark:
+  serverUrl: http://localhost:8080

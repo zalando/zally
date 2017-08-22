@@ -11,6 +11,7 @@ import de.zalando.zally.integration.zally.ZallyService
 import org.kohsuke.github.GHCommitState
 import org.kohsuke.github.GHCommitState.ERROR
 import org.kohsuke.github.GHCommitState.SUCCESS
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 
@@ -18,7 +19,8 @@ import org.springframework.stereotype.Service
 class ValidationService(private val githubService: GithubService,
                         private val zallyService: ZallyService,
                         private val validationRepository: ValidationRepository,
-                        private val jsonObjectMapper: ObjectMapper) {
+                        private val jsonObjectMapper: ObjectMapper,
+                        @Value("\${bark.serverUrl}") private val serverUrl: String) {
 
 
     fun validatePullRequest(payload: String, signature: String) {
@@ -61,18 +63,21 @@ class ValidationService(private val githubService: GithubService,
                                            pullRequest: PullRequest,
                                            apiDefinition: String?,
                                            reviewResponse: ApiDefinitionResponse?) {
-        storeValidationResults(pullRequest, apiDefinition, reviewResponse)
-        pullRequest.updateCommitState(status.commitState, "https://127.0.0.1", status.description)
+        val validation = storeValidationResults(pullRequest, apiDefinition, reviewResponse)
+        pullRequest.updateCommitState(status.commitState, reportLink(validation.id), status.description)
     }
 
-    private fun storeValidationResults(pullRequest: PullRequest, apiDefinitionString: String?, validationResult: ApiDefinitionResponse?) {
-        validationRepository.save(
-                Validation().apply {
-                    pullRequestInfo = jsonObjectMapper.writeValueAsString(pullRequest.eventInfo)
-                    apiDefinition = apiDefinitionString
-                    violations = jsonObjectMapper.writeValueAsString(validationResult)
-                })
+    private fun reportLink(id: Long?): String {
+        return "${serverUrl}/reports/${id}"
     }
+
+    private fun storeValidationResults(pullRequest: PullRequest, apiDefinitionString: String?, validationResult: ApiDefinitionResponse?): Validation =
+            validationRepository.save(
+                    Validation().apply {
+                        pullRequestInfo = jsonObjectMapper.writeValueAsString(pullRequest.eventInfo)
+                        apiDefinition = apiDefinitionString
+                        violations = jsonObjectMapper.writeValueAsString(validationResult)
+                    })
 
     data class RequestStatus(val commitState: GHCommitState, val description: String) {
         companion object {
