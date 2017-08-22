@@ -22,6 +22,7 @@ management.port: ${MANAGEMENT_PORT}
 tokens:
   accessTokenUri: ${OAUTH_TOKEN_ACCESS_URI}
   credentialsDirectory: ${CREDENTIALS_DIR}
+  startAfterCreation: true
   token-configuration-list:
     - tokenId: zally
       scopes:
