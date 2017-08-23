@@ -1,7 +1,10 @@
 package de.zalando.zally.integration.validation
 
+import de.zalando.zally.integration.config.StringJsonUserType
 import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
+import org.hibernate.annotations.TypeDef
+import org.hibernate.annotations.TypeDefs
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.OffsetDateTime
@@ -12,6 +15,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 
+@TypeDefs(value = TypeDef(name = "StringJsonObject", typeClass = StringJsonUserType::class))
 @EntityListeners(value = AuditingEntityListener::class)
 @Entity
 data class Validation(
@@ -20,10 +24,12 @@ data class Validation(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long? = null,
 
+        @Type(type = "StringJsonObject")
         var pullRequestInfo: String? = null,
 
         var apiDefinition: String? = null,
 
+        @Type(type = "StringJsonObject")
         var violations: String? = null,
 
         @CreatedDate

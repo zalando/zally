@@ -1,4 +1,4 @@
-package de.zalando.zally.integration.jadler
+package de.zalando.zally.integration.mock
 
 import de.zalando.zally.integration.loadResource
 import net.jadler.JadlerMocker
@@ -10,31 +10,10 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
-class GithubMock(private val base: JadlerMocker) : Stubber by base, Mocker by base, StubHttpServerManager by base {
+class ZallyMock(private val base: JadlerMocker) : Stubber by base, Mocker by base, StubHttpServerManager by base {
 
     fun reset() {
         base.reset()
-    }
-
-    fun mockGet(path: String, filePath: String) {
-        base.onRequest()
-                .havingMethodEqualTo("GET")
-                .havingPathEqualTo(path)
-            .respond()
-                .withStatus(HttpStatus.OK.value())
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(filePath.loadResource())
-    }
-
-    fun mockGetBlob(path: String, filePath: String) {
-        base.onRequest()
-                .havingMethodEqualTo("GET")
-                .havingHeaderEqualTo("Accept", "application/vnd.github.VERSION.raw")
-                .havingPathEqualTo(path)
-            .respond()
-                .withStatus(HttpStatus.OK.value())
-                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
-                .withBody(filePath.loadResource())
     }
 
     fun mockPost(path: String, filePath: String) {

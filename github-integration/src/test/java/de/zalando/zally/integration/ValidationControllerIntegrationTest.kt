@@ -1,9 +1,10 @@
 package de.zalando.zally.integration
 
 import de.zalando.zally.integration.github.SecurityUtil
-import de.zalando.zally.integration.jadler.GithubMock
-import de.zalando.zally.integration.jadler.JadlerRule
-import de.zalando.zally.integration.jadler.ZallyMock
+import de.zalando.zally.integration.mock.EmbeddedPostgresqlConfiguration
+import de.zalando.zally.integration.mock.GithubMock
+import de.zalando.zally.integration.mock.JadlerRule
+import de.zalando.zally.integration.mock.ZallyMock
 import net.jadler.JadlerMocker
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
 import org.hamcrest.Matchers
@@ -26,7 +27,7 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = arrayOf(Application::class))
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = arrayOf(Application::class, EmbeddedPostgresqlConfiguration::class))
 @ActiveProfiles("test")
 @Sql(scripts = arrayOf("/sql/cleanup-data.sql"), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class ValidationControllerIntegrationTest {
@@ -34,7 +35,6 @@ class ValidationControllerIntegrationTest {
         @ClassRule @JvmField val githubServer = JadlerRule(GithubMock(JadlerMocker(JdkStubHttpServer(8088)))) {
             it.mockGet("/user", "json/github-user-response.json")//required for app start
         }
-
         @ClassRule @JvmField val zallyServer = JadlerRule(ZallyMock(JadlerMocker(JdkStubHttpServer(9099))))
     }
 

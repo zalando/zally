@@ -1,7 +1,8 @@
 package de.zalando.zally.integration
 
-import de.zalando.zally.integration.jadler.GithubMock
-import de.zalando.zally.integration.jadler.JadlerRule
+import de.zalando.zally.integration.mock.EmbeddedPostgresqlConfiguration
+import de.zalando.zally.integration.mock.GithubMock
+import de.zalando.zally.integration.mock.JadlerRule
 import net.jadler.JadlerMocker
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
 import org.hamcrest.Matchers.`is`
@@ -20,7 +21,7 @@ import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = arrayOf(Application::class))
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = arrayOf(Application::class, EmbeddedPostgresqlConfiguration::class))
 @ActiveProfiles("test")
 @SqlGroup(
         Sql("/sql/validations-get-test-data.sql"),

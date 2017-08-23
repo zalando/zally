@@ -1,4 +1,4 @@
-package de.zalando.zally.integration.jadler
+package de.zalando.zally.integration.mock
 
 import net.jadler.mocking.Mocker
 import net.jadler.stubbing.Stubber

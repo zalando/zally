@@ -5,9 +5,12 @@ spring:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: validate
+    properties:
+      hibernate.dialect: de.zalando.zally.integration.config.JsonPostgresqlDialect
   oauth2:
     resource:
       tokenInfoUri: ${TOKEN_INFO_URI}
