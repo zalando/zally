@@ -66,6 +66,7 @@ class ValidationPersistenceTest {
         githubServer.mock.mockGetBlob("/repos/myUserName/zally/git/blobs/cccccccccccccccccccccccccccccccccccccccc", "json/github-api-yaml-blob.yaml")
         zallyServer.mock.mockPost("/api-violations", "json/zally-success-response.json")
         githubServer.mock.mockPost("/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "json/github-commit-status-change.json")
+        githubServer.mock.mockGet("/repos/myUserName/zally/pulls/1/files", "json/github-pull-files.json")
 
         val body = "json/github-webhook-pullrequest.json".loadResource()
         val response = restTemplate.postForEntity("/github-webhook", webhookRequest(body), String::class.java)

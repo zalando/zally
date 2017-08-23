@@ -65,6 +65,7 @@ class ValidationServiceTest {
         given(pullRequest.getConfiguration()).willReturn(Optional.of(Configuration()))
         given(pullRequest.getSwaggerFile()).willReturn(Optional.of("api-definition-content"))
         given(zallyService.validate(Matchers.anyString())).willReturn(okApiResponse())
+        given(pullRequest.isAPIChanged()).willReturn(true)
 
         validationService.validatePullRequest("", "")
 
@@ -77,6 +78,7 @@ class ValidationServiceTest {
         given(pullRequest.getConfiguration()).willReturn(Optional.of(Configuration()))
         given(pullRequest.getSwaggerFile()).willReturn(Optional.of("api-definition-content"))
         given(zallyService.validate(Matchers.anyString())).willReturn(badApiResponse())
+        given(pullRequest.isAPIChanged()).willReturn(true)
 
         validationService.validatePullRequest("", "")
 

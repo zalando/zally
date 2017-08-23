@@ -1,8 +1,6 @@
 package de.zalando.zally.integration.validation
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import de.zalando.zally.integration.config.logger
-import de.zalando.zally.integration.zally.ViolationType
 import de.zalando.zally.integration.github.GithubService
 import de.zalando.zally.integration.github.PullRequest
 import de.zalando.zally.integration.zally.ApiDefinitionResponse
@@ -14,14 +12,12 @@ import org.kohsuke.github.GHCommitState.SUCCESS
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
-
 @Service
 class ValidationService(private val githubService: GithubService,
                         private val zallyService: ZallyService,
                         private val validationRepository: ValidationRepository,
                         private val jsonObjectMapper: ObjectMapper,
                         @Value("\${bark.serverUrl}") private val serverUrl: String) {
-
 
     fun validatePullRequest(payload: String, signature: String) {
 
@@ -33,16 +29,16 @@ class ValidationService(private val githubService: GithubService,
             return
         }
 
-        if (!pullRequest.isAPIChanged()) {
-            pullRequest.updateCommitState(GHCommitState.SUCCESS, "https://127.0.0.1", "Neither configuration nor swagger file changed")
-            return
-        }
-
         val swaggerFile = pullRequest.getSwaggerFile()
-
         if (!swaggerFile.isPresent) {
             storeResultAndUpdateStatus(
                     RequestStatus.error( "Could not find swagger file"), pullRequest, null, null)
+            return
+        }
+
+        if (!pullRequest.isAPIChanged()) {
+            storeResultAndUpdateStatus(
+                    RequestStatus.success("Neither configuration nor swagger file changed"), pullRequest, null, null)
             return
         }
 
@@ -67,9 +63,7 @@ class ValidationService(private val githubService: GithubService,
         pullRequest.updateCommitState(status.commitState, reportLink(validation.id), status.description)
     }
 
-    private fun reportLink(id: Long?): String {
-        return "${serverUrl}/reports/${id}"
-    }
+    private fun reportLink(id: Long?): String = "$serverUrl/reports/$id"
 
     private fun storeValidationResults(pullRequest: PullRequest, apiDefinitionString: String?, validationResult: ApiDefinitionResponse?): Validation =
             validationRepository.save(

@@ -12,11 +12,8 @@ import java.util.Optional
 
 open class PullRequest(private val yamlMapper: ObjectMapper,
                        private val repository: GHRepository,
-                       private val commitHash: String) {
-class PullRequest(private val yamlMapper: ObjectMapper,
-                  private val repository: GHRepository,
-                  val eventInfo: PullRequestEvent,
-                  private val changedFiles: PagedIterable<GHPullRequestFileDetail>) {
+                       val eventInfo: PullRequestEvent,
+                       private val changedFiles: PagedIterable<GHPullRequestFileDetail>) {
 
     private val ZALLY_CONFIGURATION_PATH = ".zally.yaml"
 
@@ -33,20 +30,17 @@ class PullRequest(private val yamlMapper: ObjectMapper,
             getFileContents(it.swaggerPath)
     }
 
+    open fun isAPIChanged(): Boolean {
+        val changedFiles = getChangedFiles()
+        return changedFiles.contains(ZALLY_CONFIGURATION_PATH)
+                || getConfiguration().map({ changedFiles.contains(it.swaggerPath) }).orElse(false)
+    }
+
     private fun getFileContents(path: String): Optional<String> =
             Optional.ofNullable(repository.getTreeRecursive(commitHash(), 1).getEntry(path))
-            .map { IOUtils.toString(it.readAsBlob(), StandardCharsets.UTF_8) }
+                    .map { IOUtils.toString(it.readAsBlob(), StandardCharsets.UTF_8) }
 
-    fun getChangedFiles(): Optional<List<String>> {
-        return Optional.of(changedFiles.map { t -> t.filename })
-    }
+    private fun getChangedFiles(): List<String> = changedFiles.map { t -> t.filename }
 
-    fun isAPIChanged(): Boolean {
-        val changedFiles = getChangedFiles().get()
-        if (changedFiles.contains(ZALLY_CONFIGURATION_PATH) || changedFiles.contains(getConfiguration().get().swaggerPath)) {
-            return true
-        }
-        return false
-    }
     private fun commitHash(): String = eventInfo.pullRequest.head.sha
 }

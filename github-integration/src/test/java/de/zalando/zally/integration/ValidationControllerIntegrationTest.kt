@@ -135,6 +135,10 @@ class ValidationControllerIntegrationTest {
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "json/github-commit-status-change.json")
 
+        githubServer.mock.mockGet(
+                "/repos/myUserName/zally/pulls/1/files",
+                "json/github-pull-files.json")
+
         val body = "json/github-webhook-pullrequest.json".loadResource()
         val response = restTemplate.postForEntity("/github-webhook", webhookRequest(body), String::class.java)
 
@@ -170,6 +174,10 @@ class ValidationControllerIntegrationTest {
         githubServer.mock.mockPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                 "json/github-commit-status-change.json")
+
+        githubServer.mock.mockGet(
+                "/repos/myUserName/zally/pulls/1/files",
+                "json/github-pull-files.json")
 
         val body = "json/github-webhook-pullrequest.json".loadResource()
 
