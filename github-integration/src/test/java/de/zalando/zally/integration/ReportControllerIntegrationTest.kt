@@ -42,7 +42,7 @@ class ReportControllerIntegrationTest {
     fun shouldReturnExistingValidation() {
         val response = restTemplate.getForEntity("/reports/100", String::class.java)
         assertThat(response.statusCode, `is`(HttpStatus.OK))
-        assertThat(response.body, containsString("https://api.github.com/repos/myUserName/zally"))
+        assertThat(response.body, containsString("https://github.com/myUserName/zally"))
         assertThat(response.body, containsString("100"))
         assertThat(response.body, containsString("SHOULD"))
         assertThat(response.body, containsString("description: Zalando&#39;s API Linter"))

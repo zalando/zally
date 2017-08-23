@@ -36,13 +36,13 @@
 </div>
 
 <div class="info">
-    Pull request <a href="#" th:href="${report.pullRequestEvent?.pullRequest?.url}"
+    Pull request <a href="#" th:href="${report.pullRequestEvent?.pullRequest?.htmlUrl}"
                     th:text="${report.pullRequestEvent?.pullRequest?.title}"/>
     <br/>
-    in repo <a href="#" th:href="${report.pullRequestEvent?.repository?.url}" th:text="${report.pullRequestEvent?.repository?.name}"/>
+    in repo <a href="#" th:href="${report.pullRequestEvent?.repository?.htmlUrl}" th:text="${report.pullRequestEvent?.repository?.name}"/>
     <br/>
     by <img th:src="${report.pullRequestEvent?.sender?.avatarUrl}" th:width="50" th:height="50"/>
-    <a href="#" th:href="${report.pullRequestEvent?.sender?.url}" th:text="${report.pullRequestEvent?.sender?.login}"/>
+    <a href="#" th:href="${report.pullRequestEvent?.sender?.htmlUrl}" th:text="${report.pullRequestEvent?.sender?.login}"/>
 </div>
 
 <div class="violation">
