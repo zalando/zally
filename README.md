@@ -38,22 +38,14 @@ The [Server Readme](server/README.md), [CLI Readme](cli/README.md) and [Web UI R
 
 ### Quick start guide
 
+You can build and run the whole Zally stack (web-ui, server and database) by
+executing this script:
+
 ```bash
-git clone git@github.com:zalando-incubator/zally.git zally
-cd zally
-
-# Disable authentication and start a local version of Zally server
-cd server
-./gradlew clean build
-./gradlew bootRun > /dev/null &
-cd ..
-
-# Build CLI tool
-go get github.com/zalando-incubator/zally/cli/zally
-cd $GOPATH/src/github.com/zalando-incubator/zally/cli/zally
-go build
-./zally lint /path/to/swagger/definition.yaml
+./build_and_run.sh
 ```
+
+Web UI is accessible on `http://localhost:8080`; Zally server on `http://localhost:8000`
 
 ### Contributing
 
