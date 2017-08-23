@@ -2,9 +2,9 @@ spring:
   profiles:
     active: production
   datasource:
-    url: jdbc:hsqldb:mem:storage;sql.syntax_pgs=true
-    username: sa
-    password:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -60,3 +60,6 @@ ZALLY_URL: http://localhost:9099
 OAUTH_TOKEN_ACCESS_URI: https://auth.example.com/oauth2/access_token?realm=testing
 CREDENTIALS_DIR: /meta/credentials
 BARK_SERVER_URL: http://localhost:8080
+SPRING_DATASOURCE_URL: jdbc:hsqldb:mem:storage;sql.syntax_pgs=true
+SPRING_DATASOURCE_USERNAME: sa
+SPRING_DATASOURCE_PASSWORD:
