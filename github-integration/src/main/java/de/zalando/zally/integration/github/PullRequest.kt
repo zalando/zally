@@ -17,7 +17,7 @@ open class PullRequest(private val yamlMapper: ObjectMapper,
 
     private val ZALLY_CONFIGURATION_PATH = ".zally.yaml"
 
-    open fun updateCommitState(state: GHCommitState, url: String, description: String) {
+    open fun updateCommitState(state: GHCommitState, url: String?, description: String) {
         repository.createCommitStatus(commitHash(), state, url, description, "Zally")
     }
 
