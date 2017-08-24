@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.junit4.SpringRunner
+import uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = arrayOf(Application::class, EmbeddedPostgresqlConfiguration::class))
@@ -86,7 +87,11 @@ class ValidationControllerIntegrationTest {
 
         githubServer.mock.verifyPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                Matchers.containsString("error"))
+                sameJSONAs("""
+                    {
+                        "state": "error"
+                    }
+                """).allowingExtraUnexpectedFields())
     }
 
     @Test
@@ -110,7 +115,11 @@ class ValidationControllerIntegrationTest {
 
         githubServer.mock.verifyPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                Matchers.containsString("error"))
+                sameJSONAs("""
+                    {
+                        "state": "error"
+                    }
+                """).allowingExtraUnexpectedFields())
     }
 
     @Test
@@ -146,11 +155,24 @@ class ValidationControllerIntegrationTest {
 
         zallyServer.mock.verifyPost(
                 "/api-violations",
-                Matchers.containsString("Zalando's API Linter"))
+                sameJSONAs("""
+                    {
+                        "api_definition": {
+                            "info": {
+                                "description": "Zalando's API Linter"
+                            }
+                        }
+                    }
+                """).allowingExtraUnexpectedFields()
+        )
 
         githubServer.mock.verifyPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                Matchers.containsString("success"))
+                sameJSONAs("""
+                    {
+                        "state": "success"
+                    }
+                """).allowingExtraUnexpectedFields())
     }
 
     @Test
@@ -187,11 +209,24 @@ class ValidationControllerIntegrationTest {
 
         zallyServer.mock.verifyPost(
                 "/api-violations",
-                Matchers.containsString("Zalando's API Linter"))
+                sameJSONAs("""
+                    {
+                        "api_definition": {
+                            "info": {
+                                "description": "Zalando's API Linter"
+                            }
+                        }
+                    }
+                """).allowingExtraUnexpectedFields()
+        )
 
         githubServer.mock.verifyPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                Matchers.containsString("error"))
+                sameJSONAs("""
+                    {
+                        "state": "error"
+                    }
+                """).allowingExtraUnexpectedFields())
     }
 
     @Test
@@ -227,14 +262,22 @@ class ValidationControllerIntegrationTest {
 
         zallyServer.mock.verifyPost(
                 "/api-violations",
-                Matchers.allOf(
-                        Matchers.containsString("ignoredRule1"),
-                        Matchers.containsString("ignoredRule2")
-                ))
+                sameJSONAs("""
+                    {
+                        "ignoreRules": [
+                            "ignoredRule1",
+                            "ignoredRule2"
+                        ]
+                    }
+                """).allowingAnyArrayOrdering().allowingExtraUnexpectedFields())
 
         githubServer.mock.verifyPost(
                 "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                Matchers.containsString("success"))
+                sameJSONAs("""
+                    {
+                        "state": "success"
+                    }
+                """).allowingExtraUnexpectedFields())
     }
 
     private fun webhookRequest(body: String): HttpEntity<String> {

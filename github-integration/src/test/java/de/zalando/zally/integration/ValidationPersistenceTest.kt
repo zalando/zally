@@ -16,7 +16,6 @@ import org.junit.Before
 import org.junit.ClassRule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.skyscreamer.jsonassert.JSONAssert
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -27,6 +26,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.junit4.SpringRunner
+import uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = arrayOf(Application::class, EmbeddedPostgresqlConfiguration::class))
@@ -75,8 +75,14 @@ class ValidationPersistenceTest {
         assertThat(validation.apiDefinition, `is`("json/github-api-yaml-blob.yaml".loadResource()))
         assertThat(validation.createdOn, `is`(notNullValue()))
 
-        JSONAssert.assertEquals("json/pull-request-info-content.json".loadResource(), validation.pullRequestInfo, true)
-        JSONAssert.assertEquals("json/zally-success-response.json".loadResource(), validation.violations, false)
+        assertThat(validation.pullRequestInfo,
+                sameJSONAs("json/pull-request-info-content.json".loadResource())
+        )
+        assertThat(validation.violations,
+                sameJSONAs("json/zally-success-response.json".loadResource())
+                        .allowingExtraUnexpectedFields()
+                        .allowingAnyArrayOrdering()
+        )
     }
 
     @Test
@@ -95,8 +101,9 @@ class ValidationPersistenceTest {
         assertThat(validation.apiDefinition, `is`(nullValue()))
         assertThat(validation.createdOn, `is`(notNullValue()))
         assertThat(validation.violations, `is`("null"))
-
-        JSONAssert.assertEquals("json/pull-request-info-content.json".loadResource(), validation.pullRequestInfo, true)
+        assertThat(validation.pullRequestInfo,
+                sameJSONAs("json/pull-request-info-content.json".loadResource())
+        )
     }
 
     private fun webhookRequest(body: String) = HttpEntity(body, HttpHeaders().apply {

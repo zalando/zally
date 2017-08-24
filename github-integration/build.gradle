@@ -89,7 +89,7 @@ dependencies {
     compile("org.zalando.stups.build:tokens-k8s-spring-boot-starter:0.1.1") {
         exclude group: "org.slf4j", module: "slf4j-simple"
     }
-    compile('org.skyscreamer:jsonassert:1.5.0')
+    compile('uk.co.datumedge:hamcrest-json:0.2')
     compile('org.postgresql:postgresql:42.1.4')
 
     testCompile('ru.yandex.qatools.embed:postgresql-embedded:2.4')
