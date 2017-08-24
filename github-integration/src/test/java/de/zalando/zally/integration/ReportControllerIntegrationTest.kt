@@ -14,7 +14,11 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlGroup
@@ -36,7 +40,6 @@ class ReportControllerIntegrationTest {
     @Autowired
     lateinit var restTemplate: TestRestTemplate
 
-    //todo test 404
     //todo verify html?
 
     @Test
@@ -47,6 +50,13 @@ class ReportControllerIntegrationTest {
         assertThat(response.body, containsString("100"))
         assertThat(response.body, containsString("SHOULD"))
         assertThat(response.body, containsString("description: Zalando&#39;s API Linter"))
+    }
+
+    @Test
+    fun shouldReturnNotFoundIfReportsDoesNotExist() {
+        val entity: HttpEntity<Any> = HttpEntity(HttpHeaders().apply { set(HttpHeaders.ACCEPT, MediaType.TEXT_HTML_VALUE) })
+        val response = restTemplate.exchange("/reports/555", HttpMethod.GET, entity, String::class.java)
+        assertThat(response.statusCode, `is`(HttpStatus.NOT_FOUND))
     }
 
 }

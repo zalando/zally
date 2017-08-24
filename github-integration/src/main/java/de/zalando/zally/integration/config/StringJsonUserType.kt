@@ -13,7 +13,7 @@ class StringJsonUserType : UserType {
     override fun equals(x: Any?, y: Any?): Boolean = if (x == null) y == null else x == y
     override fun hashCode(x: Any): Int = x.hashCode()
     override fun nullSafeGet(rs: ResultSet, names: Array<String>, session: SharedSessionContractImplementor, owner: Any): Any? =
-            if (rs.getString(names[0]) == null) null else rs.getString(names[0])
+            rs.getString(names[0])
     override fun nullSafeSet(st: PreparedStatement, value: Any?, index: Int, session: SharedSessionContractImplementor) =
             if (value == null) { st.setNull(index, Types.OTHER) } else { st.setObject(index, value, Types.OTHER) }
     override fun deepCopy(value: Any): Any = value
