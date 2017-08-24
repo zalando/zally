@@ -3,8 +3,8 @@
 
 set -ex
 
-pushd `dirname $0` > /dev/null
-SCRIPT_DIR=`pwd -P`
+pushd $(dirname $0) > /dev/null
+SCRIPT_DIR=$(pwd -P)
 popd > /dev/null
 
 SERVER_DIR=${SCRIPT_DIR}/server
