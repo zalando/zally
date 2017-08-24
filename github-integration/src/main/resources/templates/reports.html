@@ -45,18 +45,21 @@
     <a href="#" th:href="${report.pullRequestEvent?.sender?.htmlUrl}" th:text="${report.pullRequestEvent?.sender?.login}"/>
 </div>
 
-<div class="violation">
-    <div th:each="violation : ${report.apiDefinitionResponse?.violations}">
-        <p th:text="${violation?.violationType}">violationType</p>
-        <a href="#" th:href="${violation?.ruleLink}" th:text="${violation?.title}"/>
-        <p th:text="${violation?.description}">description</p>
-        <div th:each="path: ${violation?.paths}">
-            <p th:text="${path}">path</p>
+<div th:each="validation: ${report.validationResults}">
+    <h1 th:text="${validation.fileName}"/>
+    <div class="violation">
+        <div th:each="violation : ${validation.apiDefinitionResponse?.violations}">
+            <p th:text="${violation?.violationType}">violationType</p>
+            <a href="#" th:href="${violation?.ruleLink}" th:text="${violation?.title}"/>
+            <p th:text="${violation?.description}">description</p>
+            <div th:each="path: ${violation?.paths}">
+                <p th:text="${path}">path</p>
+            </div>
         </div>
     </div>
+    <pre class="api" th:text="${validation.apiDefinition}"/>
 </div>
 
-<pre class="api" th:text="${report.apiDefinition}"/>
 
 </body>
 </html>

@@ -25,15 +25,22 @@ open class PullRequest(private val yamlMapper: ObjectMapper,
             getFileContents(ZALLY_CONFIGURATION_PATH)
             .map { yamlMapper.readValue(it, Configuration::class.java) }
 
-    open fun getSwaggerFile(): Optional<String> =
-            getConfiguration().flatMap {
-            getFileContents(it.swaggerPath)
+    open fun getApiDefinitions(): Map<String, Optional<String>> {
+        val configuration = getConfiguration()
+
+        if (!configuration.isPresent) {
+            return emptyMap()
+        }
+
+        return getConfiguration().get().apiDefinitions.map {
+            it to getFileContents(it)
+        }.toMap()
     }
 
     open fun isAPIChanged(): Boolean {
         val changedFiles = getChangedFiles()
         return changedFiles.contains(ZALLY_CONFIGURATION_PATH)
-                || getConfiguration().map({ changedFiles.contains(it.swaggerPath) }).orElse(false)
+                || getConfiguration().get().apiDefinitions.intersect(changedFiles).isNotEmpty()
     }
 
     private fun getFileContents(path: String): Optional<String> =

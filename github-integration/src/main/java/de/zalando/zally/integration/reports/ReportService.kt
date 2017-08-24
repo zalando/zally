@@ -14,15 +14,19 @@ class ReportService(private val validationRepository: ValidationRepository,
     fun getReport(id: Long): Report {
         val validation = validationRepository.findById(id).orElseThrow({ ValidationNotFoundException("Not found Validation with id $id") })
         val pullRequest = jsonObjectMapper.readValue(validation.pullRequestInfo, PullRequestEvent::class.java)
-        val apiDefinitionResponse = jsonObjectMapper.readValue(validation.violations, ApiDefinitionResponse::class.java)
-        return Report(validation.id, pullRequest, validation.apiDefinition, apiDefinitionResponse)
+
+        return Report(validation.id, pullRequest, validation.apiValidations.map {
+            val apiDefinitionResponse = jsonObjectMapper.readValue(it.violations, ApiDefinitionResponse::class.java)
+            DefinitionValidationResult(it.fileName, it.apiDefinition, apiDefinitionResponse)
+        })
     }
 
 }
 
 data class Report(val id: Long?,
                   val pullRequestEvent: PullRequestEvent?,
-                  val apiDefinition: String?,
-                  val apiDefinitionResponse: ApiDefinitionResponse?) {
+                  val validationResults: List<DefinitionValidationResult>)
 
-}
+data class DefinitionValidationResult(val fileName: String?,
+                                      val apiDefinition: String?,
+                                      val apiDefinitionResponse: ApiDefinitionResponse?)

@@ -229,57 +229,6 @@ class ValidationControllerIntegrationTest {
                 """).allowingExtraUnexpectedFields())
     }
 
-    @Test
-    fun shouldTakeIntoAccountProvidedIgnoredRules() {
-        githubServer.mock.mockGet(
-                "/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                "json/github-tree.json")
-
-        githubServer.mock.mockGetBlob(
-                "/repos/myUserName/zally/git/blobs/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-                "json/github-zally-yaml-blob.yaml")
-
-        githubServer.mock.mockGetBlob(
-                "/repos/myUserName/zally/git/blobs/cccccccccccccccccccccccccccccccccccccccc",
-                "json/github-api-yaml-blob.yaml")
-
-        zallyServer.mock.mockPost(
-                "/api-violations",
-                "json/zally-success-response.json")
-
-        githubServer.mock.mockPost(
-                "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                "json/github-commit-status-change.json")
-
-        githubServer.mock.mockGet(
-                "/repos/myUserName/zally/pulls/1/files",
-                "json/github-pull-files.json")
-
-        val body = "json/github-webhook-pullrequest.json".loadResource()
-        val response = restTemplate.postForEntity("/github-webhook", webhookRequest(body), String::class.java)
-
-        assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
-
-        zallyServer.mock.verifyPost(
-                "/api-violations",
-                sameJSONAs("""
-                    {
-                        "ignoreRules": [
-                            "ignoredRule1",
-                            "ignoredRule2"
-                        ]
-                    }
-                """).allowingAnyArrayOrdering().allowingExtraUnexpectedFields())
-
-        githubServer.mock.verifyPost(
-                "/repos/myUserName/zally/statuses/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                sameJSONAs("""
-                    {
-                        "state": "success"
-                    }
-                """).allowingExtraUnexpectedFields())
-    }
-
     private fun webhookRequest(body: String): HttpEntity<String> {
         return HttpEntity(body, webhookHeaders(body))
     }

@@ -35,7 +35,7 @@ class ValidationServiceTest {
     fun setUp() {
         jsonObjectMapper = ObjectMapper()
         validationService = ValidationService(githubService, zallyService, validationRepository, jsonObjectMapper, "http://bark:5000")
-        given(validationRepository.save(any<Validation>())).willReturn(Validation(id = 10))
+        given(validationRepository.save(any<PullRequestValidation>())).willReturn(PullRequestValidation(id = 10))
         given(githubService.parsePayload("", "")).willReturn(pullRequest)
     }
 
@@ -46,44 +46,44 @@ class ValidationServiceTest {
         validationService.validatePullRequest("", "")
 
         then(pullRequest).should().updateCommitState(GHCommitState.ERROR, "http://bark:5000/reports/10", "Could not find zally configuration file")
-        then(validationRepository).should().save(any<Validation>())
+        then(validationRepository).should().save(any<PullRequestValidation>())
     }
 
     @Test
     fun shouldSaveResultIfNoApiDefinitionFile() {
         given(pullRequest.getConfiguration()).willReturn(Optional.of(simpleConfiguration()))
-        given(pullRequest.getSwaggerFile()).willReturn(Optional.empty())
+        given(pullRequest.getApiDefinitions()).willReturn(mapOf("foo.yaml" to Optional.empty()))
 
         validationService.validatePullRequest("", "")
 
         then(pullRequest).should().updateCommitState(GHCommitState.ERROR, "http://bark:5000/reports/10", "Could not find swagger file")
-        then(validationRepository).should().save(any<Validation>())
+        then(validationRepository).should().save(any<PullRequestValidation>())
     }
 
     @Test
     fun shouldSaveResultIfValidationIsSuccessful() {
         given(pullRequest.getConfiguration()).willReturn(Optional.of(simpleConfiguration()))
-        given(pullRequest.getSwaggerFile()).willReturn(Optional.of("api-definition-content"))
-        given(zallyService.validate(Matchers.anyString(), any())).willReturn(okApiResponse())
+        given(pullRequest.getApiDefinitions()).willReturn(hashMapOf("some-api.yaml" to Optional.of("api-definition-content")))
+        given(zallyService.validate(Matchers.anyString())).willReturn(okApiResponse())
         given(pullRequest.isAPIChanged()).willReturn(true)
 
         validationService.validatePullRequest("", "")
 
-        then(pullRequest).should().updateCommitState(GHCommitState.SUCCESS, "http://bark:5000/reports/10", "API passed all checks {should=1}")
-        then(validationRepository).should().save(any<Validation>())
+        then(pullRequest).should().updateCommitState(GHCommitState.SUCCESS, "http://bark:5000/reports/10", "API passed all checks")
+        then(validationRepository).should().save(any<PullRequestValidation>())
     }
 
     @Test
     fun shouldSaveResultIfValidationIsNotSuccessful() {
         given(pullRequest.getConfiguration()).willReturn(Optional.of(simpleConfiguration()))
-        given(pullRequest.getSwaggerFile()).willReturn(Optional.of("api-definition-content"))
-        given(zallyService.validate(Matchers.anyString(), any())).willReturn(badApiResponse())
+        given(pullRequest.getApiDefinitions()).willReturn(hashMapOf("some-api.yaml" to Optional.of("api-definition-content")))
+        given(zallyService.validate(Matchers.anyString())).willReturn(badApiResponse())
         given(pullRequest.isAPIChanged()).willReturn(true)
 
         validationService.validatePullRequest("", "")
 
         then(pullRequest).should().updateCommitState(GHCommitState.ERROR, "http://bark:5000/reports/10", "Got violations")
-        then(validationRepository).should().save(any<Validation>())
+        then(validationRepository).should().save(any<PullRequestValidation>())
     }
 
     private fun okApiResponse() = ApiDefinitionResponse().apply {
@@ -97,8 +97,7 @@ class ValidationServiceTest {
     }
 
     private fun simpleConfiguration() = Configuration().apply {
-        this.swaggerPath = "foo/bar.yaml"
-        this.ignoredRules = ArrayList()
+        this.apiDefinitions = listOf("foo/bar.yaml")
     }
 
     private fun <T> any(): T {

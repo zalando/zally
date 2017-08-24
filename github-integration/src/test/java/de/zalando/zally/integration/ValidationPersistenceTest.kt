@@ -5,12 +5,14 @@ import de.zalando.zally.integration.mock.EmbeddedPostgresqlConfiguration
 import de.zalando.zally.integration.mock.GithubMock
 import de.zalando.zally.integration.mock.JadlerRule
 import de.zalando.zally.integration.mock.ZallyMock
+import de.zalando.zally.integration.validation.ApiValidation
 import de.zalando.zally.integration.validation.ValidationRepository
 import net.jadler.JadlerMocker
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
 import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.empty
+import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.notNullValue
-import org.hamcrest.Matchers.nullValue
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.ClassRule
@@ -72,13 +74,14 @@ class ValidationPersistenceTest {
         assertThat(validations.size, `is`(1))
 
         val validation = validations.first()
-        assertThat(validation.apiDefinition, `is`("json/github-api-yaml-blob.yaml".loadResource()))
+        assertThat(validation.apiValidations, hasSize(1))
+        assertThat(validation.apiValidations.first().apiDefinition, `is`("json/github-api-yaml-blob.yaml".loadResource()))
         assertThat(validation.createdOn, `is`(notNullValue()))
 
         assertThat(validation.pullRequestInfo,
                 sameJSONAs("json/pull-request-info-content.json".loadResource())
         )
-        assertThat(validation.violations,
+        assertThat(validation.apiValidations.first().violations,
                 sameJSONAs("json/zally-success-response.json".loadResource())
                         .allowingExtraUnexpectedFields()
                         .allowingAnyArrayOrdering()
@@ -98,9 +101,8 @@ class ValidationPersistenceTest {
         assertThat(validations.size, `is`(1))
 
         val validation = validations.first()
-        assertThat(validation.apiDefinition, `is`(nullValue()))
+        assertThat(validation.apiValidations, `is`(empty<ApiValidation>()))
         assertThat(validation.createdOn, `is`(notNullValue()))
-        assertThat(validation.violations, `is`("null"))
         assertThat(validation.pullRequestInfo,
                 sameJSONAs("json/pull-request-info-content.json".loadResource())
         )

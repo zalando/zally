@@ -1,4 +1,3 @@
-swagger_path: api.yaml
-ignored_rules:
-  - ignoredRule1
-  - ignoredRule2
+api_definitions:
+  - api.yaml
+
