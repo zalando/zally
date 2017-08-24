@@ -1,5 +1,7 @@
 FROM registry.opensource.zalan.do/stups/node:8.2.0-alpine
 
+LABEL MAINTAINER "http://zalando.github.io/"
+
 COPY package.json ./
 RUN npm install --production
 
