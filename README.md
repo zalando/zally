@@ -34,7 +34,7 @@ Find additional details [here](https://github.com/zalando-incubator/zally/pull/6
 
 To give Zally a quick try, first run the server locally and then use the CLI tool.
 
-The [Server Readme](server/README.md), [CLI Readme](cli/README.md) and [Web UI Readme](web-ui/README.md) include more detailed installation steps for each component.
+The [Server Readme](https://github.com/zalando-incubator/zally/blob/master/server/README.md), [CLI Readme](https://github.com/zalando-incubator/zally/blob/master/cli/README.md) and [Web UI Readme](https://github.com/zalando-incubator/zally/blob/master/web-ui/README.md) include more detailed installation steps for each component.
 
 ### Quick start guide
 
@@ -57,7 +57,7 @@ go build
 
 ### Contributing
 
-Zally welcomes contributions from the open source community. To get started, take a look at our [contributing guidelines](CONTRIBUTING). Then check our [Project Board](https://github.com/zalando-incubator/zally/projects/1) and [Issues Tracker](https://github.com/zalando-incubator/zally/issues) for ideas. 
+Zally welcomes contributions from the open source community. To get started, take a look at our [contributing guidelines](https://github.com/zalando-incubator/zally/blob/master/CONTRIBUTING). Then check our [Project Board](https://github.com/zalando-incubator/zally/projects/1) and [Issues Tracker](https://github.com/zalando-incubator/zally/issues) for ideas. 
 
 #### Roadmap
 For Zally [version 1.2](https://github.com/zalando-incubator/zally/milestone/3), we're focusing on:
@@ -69,9 +69,9 @@ If you have ideas for these items, please let us know.
 
 ### Contact
 
-Feel free to contact one the [maintainers](MAINTAINERS).
+Feel free to contact one the [maintainers](https://github.com/zalando-incubator/zally/blob/master/MAINTAINERS).
 
 
 ### License
 
-MIT license with an exception. See [license file](LICENSE).
+MIT license with an exception. See [license file](https://github.com/zalando-incubator/zally/blob/master/LICENSE).
