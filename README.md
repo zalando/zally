@@ -8,7 +8,7 @@
 
 Zally brings order to your sea of APIs. Use it to:
 - enable/disable rules on the server side
-- configure (some) of your existing rules
+- configure (some) of the existing rules
 - implement your own rules in [Kotlin](https://kotlinlang.org/)
 
 Its standard configuration will check your APIs against the rules defined in [Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/), but anyone can use it **out-of-the-box**.
