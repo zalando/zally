@@ -26,7 +26,7 @@ management.port: 0
 
 twintip:
   mapping: /api
-  yaml: "classpath:/api/zally-github-api.yaml"
+  yaml: "classpath:/api/bark-api.yaml"
 
 tokens:
   accessTokenUri: https://auth.example.com/oauth2/access_token?realm=testing

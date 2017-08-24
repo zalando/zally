@@ -1,0 +1,385 @@
+x-zally-ignore:
+  - M015
+  - M003
+  - M004
+
+swagger: '2.0'
+
+info:
+ title: Bark
+ description: Zalando's Zally Linter Github Integration
+ version: "1.0.0"
+ contact:
+   name: Team API Management
+   email: team-api-management@zalando.de
+
+host: "bark.overarching.zalan.do"
+
+schemes:
+  - https
+
+basePath: /
+
+securityDefinitions:
+  oauth2:
+    type: oauth2
+    tokenUrl: https://somewhere.on.the.internet
+    flow: password
+    scopes:
+      uid: submit API specification for validation
+
+parameters:
+  Authorization:
+    name: Authorization
+    in: header
+    description: OAUTH2 (IAM)
+    required: true
+    type: string
+    format: OAUTH2 (IAM)
+  EventType:
+    name: X-Github-Event
+    in: header
+    description: Name of the event that triggered this delivery.
+    required: true
+    type: string
+    default: pull_request
+    x-extensible-enum:
+      - pull_request
+  Signature:
+    name: X-Hub-Signature
+    in: header
+    description: HMAC hex digest of the payload, using the hook's secret as the key.
+    required: true
+    type: string
+  WebhookRequest:
+    name: Request
+    in: body
+    description: Webhook Event Request
+    required: true
+    schema:
+      $ref: '#/definitions/Event'
+
+paths:
+  '/github-webhook':
+    post:
+      summary:
+        Github webhook
+      description: |
+        Github webhook that can process 'pull_request' event.
+      parameters:
+        - $ref: '#/parameters/Signature'
+        - $ref: '#/parameters/EventType'
+        - $ref: '#/parameters/WebhookRequest'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        202:
+          description: Webhook request is received
+  '/reports/{reportId}':
+      get:
+        summary:
+          API Validation report
+        description: |
+          Pull request validation report
+        produces:
+          - text/html
+        parameters:
+          - $ref: '#/parameters/Authorization'
+          - description: ID of the report
+            in: path
+            minimum: 0
+            name: reportId
+            required: true
+            type: integer
+        responses:
+          200:
+            description: Rendered API validation report
+          404:
+            description: Requested report does not exist
+        security:
+          - oauth2:
+            - uid
+
+definitions:
+  Event:
+    properties:
+      action:
+        type: string
+      number:
+        type: integer
+      pull_request:
+         $ref: '#/definitions/PullRequest'
+  PullRequest:
+    properties:
+      _links:
+        properties:
+          comments:
+            properties:
+              href:
+                type: string
+            type: object
+          html:
+            properties:
+              href:
+                type: string
+            type: object
+          review_comments:
+            properties:
+              href:
+                type: string
+            type: object
+          self:
+            properties:
+              href:
+                type: string
+            type: object
+        type: object
+      additions:
+        type: integer
+      base:
+        properties:
+          label:
+            type: string
+          ref:
+            type: string
+          repo:
+            properties:
+              clone_url:
+                type: string
+              created_at:
+                type: string
+              description:
+                type: string
+              fork:
+                type: boolean
+              forks:
+                type: integer
+              forks_count:
+                type: integer
+              full_name:
+                type: string
+              git_url:
+                type: string
+              homepage:
+                type: string
+              html_url:
+                type: string
+              id:
+                type: integer
+              master_branch:
+                type: string
+              mirror_url:
+                type: string
+              name:
+                type: string
+              open_issues:
+                type: integer
+              open_issues_count:
+                type: integer
+              owner:
+                properties:
+                  avatar_url:
+                    type: string
+                  gravatar_id:
+                    type: string
+                  id:
+                    type: integer
+                  login:
+                    type: string
+                  url:
+                    type: string
+                type: object
+              private:
+                type: boolean
+              pushed_at:
+                type: string
+              size:
+                type: integer
+              ssh_url:
+                type: string
+              svn_url:
+                type: string
+              updated_at:
+                type: string
+              url:
+                type: string
+              watchers:
+                type: integer
+              watchers_count:
+                type: integer
+            type: object
+          sha:
+            type: string
+          user:
+            properties:
+              avatar_url:
+                type: string
+              gravatar_id:
+                type: string
+              id:
+                type: integer
+              login:
+                type: string
+              url:
+                type: string
+            type: object
+        type: object
+      body:
+        type: string
+      changed_files:
+        type: integer
+      closed_at:
+        type: string
+      comments:
+        type: integer
+      commits:
+        type: integer
+      created_at:
+        type: string
+      deletions:
+        type: integer
+      diff_url:
+        type: string
+      head:
+        properties:
+          label:
+            type: string
+          ref:
+            type: string
+          repo:
+            properties:
+              clone_url:
+                type: string
+              created_at:
+                type: string
+              description:
+                type: string
+              fork:
+                type: boolean
+              forks:
+                type: integer
+              forks_count:
+                type: integer
+              full_name:
+                type: string
+              git_url:
+                type: string
+              homepage:
+                type: string
+              html_url:
+                type: string
+              id:
+                type: integer
+              language:
+                type: 'null'
+              master_branch:
+                type: string
+              mirror_url:
+                type: string
+              name:
+                type: string
+              open_issues:
+                type: integer
+              open_issues_count:
+                type: integer
+              owner:
+                properties:
+                  avatar_url:
+                    type: string
+                  gravatar_id:
+                    type: string
+                  id:
+                    type: integer
+                  login:
+                    type: string
+                  url:
+                    type: string
+                type: object
+              private:
+                type: boolean
+              pushed_at:
+                type: string
+              size:
+                type: integer
+              ssh_url:
+                type: string
+              svn_url:
+                type: string
+              updated_at:
+                type: string
+              url:
+                type: string
+              watchers:
+                type: integer
+              watchers_count:
+                type: integer
+            type: object
+          sha:
+            type: string
+          user:
+            properties:
+              avatar_url:
+                type: string
+              gravatar_id:
+                type: string
+              id:
+                type: integer
+              login:
+                type: string
+              url:
+                type: string
+            type: object
+        type: object
+      html_url:
+        type: string
+      issue_url:
+        type: string
+      merge_commit_sha:
+        type: string
+      mergeable:
+        type: boolean
+      merged:
+        type: boolean
+      merged_at:
+        type: string
+      merged_by:
+        properties:
+          avatar_url:
+            type: string
+          gravatar_id:
+            type: string
+          id:
+            type: integer
+          login:
+            type: string
+          url:
+            type: string
+        type: object
+      number:
+        type: integer
+      patch_url:
+        type: string
+      state:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+      user:
+        properties:
+          avatar_url:
+            type: string
+          gravatar_id:
+            type: string
+          id:
+            type: integer
+          login:
+            type: string
+          url:
+            type: string
+        type: object
+    type: object
