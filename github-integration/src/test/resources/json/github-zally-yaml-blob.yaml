@@ -1,3 +1,4 @@
 swagger_path: api.yaml
 ignored_rules:
-  - foo
+  - ignoredRule1
+  - ignoredRule2

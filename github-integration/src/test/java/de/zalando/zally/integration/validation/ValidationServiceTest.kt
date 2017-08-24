@@ -51,7 +51,7 @@ class ValidationServiceTest {
 
     @Test
     fun shouldSaveResultIfNoApiDefinitionFile() {
-        given(pullRequest.getConfiguration()).willReturn(Optional.of(Configuration()))
+        given(pullRequest.getConfiguration()).willReturn(Optional.of(simpleConfiguration()))
         given(pullRequest.getSwaggerFile()).willReturn(Optional.empty())
 
         validationService.validatePullRequest("", "")
@@ -62,9 +62,9 @@ class ValidationServiceTest {
 
     @Test
     fun shouldSaveResultIfValidationIsSuccessful() {
-        given(pullRequest.getConfiguration()).willReturn(Optional.of(Configuration()))
+        given(pullRequest.getConfiguration()).willReturn(Optional.of(simpleConfiguration()))
         given(pullRequest.getSwaggerFile()).willReturn(Optional.of("api-definition-content"))
-        given(zallyService.validate(Matchers.anyString())).willReturn(okApiResponse())
+        given(zallyService.validate(Matchers.anyString(), any())).willReturn(okApiResponse())
         given(pullRequest.isAPIChanged()).willReturn(true)
 
         validationService.validatePullRequest("", "")
@@ -75,9 +75,9 @@ class ValidationServiceTest {
 
     @Test
     fun shouldSaveResultIfValidationIsNotSuccessful() {
-        given(pullRequest.getConfiguration()).willReturn(Optional.of(Configuration()))
+        given(pullRequest.getConfiguration()).willReturn(Optional.of(simpleConfiguration()))
         given(pullRequest.getSwaggerFile()).willReturn(Optional.of("api-definition-content"))
-        given(zallyService.validate(Matchers.anyString())).willReturn(badApiResponse())
+        given(zallyService.validate(Matchers.anyString(), any())).willReturn(badApiResponse())
         given(pullRequest.isAPIChanged()).willReturn(true)
 
         validationService.validatePullRequest("", "")
@@ -94,6 +94,11 @@ class ValidationServiceTest {
     private fun badApiResponse() = ApiDefinitionResponse().apply {
         violations = listOf(Violation("v-2", "vd-2", ViolationType.MUST, "rl-2", listOf("path-2")))
         violationsCount = mapOf("must" to 1)
+    }
+
+    private fun simpleConfiguration() = Configuration().apply {
+        this.swaggerPath = "foo/bar.yaml"
+        this.ignoredRules = ArrayList()
     }
 
     private fun <T> any(): T {

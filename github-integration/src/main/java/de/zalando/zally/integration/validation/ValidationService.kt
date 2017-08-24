@@ -23,7 +23,9 @@ class ValidationService(private val githubService: GithubService,
 
         val pullRequest = githubService.parsePayload(payload, signature)
 
-        if (!pullRequest.getConfiguration().isPresent) {
+        val configuration = pullRequest.getConfiguration()
+
+        if (!configuration.isPresent) {
             storeResultAndUpdateStatus(
                     RequestStatus.error("Could not find zally configuration file"), pullRequest, null, null)
             return
@@ -43,7 +45,8 @@ class ValidationService(private val githubService: GithubService,
         }
 
         val apiDefinition = swaggerFile.get()
-        val validationResult = zallyService.validate(apiDefinition)
+
+        val validationResult = zallyService.validate(apiDefinition, configuration.get().ignoredRules)
         val invalid = validationResult.violations?.any { it.violationType == ViolationType.MUST } ?: false
         if (invalid) {
             storeResultAndUpdateStatus(
