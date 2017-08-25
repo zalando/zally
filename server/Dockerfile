@@ -1,6 +1,6 @@
 FROM registry.opensource.zalan.do/stups/openjdk:latest
 
-LABEL MAINTAINER "http://zalando.github.io/"
+MAINTAINER "http://zalando.github.io/"
 
 COPY build/libs/zally-1.0.0.jar /
 
