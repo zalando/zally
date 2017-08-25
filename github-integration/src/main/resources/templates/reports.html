@@ -1,63 +1,74 @@
 <!DOCTYPE HTML>
+
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Reports</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <style>
-        .info {
-            text-align: center;
-            font-weight: 400;
-            font-size: 3rem;
-            line-height: 3rem;
-            padding: 20px;
-        }
-
-        .violation {
-            text-align: center;
-            font-weight: 300;
-            font-size: 2rem;
-            line-height: 2rem;
-            padding: 20px;
-        }
-
-        .api {
-            margin: auto;
-            width: 50%;
-            padding: 20px;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,500,300italic|Ubuntu+Mono" rel="stylesheet"
+          type="text/css"/>
+    <link rel="stylesheet" href="https://zalando.github.io/dress-code/assets/styles/main.css"/>
 </head>
-<body>
+
+<body class="dc-page">
 
 <!--/*@thymesVar id="report" type="de.zalando.zally.integration.reports.Report"*/-->
 
-<div class="info">
-    Report <a href="#" th:href="'/reports/' + ${report.id}" th:text="'#' + ${report.id}"/>
-</div>
+<div class="dc-container">
+    <h1 class="dc-h1">Report <a th:href="'/reports/' + ${report.id}" th:text="'#' + ${report.id}" class="dc-link"/></h1>
 
-<div class="info">
-    Pull request <a href="#" th:href="${report.pullRequestEvent?.pullRequest?.htmlUrl}"
-                    th:text="${report.pullRequestEvent?.pullRequest?.title}"/>
-    <br/>
-    in repo <a href="#" th:href="${report.pullRequestEvent?.repository?.htmlUrl}" th:text="${report.pullRequestEvent?.repository?.name}"/>
-    <br/>
-    by <img th:src="${report.pullRequestEvent?.sender?.avatarUrl}" th:width="50" th:height="50"/>
-    <a href="#" th:href="${report.pullRequestEvent?.sender?.htmlUrl}" th:text="${report.pullRequestEvent?.sender?.login}"/>
-</div>
-
-<div th:each="validation: ${report.validationResults}">
-    <h1 th:text="${validation.fileName}"/>
-    <div class="violation">
-        <div th:each="violation : ${validation.apiDefinitionResponse?.violations}">
-            <p th:text="${violation?.violationType}">violationType</p>
-            <a href="#" th:href="${violation?.ruleLink}" th:text="${violation?.title}"/>
-            <p th:text="${violation?.description}">description</p>
-            <div th:each="path: ${violation?.paths}">
-                <p th:text="${path}">path</p>
+    <h3 class="dc-h3">
+        Pull request
+        <a class="dc-link"
+           th:href="${report.pullRequestEvent?.pullRequest?.htmlUrl}"
+           th:text="${report.pullRequestEvent?.pullRequest?.title}"/>
+        in repo
+        <a class="dc-link"
+           th:href="${report.pullRequestEvent?.repository?.htmlUrl}"
+           th:text="${report.pullRequestEvent?.repository?.name}"/>
+        by
+        <a class="dc-link"
+           th:href="${report.pullRequestEvent?.sender?.htmlUrl}"
+           th:text="${report.pullRequestEvent?.sender?.login}"/>
+    </h3>
+    <th:block th:each="validation: ${report.validationResults}">
+        <div class="dc-row">
+            <div class="dc-column dc-column--large-8 dc-column--medium-8 dc-show-from-medium">
+                <div class="dc-column__contents">
+                    <div class="dc-card">
+                        <h3 class="dc-h3" th:text="${validation.fileName}"/>
+                        <pre th:text="${validation.apiDefinition}"></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="dc-column dc-column--large-4 dc-column--medium-4 dc-column--small-12">
+                <div class="dc-column__contents">
+                    <div class="dc-card">
+                        <h3 class="dc-h3">Violations</h3>
+                        <div th:each="violation : ${validation.apiDefinitionResponse?.violations}">
+                            <h4 class="dc-h3">
+                                <span th:switch="${violation?.violationType}">
+                                    <span th:case="${T(de.zalando.zally.integration.zally.ViolationType).MUST}"
+                                          class="dc-status dc-status--error"/>
+                                    <span th:case="${T(de.zalando.zally.integration.zally.ViolationType).SHOULD}"
+                                          class="dc-status dc-status--active"/>
+                                    <span th:case="*" class="dc-status dc-status--inactive"/>
+                                </span>
+                                <span th:text="${violation?.violationType}"></span> —
+                                <a th:href="${violation?.ruleLink}" th:text="${violation?.title}"></a></h4>
+                            <p class="dc-p" th:text="${violation?.description}"></p>
+                            <p class="dc-p">Paths:</p>
+                            <ul class="dc-list dc-list--is-unordered">
+                                <li th:each="path: ${violation?.paths}">
+                                    <span th:text="${path}"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <pre class="api" th:text="${validation.apiDefinition}"/>
+        <br/>
+    </th:block>
 </div>
 
 
