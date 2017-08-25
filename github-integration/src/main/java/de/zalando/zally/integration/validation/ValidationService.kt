@@ -8,6 +8,7 @@ import de.zalando.zally.integration.zally.ViolationType
 import de.zalando.zally.integration.zally.ZallyService
 import org.kohsuke.github.GHCommitState
 import org.kohsuke.github.GHCommitState.ERROR
+import org.kohsuke.github.GHCommitState.FAILURE
 import org.kohsuke.github.GHCommitState.SUCCESS
 import org.kohsuke.github.GHCommitState.PENDING
 import org.springframework.beans.factory.annotation.Value
@@ -47,7 +48,7 @@ class ValidationService(private val githubService: GithubService,
 
             if (!pullRequest.isAPIChanged()) {
                 storeResultAndUpdateStatus(
-                        RequestStatus.success("Neither configuration nor swagger file changed"), pullRequest, null)
+                        RequestStatus.success("No API changes detected"), pullRequest, null)
                 return
             }
 
@@ -60,22 +61,54 @@ class ValidationService(private val githubService: GithubService,
                 }
             }
 
-            val invalid = validationResults.any {
-                it.value.result.violations?.any {
-                    it.violationType == ViolationType.MUST
-                } ?: false
+            val validationResult = ViolationType.values().map {
+                it to 0
+            }.toMap().toMutableMap()
+
+            validationResults.flatMap {
+                it.value.result.violations ?: emptyList()
+            }.forEach {
+                val violationType = it.violationType
+                if (violationType != null) {
+                    validationResult[violationType] = validationResult[violationType]!! + 1
+                }
             }
+
+            val invalid = validationResult.getOrDefault(ViolationType.MUST, 0) > 0
 
             if (invalid) {
                 storeResultAndUpdateStatus(
-                        RequestStatus.error("Got violations"), pullRequest, validationResults)
+                        RequestStatus.error("API Review: ${validationResult[ViolationType.MUST]} MUST, " +
+                                "${validationResult[ViolationType.SHOULD]} SHOULD, " +
+                                "${validationResult[ViolationType.MAY]} MAY, " +
+                                "${validationResult[ViolationType.HINT]} HINT violations found"),
+                        pullRequest,
+                        validationResults
+                )
+                return
+            }
+
+            val hasErrors = validationResult.values.sum() > 0
+
+            if (hasErrors) {
+                storeResultAndUpdateStatus(
+                        RequestStatus.success("API Review: ${validationResult[ViolationType.MUST]} MUST, " +
+                                "${validationResult[ViolationType.SHOULD]} SHOULD, " +
+                                "${validationResult[ViolationType.MAY]} MAY, " +
+                                "${validationResult[ViolationType.HINT]} HINT violations found"),
+                        pullRequest,
+                        validationResults
+                )
                 return
             }
 
             storeResultAndUpdateStatus(
-                    RequestStatus.success("API passed all checks"), pullRequest, validationResults)
+                    RequestStatus.success("API Review: No violations :+1:"),
+                    pullRequest,
+                    validationResults
+            )
         } catch (e: Exception) {
-            val errorRequestState = RequestStatus.error("Failed with internal server error")
+            val errorRequestState = RequestStatus.failure("Failed with internal server error")
             pullRequest.updateCommitState(errorRequestState.commitState, null, errorRequestState.description)
             throw e
         }
@@ -111,6 +144,7 @@ class ValidationService(private val githubService: GithubService,
         companion object {
             fun success(description: String) = RequestStatus(SUCCESS, description)
             fun error(description: String) = RequestStatus(ERROR, description)
+            fun failure(description: String) = RequestStatus(FAILURE, description)
             fun pending(description: String) = RequestStatus(PENDING, description)
         }
     }

@@ -69,7 +69,7 @@ class ValidationServiceTest {
 
         validationService.validatePullRequest("", "")
 
-        then(pullRequest).should().updateCommitState(GHCommitState.SUCCESS, "http://bark:5000/reports/10", "API passed all checks")
+        then(pullRequest).should().updateCommitState(GHCommitState.SUCCESS, "http://bark:5000/reports/10", "API Review: 0 MUST, 1 SHOULD, 0 MAY, 0 HINT violations found")
         then(validationRepository).should().save(any<PullRequestValidation>())
     }
 
@@ -82,7 +82,7 @@ class ValidationServiceTest {
 
         validationService.validatePullRequest("", "")
 
-        then(pullRequest).should().updateCommitState(GHCommitState.ERROR, "http://bark:5000/reports/10", "Got violations")
+        then(pullRequest).should().updateCommitState(GHCommitState.ERROR, "http://bark:5000/reports/10", "API Review: 1 MUST, 0 SHOULD, 0 MAY, 0 HINT violations found")
         then(validationRepository).should().save(any<PullRequestValidation>())
     }
 

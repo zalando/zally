@@ -50,7 +50,7 @@
                                     <span th:case="${T(de.zalando.zally.integration.zally.ViolationType).MUST}"
                                           class="dc-status dc-status--error"/>
                                     <span th:case="${T(de.zalando.zally.integration.zally.ViolationType).SHOULD}"
-                                          class="dc-status dc-status--active"/>
+                                          class="dc-status dc-status--new"/>
                                     <span th:case="*" class="dc-status dc-status--inactive"/>
                                 </span>
                                 <span th:text="${violation?.violationType}"></span> —
