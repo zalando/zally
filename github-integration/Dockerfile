@@ -1,5 +1,6 @@
-FROM registry.opensource.zalan.do/stups/openjdk:latest
+FROM registry.opensource.zalan.do/stups/openjdk:8u66-b17-1-2
 
+MAINTAINER "http://zalando.github.io/"
 LABEL MAINTAINER "http://zalando.github.io/"
 
 COPY build/libs/bark.jar /
