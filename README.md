@@ -13,7 +13,7 @@ Zally brings order to your sea of APIs. Use it to:
 
 Its standard configuration will check your APIs against the rules defined in [Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/), but anyone can use it **out-of-the-box**.
 
-Zally's easy-to-use [CLI](cli/README.md) uses the server in the background so that you can check your API *on the spot*. It also features an intuitive [Web UI](web-ui/README.md) that shows implemented rules and lints external files and (with its online editor) API definitions.
+Zally's easy-to-use [CLI](https://github.com/zalando-incubator/zally/blob/master/cli/README.md) uses the server in the background so that you can check your API *on the spot*. It also features an intuitive [Web UI](https://github.com/zalando-incubator/zally/blob/master/web-ui/README.md) that shows implemented rules and lints external files and (with its online editor) API definitions.
 
 More about Zally:
 - Swagger-friendly: accepts [Swagger](https://swagger.io) .yaml and JSON formats; includes a server that lints your Swagger files; and parses Swagger files using [swagger-parser](https://github.com/swagger-api/swagger-parser)
