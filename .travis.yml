@@ -12,15 +12,16 @@ before_install:
   - sudo apt-get install -qq bats
   - eval "$(GIMME_GO_VERSION=1.8.3 gimme)"
 
-  # Codacy coverage
-  - curl -sL http://repo1.maven.org/maven2/com/codacy/codacy-coverage-reporter/1.0.13/codacy-coverage-reporter-1.0.13-assembly.jar > ~/codacy-coverage-reporter.jar
-  # / Codacy coverage
-
 install: true
 
 script:
   # Unit-test and build server
   - cd server/
+  - ./gradlew build --info
+  - cd ..
+
+  # Unit-test and build integration server
+  - cd github-integration/
   - ./gradlew build --info
   - cd ..
 
@@ -56,5 +57,9 @@ script:
   - cd $TRAVIS_BUILD_DIR
   
 after_success:
-  - java -cp ~/codacy-coverage-reporter.jar com.codacy.CodacyCoverageReporter --language Java --coverageReport server/build/reports/jacoco/test/jacocoTestReport.xml -t $CODACY_PROJECT_TOKEN
+  # Upload test code coverage report for Zally server
+  - bash <(curl -s https://codecov.io/bash) -f server/build/reports/jacoco/test/jacocoTestReport.xml
+  # Upload test code coverage report for Zally integration server
+  - bash <(curl -s https://codecov.io/bash) -f github-integration/build/reports/jacoco/test/jacocoTestReport.xml
+  # Upload test code coverage report for Zally CLI
   - bash <(curl -s https://codecov.io/bash) -f $ZALLY_GO_PATH/cli/zally/coverage.txt -f $TRAVIS_BUILD_DIR/web-ui/target/coverage/lcov.info

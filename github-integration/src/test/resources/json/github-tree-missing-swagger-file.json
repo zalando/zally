@@ -1,0 +1,22 @@
+{
+  "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "url": "https://api.github.com/repos/myUserName/zally/git/trees/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "tree": [
+    {
+      "path": "server",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cdbc409a85d378f4933fc9b7148de11308937533",
+      "url": "https://api.github.com/repos/myUserName/zally/git/trees/cdbc409a85d378f4933fc9b7148de11308937533"
+    },
+    {
+      "path": ".zally.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "size": 113,
+      "url": "https://api.github.com/repos/myUserName/zally/git/blobs/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  ],
+  "truncated": false
+}
