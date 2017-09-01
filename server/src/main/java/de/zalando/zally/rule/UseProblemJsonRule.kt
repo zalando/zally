@@ -15,9 +15,10 @@ import org.springframework.stereotype.Component
 @Component
 class UseProblemJsonRule : SwaggerRule() {
     override val title = "Use Problem JSON"
-    override val url = "/common-data-objects/CommonDataObjects.html#must-use-problem-json"
+    override val url = "/#176"
     override val violationType = ViolationType.MUST
     override val code = "M015"
+    override val guidelinesCode = "176"
     private val description = "Operations Should Return Problem JSON When Any Problem Occurs During Processing " +
         "Whether Caused by Client Or Server"
     private val requiredFields = setOf("title", "status")

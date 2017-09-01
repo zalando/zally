@@ -9,9 +9,10 @@ import org.springframework.stereotype.Component
 @Component
 class LimitNumberOfResourcesRule(@Autowired rulesConfig: Config) : SwaggerRule() {
     override val title = "Limit number of Resources"
-    override val url = "/resources/Resources.html#should-limit-number-of-resources"
+    override val url = "/#146"
     override val violationType = ViolationType.SHOULD
     override val code = "S002"
+    override val guidelinesCode = "146"
     private val pathCountLimit = rulesConfig.getConfig(name).getInt("paths_count_limit")
 
     override fun validate(swagger: Swagger): Violation? {

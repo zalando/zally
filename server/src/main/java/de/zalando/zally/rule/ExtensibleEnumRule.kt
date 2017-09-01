@@ -22,9 +22,10 @@ import org.springframework.stereotype.Component
 @Component
 class ExtensibleEnumRule : SwaggerRule() {
     override val title = "Prefer Compatible Extensions"
-    override val url = "/compatibility/Compatibility.html#should-prefer-compatible-extensions"
+    override val url = "/#107"
     override val violationType = SHOULD
     override val code = "S012"
+    override val guidelinesCode = "107"
 
     override fun validate(swagger: Swagger): Violation? {
         val properties = enumProperties(swagger)

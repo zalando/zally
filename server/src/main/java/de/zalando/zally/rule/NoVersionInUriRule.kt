@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component
 @Component
 class NoVersionInUriRule : SwaggerRule() {
     override val title = "Do Not Use URI Versioning"
-    override val url = "/compatibility/Compatibility.html#must-do-not-use-uri-versioning"
+    override val url = "/#115"
     override val violationType = ViolationType.MUST
     override val code = "M009"
+    override val guidelinesCode = "115"
     private val description = "basePath attribute contains version number"
 
     override fun validate(swagger: Swagger): Violation? {

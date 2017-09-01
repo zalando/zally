@@ -11,11 +11,12 @@ import org.springframework.stereotype.Component
 @Component
 class UseSpecificHttpStatusCodes(@Autowired rulesConfig: Config) : SwaggerRule() {
     override val title = "Use Specific HTTP Status Codes"
-    override val url = "/http/Http.html#must-use-specific-http-status-codes"
+    override val url = "/#150"
 
     // as a quick fix this rule is only SHOULD (normally MUST), see https://github.com/zalando-incubator/zally/issues/374
     override val violationType = ViolationType.SHOULD
     override val code = "M016"
+    override val guidelinesCode = "150"
     private val description = "Operatons should use specific HTTP status codes"
 
     private val allowedStatusCodes = rulesConfig

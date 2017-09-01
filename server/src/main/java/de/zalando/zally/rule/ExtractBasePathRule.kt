@@ -11,6 +11,8 @@ class ExtractBasePathRule : SwaggerRule() {
     override val url = "/naming/Naming.html"
     override val violationType = ViolationType.HINT
     override val code = "H001"
+    // TODO: Provide guidelines code
+    override val guidelinesCode = ""
     private val DESC_PATTERN = "All paths start with prefix '%s'. This prefix could be part of base path."
 
     override fun validate(swagger: Swagger): Violation? {
