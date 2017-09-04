@@ -10,7 +10,10 @@ fi
 for package in $GO_PACKAGES; do
     if ! $RUN_TESTS $package ; then
         rm cover.out
-        exit $?
+        echo "============================"
+        echo "CLI Tests Failed. Exiting..."
+        echo "============================"
+        exit 1
     fi
     cat cover.out >> coverage.txt
 done
