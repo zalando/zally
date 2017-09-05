@@ -12,9 +12,10 @@ import org.springframework.stereotype.Component
 @Component
 class SnakeCaseForQueryParamsRule : SwaggerRule() {
     override val title = "Use snake_case (never camelCase) for Query Parameters"
-    override val url = "/naming/Naming.html#must-use-snakecase-never-camelcase-for-query-parameters"
+    override val url = "/#130"
     override val violationType = ViolationType.MUST
     override val code = "M011"
+    override val guidelinesCode = "130"
 
     override fun validate(swagger: Swagger): Violation? {
         val result = swagger.paths.orEmpty().flatMap { (path, pathObject) ->

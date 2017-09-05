@@ -45,6 +45,12 @@ public class ApiReviewTest {
 
         @NotNull
         @Override
+        public String getGuidelinesCode() {
+            return null;
+        }
+
+        @NotNull
+        @Override
         public String getName() {
             return "dummyRule";
         }

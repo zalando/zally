@@ -10,9 +10,10 @@ import org.springframework.stereotype.Component
 class MediaTypesRule : SwaggerRule() {
 
     override val title = "Prefer standard media type names"
-    override val url = "/data-formats/DataFormats.html#should-prefer-standard-media-type-name-applicationjson"
+    override val url = "/#172"
     override val violationType = ViolationType.SHOULD
     override val code = "S004"
+    override val guidelinesCode = "172"
     private val DESCRIPTION = "Custom media types should only be used for versioning"
 
     override fun validate(swagger: Swagger): Violation? {

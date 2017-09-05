@@ -10,9 +10,10 @@ import org.springframework.stereotype.Component
 @Component
 class DefineOAuthScopesRule : SwaggerRule() {
     override val title = "Define and Assign Access Rights (Scopes)"
-    override val url = "/security/Security.html#must-secure-endpoints-with-oauth-20"
+    override val url = "/#104"
     override val violationType = MUST
     override val code = "M004"
+    override val guidelinesCode = "104"
     private val DESC = "Every endpoint must be secured by proper OAuth2 scope"
 
     override fun validate(swagger: Swagger): Violation? {

@@ -20,6 +20,7 @@ class RulesValidatorTest {
         override val url = null
         override val violationType = ViolationType.SHOULD
         override val code = "S999"
+        override val guidelinesCode = "000"
         override fun validate(swagger: Swagger): Violation? = result
     }
 
@@ -28,6 +29,7 @@ class RulesValidatorTest {
         override val url = null
         override val violationType = ViolationType.MUST
         override val code = "M999"
+        override val guidelinesCode = "000"
         override fun validate(swagger: Swagger): Violation? = result
     }
 

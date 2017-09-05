@@ -26,7 +26,7 @@ twintip:
 management.port: 8080
 
 zally:
-  ignoreRules: S001,S010
+  ignoreRules: S010
   cli:
     releasesPage: https://github.com/zalando-incubator/zally/releases
     deprecatedCliAgents: unirest-java/1.3.11,Zally-CLI/1.0

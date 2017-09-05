@@ -17,6 +17,8 @@ class AvoidSynonymsRule(
     override val url = ""
     override val violationType = ViolationType.SHOULD
     override val code = "S010"
+    // TODO: Provide guidelines code
+    override val guidelinesCode = ""
 
     private val descPattern = "Property names should utilize common dictionary"
     private val metricServices = metricServices

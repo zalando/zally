@@ -24,6 +24,8 @@ class NoUnusedDefinitionsRule : SwaggerRule() {
     // TODO: Provide URL
     override val url = ""
     override val code = "S005"
+    // TODO: Provide guidelines code
+    override val guidelinesCode = ""
 
     override fun validate(swagger: Swagger): Violation? {
         val paramsInPaths = swagger.paths.orEmpty().values.flatMap { path ->

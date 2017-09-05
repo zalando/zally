@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component
 @Component
 class VersionInInfoSectionRule : SwaggerRule() {
     override val title = "Provide version information"
-    override val url = "/compatibility/Compatibility.html#should-provide-version-information-in-openapi-documentation"
+    override val url = "/#116"
     override val violationType = ViolationType.SHOULD
     override val code = "S009"
+    override val guidelinesCode = "116"
     private val DESCRIPTION = "Only the documentation, not the API itself, needs version information. It should be in the " +
         "format MAJOR.MINOR.DRAFT."
 

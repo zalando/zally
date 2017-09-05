@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component
 @Component
 class Use429HeaderForRateLimitRule : SwaggerRule() {
     override val title = "Use 429 With Header For Rate Limits"
-    override val url = "/http/Http.html#must-use-429-with-headers-for-rate-limits"
+    override val url = "/#153"
     override val violationType = ViolationType.MUST
     override val code = "M014"
+    override val guidelinesCode = "153"
     private val DESCRIPTION = "If Client Exceed Request Rate, Response Code Must Contain Header Information Providing Further Details to Client"
     private val X_RATE_LIMIT_TRIO = listOf("X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset")
 

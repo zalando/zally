@@ -12,6 +12,8 @@ class EverySecondPathLevelParameterRule : SwaggerRule() {
     override val url = ""
     override val violationType = ViolationType.MUST
     override val code = "M005"
+    // TODO: Provide guidelines code
+    override val guidelinesCode = ""
     private val DESCRIPTION = "Every second path level must be a path parameter"
 
     override fun validate(swagger: Swagger): Violation? {

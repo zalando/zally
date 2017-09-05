@@ -9,9 +9,10 @@ import org.springframework.stereotype.Component
 @Component
 class PluralizeNamesForArraysRule : SwaggerRule() {
     override val title = "Array names should be pluralized"
-    override val url = "/json-guidelines/JsonGuidelines.html#should-array-names-should-be-pluralized"
+    override val url = "/#120"
     override val violationType = ViolationType.SHOULD
     override val code = "S007"
+    override val guidelinesCode = "120"
 
     override fun validate(swagger: Swagger): Violation? {
         val res = swagger.getAllJsonObjects().map { (def, path) ->
