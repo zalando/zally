@@ -9,9 +9,10 @@ import org.springframework.stereotype.Component
 class KebabCaseInPathSegmentsRule : SwaggerRule() {
 
     override val title = "Lowercase words with hyphens"
-    override val url = "/naming/Naming.html#must-use-lowercase-separate-words-with-hyphens-for-path-segments"
+    override val url = "/#129"
     override val violationType = ViolationType.MUST
     override val code = "M007"
+    override val guidelinesCode = "129"
     private val description = "Use lowercase separate words with hyphens for path segments"
 
     override fun validate(swagger: Swagger): Violation? {

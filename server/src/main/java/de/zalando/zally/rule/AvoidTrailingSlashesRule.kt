@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component
 @Component
 class AvoidTrailingSlashesRule : SwaggerRule() {
     override val title = "Avoid Trailing Slashes"
-    override val url = "/naming/Naming.html"
+    override val url = "/#136"
     override val violationType = ViolationType.MUST
     override val code = "M002"
+    override val guidelinesCode = "136"
     private val DESCRIPTION = "Rule avoid trailing slashes is not followed"
 
     override fun validate(swagger: Swagger): Violation? {

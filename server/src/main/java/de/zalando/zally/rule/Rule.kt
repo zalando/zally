@@ -8,6 +8,7 @@ interface Rule {
     val violationType: ViolationType
     val url: String?
     val code: String
+    val guidelinesCode: String
     val name: String
 
 }

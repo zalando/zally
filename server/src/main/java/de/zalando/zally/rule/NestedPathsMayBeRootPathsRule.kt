@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component
 @Component
 class NestedPathsMayBeRootPathsRule : SwaggerRule() {
     override val title = "Consider Using (Non-) Nested URLs"
-    override val url = "/resources/Resources.html#may-consider-using-non-nested-urls"
+    override val url = "/#145"
     override val violationType = ViolationType.MAY
     override val code = "C001"
+    override val guidelinesCode = "145"
     private val DESCRIPTION = "Nested paths / URLs may be top-level resource"
 
     override fun validate(swagger: Swagger): Violation? {

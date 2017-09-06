@@ -13,8 +13,9 @@ class SuccessResponseAsJsonObjectRule : SwaggerRule() {
 
     override val title = "Response As JSON Object"
     override val violationType = ViolationType.MUST
-    override val url = "/compatibility/Compatibility.html#must-always-return-json-objects-as-toplevel-data-structures-to-support-extensibility"
+    override val url = "/#110"
     override val code = "M013"
+    override val guidelinesCode = "110"
     private val DESCRIPTION = "Always Return JSON Objects As Top-Level Data Structures To Support Extensibility"
 
     override fun validate(swagger: Swagger): Violation? {

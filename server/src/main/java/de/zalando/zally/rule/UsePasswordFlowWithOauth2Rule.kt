@@ -6,9 +6,10 @@ import io.swagger.models.auth.OAuth2Definition
 
 class UsePasswordFlowWithOauth2Rule : SwaggerRule() {
     override val title = "Set Flow to Password When Using OAuth 2.0"
-    override val url = "/security/Security.html#must-secure-endpoints-with-oauth-20"
+    override val url = "/#104"
     override val violationType = ViolationType.MUST
     override val code = "M017"
+    override val guidelinesCode = "104"
 
     override fun validate(swagger: Swagger): Violation? {
         val definitionsWithoutPasswordFlow = swagger

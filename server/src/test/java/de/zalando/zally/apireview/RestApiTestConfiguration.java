@@ -76,6 +76,11 @@ public class RestApiTestConfiguration {
         public String getCode() {
             return "M001";
         }
+
+        @Override
+        public String getGuidelinesCode() {
+            return "000";
+        }
     }
 
     private static class CheckApiNameIsPresentRule extends SwaggerRule {
@@ -114,6 +119,11 @@ public class RestApiTestConfiguration {
         public String getCode() {
             return "M999";
         }
+
+        @Override
+        public String getGuidelinesCode() {
+            return "000";
+        }
     }
 
     private static class AlwaysGiveAHintRule extends SwaggerRule {
@@ -142,6 +152,11 @@ public class RestApiTestConfiguration {
         @Override
         public String getCode() {
             return "H999";
+        }
+
+        @Override
+        public String getGuidelinesCode() {
+            return "000";
         }
     }
 }

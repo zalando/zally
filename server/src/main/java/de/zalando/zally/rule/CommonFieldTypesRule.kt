@@ -11,9 +11,10 @@ import org.springframework.stereotype.Component
 @Component
 class CommonFieldTypesRule(@Autowired rulesConfig: Config) : SwaggerRule() {
     override val title = "Use common field names"
-    override val url = "/common-data-objects/CommonDataObjects.html#must-use-common-field-names"
+    override val url = "/#174"
     override val violationType = ViolationType.MUST
     override val code = "M003"
+    override val guidelinesCode = "174"
 
     @Suppress("UNCHECKED_CAST")
     private val commonFields = rulesConfig.getConfig("$name.common_types").entrySet()

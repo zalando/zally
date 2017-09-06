@@ -18,8 +18,9 @@ open class InvalidApiSchemaRule(@Autowired rulesConfig: Config) : JsonRule() {
 
     override val title = "OpenAPI 2.0 schema"
     override val violationType = ViolationType.MUST
-    override val url = "/general-guidelines/GeneralGuidelines.html#must-provide-api-reference-definition-using-openapi"
+    override val url = "/#101"
     override val code = "M000"
+    override val guidelinesCode = "101"
     open val description = "Given file is not OpenAPI 2.0 compliant."
 
     val jsonSchemaValidator: JsonSchemaValidator
