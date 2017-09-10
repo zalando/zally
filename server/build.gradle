@@ -69,8 +69,8 @@ dependencies {
     compile("com.fasterxml.jackson.module:jackson-module-kotlin") {
         exclude group: "org.jetbrains.kotlin", module: "kotlin-reflect"
     }
-    compile("org.zalando.stups:stups-spring-oauth2-server:1.0.18")
-    compile("org.zalando:problem-spring-web:0.19.0")
+    compile("org.zalando.stups:stups-spring-oauth2-server:1.0.19")
+    compile("org.zalando:problem-spring-web:0.20.0")
     compile("org.zalando:twintip-spring-web:1.1.0")
     compile("org.zalando.zmon:zmon-actuator:0.9.7")
     compile("io.dropwizard.metrics:metrics-core:3.2.2")
