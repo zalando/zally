@@ -159,8 +159,8 @@ npm run build
 ## Release it
 
 1. Create a pull request for the new version (e.g. branch`web-ui-release-1.1`)
-  1. Bump the package version in `package.json`
-  1. Add changelog information and adjust documentation
+    1. Bump the package version in `package.json`
+    1. Add changelog information and adjust documentation
 1. Publish the new version after the pull request is merged (`npm login && npm publish`)
 
 ## Contributing
