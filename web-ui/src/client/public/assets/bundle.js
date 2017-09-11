@@ -1,6 +1,6 @@
 /*!
  * 
- * @name zally-web-ui
+ * @name @zalando/zally-web-ui
  * @version 0.1.1
  * @license MIT
  *     
