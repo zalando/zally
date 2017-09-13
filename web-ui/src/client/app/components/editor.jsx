@@ -2,6 +2,7 @@ import React from 'react';
 import 'brace';
 import AceEditor from 'react-ace';
 
+import 'brace/ext/searchbox';
 import 'brace/mode/yaml';
 import 'brace/mode/json';
 import 'brace/theme/github';
