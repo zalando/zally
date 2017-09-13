@@ -100,22 +100,39 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
         assertThat(response.getReviews().get(0).getApi()).isEqualTo("My API");
     }
 
+    @Test
+    public void shouldReturnNumberOfUniqueApiReviewsBasedOnApiName() {
+        LocalDate now = now().toLocalDate();
+        apiReviewRepository.save(apiReview(now, "API A"));
+        apiReviewRepository.save(apiReview(now, "API B"));
+        apiReviewRepository.save(apiReview(now, "API B"));
+
+        ReviewStatistics statistics = getReviewStatistics();
+
+        assertThat(statistics.getReviews()).hasSize(3);
+        assertThat(statistics.getTotalReviewsDeduplicated()).isEqualTo(2);
+    }
+
     private List<ApiReview> createRandomReviewsInBetween(LocalDate from, LocalDate to) {
         List<ApiReview> reviews = new LinkedList<>();
 
         LocalDate currentDate = LocalDate.from(from);
         while (currentDate.isBefore(to)) {
-            ApiReview review = new ApiReview(new ApiDefinitionRequest(), "dummyApiDefinition", createRandomViolations());
-            review.setDay(currentDate);
-            review.setName("My API");
-            review.setNumberOfEndpoints(2);
-
-            reviews.add(review);
+            reviews.add(apiReview(currentDate, "My API"));
             currentDate = currentDate.plusDays(1L);
         }
 
         apiReviewRepository.save(reviews);
         return reviews;
+    }
+
+    private ApiReview apiReview(LocalDate date, String apiName) {
+        ApiReview review = new ApiReview(new ApiDefinitionRequest(), "dummyApiDefinition", createRandomViolations());
+        review.setDay(date);
+        review.setName(apiName);
+        review.setNumberOfEndpoints(2);
+
+        return review;
     }
 
     private List<Violation> createRandomViolations() {
