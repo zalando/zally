@@ -13,8 +13,7 @@ adduser --disabled-password --gecos "" user
 chown -R user:user ${SCRIPT_DIR}
 
 # Unit-test and build server
-cd ${SCRIPT_DIR}/server/
-runuser -l  user -c "./gradlew build --info"
+runuser -l  user -c "${SCRIPT_DIR}/server/.gradlew build --info"
 
 ## Unit-test and build GHE integration server
 #cd ${SCRIPT_DIR}/github-integration/
