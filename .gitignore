@@ -13,3 +13,5 @@ out/
 *.log
 
 target
+
+cli/zally/coverage.txt

@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"flag"
 	"io/ioutil"
 	"testing"
 	"time"
@@ -169,4 +170,37 @@ func TestLintFile(t *testing.T) {
 
 		tests.AssertEquals(t, "Failing because: 1 must violation(s) found", err.Error())
 	})
+}
+
+func TestLint(t *testing.T) {
+	t.Run("fails_when_no_swagger_file_is_specified", func(t *testing.T) {
+		err := lint(getLintContext("http://example.com", []string{}))
+		tests.AssertEquals(t, "Please specify Swagger File", err.Error())
+	})
+
+	t.Run("succeed_when_swagger_file_is_specified", func(t *testing.T) {
+		handler := func(w http.ResponseWriter, r *http.Request) {
+			fixture, _ := ioutil.ReadFile("testdata/violations_response_without_must_violations.json")
+			w.Header().Set("Content-Type", "application/json")
+			io.WriteString(w, string(fixture))
+		}
+		testServer := httptest.NewServer(http.HandlerFunc(handler))
+		defer testServer.Close()
+
+		err := lint(getLintContext(testServer.URL, []string{"testdata/minimal_swagger.json"}))
+		tests.AssertEquals(t, nil, err)
+	})
+}
+
+func getLintContext(url string, args []string) *cli.Context {
+	globalSet := flag.NewFlagSet("test", 0)
+	globalSet.String("linter-service", url, "doc")
+	globalSet.String("token", "test-token", "doc")
+
+	localSet := flag.NewFlagSet("test", 0)
+	localSet.Parse(args)
+
+	globalCtx := cli.NewContext(nil, globalSet, nil)
+
+	return cli.NewContext(cli.NewApp(), localSet, globalCtx)
 }
