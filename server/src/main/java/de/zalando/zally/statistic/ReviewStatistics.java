@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class ReviewStatistics {
 
     private int totalReviews;
+    private int totalReviewsDeduplicated;
     private int successfulReviews;
     private int numberOfEndpoints;
     private int mustViolations;
@@ -24,6 +25,7 @@ public class ReviewStatistics {
 
     ReviewStatistics(Collection<ApiReview> apiReviews) {
         totalReviews = apiReviews.size();
+        totalReviewsDeduplicated = apiReviews.stream().collect(Collectors.groupingBy(ApiReview::getName)).size();
         successfulReviews = apiReviews.stream()
             .map(apiReview -> apiReview.isSuccessfulProcessed() ? 1 : 0)
             .mapToInt(Integer::intValue)
@@ -115,5 +117,9 @@ public class ReviewStatistics {
 
     public void setReviews(List<ApiReviewStatistic> reviews) {
         this.reviews = reviews;
+    }
+
+    public int getTotalReviewsDeduplicated() {
+        return totalReviewsDeduplicated;
     }
 }

@@ -215,6 +215,7 @@ definitions:
     description: Review statistics for a given interval in time
     required:
       - total_reviews
+      - total_reviews_deduplicated
       - successful_reviews
       - number_of_endpoints
       - must_violations
@@ -227,6 +228,9 @@ definitions:
       total_reviews:
         type: number
         example: 23
+      total_reviews_deduplicated:
+        type: number
+        example: 12
       successful_reviews:
         type: number
         example: 17
