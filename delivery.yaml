@@ -10,5 +10,5 @@ build_steps:
     cd server
     ./gradlew test
     ./gradlew build
-    docker build -t "pierone.stups.zalan.do/architecture/zally/${CDP_BUILD_VERSION}" .
-    docker push -t "pierone.stups.zalan.do/architecture/zally/${CDP_BUILD_VERSION}"
+    docker build -t "pierone.stups.zalan.do/architecture/zally:${CDP_BUILD_VERSION}" .
+    docker push -t "pierone.stups.zalan.do/architecture/zally:${CDP_BUILD_VERSION}"
