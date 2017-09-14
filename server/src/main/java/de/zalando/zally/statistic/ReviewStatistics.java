@@ -25,7 +25,9 @@ public class ReviewStatistics {
 
     ReviewStatistics(Collection<ApiReview> apiReviews) {
         totalReviews = apiReviews.size();
-        totalReviewsDeduplicated = apiReviews.stream().collect(Collectors.groupingBy(ApiReview::getName)).size();
+        totalReviewsDeduplicated = apiReviews.stream()
+            .filter(r -> r.getName() != null && !r.getName().isEmpty())
+            .collect(Collectors.groupingBy(ApiReview::getName)).size();
         successfulReviews = apiReviews.stream()
             .map(apiReview -> apiReview.isSuccessfulProcessed() ? 1 : 0)
             .mapToInt(Integer::intValue)
