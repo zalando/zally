@@ -1,0 +1,12 @@
+build_steps:
+  - desc: "Install build dependencies"
+    cmd: |
+      apt-get update
+      apt-get install --no-install-recommends -y \
+        bash \
+        openjdk-8-jdk
+  - desc: "Build and Test Zally Server"
+    cmd: |
+      cd server
+      ./gradlew test
+      ./gradlew build
