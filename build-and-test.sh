@@ -12,8 +12,11 @@ popd > /dev/null
 adduser --disabled-password --gecos "" user
 chown -R user:user ${SCRIPT_DIR}
 
+su -p user
+
 # Unit-test and build GHE integration server
-su -p - user -c '${SCRIPT_DIR}/github-integration/gradlew build --info'
+cd ${SCRIPT_DIR}/github-integration
+./gradlew build --info
 
 ## Unit-test and build server
 #cd ${SCRIPT_DIR}/server/
