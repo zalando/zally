@@ -6,14 +6,15 @@ set -ex
 pushd $(dirname $0) > /dev/null
 SCRIPT_DIR=$(pwd -P)
 popd > /dev/null
-ZALLY_GO_PATH="${GOPATH}/src/github.com/zalando-incubator/zally"
+#ZALLY_GO_PATH="${GOPATH}/src/github.com/zalando-incubator/zally"
 
 # Postgres needs a non-root user to init a database
-adduser --disabled-password --gecos "" user
-chown -R user:user ${SCRIPT_DIR}
+#adduser --disabled-password --gecos "" user
+#chown -R user:user ${SCRIPT_DIR}
 
 # Unit-test and build server
-runuser -l  user -c "${SCRIPT_DIR}/server/.gradlew build --info"
+cd ${SCRIPT_DIR}/server/
+./gradlew build --info
 
 ## Unit-test and build GHE integration server
 #cd ${SCRIPT_DIR}/github-integration/
