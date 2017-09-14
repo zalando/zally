@@ -6,12 +6,12 @@ set -ex
 pushd $(dirname $0) > /dev/null
 SCRIPT_DIR=$(pwd -P)
 popd > /dev/null
-ZALLY_GO_PATH="$GOPATH/src/github.com/zalando-incubator/zally"
+ZALLY_GO_PATH="${GOPATH}/src/github.com/zalando-incubator/zally"
 
 # Postgres needs a non-root user to init a database
 adduser --disabled-password --gecos "" user
 chown -R user:user ${SCRIPT_DIR}
-chown -R user:user ${ZALLY_GO_PATH}
+chown -R user:user ${GOPATH}
 su user
 
 # Unit-test and build server
