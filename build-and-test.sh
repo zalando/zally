@@ -11,7 +11,6 @@ ZALLY_GO_PATH="${GOPATH}/src/github.com/zalando-incubator/zally"
 # Postgres needs a non-root user to init a database
 adduser --disabled-password --gecos "" user
 chown -R user:user ${SCRIPT_DIR}
-chown -R user:user ${GOPATH}
 su user
 
 # Unit-test and build server
@@ -26,6 +25,8 @@ cd ${SCRIPT_DIR}/github-integration/
 cd ${SCRIPT_DIR}/server/
 ./gradlew bootRun > /dev/null &
 echo $! > /tmp/zally_server.pid
+
+exit # continue as root
 
 # Wait until Spring Boot will start
 while ! printf "GET / HTTP/1.0\n" | nc localhost 8080; do sleep 1; done
