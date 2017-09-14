@@ -9,8 +9,10 @@ popd > /dev/null
 #ZALLY_GO_PATH="${GOPATH}/src/github.com/zalando-incubator/zally"
 
 # Postgres needs a non-root user to init a database
-#adduser --disabled-password --gecos "" user
-#chown -R user:user ${SCRIPT_DIR}
+adduser --disabled-password --gecos "" user
+chown -R user:user ${SCRIPT_DIR}
+
+su -p user
 
 # Unit-test and build server
 cd ${SCRIPT_DIR}/server/
