@@ -1,0 +1,14 @@
+build_steps:
+- desc: "Install build dependencies"
+  cmd: |
+    apt-get update
+    apt-get install --no-install-recommends -y \
+      openjdk-8-jdk \
+    curl -fLOsS https://delivery.cloud.zalando.com/utils/ensure-docker && sh ensure-docker && rm ensure-docker
+- desc: "Build, test and push Zally Server"
+  cmd: |
+    cd server
+    ./gradlew test
+    ./gradlew build
+    docker build -t "pierone.stups.zalan.do/architecture/zally/${CDP_BUILD_VERSION}" .
+    docker push -t "pierone.stups.zalan.do/architecture/zally/${CDP_BUILD_VERSION}"
