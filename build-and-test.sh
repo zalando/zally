@@ -25,7 +25,7 @@ cd ${SCRIPT_DIR}/server/
 echo $! > /tmp/zally_server.pid
 
 # Wait until Spring Boot will start
-while ! echo "GET / HTTP/1.0\n" | nc localhost 8080; do sleep 1; done
+while ! printf "GET / HTTP/1.0\n" | nc localhost 8080; do sleep 1; done
 
 # Test and build CLI
 mkdir -p ${ZALLY_GO_PATH}
@@ -36,7 +36,7 @@ go get -v -t -tags=integration
 go build
 
 # Kill Zally server instace
-kill -9 `cat /tmp/zally_server.pid`
+kill -9 $(cat /tmp/zally_server.pid)
 
 # Unit-test web UI
 cd web-ui

@@ -9,4 +9,4 @@ build_steps:
     chmod +x /usr/bin/gimme
     eval "$(GIMME_GO_VERSION=1.8.3 gimme)"
 - desc: "Build and Test"
-  cmd: build-and-test.sh
+  cmd: bash build-and-test.sh
