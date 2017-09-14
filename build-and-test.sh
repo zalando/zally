@@ -14,14 +14,16 @@ chown -R user:user ${SCRIPT_DIR}
 
 su -p user
 
-# Unit-test and build server
-cd ${SCRIPT_DIR}/server/
-./gradlew build --info
+whoami
 
 # Unit-test and build GHE integration server
 cd ${SCRIPT_DIR}/github-integration/
 ./gradlew build --info
 
+## Unit-test and build server
+#cd ${SCRIPT_DIR}/server/
+#./gradlew build --info
+#
 ## Launch local zally server
 #cd ${SCRIPT_DIR}/server/
 #./gradlew bootRun > /dev/null &
