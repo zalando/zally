@@ -6,8 +6,13 @@ set -ex
 pushd $(dirname $0) > /dev/null
 SCRIPT_DIR=$(pwd -P)
 popd > /dev/null
-
 ZALLY_GO_PATH="$GOPATH/src/github.com/zalando-incubator/zally"
+
+# Postgres needs a non-root user to init a database
+adduser user
+chown -R user:user ${SCRIPT_DIR}
+chown -R user:user ${ZALLY_GO_PATH}
+su user
 
 # Unit-test and build server
 cd ${SCRIPT_DIR}/server/
@@ -33,7 +38,7 @@ go get -v -t -tags=integration
 ./test.sh integration
 go build
 
-# Kill Zally server instace
+# Kill Zally server instance
 kill -9 $(cat /tmp/zally_server.pid)
 
 # Unit-test web UI
