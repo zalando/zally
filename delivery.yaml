@@ -1,0 +1,12 @@
+build_steps:
+- desc: "Install Build Dependencies"
+  cmd: |
+    apt-get update -qq --allow-unauthenticated
+    apt-get install --no-install-recommends -y \
+      openjdk-8-jdk
+    curl -fLOsS https://delivery.cloud.zalando.com/utils/ensure-docker && sh ensure-docker && rm ensure-docker
+    curl -sL -o /usr/bin/gimme https://raw.githubusercontent.com/travis-ci/gimme/master/gimme
+    chmod +x /usr/bin/gimme
+    eval "$(GIMME_GO_VERSION=1.8.3 gimme)"
+- desc: "Build and Test"
+  cmd: build-and-test.sh
