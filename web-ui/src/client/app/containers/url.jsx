@@ -1,36 +1,70 @@
 import React from 'react';
-import {Violations} from './violations.jsx';
-import {ViolationsResult} from '../components/violations.jsx';
-import {URLInputForm} from '../components/url.jsx';
-
+import { Redirect } from 'react-router-dom';
+import { Violations } from './violations.jsx';
+import { ViolationsResult } from '../components/violations.jsx';
+import { URLInputForm } from '../components/url.jsx';
 
 export class URL extends Violations {
-  constructor (props) {
+  constructor(props) {
     super(props);
+    this.state.goToEditor = false;
     this.state.inputValue = this.Storage.getItem('url-value') || '';
+    this.handleOnInputValueChange = this.handleOnInputValueChange.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleOnEditFile = this.handleOnEditFile.bind(this);
   }
 
-  handleOnInputValueChange (event) {
+  handleOnInputValueChange(event) {
     this.Storage.setItem('url-value', event.target.value);
     super.handleOnInputValueChange(event);
   }
 
-  render () {
-    return (<div>
-      <URLInputForm
-        inputValue={this.state.inputValue}
-        onSubmit={this.handleFormSubmit.bind(this)}
-        onInputValueChange={this.handleOnInputValueChange.bind(this)}
-        pending={this.state.pending} />
+  handleOnEditFile() {
+    this.setState({ pending: true });
+    return this.props
+      .getFile(this.state.inputValue)
+      .then(file => {
+        this.Storage.setItem('editor-value', file);
+        this.setState({
+          pending: false,
+          goToEditor: true,
+        });
+      })
+      .catch(error => {
+        console.error(error); // eslint-disable-line no-console
 
-      <ViolationsResult
-        pending={this.state.pending}
-        complete={this.state.ajaxComplete}
-        errorMsgText={this.state.error}
-        violations={this.state.violations}
-        successMsgTitle={this.state.successMsgTitle}
-        successMsgText={this.state.successMsgText} />
-    </div>);
+        this.setState({
+          pending: false,
+          ajaxComplete: true,
+          error: error || Violations.DEFAULT_ERROR_MESSAGE,
+        });
+      });
+  }
+
+  render() {
+    if (this.state.goToEditor) {
+      return <Redirect to="/editor" />;
+    }
+
+    return (
+      <div>
+        <URLInputForm
+          inputValue={this.state.inputValue}
+          onSubmit={this.handleFormSubmit}
+          onInputValueChange={this.handleOnInputValueChange}
+          pending={this.state.pending}
+          onEditFile={this.handleOnEditFile}
+        />
+
+        <ViolationsResult
+          pending={this.state.pending}
+          complete={this.state.ajaxComplete}
+          errorMsgText={this.state.error}
+          violations={this.state.violations}
+          successMsgTitle={this.state.successMsgTitle}
+          successMsgText={this.state.successMsgText}
+        />
+      </div>
+    );
   }
 }
-

@@ -1,14 +1,13 @@
 import React from 'react';
-import {shallow} from 'enzyme';
-import {Msg} from '../dress-code.jsx';
+import { shallow } from 'enzyme';
+import { Msg } from '../msg.jsx';
 
 describe('Msg component', () => {
-
-  test('with default props should show the close button', () => {
+  test('with default props should not show the close button', () => {
     const component = shallow(<Msg />);
     const closeButton = component.find('.dc-msg__close');
 
-    expect(closeButton.length).toEqual(1);
+    expect(closeButton.length).toEqual(0);
   });
 
   test('with default props should use "info" type', () => {
@@ -19,9 +18,7 @@ describe('Msg component', () => {
   });
 
   test('should show title and text', () => {
-    const component = shallow(
-      <Msg title="Hello" text="World"/>
-    );
+    const component = shallow(<Msg title="Hello" text="World" />);
     const text = component.find('.dc-msg__text');
     const title = component.find('.dc-msg__title');
 
@@ -30,7 +27,7 @@ describe('Msg component', () => {
   });
 
   test('should use the type defined via related prop', () => {
-    const component = shallow(<Msg type="alert"/>);
+    const component = shallow(<Msg type="alert" />);
     const defaultContainer = component.find('.dc-msg--info');
     const container = component.find('.dc-msg--alert');
 
@@ -39,17 +36,16 @@ describe('Msg component', () => {
   });
 
   test('should invoke callback when close button is clicked', () => {
-    const onCloseButtonClick = jest.fn();
-    const component = shallow(<Msg onCloseButtonClick={onCloseButtonClick}/>);
+    const onCloseButton = jest.fn();
+    const component = shallow(<Msg onCloseButton={onCloseButton} />);
     component.find('.dc-msg__close').simulate('click');
 
-    expect(onCloseButtonClick).toHaveBeenCalled();
+    expect(onCloseButton).toHaveBeenCalled();
   });
 
   test('should hide close button', () => {
-    const component = shallow(<Msg closeButton={false}/>);
+    const component = shallow(<Msg />);
 
     expect(component.find('.dc-msg__close').length).toEqual(0);
   });
-
 });
