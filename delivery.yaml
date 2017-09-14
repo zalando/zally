@@ -3,7 +3,7 @@ build_steps:
   cmd: |
     apt-get update
     apt-get install --no-install-recommends -y \
-      openjdk-8-jdk \
+      openjdk-8-jdk
     curl -fLOsS https://delivery.cloud.zalando.com/utils/ensure-docker && sh ensure-docker && rm ensure-docker
 - desc: "Build, test and push Zally Server"
   cmd: |
