@@ -1,0 +1,4 @@
+build_steps:
+  - desc: "Install build dependencies"
+    cmd: |
+      cd server && ./gradlew test && ./gradlew build
