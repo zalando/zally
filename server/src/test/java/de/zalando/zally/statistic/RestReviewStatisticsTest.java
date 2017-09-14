@@ -113,6 +113,19 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
         assertThat(statistics.getTotalReviewsDeduplicated()).isEqualTo(2);
     }
 
+    @Test
+    public void deduplicatedReviewStatisticsShouldIgnoreApisWithoutName() {
+        LocalDate now = now().toLocalDate();
+        apiReviewRepository.save(apiReview(now, null));
+        apiReviewRepository.save(apiReview(now, ""));
+        apiReviewRepository.save(apiReview(now, "Nice API"));
+
+        ReviewStatistics statistics = getReviewStatistics();
+
+        assertThat(statistics.getReviews()).hasSize(3);
+        assertThat(statistics.getTotalReviewsDeduplicated()).isEqualTo(1);
+    }
+
     private List<ApiReview> createRandomReviewsInBetween(LocalDate from, LocalDate to) {
         List<ApiReview> reviews = new LinkedList<>();
 
