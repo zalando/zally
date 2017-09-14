@@ -18,10 +18,10 @@ su -p user
 cd ${SCRIPT_DIR}/server/
 ./gradlew build --info
 
-## Unit-test and build GHE integration server
-#cd ${SCRIPT_DIR}/github-integration/
-#./gradlew build --info
-#
+# Unit-test and build GHE integration server
+cd ${SCRIPT_DIR}/github-integration/
+./gradlew build --info
+
 ## Launch local zally server
 #cd ${SCRIPT_DIR}/server/
 #./gradlew bootRun > /dev/null &
