@@ -7,15 +7,13 @@ pushd $(dirname $0) > /dev/null
 SCRIPT_DIR=$(pwd -P)
 popd > /dev/null
 
-echo "SCRIPT DIR: $SCRIPT_DIR"
-
 ZALLY_GO_PATH="$GOPATH/src/github.com/zalando-incubator/zally"
 
 # Unit-test and build server
 cd ${SCRIPT_DIR}/server/
 ./gradlew build --info
 
-# Unit-test and build integration server
+# Unit-test and build GHE integration server
 cd ${SCRIPT_DIR}/github-integration/
 ./gradlew build --info
 
