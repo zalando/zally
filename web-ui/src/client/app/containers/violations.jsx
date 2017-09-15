@@ -1,7 +1,12 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router';
+import {LinkContainer} from 'react-router-bootstrap';
+import classNames from 'classnames';
 import {ViolationsResult} from '../components/violations.jsx';
 
+
+const Tab = ({active, children, ...props}) => (
+  <li className={classNames('dc-tab__element', {'dc-tab__element--active': active})} {...props}>{children}</li>
+)
 
 export function ViolationsTab (props) {
 
@@ -12,13 +17,11 @@ export function ViolationsTab (props) {
       <a href="http://zalando.github.io/restful-api-guidelines/" target="_blank" className="dc-link">Zalando's REST API Guidelines</a>
     </h4>
 
-    <div className="tab-navigation">
-      <div className="tab-navigation-group">
-        <Link to="/" className="dc-link tab-navigation__link" activeClassName="tab-navigation__link--active">BY URL</Link>
-        <Link to="/editor" className="dc-link tab-navigation__link" activeClassName="tab-navigation__link--active">EDITOR</Link>
-        <Link to="/rules" className="dc-link tab-navigation__link" activeClassName="tab-navigation__link--active">RULES</Link>
-      </div>
-    </div>
+    <ul className="dc-tab">
+      <LinkContainer to="/"><Tab>BY URL</Tab></LinkContainer>
+      <LinkContainer to="/editor"><Tab>EDITOR</Tab></LinkContainer>
+      <LinkContainer to="/rules"><Tab>RULES</Tab></LinkContainer>
+    </ul>
     <div className="tab-contents">
       {/* Mount child routes*/}
       {props.children}

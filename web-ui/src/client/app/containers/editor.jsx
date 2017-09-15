@@ -1,6 +1,6 @@
 import React from 'react';
 import yaml from 'js-yaml';
-import {Msg} from '../components/dress-code.jsx';
+import {Msg} from '../components/msg.jsx';
 import {Violations} from './violations.jsx';
 import {ViolationsResult} from '../components/violations.jsx';
 import {EditorInputForm} from '../components/editor.jsx';

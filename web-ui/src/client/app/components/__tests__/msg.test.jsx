@@ -1,6 +1,6 @@
 import React from 'react';
 import {shallow} from 'enzyme';
-import {Msg} from '../dress-code.jsx';
+import {Msg} from '../msg.jsx';
 
 describe('Msg component', () => {
 
@@ -39,15 +39,15 @@ describe('Msg component', () => {
   });
 
   test('should invoke callback when close button is clicked', () => {
-    const onCloseButtonClick = jest.fn();
-    const component = shallow(<Msg onCloseButtonClick={onCloseButtonClick}/>);
+    const onCloseButton = jest.fn();
+    const component = shallow(<Msg onCloseButton={onCloseButton}/>);
     component.find('.dc-msg__close').simulate('click');
 
-    expect(onCloseButtonClick).toHaveBeenCalled();
+    expect(onCloseButton).toHaveBeenCalled();
   });
 
   test('should hide close button', () => {
-    const component = shallow(<Msg closeButton={false}/>);
+    const component = shallow(<Msg />);
 
     expect(component.find('.dc-msg__close').length).toEqual(0);
   });
