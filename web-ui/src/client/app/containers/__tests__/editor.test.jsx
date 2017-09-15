@@ -7,27 +7,26 @@ jest.mock('../../components/editor.jsx', () => ({
 }));
 
 describe('Editor container component', () => {
-  let MockStorage, route;
+  let MockStorage;
 
   beforeEach(() => {
     MockStorage = {
       setItem: jest.fn(),
       getItem: jest.fn()
     };
-    route = { 'Storage': MockStorage };
   });
 
   test('should set expected state values when instantiated', () => {
     const editorValue = 'prop: foo';
     MockStorage.getItem.mockReturnValueOnce(editorValue);
-    const component = shallow(<Editor route={route} />);
+    const component = shallow(<Editor Storage={MockStorage} />);
     expect(component.state().editorValue).toBe(editorValue);
   });
 
   test('should set expected state values when componentDidMount', () => {
     const editorValue = 'prop: foo';
     MockStorage.getItem.mockReturnValueOnce(editorValue);
-    const component = shallow(<Editor route={route} />);
+    const component = shallow(<Editor Storage={MockStorage} />);
     component.instance().componentDidMount();
     expect(component.state().inputValue).toEqual({prop: 'foo'});
   });
@@ -37,7 +36,7 @@ describe('Editor container component', () => {
     const editorValue = 'prop: foo';
     const newEditorValue = 'foo: prop';
     MockStorage.getItem.mockReturnValueOnce(editorValue);
-    const component = shallow(<Editor route={route} />);
+    const component = shallow(<Editor Storage={MockStorage} />);
 
     component.instance().handleOnInputValueChange(newEditorValue);
 
@@ -48,7 +47,7 @@ describe('Editor container component', () => {
   });
 
   test('should use an empty string as editor value and input value if Storage doesn\'t contain an item', () => {
-    const component = shallow(<Editor route={route} />);
+    const component = shallow(<Editor Storage={MockStorage} />);
 
     expect(component.state().editorValue).toBe('');
     expect(component.state().inputValue).toBe('');
@@ -57,7 +56,7 @@ describe('Editor container component', () => {
   test('should show an en error if schema parsing fails', () => {
 
     MockStorage.getItem.mockReturnValueOnce('invalidyaml: \'2');
-    const component = shallow(<Editor route={route} />);
+    const component = shallow(<Editor Storage={MockStorage} />);
 
     component.instance().componentDidMount();
 

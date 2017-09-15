@@ -1,41 +1,13 @@
 import React, {Component} from 'react';
-import {LinkContainer} from 'react-router-bootstrap';
-import classNames from 'classnames';
 import {ViolationsResult} from '../components/violations.jsx';
-
-
-const Tab = ({active, children, ...props}) => (
-  <li className={classNames('dc-tab__element', {'dc-tab__element--active': active})} {...props}>{children}</li>
-)
-
-export function ViolationsTab (props) {
-
-  return (<div className="dc-container">
-    <h4 className="dc-h4">
-      Check if your&nbsp;
-      <a href="http://swagger.io/specification/" target="_blank" className="dc-link">SWAGGER Schema</a> conforms to&nbsp;
-      <a href="http://zalando.github.io/restful-api-guidelines/" target="_blank" className="dc-link">Zalando's REST API Guidelines</a>
-    </h4>
-
-    <ul className="dc-tab">
-      <LinkContainer to="/"><Tab>BY URL</Tab></LinkContainer>
-      <LinkContainer to="/editor"><Tab>EDITOR</Tab></LinkContainer>
-      <LinkContainer to="/rules"><Tab>RULES</Tab></LinkContainer>
-    </ul>
-    <div className="tab-contents">
-      {/* Mount child routes*/}
-      {props.children}
-    </div>
-  </div>);
-}
 
 export class Violations extends Component {
 
   constructor (props) {
     super(props);
 
-    this.Storage = this.props.route.Storage;
-    this.getApiViolations = this.props.route.getApiViolations;
+    this.Storage = this.props.Storage;
+    this.getApiViolations = this.props.getApiViolations;
 
     this.state = {
       error: null,

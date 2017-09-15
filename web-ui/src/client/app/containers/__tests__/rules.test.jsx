@@ -1,6 +1,8 @@
 import React from 'react';
 import {Rules} from '../rules.jsx';
 import {shallow} from 'enzyme';
+import 'url-search-params-polyfill';
+
 
 describe('Rules container component', () => {
   let component, props, container, getSupportedRules;
@@ -8,8 +10,8 @@ describe('Rules container component', () => {
   beforeEach(() => {
     getSupportedRules = jest.fn();
     props = {
-      route: { getSupportedRules: getSupportedRules },
-      location: { query: {} }
+      getSupportedRules: getSupportedRules,
+      location: { search: '' }
     };
     component = shallow(<Rules {...props}></Rules>);
     container = component.instance();
@@ -65,13 +67,13 @@ describe('Rules container component', () => {
       expect(container.parseFilterValue(null)).toBe(null);
     });
     test('should return null when empty object passed', () => {
-      expect(container.parseFilterValue({})).toBe(null);
+      expect(container.parseFilterValue('')).toBe(null);
     });
     test('should return correct object when is_active false', () => {
-      expect(container.parseFilterValue({'is_active': 'false'})).toEqual({is_active: false});
+      expect(container.parseFilterValue('?is_active=false')).toEqual({is_active: false});
     });
     test('should return correct object when is_active true', () => {
-      expect(container.parseFilterValue({'is_active': 'true'})).toEqual({is_active: true});
+      expect(container.parseFilterValue('?is_active=true')).toEqual({is_active: true});
     });
   });
 });

@@ -19,8 +19,8 @@ export class Msg extends React.Component {
               {this.props.text}
             </p>
           </div>
-          { typeof this.props.closeButton === 'function' ?
-            <div className="dc-msg__close" onClick={this.props.closeButton} >
+          { typeof this.props.onCloseButton === 'function' ?
+            <div className="dc-msg__close" onClick={this.props.onCloseButton} >
               <i className="dc-icon dc-icon--close dc-msg__close__icon"/>
             </div> : ''}
         </div>

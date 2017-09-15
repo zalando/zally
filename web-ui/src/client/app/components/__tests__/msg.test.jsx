@@ -4,11 +4,11 @@ import {Msg} from '../msg.jsx';
 
 describe('Msg component', () => {
 
-  test('with default props should show the close button', () => {
+  test('with default props should not show the close button', () => {
     const component = shallow(<Msg />);
     const closeButton = component.find('.dc-msg__close');
 
-    expect(closeButton.length).toEqual(1);
+    expect(closeButton.length).toEqual(0);
   });
 
   test('with default props should use "info" type', () => {

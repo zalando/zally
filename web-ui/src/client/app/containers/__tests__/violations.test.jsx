@@ -1,15 +1,18 @@
 import React from 'react';
-import {Violations, ViolationsTab} from '../violations.jsx';
+import {Violations} from '../violations.jsx';
+import ViolationsTab from '../violations-tab';
 import {shallow} from 'enzyme';
+
+jest.mock('../editor.jsx', () => ({
+  Editor: () => {}
+}));
 
 describe('Violations container component', () => {
   let component, props, container, event, getApiViolations;
 
   beforeEach(() => {
     getApiViolations = jest.fn();
-    props = {
-      route: { getApiViolations: getApiViolations }
-    };
+    props = {getApiViolations: getApiViolations};
     component = shallow(<Violations {...props}></Violations>);
     container = component.instance();
     event = {
@@ -47,7 +50,7 @@ describe('Violations container component', () => {
     });
 
     test('should handle failure', (done) => {
-      const mockError = { detail: 'error' };
+      const mockError = {detail: 'error'};
       container.state.inputValue = 'URL_WITH_AN_ERROR';
       getApiViolations.mockReturnValueOnce(Promise.reject(mockError));
       container.handleFormSubmit(event).catch(() => {
