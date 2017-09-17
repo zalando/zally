@@ -56,7 +56,7 @@ func TestIntegrationWithLocalYamlFile(t *testing.T) {
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, e.Error(), "Failing because: 6 must violation(s) found")
+		assert.Equal(t, e.Error(), "Failing because: 7 must violation(s) found")
 	})
 }
 
@@ -100,7 +100,7 @@ func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, e.Error(), "Failing because: 6 must violation(s) found")
+		assert.Equal(t, e.Error(), "Failing because: 7 must violation(s) found")
 	})
 }
 
