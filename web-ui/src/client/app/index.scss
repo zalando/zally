@@ -90,21 +90,6 @@ footer {
 /*
  * tabs
  */
-.tab-navigation {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-}
-
-.tab-navigation__link {
-  font-weight:bold;
-  padding: 1.2rem;
-}
-
-.tab-navigation__link--active {
-  background: $dc-gray80;
-}
-
 .tab-contents {
   background: $dc-gray80;
   padding: 1.8rem 1.2rem;
