@@ -3,7 +3,7 @@ import {BrowserRouter} from 'react-router-dom';
 import {App} from './app.jsx';
 
 export function Root (props) {
-  return (<BrowserRouter>
+  return (<BrowserRouter basename={props.env.MOUNTPATH}>
     <App
       login={props.login}
       logout={props.logout}
