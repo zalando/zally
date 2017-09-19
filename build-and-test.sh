@@ -7,15 +7,15 @@ pushd $(dirname $0) > /dev/null
 SCRIPT_DIR=$(pwd -P)
 popd > /dev/null
 
-readonly DOCKER_HOST="pierone.stups.zalan.do"
-readonly DOCKER_TEAM="architecture"
-readonly DOCKER_VERSION="${CDP_TARGET_BRANCH}-${CDP_TARGET_COMMIT_ID:0:8}-${CDP_TARGET_REPOSITORY_COUNTER}"
-readonly IS_PR_BUILD=${CDP_PULL_REQUEST_NUMBER+true}
+DOCKER_HOST="pierone.stups.zalan.do"
+DOCKER_TEAM="architecture"
+DOCKER_VERSION="${CDP_TARGET_BRANCH}-${CDP_TARGET_COMMIT_ID:0:8}-${CDP_TARGET_REPOSITORY_COUNTER}"
+IS_PR_BUILD=${CDP_PULL_REQUEST_NUMBER+true}
 
-readonly USER_HOME="/user"
-readonly ENV_FILE="${USER_HOME}/cdp.env"
-readonly GOPATH="${USER_HOME}/go"
-readonly ZALLY_GO_PATH="${GOPATH}/src/github.com/zalando-incubator/zally"
+USER_HOME="/user"
+ENV_FILE="${USER_HOME}/cdp.env"
+GOPATH="${USER_HOME}/go"
+ZALLY_GO_PATH="${GOPATH}/src/github.com/zalando-incubator/zally"
 
 mkdir -p ${ZALLY_GO_PATH}
 
@@ -88,6 +88,8 @@ if [ "$IS_PR_BUILD" = true ]; then
   echo "We're in a pull request, aborting."
   exit 0
 fi
+
+#TODO Build docker images only of the components which were changed
 
 # Build and push GHE Integration Docker image
 cd ${SCRIPT_DIR}/github-integration
