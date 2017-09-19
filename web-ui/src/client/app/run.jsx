@@ -1,6 +1,6 @@
 import React from 'react';
 import {render} from 'react-dom';
-import {logout, login, onEnterRequireLogin} from './services/oauth-util.js';
+import {logout, login} from './services/oauth-util.js';
 import firewall from './services/oauth-firewall.js';
 import {Storage} from './services/storage.js';
 import {RestService} from './services/rest.js';
@@ -14,7 +14,6 @@ export function run () {
           user={user}
           logout={logout}
           login={login}
-          onEnterRequireLogin={onEnterRequireLogin({user, loginLocation: '/login'})}
           env={window.env}
           RestService={RestService}
           Storage={Storage}

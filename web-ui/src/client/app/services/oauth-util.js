@@ -58,17 +58,3 @@ export function logout () {
 export function login () {
   window.location.href = '/auth/login';
 }
-
-/**
- * Return a function meant to be used with the ```onEnter``` react router hook.
- * If auth is enabled and the user is not authenticated the function will "redirect" to login.
- *
- * @param {Object} props
- * @param {Object} props.user - a user
- * @param {string} props.loginLocation - login page location (eg. '/login')
- * @return {Function}
- */
-export function onEnterRequireLogin (props) {
-  return window.env.OAUTH_ENABLED
-  && !props.user.authenticated ? (o, replace) => replace(props.loginLocation) : () => {};
-}

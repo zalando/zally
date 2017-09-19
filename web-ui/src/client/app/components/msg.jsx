@@ -10,7 +10,7 @@ export class Msg extends React.Component {
         <div className="dc-msg__inner">
 
           <div className="dc-msg__icon-frame">
-            <i className={'dc-icon dc-msg__icon dc-icon--' + type}></i>
+            <i className={'dc-icon dc-msg__icon dc-icon--' + type}/>
           </div>
 
           <div className="dc-msg__bd">
@@ -19,9 +19,9 @@ export class Msg extends React.Component {
               {this.props.text}
             </p>
           </div>
-          { this.props.closeButton !== false ?
-            <div className="dc-msg__close" onClick={this.props.onCloseButtonClick} >
-              <i className="dc-icon dc-icon--close dc-msg__close__icon"></i>
+          { typeof this.props.onCloseButton === 'function' ?
+            <div className="dc-msg__close" onClick={this.props.onCloseButton} >
+              <i className="dc-icon dc-icon--close dc-msg__close__icon"/>
             </div> : ''}
         </div>
       </div>

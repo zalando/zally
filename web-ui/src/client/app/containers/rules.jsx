@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router';
+import {NavLink, Redirect} from 'react-router-dom';
 import {RulesTab} from '../components/rules.jsx';
 
 
@@ -17,26 +17,27 @@ export class Rules extends Component {
   }
 
   componentDidMount () {
-    this.state.filter = this.parseFilterValue(this.props.location.query);
-    this.fetchRules();
+    this.state.filter = this.parseFilterValue(this.props.location.search);
+    this.fetchRules(this.state.filter);
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.location.query['is_active'] !== this.props.location.query['is_active']) {
-      this.setState({filter: this.parseFilterValue(nextProps.location.query)});
+    if (nextProps.location.search !== this.props.location.search) {
+      const newFilter = this.parseFilterValue(nextProps.location.search);
+      if (newFilter !== this.state.filter) {
+        this.setState({filter: newFilter});
+        this.fetchRules(newFilter);
+      }
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
-    if (prevState.filter !== this.state.filter) {
-      this.fetchRules();
+  fetchRules (filter) {
+    if (filter === null) {
+      return;
     }
-  }
-
-  fetchRules () {
-    this.setState({ error: null, pending: true, ajaxComplete: false });
-    const {getSupportedRules} = this.props.route;
-    return getSupportedRules(this.state.filter)
+    this.setState({error: null, pending: true, ajaxComplete: false});
+    const {getSupportedRules} = this.props;
+    return getSupportedRules(filter)
       .then((response) => {
         this.setState({
           error: null,
@@ -58,29 +59,52 @@ export class Rules extends Component {
       });
   }
 
-  parseFilterValue (query) {
-    if (query && query['is_active'] !== undefined) {
-      return { is_active: query['is_active'] === 'true' };
+  parseFilterValue (search) {
+    if (!search) {
+      return null;
+    }
+    const params = new URLSearchParams(search);
+    const isActive = params.get('is_active');
+    if (isActive !== undefined) {
+      return {is_active: isActive === 'true'};
     }
     return null;
   }
 
+  sameFilter (flag) {
+    return () => {
+      if (this.state.filter === null) {
+        return false;
+      }
+      return this.state.filter.is_active === flag;
+    };
+  }
+
   render () {
+    if (this.state.filter === null) {
+      return <Redirect to={{pathname: '/rules', search: '?is_active=true'}}/>;
+    }
+
+
     return (
       <div>
         <div className="dc-row">
           <div className="dc-column dc-column--small-12 dc-column--large-7">
             <label className="dc-label filter-navigation__label">Show only</label>
             <div className="dc-btn-group dc-btn-group--in-row">
-              <Link to={{ pathname: '/rules', query: {is_active: true}}} className="dc-btn dc-btn--small dc-btn--in-btn-group" activeClassName="dc-btn--primary">Active</Link>
-              <Link to={{ pathname: '/rules', query: {is_active: false}}} className="dc-btn dc-btn--small dc-btn--in-btn-group" activeClassName="dc-btn--primary">Inactive</Link>
+              <NavLink to={{pathname: '/rules', search: '?is_active=true'}}
+                       className="dc-btn dc-btn--small dc-btn--in-btn-group"
+                       activeClassName="dc-btn--primary" isActive={this.sameFilter(true)}>Active</NavLink>
+              <NavLink to={{pathname: '/rules', search: '?is_active=false'}}
+                       className="dc-btn dc-btn--small dc-btn--in-btn-group"
+                       activeClassName="dc-btn--primary" isActive={this.sameFilter(false)}>Inactive</NavLink>
             </div>
           </div>
         </div>
         <div className="dc-row">
           <div className="dc-column dc-column--small-12 dc-column--large-7">
             <div className="dc-column__contents">
-              <RulesTab error={this.state.error} rules={this.state.rules}></RulesTab>
+              <RulesTab error={this.state.error} rules={this.state.rules}/>
             </div>
           </div>
         </div>

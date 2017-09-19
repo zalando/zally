@@ -1,6 +1,6 @@
 import React from 'react';
 import {If} from './util.jsx';
-import {Msg} from './dress-code.jsx';
+import {Msg} from './msg.jsx';
 import {RuleType} from './rules.jsx';
 
 export function Violations (props) {
@@ -61,10 +61,10 @@ export function ViolationsResult (props){
         <div className="violations-result__spinner"><div className="dc-spinner dc-spinner--small"></div></div>
       </If>
       <If test={() => !props.pending && props.complete && !props.errorMsgText && props.violations.length === 0} dataTestId="if-success">
-        <Msg type="success" title={props.successMsgTitle} text={props.successMsgText} closeButton={false}  />
+        <Msg type="success" title={props.successMsgTitle} text={props.successMsgText} />
       </If>
       <If test={() => !props.pending && props.complete && props.errorMsgText} dataTestId="if-error">
-        <Msg type="error" title="ERROR" text={props.errorMsgText} closeButton={false} />
+        <Msg type="error" title="ERROR" text={props.errorMsgText} />
       </If>
       <If test={() => !props.pending && props.complete && props.violations.length} dataTestId="if-violations">
         <Violations violations={props.violations} violationsCount={props.violationsCount}/>
