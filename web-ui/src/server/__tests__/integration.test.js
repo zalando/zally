@@ -7,24 +7,30 @@ describe('zally-web-ui standalone', () => {
 
   describe('GET /', () => {
     test('endpoint should respond as expected', () => {
-      return request(app).get('/')
+      return request(app)
+        .get('/')
         .expect(200)
         .expect('Content-Type', /html/)
-        .then((res) => {
+        .then(res => {
           expect(res.text).toMatch(/<title>Zally API Linter WEB UI/);
-          expect(res.text).toMatch(/<script src="\/env.js" type="text\/javascript"><\/script>/);
+          expect(res.text).toMatch(
+            /<script src="\/env.js" type="text\/javascript"><\/script>/
+          );
           expect(res.text).toMatch(/<div id="app"><\/div>/);
-          expect(res.text).toMatch(/<script src="\/assets\/bundle.js" type="text\/javascript"><\/script>/);
+          expect(res.text).toMatch(
+            /<script src="\/assets\/bundle.js" type="text\/javascript"><\/script>/
+          );
         });
     });
   });
 
   describe('GET /env.js', () => {
     test('GET /env.js endpoint should respond as expected', () => {
-      return request(app).get('/env.js')
+      return request(app)
+        .get('/env.js')
         .expect(200)
         .expect('Content-Type', 'text/javascript')
-        .then((res) => {
+        .then(res => {
           expect(res.text).toMatch(/window\.env = \{.*\}/);
         });
     });
@@ -39,12 +45,17 @@ describe('zally-web-ui mount', () => {
 
   describe('GET /linter', () => {
     test('endpoint should respond as expected', () => {
-      return request(app).get('/linter')
+      return request(app)
+        .get('/linter')
         .expect(200)
         .expect('Content-Type', /html/)
-        .then((res) => {
-          expect(res.text).toMatch(/<script src="\/linter\/env.js" type="text\/javascript"><\/script>/);
-          expect(res.text).toMatch(/<script src="\/linter\/assets\/bundle.js" type="text\/javascript"><\/script>/);
+        .then(res => {
+          expect(res.text).toMatch(
+            /<script src="\/linter\/env.js" type="text\/javascript"><\/script>/
+          );
+          expect(res.text).toMatch(
+            /<script src="\/linter\/assets\/bundle.js" type="text\/javascript"><\/script>/
+          );
         });
     });
   });
