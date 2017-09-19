@@ -16,8 +16,10 @@ USER_HOME="/user"
 ENV_FILE="${USER_HOME}/cdp.env"
 GOPATH="${USER_HOME}/go"
 ZALLY_GO_PATH="${GOPATH}/src/github.com/zalando-incubator/zally"
+TMP_DIR="/tmp"
 
 mkdir -p ${ZALLY_GO_PATH}
+mkdir -p ${TMP_DIR}
 
 # Setup a user for tests
 adduser --disabled-password --home ${USER_HOME} --gecos "" user
@@ -26,6 +28,7 @@ echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 chown -R user:user ${SCRIPT_DIR}
 chown -R user:user ${ZALLY_GO_PATH}
 chown -R user:user ${USER_HOME}
+chown -R user:user ${TMP_DIR}
 
 echo "SCRIPT_DIR=${SCRIPT_DIR}" >> ${ENV_FILE}
 echo "GOPATH=${GOPATH}" >> ${ENV_FILE}
@@ -93,8 +96,8 @@ fi
 
 # Build and push GHE Integration Docker image
 cd ${SCRIPT_DIR}/github-integration
-docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/ghe-integration:${DOCKER_VERSION}" .
-docker push "${DOCKER_HOST}/${DOCKER_TEAM}/ghe-integration:${DOCKER_VERSION}"
+docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/bark:${DOCKER_VERSION}" .
+docker push "${DOCKER_HOST}/${DOCKER_TEAM}/bark:${DOCKER_VERSION}"
 
 # Build and push Zally Server Docker image
 cd ${SCRIPT_DIR}/server
