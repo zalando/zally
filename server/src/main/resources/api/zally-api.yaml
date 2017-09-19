@@ -226,28 +226,36 @@ definitions:
       - reviews
     properties:
       total_reviews:
-        type: number
+        type: integer
+        format: int32
         example: 23
       total_reviews_deduplicated:
-        type: number
+        type: integer
+        format: int32
         example: 12
       successful_reviews:
-        type: number
+        type: integer
+        format: int32
         example: 17
       number_of_endpoints:
-        type: number
+        type: integer
+        format: int32
         example: 10
       must_violations:
-        type: number
+        type: integer
+        format: int32
         example: 123
       should_violations:
-        type: number
+        type: integer
+        format: int32
         example: 81
       may_violations:
-        type: number
+        type: integer
+        format: int32
         example: 32
       hint_violations:
-        type: number
+        type: integer
+        format: int32
         example: 5
       violations:
         type: array
@@ -273,7 +281,8 @@ definitions:
       successful:
         type: boolean
       number_of_endpoints:
-        type: number
+        type: integer
+        format: int32
         example: 7
       violations:
         type: array
@@ -299,7 +308,8 @@ definitions:
         - MAY
         - HINT
       occurrence:
-        type: number
+        type: integer
+        format: int32
         example: 6
 
   Violation:
@@ -340,14 +350,19 @@ definitions:
     properties:
       must:
         type: integer
+        format: int32
       should:
         type: integer
+        format: int32
       may:
         type: integer
+        format: int32
       could:
         type: integer
+        format: int32
       hint:
         type: integer
+        format: int32
 
   Rule:
     type: object
