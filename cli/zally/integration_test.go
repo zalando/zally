@@ -56,7 +56,7 @@ func TestIntegrationWithLocalYamlFile(t *testing.T) {
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, e.Error(), "Failing because: 7 must violation(s) found")
+		assert.Equal(t, "Failing because: 7 must violation(s) found", e.Error())
 	})
 }
 
@@ -71,7 +71,7 @@ func TestIntegrationWithSomeOtherLocalYamlFile(t *testing.T) {
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, e.Error(), "Failing because: 8 must violation(s) found")
+		assert.Equal(t, "Failing because: 8 must violation(s) found", e.Error())
 	})
 }
 
@@ -100,7 +100,7 @@ func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, e.Error(), "Failing because: 7 must violation(s) found")
+		assert.Equal(t, "Failing because: 7 must violation(s) found", e.Error())
 	})
 }
 
@@ -114,7 +114,7 @@ func TestIntegrationWithRemoteJsonFile(t *testing.T) {
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, e.Error(), "Failing because: 2 must violation(s) found")
+		assert.Equal(t, "Failing because: 2 must violation(s) found", e.Error())
 	})
 }
 
