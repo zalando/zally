@@ -1,4 +1,4 @@
-const {RequestMock} = require('../__mocks__/util-mocks');
+const { RequestMock } = require('../__mocks__/util-mocks');
 
 describe('http-client', () => {
   beforeEach(() => {

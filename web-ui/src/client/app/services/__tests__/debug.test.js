@@ -1,17 +1,15 @@
 /* global global */
 /* eslint-disable no-console */
-const {debug} = require('../debug');
+const { debug } = require('../debug');
 
 describe('debug', () => {
-
   console.log = jest.genMockFn();
 
   afterEach(() => {
     delete global.window;
   });
 
-  describe('don\'t log', () => {
-
+  describe("don't log", () => {
     test('log if window is not defined', () => {
       debug();
       expect(console.log).not.toHaveBeenCalled();
@@ -23,7 +21,7 @@ describe('debug', () => {
       expect(console.log).not.toHaveBeenCalled();
     });
 
-    test('don\'t log if window.env.DEBUG is != true', () => {
+    test("don't log if window.env.DEBUG is != true", () => {
       global.window = { env: { DEBUG: false } };
       debug();
       expect(console.log).not.toHaveBeenCalled();
@@ -47,5 +45,4 @@ describe('debug', () => {
       expect(console.debug).toHaveBeenCalled();
     });
   });
-
 });

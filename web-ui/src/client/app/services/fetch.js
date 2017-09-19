@@ -1,4 +1,4 @@
-function handleResponse (response) {
+function handleResponse(response) {
   if (response.status >= 400) {
     const error = new Error(response.statusText || response.status);
     error.status = response.status;
@@ -8,8 +8,6 @@ function handleResponse (response) {
   return Promise.resolve(response);
 }
 
-export default function () {
-  return fetch
-    .apply(null, arguments)
-    .then(handleResponse);
+export default function() {
+  return fetch.apply(null, arguments).then(handleResponse);
 }
