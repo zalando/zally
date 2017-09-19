@@ -30,7 +30,7 @@ func TestListRules(t *testing.T) {
 		testServer := httptest.NewServer(http.HandlerFunc(handler))
 		defer testServer.Close()
 
-		err := listRules(getContext(testServer.URL, "mustt"))
+		err := listRules(getSupportedRulesContext(testServer.URL, "mustt"))
 		tests.AssertEquals(t, "mustt is not supported", err.Error())
 	})
 
@@ -43,7 +43,7 @@ func TestListRules(t *testing.T) {
 		testServer := httptest.NewServer(http.HandlerFunc(handler))
 		defer testServer.Close()
 
-		err := listRules(getContext(testServer.URL, "must"))
+		err := listRules(getSupportedRulesContext(testServer.URL, "must"))
 		expectedError := fmt.Sprintf(
 			"Get %s/supported-rules?type=must: net/http: request canceled"+
 				" (Client.Timeout exceeded while awaiting headers)",
@@ -123,7 +123,7 @@ func TestValidateType(t *testing.T) {
 	})
 }
 
-func getContext(url string, ruleType string) *cli.Context {
+func getSupportedRulesContext(url string, ruleType string) *cli.Context {
 	globalSet := flag.NewFlagSet("test", 0)
 	globalSet.String("linter-service", url, "doc")
 	globalSet.String("token", "test-token", "doc")
