@@ -1,0 +1,8 @@
+build_steps:
+- desc: "Install Build Dependencies"
+  cmd: |
+    apt-get update -qq --allow-unauthenticated
+    apt-get install --no-install-recommends -y openjdk-8-jdk curl netcat sudo
+    curl -fLOsS https://delivery.cloud.zalando.com/utils/ensure-docker && sh ensure-docker
+- desc: "Build and Test"
+  cmd: bash build-and-test.sh
