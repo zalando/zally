@@ -1,7 +1,9 @@
 'use strict';
 
 describe('webpack-dev-server-proxy-handler', () => {
-  let webpackDevServerProxyHandlerFactory, webpackDevServerProxyHandler, mockRequest;
+  let webpackDevServerProxyHandlerFactory,
+    webpackDevServerProxyHandler,
+    mockRequest;
 
   beforeEach(() => {
     jest.resetModules();
@@ -12,11 +14,11 @@ describe('webpack-dev-server-proxy-handler', () => {
       publicPath: '/assets',
       protocol: 'http',
       host: 'localhost',
-      port: 8000
+      port: 8000,
     });
   });
 
-  test('it\'s a function representing the handler', () => {
+  test("it's a function representing the handler", () => {
     expect(typeof webpackDevServerProxyHandler).toEqual('function');
   });
 
@@ -25,14 +27,16 @@ describe('webpack-dev-server-proxy-handler', () => {
     const res = {};
     const mockRequestResponse = {
       on: jest.fn().mockImplementationOnce((event, cb) => {
-        cb({statusCode: 200});
+        cb({ statusCode: 200 });
       }),
-      pipe: jest.fn()
+      pipe: jest.fn(),
     };
     mockRequest.mockReturnValueOnce(mockRequestResponse);
 
     webpackDevServerProxyHandler(req, res);
-    expect(mockRequest).toHaveBeenCalledWith('http://localhost:8000/assets/bundle.js');
+    expect(mockRequest).toHaveBeenCalledWith(
+      'http://localhost:8000/assets/bundle.js'
+    );
     expect(mockRequestResponse.pipe).toHaveBeenCalledWith(res);
   });
 
@@ -42,13 +46,15 @@ describe('webpack-dev-server-proxy-handler', () => {
     const mockNext = jest.fn();
     const mockRequestResponse = {
       on: jest.fn().mockImplementationOnce((event, cb) => {
-        cb({statusCode: 400});
-      })
+        cb({ statusCode: 400 });
+      }),
     };
     mockRequest.mockReturnValueOnce(mockRequestResponse);
 
     webpackDevServerProxyHandler(req, res, mockNext);
-    expect(mockRequest).toHaveBeenCalledWith('http://localhost:8000/assets/bundle.js');
+    expect(mockRequest).toHaveBeenCalledWith(
+      'http://localhost:8000/assets/bundle.js'
+    );
     expect(mockNext).toHaveBeenCalled();
   });
 });

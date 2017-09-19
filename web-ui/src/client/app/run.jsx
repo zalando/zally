@@ -1,24 +1,23 @@
 import React from 'react';
-import {render} from 'react-dom';
-import {logout, login} from './services/oauth-util.js';
+import { render } from 'react-dom';
+import { logout, login } from './services/oauth-util.js';
 import firewall from './services/oauth-firewall.js';
-import {Storage} from './services/storage.js';
-import {RestService} from './services/rest.js';
-import {Root} from './containers/root.jsx';
+import { Storage } from './services/storage.js';
+import { RestService } from './services/rest.js';
+import { Root } from './containers/root.jsx';
 
-export function run () {
-  return firewall()
-    .then(({user}) => {
-      return render(
-        <Root
-          user={user}
-          logout={logout}
-          login={login}
-          env={window.env}
-          RestService={RestService}
-          Storage={Storage}
-          />,
-        document.getElementById('app')
-      );
-    });
+export function run() {
+  return firewall().then(({ user }) => {
+    return render(
+      <Root
+        user={user}
+        logout={logout}
+        login={login}
+        env={window.env}
+        RestService={RestService}
+        Storage={Storage}
+      />,
+      document.getElementById('app')
+    );
+  });
 }
