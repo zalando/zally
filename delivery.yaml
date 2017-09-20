@@ -17,4 +17,4 @@ build_steps:
     bash <(curl -s https://codecov.io/bash) -f github-integration/build/reports/jacoco/test/jacocoTestReport.xml
     bash <(curl -s https://codecov.io/bash) -f cli/zally/coverage.txt -f web-ui/target/coverage/lcov.info
 - desc: "Build and Push Docker Images"
-  cmd:
+  cmd: bash ./delivery/build-and-push.sh
