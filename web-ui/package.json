@@ -11,20 +11,29 @@
     "dev": "webpack-dev-server & NODE_ENV=development nodemon server.js",
     "build": "webpack -p",
     "lint": "eslint src --ext .jsx --ext .js",
-    "lint:report": "npm run lint -- -f checkstyle --output-file target/checkstyle.xml",
+    "lint:report":
+      "npm run lint -- -f checkstyle --output-file target/checkstyle.xml",
     "jest": "NODE_ENV=test jest --coverage --no-cache --config ./jest.json",
     "test": "npm run lint:report && npm run jest",
-    "codecov": "codecov -F webui -f target/coverage/lcov.info"
+    "codecov": "codecov -F webui -f target/coverage/lcov.info",
+    "precommit": "lint-staged"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zalando-incubator/zally.git"
   },
-  "keywords": [
-    "API",
-    "Linter",
-    "Zally"
-  ],
+  "lint-staged": {
+    "gitDir": "../",
+    "linters": {
+      "*.{js,jsx,json,scss}": ["prettier --write", "git add"]
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "trailingComma": "es5",
+    "singleQuote": true
+  },
+  "keywords": ["API", "Linter", "Zally"],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/zalando-incubator/zally/issues"
@@ -32,36 +41,44 @@
   "homepage": "https://github.com/zalando-incubator/zally/web-ui#readme",
   "dependencies": {
     "aurelia-fetch-client": "1.1.2",
-    "dress-code": "2.0.0",
+    "dress-code": "2.1.1",
     "express": "4.15.2",
-    "history": "3.0.0",
+    "history": "4.7.2",
     "lodash": "4.17.4",
     "pug": "2.0.0-rc.1",
     "react": "15.4.2",
     "react-ace": "5.2.0",
     "react-dom": "15.4.2",
-    "react-router": "3.0.4",
+    "react-router": "4.2.0",
+    "react-router-bootstrap": "0.24.4",
+    "react-router-dom": "4.2.2",
     "request": "2.81.0",
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
     "babel-core": "6.24.0",
     "babel-loader": "6.4.0",
+    "babel-plugin-transform-object-rest-spread": "6.26.0",
     "babel-preset-es2015": "6.24.0",
     "babel-preset-react": "6.23.0",
     "codecov": "2.1.0",
     "css-loader": "0.28.0",
     "enzyme": "2.8.0",
     "eslint": "3.18.0",
+    "eslint-config-prettier": "2.5.0",
     "eslint-plugin-jest": "19.0.1",
     "eslint-plugin-react": "6.10.3",
+    "husky": "0.14.3",
     "jest": "19.0.2",
+    "lint-staged": "4.2.1",
     "node-sass": "4.5.2",
     "nodemon": "1.11.0",
+    "prettier": "1.7.0",
     "react-addons-test-utils": "15.4.2",
     "sass-loader": "6.0.3",
     "style-loader": "0.16.1",
     "supertest": "3.0.0",
+    "url-search-params-polyfill": "2.0.1",
     "webpack": "2.2.1",
     "webpack-dev-server": "2.4.2"
   }

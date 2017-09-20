@@ -1,6 +1,6 @@
 import React from 'react';
-import {shallow} from 'enzyme';
-import {default as UserInfo} from '../user-info.jsx';
+import { shallow } from 'enzyme';
+import { default as UserInfo } from '../user-info.jsx';
 
 describe('UserInfo component', () => {
   let handleLogout, component, userElem, logoutLink;
@@ -8,7 +8,13 @@ describe('UserInfo component', () => {
 
   beforeEach(() => {
     handleLogout = jest.fn();
-    component = shallow(<UserInfo username={username} authenticated={true} onLogout={handleLogout}/>);
+    component = shallow(
+      <UserInfo
+        username={username}
+        authenticated={true}
+        onLogout={handleLogout}
+      />
+    );
     userElem = component.find('.user-info__icon');
     logoutLink = component.find('.user-info__logout');
   });
@@ -21,7 +27,7 @@ describe('UserInfo component', () => {
 
   describe('when clicking on logout link', () => {
     test('should handle the action', () => {
-      logoutLink.simulate('click', {preventDefault () {}});
+      logoutLink.simulate('click', { preventDefault() {} });
       expect(handleLogout).toHaveBeenCalled();
     });
   });

@@ -1,10 +1,16 @@
 import React from 'react';
-import {shallow} from 'enzyme';
-import {ViolationRuleLink, ViolationPaths, Violations, Violation, ViolationsResult} from '../violations.jsx';
+import { shallow } from 'enzyme';
+import {
+  ViolationRuleLink,
+  ViolationPaths,
+  Violations,
+  Violation,
+  ViolationsResult,
+} from '../violations.jsx';
 
 describe('ViolationRuleLink component', () => {
   test('should return a rule link', () => {
-    const component = shallow(<ViolationRuleLink ruleLink='foo'/>);
+    const component = shallow(<ViolationRuleLink ruleLink="foo" />);
     const link = component.find('a');
 
     expect(link.length).toEqual(1);
@@ -32,28 +38,30 @@ describe('Violations component', () => {
   });
 });
 
-
 describe('Violation component', () => {
   test('should render a violation', () => {
     const violation = {
-      'rule': {
-        'name':'NoUnusedDefinitionsRule',
-        'title':'Do not leave unused definitions',
-        'violationType':'SHOULD',
-        'url':'',
-        'code':'S005'
+      rule: {
+        name: 'NoUnusedDefinitionsRule',
+        title: 'Do not leave unused definitions',
+        violationType: 'SHOULD',
+        url: '',
+        code: 'S005',
       },
-      'title':'Do not leave unused definitions',
-      'description':'Found 1 unused definitions',
-      'violation_type':'SHOULD',
-      'rule_link':'link',
-      'paths':['#/definitions/Pet']
+      title: 'Do not leave unused definitions',
+      description: 'Found 1 unused definitions',
+      violation_type: 'SHOULD',
+      rule_link: 'link',
+      paths: ['#/definitions/Pet'],
     };
 
     const component = shallow(<Violation violation={violation} />);
-    const IfViolationRuleLinkSelector = 'If[dataTestId="if-violation-rule-link"]';
+    const IfViolationRuleLinkSelector =
+      'If[dataTestId="if-violation-rule-link"]';
     const IfViolationRuleLink = component.find(IfViolationRuleLinkSelector);
-    const ViolationRuleLink = IfViolationRuleLink.dive().find('ViolationRuleLink');
+    const ViolationRuleLink = IfViolationRuleLink.dive().find(
+      'ViolationRuleLink'
+    );
     const IfViolationPathsSelector = 'If[dataTestId="if-violation-paths"]';
     const IfViolationPaths = component.find(IfViolationPathsSelector);
     const ViolationPaths = IfViolationPaths.dive().find('ViolationPaths');
@@ -70,29 +78,38 @@ describe('Violation component', () => {
 describe('ViolationsResult component', () => {
   describe('when state is pending', () => {
     test('should render loading spinner', () => {
-      const component = shallow(<ViolationsResult
+      const component = shallow(
+        <ViolationsResult
           pending={true}
           complete={false}
           errorMsgText={null}
           violations={[]}
-          successMsgTitle='Good Job!'
-          successMsgText='No violations found in the analyzed schema.'
-        />);
+          successMsgTitle="Good Job!"
+          successMsgText="No violations found in the analyzed schema."
+        />
+      );
 
-      expect(component.find('If[dataTestId="if-loading"]').dive().find('.dc-spinner--small').length).toEqual(1);
+      expect(
+        component
+          .find('If[dataTestId="if-loading"]')
+          .dive()
+          .find('.dc-spinner--small').length
+      ).toEqual(1);
     });
   });
 
   describe('when state is complete with no violations', () => {
     test('should render well done message', () => {
-      const component = shallow(<ViolationsResult
+      const component = shallow(
+        <ViolationsResult
           pending={false}
           complete={true}
           errorMsgText={null}
           violations={[]}
-          successMsgTitle='Good Job!'
-          successMsgText='No violations found in the analyzed schema.'
-        />);
+          successMsgTitle="Good Job!"
+          successMsgText="No violations found in the analyzed schema."
+        />
+      );
 
       const IfSuccessSelector = 'If[dataTestId="if-success"]';
       const IfSuccess = component.find(IfSuccessSelector);
@@ -101,20 +118,24 @@ describe('ViolationsResult component', () => {
       expect(Msg.length).toEqual(1);
       expect(Msg.prop('type')).toEqual('success');
       expect(Msg.prop('title')).toEqual('Good Job!');
-      expect(Msg.prop('text')).toEqual('No violations found in the analyzed schema.');
+      expect(Msg.prop('text')).toEqual(
+        'No violations found in the analyzed schema.'
+      );
     });
   });
 
   describe('when state is complete with errors', () => {
     test('should render error  message', () => {
-      const component = shallow(<ViolationsResult
+      const component = shallow(
+        <ViolationsResult
           pending={false}
           complete={true}
           errorMsgText={'Server Error'}
           violations={[]}
-          successMsgTitle=''
-          successMsgText=''
-        />);
+          successMsgTitle=""
+          successMsgText=""
+        />
+      );
 
       const IfErrorSelector = 'If[dataTestId="if-error"]';
       const IfError = component.find(IfErrorSelector);
@@ -130,15 +151,17 @@ describe('ViolationsResult component', () => {
   describe('when state is complete with violations', () => {
     test('should render violations', () => {
       const violations = [{}, {}];
-      const component = shallow(<ViolationsResult
+      const component = shallow(
+        <ViolationsResult
           pending={false}
           complete={true}
           errorMsgText={null}
           violations={violations}
-          violationsCount ={2}
-          successMsgTitle=''
-          successMsgText=''
-        />);
+          violationsCount={2}
+          successMsgTitle=""
+          successMsgText=""
+        />
+      );
 
       const IfViolationsSelector = 'If[dataTestId="if-violations"]';
       const IfViolations = component.find(IfViolationsSelector);

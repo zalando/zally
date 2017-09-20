@@ -1,20 +1,23 @@
 import React from 'react';
-import {Violations, ViolationsTab} from '../violations.jsx';
-import {shallow} from 'enzyme';
+import { Violations } from '../violations.jsx';
+import ViolationsTab from '../violations-tab';
+import { shallow } from 'enzyme';
+
+jest.mock('../editor.jsx', () => ({
+  Editor: () => {},
+}));
 
 describe('Violations container component', () => {
   let component, props, container, event, getApiViolations;
 
   beforeEach(() => {
     getApiViolations = jest.fn();
-    props = {
-      route: { getApiViolations: getApiViolations }
-    };
-    component = shallow(<Violations {...props}></Violations>);
+    props = { getApiViolations: getApiViolations };
+    component = shallow(<Violations {...props} />);
     container = component.instance();
     event = {
       preventDefault: jest.fn(),
-      target: {}
+      target: {},
     };
   });
 
@@ -30,10 +33,12 @@ describe('Violations container component', () => {
     test('should handle success', () => {
       const violations = [{}];
       const violationsCount = 1;
-      getApiViolations.mockReturnValueOnce(Promise.resolve({
-        violations: violations,
-        violations_count: violationsCount
-      }));
+      getApiViolations.mockReturnValueOnce(
+        Promise.resolve({
+          violations: violations,
+          violations_count: violationsCount,
+        })
+      );
       container.state.inputValue = 'URL_WITH_GOOD_SCHEMA';
 
       const promise = container.handleFormSubmit(event);
@@ -46,7 +51,7 @@ describe('Violations container component', () => {
       });
     });
 
-    test('should handle failure', (done) => {
+    test('should handle failure', done => {
       const mockError = { detail: 'error' };
       container.state.inputValue = 'URL_WITH_AN_ERROR';
       getApiViolations.mockReturnValueOnce(Promise.reject(mockError));
@@ -61,13 +66,15 @@ describe('Violations container component', () => {
       });
     });
 
-    test('should handle failure and use DEFAULT_ERROR_MESSAGE if expected error field is undefined', (done) => {
+    test('should handle failure and use DEFAULT_ERROR_MESSAGE if expected error field is undefined', done => {
       container.state.inputValue = 'URL_WITH_AN_ERROR';
       getApiViolations.mockReturnValueOnce(Promise.reject({}));
       container.handleFormSubmit(event).catch(() => {
         try {
           expect(getApiViolations.mock.calls[0][0]).toBe('URL_WITH_AN_ERROR');
-          expect(container.state.error).toEqual(Violations.DEFAULT_ERROR_MESSAGE);
+          expect(container.state.error).toEqual(
+            Violations.DEFAULT_ERROR_MESSAGE
+          );
           done();
         } catch (e) {
           done.fail(e);
