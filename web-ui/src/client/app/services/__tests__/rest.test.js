@@ -18,6 +18,30 @@ describe('RestService', () => {
     client.fetch.mockReset();
   });
 
+  test('getFile fetches url and resolve with text body', () => {
+    const mockFile = 'test';
+    const fileResponse = {
+      text: () => mockFile,
+    };
+    client.fetch.mockReturnValueOnce(Promise.resolve(fileResponse));
+
+    return RestService.getFile('url').then(file => {
+      expect(file).toBe(mockFile);
+    });
+  });
+
+  test('getFile fetches url and reject with text error', () => {
+    const mockError = 'test error';
+    const fileResponse = {
+      text: () => Promise.resolve(mockError),
+    };
+    client.fetch.mockReturnValueOnce(Promise.reject(fileResponse));
+
+    return RestService.getFile('url').catch(file => {
+      expect(file).toBe(mockError);
+    });
+  });
+
   test('getApiViolations call api-violations api and resolve with response body representing violations', () => {
     const mockViolations = [];
     const violationsResponse = {
@@ -130,6 +154,23 @@ describe('RestService', () => {
           'Content-Type': 'application/json',
         },
       });
+    });
+  });
+
+  test('getSupportedRules call api with filter query and reject with error json body', done => {
+    const mockError = { detail: 'some error' };
+    const errorResponse = {
+      json: () => Promise.resolve(mockError),
+    };
+    client.fetch.mockReturnValueOnce(Promise.reject(errorResponse));
+
+    return RestService.getSupportedRules({ is_active: true }).catch(error => {
+      try {
+        expect(error.detail).toBe(mockError.detail);
+        done();
+      } catch (e) {
+        done.fail(e);
+      }
     });
   });
 
