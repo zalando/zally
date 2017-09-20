@@ -1,8 +1,7 @@
 import React from 'react';
-import {Rules} from '../rules.jsx';
-import {shallow} from 'enzyme';
+import { Rules } from '../rules.jsx';
+import { shallow } from 'enzyme';
 import 'url-search-params-polyfill';
-
 
 describe('Rules container component', () => {
   let component, props, container, getSupportedRules;
@@ -11,18 +10,20 @@ describe('Rules container component', () => {
     getSupportedRules = jest.fn();
     props = {
       getSupportedRules: getSupportedRules,
-      location: { search: '' }
+      location: { search: '' },
     };
-    component = shallow(<Rules {...props}></Rules>);
+    component = shallow(<Rules {...props} />);
     container = component.instance();
   });
 
   describe('when call fetchRules', () => {
     test('should handle success', () => {
       const rules = [{}];
-      getSupportedRules.mockReturnValueOnce(Promise.resolve({
-        rules: rules
-      }));
+      getSupportedRules.mockReturnValueOnce(
+        Promise.resolve({
+          rules: rules,
+        })
+      );
       const promise = container.fetchRules();
 
       return promise.then(() => {
@@ -38,27 +39,25 @@ describe('Rules container component', () => {
       const mockError = { detail: 'error' };
       getSupportedRules.mockReturnValueOnce(Promise.reject(mockError));
 
-      container.fetchRules()
-        .catch(() => {
-          expect(getSupportedRules).toHaveBeenCalled();
-          expect(container.state.error).toBe(mockError.detail);
-          expect(container.state.pending).toBe(false);
-          expect(container.state.ajaxComplete).toBe(true);
-          expect(container.state.rules).toEqual([]);
-        });
+      container.fetchRules().catch(() => {
+        expect(getSupportedRules).toHaveBeenCalled();
+        expect(container.state.error).toBe(mockError.detail);
+        expect(container.state.pending).toBe(false);
+        expect(container.state.ajaxComplete).toBe(true);
+        expect(container.state.rules).toEqual([]);
+      });
     });
 
     test('should handle failure without error detail', () => {
       getSupportedRules.mockReturnValueOnce(Promise.reject({}));
 
-      container.fetchRules()
-        .catch(() => {
-          expect(getSupportedRules).toHaveBeenCalled();
-          expect(container.state.error).toBe(Rules.DEFAULT_ERROR_MESSAGE);
-          expect(container.state.pending).toBe(false);
-          expect(container.state.ajaxComplete).toBe(true);
-          expect(container.state.rules).toEqual([]);
-        });
+      container.fetchRules().catch(() => {
+        expect(getSupportedRules).toHaveBeenCalled();
+        expect(container.state.error).toBe(Rules.DEFAULT_ERROR_MESSAGE);
+        expect(container.state.pending).toBe(false);
+        expect(container.state.ajaxComplete).toBe(true);
+        expect(container.state.rules).toEqual([]);
+      });
     });
   });
 
@@ -70,10 +69,14 @@ describe('Rules container component', () => {
       expect(container.parseFilterValue('')).toBe(null);
     });
     test('should return correct object when is_active false', () => {
-      expect(container.parseFilterValue('?is_active=false')).toEqual({is_active: false});
+      expect(container.parseFilterValue('?is_active=false')).toEqual({
+        is_active: false,
+      });
     });
     test('should return correct object when is_active true', () => {
-      expect(container.parseFilterValue('?is_active=true')).toEqual({is_active: true});
+      expect(container.parseFilterValue('?is_active=true')).toEqual({
+        is_active: true,
+      });
     });
   });
 });
