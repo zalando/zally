@@ -18,6 +18,7 @@ export function Root(props) {
         getApiViolationsBySchema={props.RestService.getApiViolationsBySchema.bind(
           props.RestService
         )}
+        getFile={props.RestService.getFile.bind(props.RestService)}
         Storage={props.Storage}
         user={props.user}
       />

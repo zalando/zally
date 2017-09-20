@@ -38,4 +38,58 @@ describe('URL container component', () => {
     const component = shallow(<URL Storage={MockStorage} />);
     expect(component.state().inputValue).toEqual('');
   });
+
+  describe('edit file', () => {
+    test('should set pending flag and call method', () => {
+      const value = 'http://github.com/swagger.json';
+      MockStorage.getItem.mockReturnValueOnce(value);
+      const mockGetFile = jest.fn().mockReturnValue(Promise.resolve());
+      const component = shallow(
+        <URL Storage={MockStorage} getFile={mockGetFile} />
+      );
+      component.instance().handleOnEditFile();
+      expect(component.state().pending).toBeTruthy();
+      expect(mockGetFile).toHaveBeenCalledWith(value);
+    });
+
+    test('should fetch file, save file to storage and redirect', () => {
+      const value = 'http://github.com/swagger.json';
+      const mockFile = 'file';
+      MockStorage.getItem.mockReturnValueOnce(value);
+      const mockGetFile = jest.fn().mockReturnValue(Promise.resolve(mockFile));
+      const component = shallow(
+        <URL Storage={MockStorage} getFile={mockGetFile} />
+      );
+      component
+        .instance()
+        .handleOnEditFile()
+        .then(() => {
+          expect(component.state().pending).toBeFalsy();
+          expect(component.state().goToEditor).toBeTruthy();
+          expect(MockStorage.setItem).toHaveBeenCalledWith(
+            'editor-value',
+            mockFile
+          );
+          expect(component.find('Redirect').length).toEqual(1);
+        });
+    });
+
+    test('should handle error when fetching file', () => {
+      const value = 'http://github.com/swagger.json';
+      const mockError = 'file';
+      MockStorage.getItem.mockReturnValueOnce(value);
+      const mockGetFile = jest.fn().mockReturnValue(Promise.reject(mockError));
+      const component = shallow(
+        <URL Storage={MockStorage} getFile={mockGetFile} />
+      );
+      component
+        .instance()
+        .handleOnEditFile()
+        .then(() => {
+          expect(component.state().pending).toBeFalsy();
+          expect(component.state().ajaxComplete).toBeTruthy();
+          expect(component.state().error).toEqual(mockError);
+        });
+    });
+  });
 });

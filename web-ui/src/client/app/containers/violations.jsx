@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { ViolationsResult } from '../components/violations.jsx';
+import { Component } from 'react';
 
 export class Violations extends Component {
   constructor(props) {
@@ -63,16 +62,7 @@ export class Violations extends Component {
   }
 
   render() {
-    return (
-      <ViolationsResult
-        pending={this.state.pending}
-        complete={this.state.ajaxComplete}
-        errorMsgText={this.state.error}
-        violations={this.state.violations}
-        successMsgTitle={this.state.successMsgTitle}
-        successMsgText={this.state.successMsgText}
-      />
-    );
+    return null;
   }
 }
 
