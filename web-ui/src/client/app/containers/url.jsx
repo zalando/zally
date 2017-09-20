@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import { Violations } from './violations.jsx';
 import { ViolationsResult } from '../components/violations.jsx';
 import { URLInputForm } from '../components/url.jsx';
@@ -6,7 +7,11 @@ import { URLInputForm } from '../components/url.jsx';
 export class URL extends Violations {
   constructor(props) {
     super(props);
+    this.state.goToEditor = false;
     this.state.inputValue = this.Storage.getItem('url-value') || '';
+    this.handleOnInputValueChange = this.handleOnInputValueChange.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleOnEditFile = this.handleOnEditFile.bind(this);
   }
 
   handleOnInputValueChange(event) {
@@ -14,14 +19,41 @@ export class URL extends Violations {
     super.handleOnInputValueChange(event);
   }
 
+  handleOnEditFile() {
+    this.setState({ pending: true });
+    return this.props
+      .getFile(this.state.inputValue)
+      .then(file => {
+        this.Storage.setItem('editor-value', file);
+        this.setState({
+          pending: false,
+          goToEditor: true,
+        });
+      })
+      .catch(error => {
+        console.error(error); // eslint-disable-line no-console
+
+        this.setState({
+          pending: false,
+          ajaxComplete: true,
+          error: error.detail || Violations.DEFAULT_ERROR_MESSAGE,
+        });
+      });
+  }
+
   render() {
+    if (this.state.goToEditor) {
+      return <Redirect to="/editor" />;
+    }
+
     return (
       <div>
         <URLInputForm
           inputValue={this.state.inputValue}
-          onSubmit={this.handleFormSubmit.bind(this)}
-          onInputValueChange={this.handleOnInputValueChange.bind(this)}
+          onSubmit={this.handleFormSubmit}
+          onInputValueChange={this.handleOnInputValueChange}
           pending={this.state.pending}
+          onEditFile={this.handleOnEditFile}
         />
 
         <ViolationsResult
