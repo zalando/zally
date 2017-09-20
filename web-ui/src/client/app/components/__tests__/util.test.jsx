@@ -1,6 +1,6 @@
 import React from 'react';
-import {shallow} from 'enzyme';
-import {If} from '../util.jsx';
+import { shallow } from 'enzyme';
+import { If } from '../util.jsx';
 
 test('If component should hide child component based on test prop result', () => {
   const iff = shallow(

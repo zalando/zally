@@ -1,9 +1,8 @@
-import React, {Component} from 'react';
-import {ViolationsResult} from '../components/violations.jsx';
+import React, { Component } from 'react';
+import { ViolationsResult } from '../components/violations.jsx';
 
 export class Violations extends Component {
-
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.Storage = this.props.Storage;
@@ -19,29 +18,28 @@ export class Violations extends Component {
         could: 0,
         hint: 0,
         must: 0,
-        should: 0
+        should: 0,
       },
       successMsgTitle: 'Good Job!',
-      successMsgText: 'No violations found in the analyzed schema.'
+      successMsgText: 'No violations found in the analyzed schema.',
     };
   }
 
-  handleFormSubmit (event) {
+  handleFormSubmit(event) {
     event.preventDefault();
 
     this.setState({ error: null, pending: true, ajaxComplete: false });
 
     return this.getApiViolations(this.state.inputValue)
-      .then((response) => {
+      .then(response => {
         this.setState({
           pending: false,
           ajaxComplete: true,
           violations: response.violations,
-          violationsCount: response.violations_count
+          violationsCount: response.violations_count,
         });
       })
-      .catch((error) => {
-
+      .catch(error => {
         console.error(error); // eslint-disable-line no-console
 
         this.setState({
@@ -53,25 +51,27 @@ export class Violations extends Component {
             could: 0,
             hint: 0,
             must: 0,
-            should: 0
-          }
+            should: 0,
+          },
         });
         return Promise.reject(error);
       });
   }
 
-  handleOnInputValueChange (event) {
-    this.setState({inputValue: event.target.value});
+  handleOnInputValueChange(event) {
+    this.setState({ inputValue: event.target.value });
   }
 
-  render () {
-    return (<ViolationsResult
-      pending={this.state.pending}
-      complete={this.state.ajaxComplete}
-      errorMsgText={this.state.error}
-      violations={this.state.violations}
-      successMsgTitle={this.state.successMsgTitle}
-      successMsgText={this.state.successMsgText} />
+  render() {
+    return (
+      <ViolationsResult
+        pending={this.state.pending}
+        complete={this.state.ajaxComplete}
+        errorMsgText={this.state.error}
+        violations={this.state.violations}
+        successMsgTitle={this.state.successMsgTitle}
+        successMsgText={this.state.successMsgText}
+      />
     );
   }
 }

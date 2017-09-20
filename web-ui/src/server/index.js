@@ -10,24 +10,24 @@ const DEFAULT_OPTIONS = {
   windowEnv: {
     OAUTH_ENABLED: false,
     DEBUG: true,
-    ZALLY_API_URL: 'http://localhost:8000'
+    ZALLY_API_URL: 'http://localhost:8000',
   },
   env: {
-    HEAD_TITLE: 'Zally API Linter WEB UI'
+    HEAD_TITLE: 'Zally API Linter WEB UI',
   },
   logger: console,
   handlers: {
     assets: () => express.static(ASSETS_DIR),
     windowEnv: require('./handlers/window-env'),
-    index: require('./handlers/index')
-  }
+    index: require('./handlers/index'),
+  },
 };
 
 module.exports = (options = {}) => {
   const app = express();
   const _options = _.merge({}, DEFAULT_OPTIONS, options);
 
-  app.on('mount', function (/* parent*/) {
+  app.on('mount', function(/* parent*/) {
     _options.logger.info(`zally-web-ui mounted on "${app.mountpath}"`);
   });
 
