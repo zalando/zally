@@ -25,6 +25,12 @@ describe('UserInfo component', () => {
     expect(logoutLink.length).toEqual(1);
   });
 
+  test('should render the login button', () => {
+    component.setProps({ authenticated: false });
+    expect(component.find('.user-info__logout').length).toEqual(0);
+    expect(component.find('.user-info__login').length).toEqual(1);
+  });
+
   describe('when clicking on logout link', () => {
     test('should handle the action', () => {
       logoutLink.simulate('click', { preventDefault() {} });
