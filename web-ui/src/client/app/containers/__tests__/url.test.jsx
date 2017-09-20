@@ -1,6 +1,6 @@
 import React from 'react';
-import {shallow} from 'enzyme';
-import {URL} from '../url.jsx';
+import { shallow } from 'enzyme';
+import { URL } from '../url.jsx';
 
 describe('URL container component', () => {
   let MockStorage;
@@ -8,7 +8,7 @@ describe('URL container component', () => {
   beforeEach(() => {
     MockStorage = {
       setItem: jest.fn(),
-      getItem: jest.fn()
+      getItem: jest.fn(),
     };
   });
 
@@ -19,7 +19,6 @@ describe('URL container component', () => {
     expect(component.state().inputValue).toEqual(value);
   });
 
-
   test('on input value change save new value in the Storage and update the state accordingly', () => {
     const value = 'http://github.com/petstore.json';
     const newValue = 'http://github.com/swagger.json';
@@ -27,7 +26,7 @@ describe('URL container component', () => {
     const component = shallow(<URL Storage={MockStorage} />);
 
     component.instance().handleOnInputValueChange({
-      target: { value: newValue }
+      target: { value: newValue },
     });
 
     expect(MockStorage.setItem).toHaveBeenCalledWith('url-value', newValue);
@@ -35,7 +34,7 @@ describe('URL container component', () => {
     expect(component.state().inputValue).toEqual(newValue);
   });
 
-  test('should use an empty string as input value if Storage doesn\'t contain an item', () => {
+  test("should use an empty string as input value if Storage doesn't contain an item", () => {
     const component = shallow(<URL Storage={MockStorage} />);
     expect(component.state().inputValue).toEqual('');
   });
