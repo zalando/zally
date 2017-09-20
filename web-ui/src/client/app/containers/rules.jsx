@@ -63,7 +63,7 @@ export class Rules extends Component {
     }
     const params = new URLSearchParams(search);
     const isActive = params.get('is_active');
-    if (isActive !== undefined) {
+    if (isActive) {
       return { is_active: isActive === 'true' };
     }
     return null;

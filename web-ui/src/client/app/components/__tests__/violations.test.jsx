@@ -32,9 +32,14 @@ describe('Violations component', () => {
   test('should return list of violation', () => {
     const violations = [{}, {}];
     const component = shallow(<Violations violations={violations} />);
-    const violation = component.find('Violation');
+    expect(component.find('h3').length).toEqual(1);
+    expect(component.find('Violation').length).toEqual(violations.length);
+  });
 
-    expect(violation.length).toEqual(2);
+  test('should render empty list of violation', () => {
+    const component = shallow(<Violations violations={[]} />);
+    expect(component.find('Violation').length).toEqual(0);
+    expect(component.find('h3').length).toEqual(0);
   });
 });
 
