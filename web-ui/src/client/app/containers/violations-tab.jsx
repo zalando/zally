@@ -10,6 +10,7 @@ export default function ViolationsTab({
   getApiViolationsByURL,
   getApiViolationsBySchema,
   getSupportedRules,
+  getFile,
   Storage,
 }) {
   if (!authenticated) {
@@ -68,6 +69,7 @@ export default function ViolationsTab({
               <URL
                 getApiViolations={getApiViolationsByURL}
                 Storage={Storage}
+                getFile={getFile}
                 {...props}
               />
             )}

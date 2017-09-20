@@ -15,6 +15,7 @@ export function App(props) {
     getApiViolationsByURL,
     getApiViolationsBySchema,
     getSupportedRules,
+    getFile,
   } = props;
   const { OAUTH_ENABLED } = env;
   const MOUNTPATH = env.MOUNTPATH || '/';
@@ -54,6 +55,7 @@ export function App(props) {
                 getSupportedRules={getSupportedRules}
                 getApiViolationsByURL={getApiViolationsByURL}
                 getApiViolationsBySchema={getApiViolationsBySchema}
+                getFile={getFile}
                 Storage={Storage}
                 {...props}
               />
