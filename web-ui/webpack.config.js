@@ -11,35 +11,35 @@ const config = {
   entry: APP_DIR + '/index.jsx',
   output: {
     path: BUILD_DIR,
-    filename: 'bundle.js'
+    filename: 'bundle.js',
   },
-  module : {
-    rules : [
+  module: {
+    rules: [
       {
-        test : /\.jsx?/,
-        include : APP_DIR,
-        loader : 'babel-loader'
+        test: /\.jsx?/,
+        include: APP_DIR,
+        loader: 'babel-loader',
       },
       {
         test: /\.scss$/,
-        include : APP_DIR,
-        use: [ 'style-loader', 'css-loader', 'sass-loader' ]
-      }
-    ]
+        include: APP_DIR,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+      },
+    ],
   },
   plugins: [
     new webpack.BannerPlugin(`
 @name ${pkg.name}
 @version ${pkg.version}
 @license ${pkg.license}
-    `)
+    `),
   ],
   devtool: 'source-map',
   devServer: {
     https: process.env.DEV_SSL_ENABLED,
     port: process.env.DEV_PORT || 3001,
-    publicPath: '/assets/'
-  }
+    publicPath: '/assets/',
+  },
 };
 
 module.exports = config;

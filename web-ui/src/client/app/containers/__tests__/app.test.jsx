@@ -1,19 +1,18 @@
 import React from 'react';
-import {shallow} from 'enzyme';
-import {App} from '../app.jsx';
+import { shallow } from 'enzyme';
+import { App } from '../app.jsx';
 
 jest.mock('../editor.jsx', () => ({
-  Editor: () => {}
+  Editor: () => {},
 }));
 
 describe('App component', () => {
-
   test('should show UserInfo child component', () => {
     const props = {
       user: {},
-      env: {OAUTH_ENABLED: true}
+      env: { OAUTH_ENABLED: true },
     };
-    const component = shallow(<App  {...props}/>);
+    const component = shallow(<App {...props} />);
     const userInfo = component.find('UserInfo');
     expect(userInfo.length).toEqual(1);
   });
@@ -22,11 +21,10 @@ describe('App component', () => {
     const props = {
       user: {},
       env: {},
-      showUserInfo: false
+      showUserInfo: false,
     };
-    const component = shallow(<App {...props}/>);
+    const component = shallow(<App {...props} />);
     const userInfo = component.find('UserInfo');
     expect(userInfo.length).toEqual(0);
   });
-
 });

@@ -1,9 +1,9 @@
 import React from 'react';
-import {shallow} from 'enzyme';
-import {Editor} from '../editor.jsx';
+import { shallow } from 'enzyme';
+import { Editor } from '../editor.jsx';
 
 jest.mock('../../components/editor.jsx', () => ({
-  EditorInputForm: () => {}
+  EditorInputForm: () => {},
 }));
 
 describe('Editor container component', () => {
@@ -12,7 +12,7 @@ describe('Editor container component', () => {
   beforeEach(() => {
     MockStorage = {
       setItem: jest.fn(),
-      getItem: jest.fn()
+      getItem: jest.fn(),
     };
   });
 
@@ -28,9 +28,8 @@ describe('Editor container component', () => {
     MockStorage.getItem.mockReturnValueOnce(editorValue);
     const component = shallow(<Editor Storage={MockStorage} />);
     component.instance().componentDidMount();
-    expect(component.state().inputValue).toEqual({prop: 'foo'});
+    expect(component.state().inputValue).toEqual({ prop: 'foo' });
   });
-
 
   test('on input value change save new value in the Storage and update the state accordingly', () => {
     const editorValue = 'prop: foo';
@@ -40,13 +39,16 @@ describe('Editor container component', () => {
 
     component.instance().handleOnInputValueChange(newEditorValue);
 
-    expect(MockStorage.setItem).toHaveBeenCalledWith('editor-value', newEditorValue);
+    expect(MockStorage.setItem).toHaveBeenCalledWith(
+      'editor-value',
+      newEditorValue
+    );
 
     expect(component.state().editorValue).toBe(newEditorValue);
-    expect(component.state().inputValue).toEqual({ foo: 'prop'});
+    expect(component.state().inputValue).toEqual({ foo: 'prop' });
   });
 
-  test('should use an empty string as editor value and input value if Storage doesn\'t contain an item', () => {
+  test("should use an empty string as editor value and input value if Storage doesn't contain an item", () => {
     const component = shallow(<Editor Storage={MockStorage} />);
 
     expect(component.state().editorValue).toBe('');
@@ -54,8 +56,7 @@ describe('Editor container component', () => {
   });
 
   test('should show an en error if schema parsing fails', () => {
-
-    MockStorage.getItem.mockReturnValueOnce('invalidyaml: \'2');
+    MockStorage.getItem.mockReturnValueOnce("invalidyaml: '2");
     const component = shallow(<Editor Storage={MockStorage} />);
 
     component.instance().componentDidMount();
