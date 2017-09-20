@@ -42,7 +42,7 @@ You can build and run the whole Zally stack (web-ui, server and database) by
 executing this script:
 
 ```bash
-./build_and_run.sh
+./build-and-run.sh
 ```
 
 Web UI is accessible on `http://localhost:8080`; Zally server on `http://localhost:8000`
