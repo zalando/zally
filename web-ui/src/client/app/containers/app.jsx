@@ -3,7 +3,7 @@ import { Link, Route, Switch } from 'react-router-dom';
 import UserInfo from '../components/user-info.jsx';
 
 import { Login } from './login.jsx';
-import ViolationsTab from './violations-tab.jsx';
+import { ViolationsTab } from './violations-tab.jsx';
 
 export function App(props) {
   const {
