@@ -53,6 +53,7 @@ describe('Rules container component', () => {
       );
       const promise = container.fetchRules();
 
+      expect.assertions(5);
       return promise.then(() => {
         expect(getSupportedRules).toHaveBeenCalled();
         expect(container.state.error).toBe(null);

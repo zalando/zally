@@ -37,7 +37,7 @@ describe('Violations container component', () => {
       container.state.inputValue = 'URL_WITH_GOOD_SCHEMA';
 
       const promise = container.handleFormSubmit(event);
-
+      expect.assertions(4);
       return promise.then(() => {
         expect(event.preventDefault).toHaveBeenCalled();
         expect(getApiViolations.mock.calls[0][0]).toBe('URL_WITH_GOOD_SCHEMA');
