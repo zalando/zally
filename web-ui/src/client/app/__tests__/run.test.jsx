@@ -32,6 +32,7 @@ describe('run', () => {
   const { run } = require('../run');
 
   test('should render app', () => {
+    expect.assertions(2);
     return run().then(() => {
       expect(mockRender).toHaveBeenCalled();
       expect(mockGetElementById).toHaveBeenCalledWith('app');

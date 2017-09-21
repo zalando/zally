@@ -1,4 +1,4 @@
-import { refreshToken, me } from '../oauth-util.js';
+import { refreshToken, me, createAnonymousUser } from '../oauth-util.js';
 import fetch from '../fetch.js';
 import { client } from '../http-client.js';
 
@@ -67,6 +67,15 @@ describe('me', () => {
       } catch (e) {
         done.fail(e);
       }
+    });
+  });
+});
+
+describe('createAnonymousUser', () => {
+  test('should create anonymous user', () => {
+    expect(createAnonymousUser()).toEqual({
+      username: 'anonymous',
+      authenticated: false,
     });
   });
 });

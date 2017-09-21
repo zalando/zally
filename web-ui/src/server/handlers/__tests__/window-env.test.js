@@ -21,14 +21,20 @@ describe('server.window-env-handler', () => {
           mountpath: '/linter',
         },
       };
-      envHandler({
-        windowEnv: { foo: 'bar' },
-      })(req, res);
     });
 
     test('should send the response', () => {
+      envHandler({
+        windowEnv: { foo: 'bar' },
+      })(req, res);
       expect(mockWrite).toHaveBeenCalledWith(
         'window.env = {"foo":"bar","MOUNTPATH":"/linter/"}'
+      );
+    });
+    test('should send the response even with no option', () => {
+      envHandler()(req, res);
+      expect(mockWrite).toHaveBeenCalledWith(
+        'window.env = {"MOUNTPATH":"/linter/"}'
       );
     });
   });
