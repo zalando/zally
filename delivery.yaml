@@ -10,5 +10,6 @@ build_steps:
   cmd: |
     docker run --rm -w /build -v $PWD/server:/build:rw registry.opensource.zalan.do/stups/openjdk:latest ./gradlew build --info
     docker run --rm -w /build -v $PWD/web-ui:/build:rw node:7 bash -c 'npm install -q ; npm test ; npm run build'
+    docker run --rm -w /build -v $PWD/github-integration:/build:rw registry.opensource.zalan.do/stups/openjdk:latest ./gradlew build -x test --info
 - desc: "Build and Push Docker Images"
   cmd: bash .delivery/build-and-push.sh

@@ -19,6 +19,7 @@ changed_files=($(curl -s https://api.github.com/repos/zalando-incubator/zally/pu
 
 server_changed=false
 web_ui_changed=false
+ghe_integration_changed=false
 
 for f in "${changed_files[@]}"
 do
@@ -27,6 +28,9 @@ do
   fi
   if [[ $f == web-ui/* ]]; then
     web_ui_changed=true
+  fi
+  if [[ $f == github-integration/* ]]; then
+    ghe_integration_changed=true
   fi
 done
 
@@ -37,6 +41,7 @@ if [ "$server_changed" = true ]; then
   cd ${REPO_ROOT}/server
   docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/zally:${DOCKER_VERSION}" .
   docker push "${DOCKER_HOST}/${DOCKER_TEAM}/zally:${DOCKER_VERSION}"
+  echo "Zally Server has been built and pushed"
 fi
 
 if [ "$web_ui_changed" = true ]; then
@@ -44,4 +49,13 @@ if [ "$web_ui_changed" = true ]; then
   cd ${REPO_ROOT}/web-ui
   docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/zally-web-ui-dummy:${DOCKER_VERSION}" .
   docker push "${DOCKER_HOST}/${DOCKER_TEAM}/zally-web-ui-dummy:${DOCKER_VERSION}"
+  echo "Zally Web UI has been built and pushed"
+fi
+
+if [ "$ghe_integration_changed" = true ]; then
+  echo "Building and pushing Zally Github Integration"
+  cd ${REPO_ROOT}/github-integration
+  docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/zally-github-integration:${DOCKER_VERSION}" .
+  docker push "${DOCKER_HOST}/${DOCKER_TEAM}/zally-github-integration:${DOCKER_VERSION}"
+  echo "Zally Github Integration has been built and pushed"
 fi
