@@ -1,6 +1,12 @@
 import { client } from './http-client.js';
 
 export const RestService = {
+  getFile(url) {
+    return client
+      .fetch(url)
+      .then(response => response.text())
+      .catch(response => response.text().then(body => Promise.reject(body)));
+  },
   getApiViolations(body) {
     const options = {
       method: 'POST',
@@ -12,14 +18,8 @@ export const RestService = {
     };
     return client
       .fetch(`${window.env.ZALLY_API_URL}/api-violations`, options)
-      .then(response => {
-        return response.json();
-      })
-      .catch(response => {
-        return response.json().then(body => {
-          return Promise.reject(body);
-        });
-      });
+      .then(response => response.json())
+      .catch(response => response.json().then(body => Promise.reject(body)));
   },
 
   getApiViolationsByURL(apiDefinitionURL) {
@@ -47,14 +47,8 @@ export const RestService = {
       this.objectToParams(params);
     return client
       .fetch(url, options)
-      .then(response => {
-        return response.json();
-      })
-      .catch(response => {
-        return response.json().then(body => {
-          return Promise.reject(body);
-        });
-      });
+      .then(response => response.json())
+      .catch(response => response.json().then(body => Promise.reject(body)));
   },
 
   objectToParams(params) {
