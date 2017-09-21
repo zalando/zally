@@ -1,13 +1,19 @@
 import 'jsdom-global/register';
 import React from 'react';
 import { mount } from 'enzyme';
-import { ValidateButton, Editor, EditorInputForm } from '../editor.jsx';
+import { EditorInputForm } from '../editor.jsx';
+
+jest.mock('brace', () => ({}));
+jest.mock('brace/ext/searchbox', () => ({}));
+jest.mock('brace/mode/yaml', () => ({}));
+jest.mock('brace/mode/json', () => ({}));
+jest.mock('brace/theme/github', () => ({}));
+jest.mock('react-ace', () => () => null);
 
 describe('EditorInputForm component', () => {
-  let handleEditFile, component, editor, submitButtom;
+  let component, editor, submitButtom;
 
   beforeEach(() => {
-    handleEditFile = jest.fn();
     component = mount(<EditorInputForm value="" />);
     editor = component.find('Editor');
     submitButtom = component.find('.editor-input-form__button');

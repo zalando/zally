@@ -52,7 +52,7 @@ script:
   - node --version
   - npm --version
   - npm install -q
-  - npm test -- -i
+  - npm test
   - npm run build
   - cd $TRAVIS_BUILD_DIR
 
