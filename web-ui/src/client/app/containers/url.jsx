@@ -49,9 +49,9 @@ export class URL extends Violations {
     return (
       <div>
         <URLInputForm
-          inputValue={this.state.inputValue}
+          value={this.state.inputValue}
           onSubmit={this.handleFormSubmit}
-          onInputValueChange={this.handleOnInputValueChange}
+          onChange={this.handleOnInputValueChange}
           pending={this.state.pending}
           onEditFile={this.handleOnEditFile}
         />
