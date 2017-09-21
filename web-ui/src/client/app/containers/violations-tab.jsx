@@ -5,7 +5,7 @@ import { Rules } from './rules.jsx';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 
-export default function ViolationsTab({
+export function ViolationsTab({
   authenticated,
   getApiViolationsByURL,
   getApiViolationsBySchema,
