@@ -2,6 +2,7 @@ build_steps:
 - desc: "Install Build Dependencies"
   cmd: |
     apt-get update -qq --allow-unauthenticated
+    apt-get install --no-install-recommends -y jq
     curl -fLOsS https://delivery.cloud.zalando.com/utils/ensure-docker && sh ensure-docker
     docker pull registry.opensource.zalan.do/stups/openjdk:latest
     docker pull node:7
