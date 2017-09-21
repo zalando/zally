@@ -2,14 +2,11 @@ import React from 'react';
 
 import { Msg } from './msg.jsx';
 
-export function RulesTab(props) {
-  const rules = props.rules;
+export function RulesTab({ rules, error }) {
   return (
     <div>
       <h3>SUPPORTED RULES</h3>
-      {props.error ? (
-        <Msg type="error" title="ERROR" text={props.error} />
-      ) : null}
+      {error ? <Msg type="error" title="ERROR" text={error} /> : null}
       <ul style={{ padding: 0, listStyle: 'none' }}>
         {rules.map((rule, index) => {
           return <Rule key={index} rule={rule} />;
