@@ -7,14 +7,14 @@ import 'brace/mode/yaml';
 import 'brace/mode/json';
 import 'brace/theme/github';
 
-export function ValidateButton(props) {
+export function ValidateButton({ disabled }) {
   return (
     <button
       type="submit"
-      disabled={props.disabled}
+      disabled={disabled}
       className={
         'dc-btn dc-btn--primary editor-input-form__button' +
-        (props.disabled ? ' dc-btn--disabled' : '')
+        (disabled ? ' dc-btn--disabled' : '')
       }
     >
       VALIDATE
@@ -22,21 +22,23 @@ export function ValidateButton(props) {
   );
 }
 
-export function EditorInputForm(props) {
-  const validateButtonIsDisabled =
-    props.pending || props.editorError || !props.editorValue.trim();
+export function EditorInputForm({
+  pending,
+  error,
+  onSubmit,
+  value,
+  annotations,
+  onChange,
+}) {
+  const validateButtonIsDisabled = pending || error || !value.trim();
 
   return (
-    <form onSubmit={props.onSubmit} className="editor-input-form">
+    <form onSubmit={onSubmit} className="editor-input-form">
       <label className="dc-label editor-input-form__label">
         Paste in a Swagger schema and click
       </label>
       <ValidateButton disabled={validateButtonIsDisabled} />
-      <Editor
-        annotations={props.editorAnnotations}
-        onChange={props.onInputValueChange}
-        value={props.editorValue}
-      />
+      <Editor annotations={annotations} onChange={onChange} value={value} />
       <div className="editor-input-form__bottom-button">
         <ValidateButton disabled={validateButtonIsDisabled} />
       </div>
@@ -44,7 +46,7 @@ export function EditorInputForm(props) {
   );
 }
 
-export function Editor(props) {
+export function Editor({ annotations, value, onChange }) {
   return (
     <div className="editor">
       <AceEditor
@@ -52,10 +54,10 @@ export function Editor(props) {
         mode="yaml"
         theme="github"
         width="100%"
-        annotations={props.annotations}
+        annotations={annotations}
         showPrintMargin={false}
-        value={props.value}
-        onChange={props.onChange || function() {}}
+        value={value}
+        onChange={onChange}
         editorProps={{ $blockScrolling: true }}
       />
     </div>

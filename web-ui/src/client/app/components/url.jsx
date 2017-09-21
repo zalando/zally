@@ -2,19 +2,19 @@ import React from 'react';
 
 export function URLInputForm({
   pending,
-  inputValue,
+  value,
   onSubmit,
-  onInputValueChange,
+  onChange,
   onEditFile,
 }) {
-  const validateButtonIsDisabled = pending || !inputValue.trim();
+  const validateButtonIsDisabled = pending || !value.trim();
   return (
     <form onSubmit={onSubmit} className="url-input-form">
       <label className="dc-label">Enter full path to your swagger file</label>
       <input
         className="dc-input dc-input--block"
-        value={inputValue}
-        onChange={onInputValueChange}
+        value={value}
+        onChange={onChange}
         type="url"
         name="path"
         placeholder="e.g https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore.json"

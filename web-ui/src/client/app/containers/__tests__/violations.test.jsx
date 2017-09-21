@@ -1,11 +1,6 @@
 import React from 'react';
 import { Violations } from '../violations.jsx';
-import ViolationsTab from '../violations-tab';
 import { shallow } from 'enzyme';
-
-jest.mock('../editor.jsx', () => ({
-  Editor: () => {},
-}));
 
 describe('Violations container component', () => {
   let component, props, container, event, getApiViolations;
@@ -42,7 +37,7 @@ describe('Violations container component', () => {
       container.state.inputValue = 'URL_WITH_GOOD_SCHEMA';
 
       const promise = container.handleFormSubmit(event);
-
+      expect.assertions(4);
       return promise.then(() => {
         expect(event.preventDefault).toHaveBeenCalled();
         expect(getApiViolations.mock.calls[0][0]).toBe('URL_WITH_GOOD_SCHEMA');
@@ -80,16 +75,6 @@ describe('Violations container component', () => {
           done.fail(e);
         }
       });
-    });
-  });
-
-  describe('when we render the violation title', () => {
-    test('links should open a new tab/page', () => {
-      const violationsTab = shallow(<ViolationsTab {...props} />);
-      const links = violationsTab.find('.dc-h4 a');
-      for (let i = links.length - 1; i >= 0; i--) {
-        expect(links.at(i).props().target).toBe('_blank');
-      }
     });
   });
 });
