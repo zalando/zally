@@ -62,11 +62,11 @@ export class Editor extends Violations {
         <div className="dc-column dc-column--small-12 dc-column--large-7">
           <div className="dc-column__contents">
             <EditorInputForm
-              editorError={this.state.editorError}
-              editorAnnotations={this.state.editorAnnotations}
-              editorValue={this.state.editorValue}
+              error={this.state.editorError}
+              annotations={this.state.editorAnnotations}
+              value={this.state.editorValue}
               onSubmit={this.handleFormSubmit.bind(this)}
-              onInputValueChange={this.handleOnInputValueChange.bind(this)}
+              onChange={this.handleOnInputValueChange.bind(this)}
               pending={this.state.pending}
             />
           </div>

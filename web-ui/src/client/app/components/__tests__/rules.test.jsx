@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Rule, RuleType, RuleLink } from '../rules.jsx';
+import { Rule, RuleType, RuleLink, RulesTab } from '../rules.jsx';
 
 describe('RuleType component', () => {
   describe('when ruleType is MUST', () => {
@@ -41,6 +41,22 @@ describe('RuleLink component', () => {
   });
 });
 
+describe('RuleTab component', () => {
+  test('should render a list of rules', () => {
+    const rules = [{}, {}, {}];
+    const component = shallow(<RulesTab rules={rules} />);
+    expect(component.find('Msg').length).toEqual(0);
+    expect(component.find('Rule').length).toEqual(rules.length);
+  });
+
+  test('should render the error', () => {
+    const errorText = 'error text';
+    const component = shallow(<RulesTab rules={[]} error={errorText} />);
+    expect(component.find('Msg').length).toEqual(1);
+    expect(component.find('Msg').props().text).toEqual(errorText);
+  });
+});
+
 describe('Rule component', () => {
   test('should render a rule with url', () => {
     const rule = {
@@ -49,6 +65,7 @@ describe('Rule component', () => {
       type: 'SHOULD',
       url: 'someurl',
       code: 'S005',
+      is_active: true,
     };
 
     const component = shallow(<Rule rule={rule} />);
@@ -58,6 +75,7 @@ describe('Rule component', () => {
     expect(RuleLink.length).toEqual(1);
     expect(RuleLink.prop('url')).toEqual('someurl');
     expect(component.find('RuleType').length).toEqual(1);
+    expect(component.find('.dc--text-small').text()).toEqual('Active');
   });
 
   test('should render a rule without url', () => {
@@ -75,5 +93,6 @@ describe('Rule component', () => {
     expect(component.find('RuleType').length).toEqual(1);
     expect(RuleLink.length).toEqual(0);
     expect(component.find('RuleType').length).toEqual(1);
+    expect(component.find('.dc--text-small').text()).toEqual('Inactive');
   });
 });
