@@ -4,6 +4,7 @@ import { Msg } from '../components/msg.jsx';
 import { Violations } from './violations.jsx';
 import { ViolationsResult } from '../components/violations.jsx';
 import { EditorInputForm } from '../components/editor.jsx';
+import { Dialog } from '../components/dialog.jsx';
 
 export const editorErrorToAnnotations = error => {
   if (!error || !error.mark) {
@@ -23,10 +24,22 @@ export class Editor extends Violations {
   constructor(props) {
     super(props);
     this.state.editorValue = this.Storage.getItem('editor-value') || '';
+    this.handleOnInputValueChange = this.handleOnInputValueChange.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleHideOverlay = this.handleHideOverlay.bind(this);
   }
 
   componentDidMount() {
     this.updateInputValue(this.state.editorValue);
+  }
+
+  handleFormSubmit(event) {
+    this.setState({ showOverlay: true });
+    super.handleFormSubmit(event);
+  }
+
+  handleHideOverlay() {
+    this.setState({ showOverlay: false });
   }
 
   updateInputValue(value) {
@@ -65,8 +78,8 @@ export class Editor extends Violations {
               error={this.state.editorError}
               annotations={this.state.editorAnnotations}
               value={this.state.editorValue}
-              onSubmit={this.handleFormSubmit.bind(this)}
-              onChange={this.handleOnInputValueChange.bind(this)}
+              onSubmit={this.handleFormSubmit}
+              onChange={this.handleOnInputValueChange}
               pending={this.state.pending}
             />
           </div>
@@ -81,16 +94,28 @@ export class Editor extends Violations {
                 closeButton={false}
               />
             ) : null}
-            <ViolationsResult
-              pending={this.state.pending}
-              complete={this.state.ajaxComplete}
-              errorMsgText={this.state.error}
-              violations={this.state.violations}
-              successMsgTitle={this.state.successMsgTitle}
-              successMsgText={this.state.successMsgText}
-            />
+            <div className="dc-show-from-large">
+              <ViolationsResult
+                pending={this.state.pending}
+                complete={this.state.ajaxComplete}
+                errorMsgText={this.state.error}
+                violations={this.state.violations}
+                successMsgTitle={this.state.successMsgTitle}
+                successMsgText={this.state.successMsgText}
+              />
+            </div>
           </div>
         </div>
+        <Dialog show={this.state.showOverlay} onHide={this.handleHideOverlay}>
+          <ViolationsResult
+            pending={this.state.pending}
+            complete={this.state.ajaxComplete}
+            errorMsgText={this.state.error}
+            violations={this.state.violations}
+            successMsgTitle={this.state.successMsgTitle}
+            successMsgText={this.state.successMsgText}
+          />
+        </Dialog>
       </div>
     );
   }

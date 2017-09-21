@@ -1,5 +1,8 @@
 @import '../../../node_modules/dress-code/dist/sass/dress-code';
 
+$bar-z-index: 1000;
+$overlay-z-index: 2000;
+
 body {
   min-height: 100%;
   background: $dc-white;
@@ -25,7 +28,7 @@ footer {
  */
 .main-navigation-bar {
   position: fixed;
-  z-index: 1000;
+  z-index: $bar-z-index;
   width: 100%;
   padding: 0.8rem 2rem;
   border-bottom: 1px solid $dc-gray60;
@@ -38,6 +41,7 @@ footer {
   font-weight: 500;
   margin-bottom: 0;
 }
+
 .main-navigation-bar__logo {
   display: inline-block;
   float: left;
@@ -66,6 +70,7 @@ footer {
   right: 1rem;
   padding: 1rem 1.5rem;
 }
+
 .user-info__icon {
   font-size: 2rem;
   height: 5.5rem;
@@ -77,6 +82,7 @@ footer {
     font-style: normal;
   }
 }
+
 .user-info__logout,
 .user-info__login {
   line-height: 5rem;
@@ -127,6 +133,39 @@ footer {
   display: inline-block;
   line-height: 4rem;
   margin-right: 0.4rem;
+}
+
+.editor-dialog__container {
+  position: relative;
+}
+
+.editor-dialog__body {
+  max-height: calc(100% - 10rem);
+  overflow: auto;
+}
+
+.editor-dialog__backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  z-index: $overlay-z-index;
+  pointer-events: none;
+  transition: opacity 250ms ease-in;
+  will-change: opacity;
+}
+
+.editor-dialog--show {
+  opacity: 1;
+  pointer-events: initial;
+}
+
+.editor-dialog__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 }
 
 /*
