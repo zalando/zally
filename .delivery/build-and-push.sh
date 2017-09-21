@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # This CDP script builds and pushes Docker images
 
+set -ex
+
+env
+
 readonly DOCKER_HOST="pierone.stups.zalan.do"
 readonly DOCKER_TEAM="architecture"
 readonly DOCKER_VERSION="${CDP_TARGET_BRANCH}-${CDP_TARGET_COMMIT_ID:0:8}-${CDP_TARGET_REPOSITORY_COUNTER}"
