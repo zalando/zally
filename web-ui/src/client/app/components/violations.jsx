@@ -2,6 +2,7 @@ import React from 'react';
 import { If } from './util.jsx';
 import { Msg } from './msg.jsx';
 import { RuleType } from './rules.jsx';
+import FluidContainer from './fluid-container.jsx';
 
 export function Violations(props) {
   return (
@@ -11,15 +12,17 @@ export function Violations(props) {
           {props.violations.length ? <h3>VIOLATIONS</h3> : ''}
         </div>
       </div>
-      <div className="dc-row">
-        <div className="dc-column">
-          <ul className="violations-content">
-            {props.violations.map((violation, index) => {
-              return <Violation key={index} violation={violation} />;
-            })}
-          </ul>
+      <FluidContainer>
+        <div className="dc-row">
+          <div className="dc-column">
+            <ul className="violations-content">
+              {props.violations.map((violation, index) => {
+                return <Violation key={index} violation={violation} />;
+              })}
+            </ul>
+          </div>
         </div>
-      </div>
+      </FluidContainer>
     </div>
   );
 }

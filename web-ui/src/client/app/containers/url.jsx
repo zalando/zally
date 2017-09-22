@@ -47,7 +47,7 @@ export class URL extends Violations {
     }
 
     return (
-      <div className="url-tab">
+      <div>
         <URLInputForm
           value={this.state.inputValue}
           onSubmit={this.handleFormSubmit}

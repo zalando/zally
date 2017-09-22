@@ -92,6 +92,8 @@ footer {
  */
 .page-container {
   padding: 10rem 2.4rem 1.2rem;
+  height: calc(100% - 5rem);
+  position: relative;
 }
 
 /*
@@ -100,7 +102,8 @@ footer {
 .tab-contents {
   background: $dc-gray80;
   padding: 1.8rem 1.2rem;
-  height: calc(100% - 13rem);
+  height: 100%;
+  position: relative;
 }
 
 /*
@@ -142,6 +145,7 @@ footer {
 
 .editor-dialog__container .dc-dialog__body {
   height: calc(100% - 7rem);
+  position: relative;
 }
 
 .editor-dialog__container {
@@ -183,16 +187,5 @@ footer {
   list-style: none;
   overflow: auto;
   margin: 0;
-}
-
-.editor-tab .violations-content {
-  height: calc(100% - 4.2em);
-}
-
-.url-tab .violations-content {
-  height: calc(100% - 13em);
-}
-
-.rules-tab .violations-content {
-  height: calc(100% - 7em);
+  height: 100%;
 }

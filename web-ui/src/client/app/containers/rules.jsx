@@ -86,7 +86,7 @@ export class Rules extends Component {
     }
 
     return (
-      <div className="rules-tab">
+      <div>
         <div className="dc-row">
           <div className="dc-column dc-column--small-12 dc-column--large-7">
             <label className="dc-label filter-navigation__label">
