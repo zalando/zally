@@ -1,4 +1,4 @@
-FROM registry.opensource.zalan.do/stups/openjdk:latest
+FROM registry.opensource.zalan.do/stups/openjdk:1.8.0-131-8
 
 MAINTAINER "http://zalando.github.io/"
 LABEL MAINTAINER "http://zalando.github.io/"
