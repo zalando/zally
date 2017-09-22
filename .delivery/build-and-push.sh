@@ -18,7 +18,7 @@ if [ "$IS_PR_BUILD" = true ]; then
 fi
 
 # Get files which have been changed
-pr_number=$(curl -s https://api.github.com/repos/zalando-incubator/zally/git/commits/${CDP_TARGET_COMMIT_ID} | jq '.message' | sed 's/.*#\([0-9]*\)\+.*/\1/')
+pr_number=$(curl -s https://api.github.com/repos/zalando-incubator/zally/git/commits/${CDP_TARGET_COMMIT_ID} | jq '.message' | sed 's/.* #\([0-9]*\)\+ .*/\1/')
 changed_files=($(curl -s https://api.github.com/repos/zalando-incubator/zally/pulls/${pr_number}/files | jq '.[] | .filename' | tr -d "\""))
 
 server_changed=false
