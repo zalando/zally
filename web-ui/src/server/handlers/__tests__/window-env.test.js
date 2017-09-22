@@ -1,7 +1,6 @@
 'use strict';
 
 describe('server.window-env-handler', () => {
-
   const envHandler = require('../window-env');
   let mockWrite, res, req;
 
@@ -15,20 +14,28 @@ describe('server.window-env-handler', () => {
       res = {
         setHeader: () => {},
         write: mockWrite,
-        end: () => {}
+        end: () => {},
       };
       req = {
         app: {
-          mountpath: '/linter'
-        }
+          mountpath: '/linter',
+        },
       };
-      envHandler({
-        windowEnv: { foo: 'bar' }
-      })(req, res);
     });
 
     test('should send the response', () => {
-      expect(mockWrite).toHaveBeenCalledWith('window.env = {"foo":"bar","MOUNTPATH":"/linter/"}');
+      envHandler({
+        windowEnv: { foo: 'bar' },
+      })(req, res);
+      expect(mockWrite).toHaveBeenCalledWith(
+        'window.env = {"foo":"bar","MOUNTPATH":"/linter/"}'
+      );
+    });
+    test('should send the response even with no option', () => {
+      envHandler()(req, res);
+      expect(mockWrite).toHaveBeenCalledWith(
+        'window.env = {"MOUNTPATH":"/linter/"}'
+      );
     });
   });
 });

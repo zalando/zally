@@ -1,6 +1,6 @@
 /* global global, window */
 
-import {Storage, PREFIX} from '../storage.js';
+import { Storage, PREFIX } from '../storage.js';
 
 describe('Storage', () => {
   let mockLocalStorage;
@@ -8,10 +8,10 @@ describe('Storage', () => {
   beforeEach(() => {
     mockLocalStorage = {
       getItem: jest.fn(),
-      setItem: jest.fn()
+      setItem: jest.fn(),
     };
     global.window = {
-      localStorage: mockLocalStorage
+      localStorage: mockLocalStorage,
     };
   });
 
@@ -29,6 +29,9 @@ describe('Storage', () => {
   test('setItem set item into local storage with prefixed key', () => {
     const item = 'world';
     Storage.setItem('hello', item);
-    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(`${PREFIX}hello`, item);
+    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+      `${PREFIX}hello`,
+      item
+    );
   });
 });

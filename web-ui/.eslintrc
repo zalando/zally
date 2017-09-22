@@ -1,30 +1,12 @@
-extends: eslint:recommended
+extends:
+  - eslint:recommended
+  - prettier
 plugins:
   - jest
 env:
   es6: true
   jest: true
 rules:
-  semi: 2
-  indent:
-    - error
-    - 2
-  quotes:
-    - 1
-    - single
-    - avoid-escape
-  space-before-function-paren:
-    - 2
-    - always
-  keyword-spacing:
-    - 2
-    - before: true
-      after: true
-  space-infix-ops: 2
-  spaced-comment:
-    - 2
-    - always
-  arrow-spacing: 2
   no-console: 2
   no-empty: 2
   eqeqeq:

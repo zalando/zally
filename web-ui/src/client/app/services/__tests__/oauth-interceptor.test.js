@@ -1,6 +1,6 @@
 /* global global */
 
-const {RequestMock} = require('../__mocks__/util-mocks');
+const { RequestMock } = require('../__mocks__/util-mocks');
 
 const createAuthorizedRequest = () => {
   return new RequestMock();
@@ -11,22 +11,24 @@ const createUnauthorizedResponse = () => {
 };
 
 describe('OAuthInterceptor', () => {
-
   let OAuthInterceptor, mockRefreshToken, mockLogin, mockFetch;
 
   beforeEach(() => {
     jest.resetModules();
 
     global.window = {
-      env: {}
+      env: {},
     };
 
     mockRefreshToken = jest.fn();
     mockLogin = jest.fn();
     mockFetch = jest.fn();
 
-    jest.mock('../oauth-util', () => ({ refreshToken: mockRefreshToken, login: mockLogin }));
-    jest.mock('../fetch', () => (mockFetch));
+    jest.mock('../oauth-util', () => ({
+      refreshToken: mockRefreshToken,
+      login: mockLogin,
+    }));
+    jest.mock('../fetch', () => mockFetch);
 
     OAuthInterceptor = require('../oauth-interceptor').default;
   });
@@ -35,38 +37,30 @@ describe('OAuthInterceptor', () => {
     delete global.window;
   });
 
-
   describe('responseError interceptor skip', () => {
-
-    test('if OAuth is disabled', (done) => {
+    test('if OAuth is disabled', done => {
       window.env.OAUTH_ENABLED = false;
       const request = createAuthorizedRequest();
       const response = createUnauthorizedResponse();
 
-      OAuthInterceptor
-        .responseError(response, request)
-        .catch((e) => {
-          expect(e).toEqual(response);
-          expect(mockRefreshToken).not.toHaveBeenCalled();
-          done();
-        });
+      OAuthInterceptor.responseError(response, request).catch(e => {
+        expect(e).toEqual(response);
+        expect(mockRefreshToken).not.toHaveBeenCalled();
+        done();
+      });
     });
 
-    test('if response status !== 401', (done) => {
+    test('if response status !== 401', done => {
       const response = {
-        status: 500
+        status: 500,
       };
       const request = createAuthorizedRequest();
-      OAuthInterceptor
-        .responseError(response, request)
-        .catch((e) => {
-          expect(e).toEqual(response);
-          expect(mockRefreshToken).not.toHaveBeenCalled();
-          done();
-        });
+      OAuthInterceptor.responseError(response, request).catch(e => {
+        expect(e).toEqual(response);
+        expect(mockRefreshToken).not.toHaveBeenCalled();
+        done();
+      });
     });
-
-
   });
 
   describe('responseError interceptor try to refresh the token', () => {
@@ -79,23 +73,21 @@ describe('OAuthInterceptor', () => {
     });
 
     test('if success, retry failed requests', () => {
-
       mockRefreshToken.mockReturnValueOnce(Promise.resolve());
       mockFetch.mockReturnValueOnce(Promise.resolve());
 
-      return OAuthInterceptor
-        .responseError(response, request)
-        .then(() => {
-          expect(mockRefreshToken).toHaveBeenCalled();
-          expect(mockFetch).toHaveBeenCalled();
-        });
+      return OAuthInterceptor.responseError(response, request).then(() => {
+        expect(mockRefreshToken).toHaveBeenCalled();
+        expect(mockFetch).toHaveBeenCalled();
+      });
     });
 
-    test('if fails, reject failed requests and login', (done) => {
-      mockRefreshToken.mockReturnValueOnce(Promise.reject('test refresh token fails'));
+    test('if fails, reject failed requests and login', done => {
+      mockRefreshToken.mockReturnValueOnce(
+        Promise.reject('test refresh token fails')
+      );
 
-      OAuthInterceptor
-        .responseError(response, request)
+      OAuthInterceptor.responseError(response, request)
         .then(() => {
           done(new Error('it should reject'));
         })
@@ -112,13 +104,10 @@ describe('OAuthInterceptor', () => {
       mockFetch.mockReturnValue(Promise.resolve());
 
       OAuthInterceptor.responseError(response, request);
-      return OAuthInterceptor
-        .responseError(response, request)
-        .then(() => {
-          expect(mockRefreshToken.mock.calls.length).toEqual(1);
-          expect(mockFetch.mock.calls.length).toEqual(2);
-        });
+      return OAuthInterceptor.responseError(response, request).then(() => {
+        expect(mockRefreshToken.mock.calls.length).toEqual(1);
+        expect(mockFetch.mock.calls.length).toEqual(2);
+      });
     });
   });
-
 });
