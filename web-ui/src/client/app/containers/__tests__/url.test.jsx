@@ -60,7 +60,8 @@ describe('URL container component', () => {
       const component = shallow(
         <URL Storage={MockStorage} getFile={mockGetFile} />
       );
-      component
+      expect.assertions(4);
+      return component
         .instance()
         .handleOnEditFile()
         .then(() => {
@@ -82,7 +83,8 @@ describe('URL container component', () => {
       const component = shallow(
         <URL Storage={MockStorage} getFile={mockGetFile} />
       );
-      component
+      expect.assertions();
+      return component
         .instance()
         .handleOnEditFile()
         .then(() => {
