@@ -8,12 +8,10 @@ import org.springframework.stereotype.Component
 @Component
 class EverySecondPathLevelParameterRule : SwaggerRule() {
     override val title = "Every Second Path Level To Be Parameter"
-    // TODO: Provide URL
-    override val url = ""
+    override val url = "/#143"
     override val violationType = ViolationType.MUST
     override val code = "M005"
-    // TODO: Provide guidelines code
-    override val guidelinesCode = ""
+    override val guidelinesCode = "143"
     private val DESCRIPTION = "Every second path level must be a path parameter"
 
     override fun validate(swagger: Swagger): Violation? {
