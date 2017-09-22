@@ -1,17 +1,16 @@
 /* global global, jasmine */
 
-import {RestService} from '../rest.js';
-import {client} from '../http-client.js';
+import { RestService } from '../rest.js';
+import { client } from '../http-client.js';
 
 jest.mock('../http-client');
 
 describe('RestService', () => {
-
   beforeEach(() => {
     global.window = {
       env: {
-        ZALLY_API_URL : '/zally-api'
-      }
+        ZALLY_API_URL: '/zally-api',
+      },
     };
   });
 
@@ -19,30 +18,54 @@ describe('RestService', () => {
     client.fetch.mockReset();
   });
 
+  test('getFile fetches url and resolve with text body', () => {
+    const mockFile = 'test';
+    const fileResponse = {
+      text: () => mockFile,
+    };
+    client.fetch.mockReturnValueOnce(Promise.resolve(fileResponse));
+
+    return RestService.getFile('url').then(file => {
+      expect(file).toBe(mockFile);
+    });
+  });
+
+  test('getFile fetches url and reject with text error', () => {
+    const mockError = 'test error';
+    const fileResponse = {
+      text: () => Promise.resolve(mockError),
+    };
+    client.fetch.mockReturnValueOnce(Promise.reject(fileResponse));
+
+    return RestService.getFile('url').catch(file => {
+      expect(file).toBe(mockError);
+    });
+  });
+
   test('getApiViolations call api-violations api and resolve with response body representing violations', () => {
     const mockViolations = [];
     const violationsResponse = {
-      json:() => mockViolations
+      json: () => mockViolations,
     };
     client.fetch.mockReturnValueOnce(Promise.resolve(violationsResponse));
 
     return RestService.getApiViolations({
-      foo: 'bar'
-    }).then((violations) => {
+      foo: 'bar',
+    }).then(violations => {
       expect(violations).toBe(mockViolations);
     });
   });
 
-  test('getApiViolations call api-violations api and reject with error json body', (done) => {
+  test('getApiViolations call api-violations api and reject with error json body', done => {
     const mockError = { detail: 'some error' };
     const errorResponse = {
-      json:() => (Promise.resolve(mockError))
+      json: () => Promise.resolve(mockError),
     };
     client.fetch.mockReturnValueOnce(Promise.reject(errorResponse));
 
     return RestService.getApiViolations({
-      foo: 'bar'
-    }).catch((error) => {
+      foo: 'bar',
+    }).catch(error => {
       try {
         expect(error.detail).toBe(mockError.detail);
         done();
@@ -55,37 +78,41 @@ describe('RestService', () => {
   test('getApiViolationsByURL send expected body', () => {
     const mockViolations = [];
     const violationsResponse = {
-      json:() => mockViolations
+      json: () => mockViolations,
     };
     const apiDefinitionURL = 'foo.json';
     client.fetch.mockReturnValueOnce(Promise.resolve(violationsResponse));
 
-    return RestService.getApiViolationsByURL(apiDefinitionURL).then((violations) => {
+    return RestService.getApiViolationsByURL(
+      apiDefinitionURL
+    ).then(violations => {
       expect(violations).toBe(mockViolations);
       expect(client.fetch).toHaveBeenCalledWith(jasmine.any(String), {
         method: 'POST',
         headers: jasmine.any(Object),
         body: JSON.stringify({
-          api_definition_url: apiDefinitionURL
-        })
+          api_definition_url: apiDefinitionURL,
+        }),
       });
     });
   });
 
   test('getApiViolationsBySchema send expected body', () => {
     const mockViolations = [];
-    const violationsResponse = { json:() => mockViolations };
+    const violationsResponse = { json: () => mockViolations };
     const apiDefinitionSchema = { schema: '2.0' };
     client.fetch.mockReturnValueOnce(Promise.resolve(violationsResponse));
 
-    return RestService.getApiViolationsBySchema(apiDefinitionSchema).then((violations) => {
+    return RestService.getApiViolationsBySchema(
+      apiDefinitionSchema
+    ).then(violations => {
       expect(violations).toBe(mockViolations);
       expect(client.fetch).toHaveBeenCalledWith(jasmine.any(String), {
         method: 'POST',
         headers: jasmine.any(Object),
         body: JSON.stringify({
-          api_definition: apiDefinitionSchema
-        })
+          api_definition: apiDefinitionSchema,
+        }),
       });
     });
   });
@@ -93,18 +120,18 @@ describe('RestService', () => {
   test('getSupportedRules call api and resolve with response body representing rules', () => {
     const mockRules = [];
     const rulesResponse = {
-      json:() => mockRules
+      json: () => mockRules,
     };
     client.fetch.mockReturnValueOnce(Promise.resolve(rulesResponse));
 
-    return RestService.getSupportedRules().then((rules) => {
+    return RestService.getSupportedRules().then(rules => {
       expect(rules).toBe(mockRules);
       expect(client.fetch).toHaveBeenCalledWith('/zally-api/supported-rules', {
         method: 'GET',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       });
     });
   });
@@ -112,28 +139,49 @@ describe('RestService', () => {
   test('getSupportedRules call api with filter query and resolve with response body representing rules', () => {
     const mockRules = [];
     const rulesResponse = {
-      json:() => mockRules
+      json: () => mockRules,
     };
     client.fetch.mockReturnValueOnce(Promise.resolve(rulesResponse));
 
-    return RestService.getSupportedRules({'is_active': true}).then((rules) => {
+    return RestService.getSupportedRules({ is_active: true }).then(rules => {
       expect(rules).toBe(mockRules);
-      expect(client.fetch).toHaveBeenCalledWith('/zally-api/supported-rules?is_active=true', {
+      expect(
+        client.fetch
+      ).toHaveBeenCalledWith('/zally-api/supported-rules?is_active=true', {
         method: 'GET',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       });
     });
   });
 
+  test('getSupportedRules call api with filter query and reject with error json body', done => {
+    const mockError = { detail: 'some error' };
+    const errorResponse = {
+      json: () => Promise.resolve(mockError),
+    };
+    client.fetch.mockReturnValueOnce(Promise.reject(errorResponse));
+
+    return RestService.getSupportedRules({ is_active: true }).catch(error => {
+      try {
+        expect(error.detail).toBe(mockError.detail);
+        done();
+      } catch (e) {
+        done.fail(e);
+      }
+    });
+  });
+
   test('objectToQuery call should return correct query when pass one param', () => {
-    expect(RestService.objectToParams({a: 1})).toEqual('?a=1');
+    expect(RestService.objectToParams({ a: 1 })).toEqual('?a=1');
   });
 
   test('objectToQuery call should return correct query when pass multiple params', () => {
-    expect(RestService.objectToParams({a: 1, b:2, c:3})).toEqual('?a=1&b=2&c=3');
+    expect(RestService.objectToParams({ a: 1, b: 2, c: 3 })).toEqual(
+      '?a=1&b=2&c=3'
+    );
   });
 
   test('objectToQuery call should return empty query when do not pass params', () => {

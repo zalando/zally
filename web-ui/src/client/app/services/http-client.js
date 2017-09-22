@@ -1,4 +1,4 @@
-import {HttpClient} from 'aurelia-fetch-client';
+import { HttpClient } from 'aurelia-fetch-client';
 import OAuthInterceptor from './oauth-interceptor.js';
 
 const client = new HttpClient();
@@ -7,10 +7,10 @@ const client = new HttpClient();
 // this is required for other interceptors interested in retry the request
 // since the original request object cannot be used twice if it's already consumed
 const retryCloneInterceptor = {
-  request (request) {
+  request(request) {
     request.retryClone = request.clone();
     return request;
-  }
+  },
 };
 
 client.configure(config => {
@@ -21,4 +21,4 @@ client.configure(config => {
     .withInterceptor(OAuthInterceptor);
 });
 
-export {client, retryCloneInterceptor};
+export { client, retryCloneInterceptor };

@@ -55,7 +55,7 @@ script:
   - npm test
   - npm run build
   - cd $TRAVIS_BUILD_DIR
-  
+
 after_success:
   # Upload test code coverage report for Zally server
   - bash <(curl -s https://codecov.io/bash) -f server/build/reports/jacoco/test/jacocoTestReport.xml
