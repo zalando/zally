@@ -23,6 +23,7 @@ export const editorErrorToAnnotations = error => {
 export class Editor extends Violations {
   constructor(props) {
     super(props);
+    this.state.editorDirty = true;
     this.state.editorValue = this.Storage.getItem('editor-value') || '';
     this.handleOnInputValueChange = this.handleOnInputValueChange.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -34,8 +35,12 @@ export class Editor extends Violations {
   }
 
   handleFormSubmit(event) {
-    this.setState({ showOverlay: true });
-    super.handleFormSubmit(event);
+    if (this.state.editorDirty !== false) {
+      super.handleFormSubmit(event);
+    } else {
+      event.preventDefault();
+    }
+    this.setState({ showOverlay: true, editorDirty: false });
   }
 
   handleHideOverlay() {
@@ -47,6 +52,7 @@ export class Editor extends Violations {
       const inputValue = yaml.load(value);
       this.setState({
         inputValue: inputValue,
+        editorDirty: true,
         editorError: null,
         editorAnnotations: [],
       });
@@ -81,6 +87,7 @@ export class Editor extends Violations {
               onSubmit={this.handleFormSubmit}
               onChange={this.handleOnInputValueChange}
               pending={this.state.pending}
+              dirty={this.state.editorDirty}
             />
           </div>
         </div>

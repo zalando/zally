@@ -168,8 +168,9 @@ footer {
 
 .editor-dialog__close {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 0;
+  right: 0;
+  padding: 2rem;
 }
 
 .violations-result__spinner {
