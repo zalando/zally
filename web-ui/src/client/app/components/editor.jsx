@@ -34,14 +34,17 @@ export function EditorInputForm({
 
   return (
     <form onSubmit={onSubmit} className="editor-input-form">
-      <label className="dc-label editor-input-form__label">
-        Paste in a Swagger schema and click
-      </label>
-      <ValidateButton disabled={validateButtonIsDisabled} />
-      <Editor annotations={annotations} onChange={onChange} value={value} />
-      <div className="editor-input-form__bottom-button">
-        <ValidateButton disabled={validateButtonIsDisabled} />
+      <div className="dc-row">
+        <div className="dc-column">
+          <label className="dc-label editor-input-form__label">
+            Paste in a Swagger schema and click
+          </label>
+        </div>
+        <div className="dc-column dc-column--shrink">
+          <ValidateButton disabled={validateButtonIsDisabled} />
+        </div>
       </div>
+      <Editor annotations={annotations} onChange={onChange} value={value} />
     </form>
   );
 }
@@ -54,6 +57,7 @@ export function Editor({ annotations, value, onChange }) {
         mode="yaml"
         theme="github"
         width="100%"
+        height="100%"
         annotations={annotations}
         showPrintMargin={false}
         value={value}

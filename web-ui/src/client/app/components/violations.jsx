@@ -6,12 +6,20 @@ import { RuleType } from './rules.jsx';
 export function Violations(props) {
   return (
     <div>
-      {props.violations.length ? <h3>VIOLATIONS</h3> : ''}
-      <ul style={{ padding: 0, listStyle: 'none' }}>
-        {props.violations.map((violation, index) => {
-          return <Violation key={index} violation={violation} />;
-        })}
-      </ul>
+      <div className="dc-row">
+        <div className="dc-column">
+          {props.violations.length ? <h3>VIOLATIONS</h3> : ''}
+        </div>
+      </div>
+      <div className="dc-row">
+        <div className="dc-column">
+          <ul className="violations-content">
+            {props.violations.map((violation, index) => {
+              return <Violation key={index} violation={violation} />;
+            })}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }

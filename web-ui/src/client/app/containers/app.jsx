@@ -42,7 +42,7 @@ export function App(props) {
         ) : null}
       </div>
 
-      <div className="dc-page page-container">
+      <div style={{ height: '100%' }} className="dc-page page-container">
         <Switch>
           <Route
             path="/login"

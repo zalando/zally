@@ -11,7 +11,6 @@ body {
 #app {
   min-height: 100%;
   position: relative;
-  padding-bottom: 4rem;
 }
 
 footer {
@@ -101,6 +100,7 @@ footer {
 .tab-contents {
   background: $dc-gray80;
   padding: 1.8rem 1.2rem;
+  height: calc(100% - 13rem);
 }
 
 /*
@@ -119,6 +119,7 @@ footer {
 .editor {
   border: 1px solid #dadada;
   margin-bottom: 1.2rem;
+  height: calc(100% - 5rem);
 }
 
 .editor__ace-editor {
@@ -129,19 +130,22 @@ footer {
   text-align: right;
 }
 
+.editor-input-form__button {
+  float: right;
+}
+
 .editor-input-form__label {
   display: inline-block;
   line-height: 4rem;
   margin-right: 0.4rem;
 }
 
-.editor-dialog__container {
-  position: relative;
+.editor-dialog__container .dc-dialog__body {
+  height: calc(100% - 7rem);
 }
 
-.editor-dialog__body {
-  max-height: calc(100% - 10rem);
-  overflow: auto;
+.editor-dialog__container {
+  position: relative;
 }
 
 .editor-dialog__backdrop {
@@ -168,10 +172,26 @@ footer {
   right: 1rem;
 }
 
-/*
- * violations
- */
 .violations-result__spinner {
   padding: 2rem 0;
   text-align: center;
+}
+
+.violations-content {
+  padding: 0;
+  list-style: none;
+  overflow: auto;
+  margin: 0;
+}
+
+.editor-tab .violations-content {
+  height: calc(100% - 4.2em);
+}
+
+.url-tab .violations-content {
+  height: calc(100% - 13em);
+}
+
+.rules-tab .violations-content {
+  height: calc(100% - 7em);
 }

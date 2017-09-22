@@ -71,7 +71,7 @@ export class Editor extends Violations {
 
   render() {
     return (
-      <div className="dc-row">
+      <div className="dc-row editor-tab">
         <div className="dc-column dc-column--small-12 dc-column--large-7">
           <div className="dc-column__contents">
             <EditorInputForm
