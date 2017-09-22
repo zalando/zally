@@ -9,6 +9,7 @@ popd > /dev/null
 
 SERVER_DIR=${SCRIPT_DIR}/server
 WEB_UI_DIR=${SCRIPT_DIR}/web-ui
+GITHUB_INTEGRATION_DIR=${SCRIPT_DIR}/github_integration
 
 # Build server
 cd ${SERVER_DIR} && ./gradlew clean build
@@ -18,10 +19,8 @@ cd ${WEB_UI_DIR} && npm install && npm build
 
 if [ "$@" == "--bark" ]; then
 
-    GITHUB_INTEGRATION_DIR=${SCRIPT_DIR}/github_integration
-
     #Build Bark
-    cd {GITHUB_INTEGRATION_DIR} && ./gradlew clean build
+    cd ${GITHUB_INTEGRATION_DIR} && ./gradlew clean build
 
     # Docker-compose
     cd ${SCRIPT_DIR} && docker-compose -f docker-compose.yaml -f docker-compose-bark.yaml up --build
