@@ -52,9 +52,9 @@ Web UI is accessible on `http://localhost:8080`; Zally server on `http://localho
 export GITHUB_OAUTH_TOKEN=your_github_oauth_token
 export GITHUB_SECRET=your_github_secret
 
-./build_and_run.sh --bark
+./build-and-run.sh --bark
 ``` 
-Github webhook endpoint is acceible on http://localhost:8081/github_webhook
+Github webhook endpoint is accessible on http://localhost:8081/github_webhook
 More details about how to register[Webhooks](https://developer.github.com/webhooks/) 
 
 ### Contributing
