@@ -47,6 +47,16 @@ executing this script:
 
 Web UI is accessible on `http://localhost:8080`; Zally server on `http://localhost:8000`
 
+*To run zally with github integration*:
+```bash
+export GITHUB_OAUTH_TOKEN=your_github_oauth_token
+export GITHUB_SECRET=your_github_secret
+
+./build-and-run.sh --bark
+``` 
+Github webhook endpoint is accessible on http://localhost:8081/github_webhook
+More details about how to register[Webhooks](https://developer.github.com/webhooks/) 
+
 ### Contributing
 
 Zally welcomes contributions from the open source community. To get started, take a look at our [contributing guidelines](CONTRIBUTING). Then check our [Project Board](https://github.com/zalando-incubator/zally/projects/1) and [Issues Tracker](https://github.com/zalando-incubator/zally/issues) for ideas. 
