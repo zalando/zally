@@ -13,12 +13,10 @@ class AvoidSynonymsRule(
     @Autowired rulesConfig: Config, @Autowired metricServices: DropwizardMetricServices) : SwaggerRule() {
 
     override val title = "Use common property names"
-    // TODO: Provide URL
-    override val url = ""
-    override val violationType = ViolationType.SHOULD
+    override val url = "/#174"
+    override val violationType = ViolationType.MUST
     override val code = "S010"
-    // TODO: Provide guidelines code
-    override val guidelinesCode = ""
+    override val guidelinesCode = "174"
 
     private val descPattern = "Property names should utilize common dictionary"
     private val metricServices = metricServices
