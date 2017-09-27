@@ -22,12 +22,17 @@ build web-ui:
   before_script:
     - cd web-ui
   script:
-    - npm install
-    - npm run build
+    - yarn install --frozen-lockfile --non-interactive
+    - yarn run build
+  cache:
+    key: "$CI_COMMIT_REF_SLUG/node"
+    paths:
+      - web-ui/node_modules
   artifacts:
     expire_in: 1 week
     paths:
       - web-ui/Dockerfile
       - web-ui/package.json
+      - web-ui/yarn.lock
       - web-ui/server.js
       - web-ui/src
