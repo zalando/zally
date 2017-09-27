@@ -1,5 +1,9 @@
 const app = require('express')();
-const zally = require('./src/server')();
+const zally = require('./src/server')({
+  windowEnv: {
+    ZALLY_API_URL: process.env.ZALLY_API_URL || 'http://localhost:8000',
+  },
+});
 const webpackDevServerProxy = require('./src/server/dev/webpack-dev-server-proxy');
 
 /**

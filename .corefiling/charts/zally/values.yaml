@@ -1,0 +1,16 @@
+postgresql:
+  postgresDatabase: postgres
+  postgresUser: postgres
+  postgresPassword: postgres
+  persistence:
+    enabled: false
+  service:
+    type: NodePort
+web-ui:
+  ingress:
+    enabled: true
+server:
+  ingress:
+    enabled: true
+  jdbc:
+    host: zally-postgresql

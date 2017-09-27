@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Zally frontend server
+name: web-ui
+version: 0.0.0-unversioned
