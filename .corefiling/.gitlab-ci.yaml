@@ -1,0 +1,33 @@
+build server:
+  stage: build
+  image: openjdk:8-alpine
+  tags: [docker]
+  variables:
+    JAVA_OPTS: -Dorg.gradle.daemon=false
+    GRADLE_TASK: $CI_JOB_NAME
+    GRADLE_USER_HOME: /opt/gradle/caches
+  before_script:
+    - cd server
+  script: ./gradlew --stacktrace clean build
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - server/Dockerfile
+      - server/build/libs
+
+build web-ui:
+  stage: build
+  image: artifacts.int.corefiling.com:5000/jma/zally/build-ui:local
+  tags: [docker]
+  before_script:
+    - cd web-ui
+  script:
+    - npm install
+    - npm run build
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - web-ui/Dockerfile
+      - web-ui/package.json
+      - web-ui/server.js
+      - web-ui/src
