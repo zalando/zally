@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Zally deployment
+name: zally
+version: 0.0.0-local
