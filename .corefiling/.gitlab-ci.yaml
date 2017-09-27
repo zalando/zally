@@ -1,13 +1,44 @@
-build server:
+stages:
+  - build
+  - docker
+
+.template_build: &build
   stage: build
+  tags:
+    - docker
+  before_script:
+    - component="$( echo "$CI_JOB_NAME" | awk '{split($0,a," "); print a[2]}' )"
+    - cd "$component"
+
+.template_docker: &docker
+  <<: *build
+  stage: docker
+  image: docker:latest
+  services:
+    - docker:dind
+  tags:
+    - docker
+    - docker-privileged
+  variables:
+    GIT_STRATEGY: none
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - '*.imageTag'
+  script:
+    - tag="$CI_COMMIT_REF_SLUG.$CI_PIPELINE_ID"
+    - image="artifacts.int.corefiling.com:5000/$CI_PROJECT_PATH/$component:$tag"
+    - echo "$tag" > "../$component.imageTag"
+    - echo "Building $image"
+    - docker build -t "$image" .
+    - docker push "$image"
+
+build server:
+  <<: *build
   image: openjdk:8-alpine
-  tags: [docker]
   variables:
     JAVA_OPTS: -Dorg.gradle.daemon=false
-    GRADLE_TASK: $CI_JOB_NAME
     GRADLE_USER_HOME: /opt/gradle/caches
-  before_script:
-    - cd server
   script: ./gradlew --stacktrace clean build
   artifacts:
     expire_in: 1 week
@@ -16,11 +47,8 @@ build server:
       - server/build/libs
 
 build web-ui:
-  stage: build
+  <<: *build
   image: artifacts.int.corefiling.com:5000/jma/zally/build-ui:local
-  tags: [docker]
-  before_script:
-    - cd web-ui
   script:
     - yarn install --frozen-lockfile --non-interactive
     - yarn run build
@@ -36,3 +64,6 @@ build web-ui:
       - web-ui/yarn.lock
       - web-ui/server.js
       - web-ui/src
+
+docker server: *docker
+docker web-ui: *docker
