@@ -41,6 +41,7 @@ spec:
             httpGet:
               path: /health
               port: management
+            initialDelaySeconds: 60
           readinessProbe:
             httpGet:
               path: /health
