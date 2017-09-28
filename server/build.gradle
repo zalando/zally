@@ -48,6 +48,7 @@ jar {
 repositories {
     jcenter()
     mavenCentral()
+    maven { url "https://raw.github.com/antoine-tran/maven-repo/master/releases" }
 }
 
 sourceCompatibility = 1.8
@@ -78,6 +79,7 @@ dependencies {
     compile("org.zalando:twintip-spring-web:1.1.0")
     compile("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
     compile("com.typesafe:config:1.3.3")
+    compile("de.mpii.ag5:javatools:2.0.1")
 
     testCompile("net.jadler:jadler-core:1.3.0")
     testCompile("net.jadler:jadler-jdk:1.3.0")
