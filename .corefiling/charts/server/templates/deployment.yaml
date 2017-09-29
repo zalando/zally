@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.service.internalPort }}
+              containerPort: 8080
+            - name: management
+              containerPort: 7979
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: dev
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://{{ .Values.jdbc.host }}:{{ .Values.jdbc.port }}/{{ .Values.jdbc.database }}
+            - name: SPRING_DATASOURCE_USERNAME
+              value: {{ .Values.jdbc.user | quote }}
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: {{ .Values.jdbc.password | quote }}
+            - name: MANAGEMENT_PORT
+              value: '7979'
+            - name: TOKEN_INFO_URI
+              value: https://url.not.set
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: management
+            initialDelaySeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: management
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}

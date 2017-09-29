@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Zally API server
+name: server
+version: 0.0.0-unversioned

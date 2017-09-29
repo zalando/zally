@@ -1,0 +1,143 @@
+stages:
+  - build
+  - docker
+  - deploy
+
+.template_kube-deploy: &kube-deploy
+  image: artifacts.int.corefiling.com:5000/pdds/kube-deploy:0.8.1
+  tags:
+    - docker
+
+##
+# Build
+##
+
+.template_build: &build
+  stage: build
+  tags:
+    - docker
+  before_script:
+    - component="$( echo "$CI_JOB_NAME" | awk '{split($0,a," "); print a[2]}' )"
+    - cd "$component"
+
+build charts:
+  <<: *build
+  <<: *kube-deploy
+  before_script:
+    - cd .corefiling/charts
+  script:
+    - helm dep up web-ui
+    # - helm dep up server
+    - helm dep up zally
+    - version="0.0.0-$CI_COMMIT_REF_SLUG.$CI_PIPELINE_ID"
+    - helm package --destination "$CI_PROJECT_DIR" --version "$version" zally
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - zally-*.tgz
+
+build server:
+  <<: *build
+  image: openjdk:8-alpine
+  variables:
+    JAVA_OPTS: -Dorg.gradle.daemon=false
+    GRADLE_USER_HOME: /opt/gradle/caches
+  script: ./gradlew --stacktrace clean build
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - server/Dockerfile
+      - server/build/libs
+
+build web-ui:
+  <<: *build
+  image: artifacts.int.corefiling.com:5000/jma/zally/build-ui:local
+  script:
+    - yarn install --frozen-lockfile --non-interactive
+    - yarn run build
+  cache:
+    key: "$CI_COMMIT_REF_SLUG/node"
+    paths:
+      - web-ui/node_modules
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - web-ui/Dockerfile
+      - web-ui/package.json
+      - web-ui/yarn.lock
+      - web-ui/server.js
+      - web-ui/src
+
+##
+# Docker
+##
+.template_docker: &docker
+  <<: *build
+  stage: docker
+  image: docker:latest
+  services:
+    - docker:dind
+  tags:
+    - docker
+    - docker-privileged
+  variables:
+    GIT_STRATEGY: none
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - '*.imageTag'
+  script:
+    - tag="$CI_COMMIT_REF_SLUG.$CI_PIPELINE_ID"
+    - image="artifacts.int.corefiling.com:5000/$CI_PROJECT_PATH/$component:$tag"
+    - echo "$tag" > "../$component.imageTag"
+    - echo "Building $image"
+    - docker build -t "$image" .
+    - docker push "$image"
+
+docker server: *docker
+docker web-ui: *docker
+
+##
+# Deploy
+##
+.template_deploy: &deploy
+  <<: *kube-deploy
+  stage: deploy
+  variables:
+    TILLER_NAMESPACE: $CI_ENVIRONMENT_SLUG
+    GIT_STRATEGY: none
+    HELM_RELEASE: zally
+  environment: &deploy-environment
+    name: $CI_PROJECT_PATH-$CI_COMMIT_REF_NAME
+    url: https://$CI_ENVIRONMENT_SLUG.kube.int.corefiling.com/
+    on_stop: undeploy
+  before_script:
+    - /kube/init $KUBE_AUTH_TOKEN "$TILLER_NAMESPACE"
+
+deploy:
+  <<: *deploy
+  dependencies:
+    - build charts
+    - docker server
+    - docker web-ui
+  script:
+    - SERVER_HOST="$CI_ENVIRONMENT_SLUG-server.kube.int.corefiling.com"
+    - helm upgrade --install
+      --set "web-ui.image.tag=$( cat web-ui.imageTag )"
+      --set "web-ui.ingress.hosts={$CI_ENVIRONMENT_SLUG.kube.int.corefiling.com}"
+      --set "web-ui.api.url=https://$SERVER_HOST"
+      --set "server.image.tag=$( cat server.imageTag )"
+      --set "server.ingress.hosts={$SERVER_HOST}"
+      --namespace=$TILLER_NAMESPACE
+      $HELM_RELEASE zally-*.tgz
+    - /kube/checkRunning
+
+undeploy:
+  <<: *deploy
+  when: manual
+  environment:
+    <<: *deploy-environment
+    action: stop
+  dependencies: []
+  script:
+    - kube-auth namespace delete "$TILLER_NAMESPACE"
