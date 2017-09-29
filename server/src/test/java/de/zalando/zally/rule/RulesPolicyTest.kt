@@ -18,14 +18,21 @@ class RulesPolicyTest {
 
     @Test
     fun shouldAcceptRuleIfNotFiltered() {
-        val policy = RulesPolicy(arrayOf("M001", "M002"))
+        val policy = RulesPolicy(arrayOf("M001", "M002"), arrayOf(""))
         val violation = Violation(TestRule(null), "dummy1", "dummy", ViolationType.MUST, "dummy", listOf("x"))
         assertTrue(policy.accepts(TestRule(violation)))
     }
 
     @Test
     fun shouldNotAcceptRuleIfFiltered() {
-        val policy = RulesPolicy(arrayOf("M001", "M999"))
+        val policy = RulesPolicy(arrayOf("M001", "M999"), arrayOf(""))
+        val violation = Violation(TestRule(null), "dummy1", "dummy", ViolationType.MUST, "dummy", listOf("x"))
+        assertFalse(policy.accepts(TestRule(violation)))
+    }
+
+    @Test
+    fun shouldNotAcceptRuleIfIgnoredPackage() {
+        val policy = RulesPolicy(arrayOf(), arrayOf("de.zalando.zally.rule"))
         val violation = Violation(TestRule(null), "dummy1", "dummy", ViolationType.MUST, "dummy", listOf("x"))
         assertFalse(policy.accepts(TestRule(violation)))
     }

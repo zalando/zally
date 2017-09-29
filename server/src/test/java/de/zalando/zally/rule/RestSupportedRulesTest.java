@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@TestPropertySource(properties = "zally.ignoreRules=M001,C001")
+@TestPropertySource(properties = {"zally.ignoreRules=M001,C001","zally.ignoreRulePackages=com.example.rules"})
 public class RestSupportedRulesTest extends RestApiBaseTest {
 
     private static final List<String> IGNORED_RULES = Arrays.asList("M001", "C001");
