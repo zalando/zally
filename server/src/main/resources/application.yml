@@ -33,7 +33,7 @@ twintip:
 rules-config-path: "rules-config.conf"
 
 zally:
-  ignoreRules: S010
+  ignoreRules: S010, H001
   apiGuidelinesBaseUrl: "http://zalando.github.io/restful-api-guidelines"
   cli:
     releasesPage: https://github.com/zalando-incubator/zally/releases
