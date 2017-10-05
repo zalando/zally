@@ -7,7 +7,7 @@ import org.junit.Test
 
 class CollectionsReturnXTotalItemsHeaderTest {
 
-    val cut = CollectionsReturnXTotalItemsHeader();
+    val cut = CollectionsReturnXTotalItemsHeader()
 
     @Test
     fun withEmptyReturnsNull() {

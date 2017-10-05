@@ -3,12 +3,7 @@ package com.corefiling.zally.rule.collections
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
-import io.swagger.models.ArrayModel
-import io.swagger.models.Model
 import io.swagger.models.Swagger
-import io.swagger.models.properties.ArrayProperty
-import io.swagger.models.properties.RefProperty
-import io.swagger.parser.ResolverCache
 import org.springframework.stereotype.Component
 
 @Component

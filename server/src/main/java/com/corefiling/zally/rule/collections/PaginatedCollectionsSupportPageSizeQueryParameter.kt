@@ -4,15 +4,9 @@ import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
 import io.swagger.models.Swagger
-import io.swagger.models.parameters.Parameter
-import io.swagger.models.parameters.PathParameter
 import io.swagger.models.parameters.QueryParameter
-import io.swagger.models.properties.Property
-import io.swagger.models.properties.RefProperty
-import io.swagger.parser.ResolverCache
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
-import javax.websocket.server.PathParam
 
 @Component
 class PaginatedCollectionsSupportPageSizeQueryParameter : CoreFilingSwaggerRule() {
@@ -28,12 +22,12 @@ class PaginatedCollectionsSupportPageSizeQueryParameter : CoreFilingSwaggerRule(
         collectionPaths(swagger)?.forEach { pattern, path ->
             if (path.get!=null) {
 
-                var found = false;
+                var found = false
 
                 path.get.parameters?.forEach { param ->
                     if (param is QueryParameter && param.name=="pageSize") {
                         found = true
-                        if(param.type!="integer" ||
+                        if (param.type!="integer" ||
                                 param.format!="int32" ||
                                 param.minimum!=BigDecimal(1)) {
                             failures.add(pattern + " GET")

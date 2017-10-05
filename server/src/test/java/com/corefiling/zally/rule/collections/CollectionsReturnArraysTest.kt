@@ -7,7 +7,7 @@ import org.junit.Test
 
 class CollectionsReturnArraysTest {
 
-    val cut = CollectionsReturnArrays();
+    val cut = CollectionsReturnArrays()
 
     @Test
     fun withEmptyReturnsNull() {
