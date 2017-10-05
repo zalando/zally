@@ -24,7 +24,7 @@ public class ApiViolationsControllerTest {
     private MockMvc mvc;
 
     @Test
-    @SuppressWarnings("PMD.JUnitTestShouldIncludeAssert")
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     public void violationsResponseReferencesFullGuidelinesUrl() throws Exception {
         mvc.perform(
                 post("/api-violations")
