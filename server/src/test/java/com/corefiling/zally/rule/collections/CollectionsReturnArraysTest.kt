@@ -7,9 +7,11 @@ import org.junit.Test
 
 class CollectionsReturnArraysTest {
 
+    val cut = CollectionsReturnArrays();
+
     @Test
     fun withEmptyReturnsNull() {
-        assertThat(CollectionsReturnArrays().validate(Swagger())).isNull()
+        assertThat(cut.validate(Swagger())).isNull()
     }
 
     @Test
@@ -30,10 +32,7 @@ paths:
             items:
               type: string
 """
-        val swagger = SwaggerParser().parse(yaml)
-        val cut = CollectionsReturnArrays()
-
-        assertThat(cut.validate(swagger)).isNull()
+        assertThat(cut.validate(SwaggerParser().parse(yaml))).isNull()
     }
 
     @Test
@@ -58,10 +57,7 @@ paths:
         type: string
         required: true
 """
-        val swagger = SwaggerParser().parse(yaml)
-        val cut = CollectionsReturnArrays()
-
-        assertThat(cut.validate(swagger)!!.paths)
+        assertThat(cut.validate(SwaggerParser().parse(yaml))!!.paths)
                 .hasSameElementsAs(listOf("/things"))
     }
 }
