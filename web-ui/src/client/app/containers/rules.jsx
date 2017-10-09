@@ -113,7 +113,7 @@ export class Rules extends Component {
           </div>
         </div>
         <div className="dc-row">
-          <div className="dc-column dc-column--small-12 dc-column--large-7">
+          <div className="dc-column">
             <div className="dc-column__contents">
               <RulesTab error={this.state.error} rules={this.state.rules} />
             </div>
