@@ -4,6 +4,7 @@ import { Editor } from './editor.jsx';
 import { Rules } from './rules.jsx';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
+import FluidContainer from '../components/fluid-container.jsx';
 
 export function ViolationsTab({
   authenticated,
@@ -60,45 +61,47 @@ export function ViolationsTab({
           <li>RULES</li>
         </LinkContainer>
       </ul>
-      <div className="tab-contents">
-        <Switch>
-          <Route
-            exact
-            path="/"
-            render={props => (
-              <URL
-                getApiViolations={getApiViolationsByURL}
-                Storage={Storage}
-                getFile={getFile}
-                {...props}
-              />
-            )}
-          />
-          <Route
-            exact
-            path="/editor"
-            render={props => (
-              <Editor
-                getApiViolations={getApiViolationsBySchema}
-                Storage={Storage}
-                {...props}
-              />
-            )}
-          />
-          <Route
-            exact
-            path="/rules"
-            render={props => (
-              <Rules
-                getSupportedRules={getSupportedRules}
-                Storage={Storage}
-                {...props}
-              />
-            )}
-          />
-          <Redirect path="*" to="/" />
-        </Switch>
-      </div>
+      <FluidContainer>
+        <div className="tab-contents">
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={props => (
+                <URL
+                  getApiViolations={getApiViolationsByURL}
+                  Storage={Storage}
+                  getFile={getFile}
+                  {...props}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/editor"
+              render={props => (
+                <Editor
+                  getApiViolations={getApiViolationsBySchema}
+                  Storage={Storage}
+                  {...props}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/rules"
+              render={props => (
+                <Rules
+                  getSupportedRules={getSupportedRules}
+                  Storage={Storage}
+                  {...props}
+                />
+              )}
+            />
+            <Redirect path="*" to="/" />
+          </Switch>
+        </div>
+      </FluidContainer>
     </div>
   );
 }
