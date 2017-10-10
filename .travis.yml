@@ -7,10 +7,9 @@ jdk:
   - oraclejdk8
 
 before_install:
-  - sudo add-apt-repository ppa:duggan/bats --yes
-  - sudo apt-get update -qq --allow-unauthenticated
-  - sudo apt-get install -qq bats
   - eval "$(GIMME_GO_VERSION=1.8.3 gimme)"
+  - sudo apt-get install jq
+  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
 
 install: true
 
@@ -57,7 +56,9 @@ script:
   - cd $TRAVIS_BUILD_DIR
 
 after_success:
-  # Upload test code coverage report for Zally server
+  # Upload test code coverage report for Zally server to codacy
+  - java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter -l Java -r server/build/reports/jacoco/test/jacocoTestReport.xml
+  # Upload test code coverage report for Zally server to codecov
   - bash <(curl -s https://codecov.io/bash) -f server/build/reports/jacoco/test/jacocoTestReport.xml
   # Upload test code coverage report for Zally integration server
   - bash <(curl -s https://codecov.io/bash) -f github-integration/build/reports/jacoco/test/jacocoTestReport.xml

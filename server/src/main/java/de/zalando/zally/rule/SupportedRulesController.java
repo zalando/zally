@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 @CrossOrigin
@@ -50,6 +51,9 @@ public class SupportedRulesController {
             .filter(r -> filterByIsActive(r, isActiveFilter))
             .filter(r -> filterByType(r, typeFilter))
             .map(this::toDto)
+            .sorted(comparing(RuleDTO::getType)
+                .thenComparing(RuleDTO::getCode)
+                .thenComparing(RuleDTO::getTitle))
             .collect(toList());
 
         return new RulesListDTO(filteredRules);

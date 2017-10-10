@@ -1,11 +1,13 @@
 extends:
   - eslint:recommended
   - prettier
+  - plugin:jest/recommended
 plugins:
   - jest
 env:
   es6: true
   jest: true
+  jest/globals: true
 rules:
   no-console: 2
   no-empty: 2
@@ -18,6 +20,4 @@ rules:
   no-var: 2
 
   # Jest
-  jest/no-disabled-tests: 1
   jest/no-focused-tests: 1
-  jest/no-identical-title: 2

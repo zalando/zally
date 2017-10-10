@@ -34,7 +34,7 @@ rules-config-path: "rules-config.conf"
 
 zally:
   scanPackages: com.corefiling.zally
-  ignoreRules: S010
+  ignoreRules: S010, H001
   ignoreRulePackages: de.zalando.zally.rule
   apiGuidelinesBaseUrl: "https://wiki.int.corefiling.com/platform/APIGuidelines"
   cli:

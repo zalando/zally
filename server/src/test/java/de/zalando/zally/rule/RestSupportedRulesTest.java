@@ -14,7 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @TestPropertySource(properties = {"zally.ignoreRules=M001,C001","zally.ignoreRulePackages=com.example.rules"})
@@ -31,6 +33,18 @@ public class RestSupportedRulesTest extends RestApiBaseTest {
     @Test
     public void testRulesCount() {
         assertThat(getSupportedRules().size()).isEqualTo(implementedRules.size());
+    }
+
+    @Test
+    public void testRulesOrdered() {
+        final List<RuleDTO> rules = getSupportedRules();
+        for(int i=1;i<rules.size();++i) {
+            final ViolationType prev = rules.get(i - 1).getType();
+            final ViolationType next = rules.get(i).getType();
+            assertTrue("Item #" + i + " is out of order:\n" +
+                    rules.stream().map(Object::toString).collect(joining("\n")),
+                    prev.compareTo(next)<=0);
+        }
     }
 
     @Test
