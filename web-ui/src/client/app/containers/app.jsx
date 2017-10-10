@@ -41,7 +41,6 @@ export function App(props) {
           />
         ) : null}
       </div>
-
       <div className="dc-page page-container">
         <Switch>
           <Route

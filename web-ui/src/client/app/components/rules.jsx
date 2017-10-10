@@ -1,5 +1,6 @@
 import React from 'react';
 
+import FluidContainer from './fluid-container.jsx';
 import { Msg } from './msg.jsx';
 
 export function RulesTab({ rules, error }) {
@@ -7,11 +8,13 @@ export function RulesTab({ rules, error }) {
     <div>
       <h3>SUPPORTED RULES</h3>
       {error ? <Msg type="error" title="ERROR" text={error} /> : null}
-      <ul style={{ padding: 0, listStyle: 'none' }}>
-        {rules.map((rule, index) => {
-          return <Rule key={index} rule={rule} />;
-        })}
-      </ul>
+      <FluidContainer>
+        <ul className="violations-content">
+          {rules.map((rule, index) => {
+            return <Rule key={index} rule={rule} />;
+          })}
+        </ul>
+      </FluidContainer>
     </div>
   );
 }

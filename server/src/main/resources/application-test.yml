@@ -29,7 +29,7 @@ rules-config-path: "rules-config-test.conf"
 
 zally:
   scanPackages: com.corefiling.zally
-  apiGuidelinesBaseUrl: "https://wiki.int.corefiling.com/platform/APIGuidelines"
+  apiGuidelinesBaseUrl: "http://zalando.github.io/restful-api-guidelines"
   cli:
     releasesPage: https://github.com/zalando-incubator/zally/releases
     deprecatedCliAgents: unirest-java/1.3.11,Zally-CLI/1.0

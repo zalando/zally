@@ -27,7 +27,7 @@ management.port: 8080
 
 zally:
   scanPackages: com.corefiling.zally
-  ignoreRules: S010
+  ignoreRules: S010, H001
   apiGuidelinesBaseUrl: "https://wiki.int.corefiling.com/platform/APIGuidelines"
   cli:
     releasesPage: https://github.com/zalando-incubator/zally/releases
