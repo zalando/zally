@@ -19,7 +19,8 @@ class PascalCaseHttpHeadersRuleTest {
     fun simpleNegativeCase() {
         val swagger = swaggerWithHeaderParams("kebap-case-name")
         val result = PascalCaseHttpHeadersRule(testConfig).validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("parameters kebap-case-name"))
+        assertThat(result.paths).hasSameElementsAs(listOf("/parameters/kebap-case-name kebap-case-name"))
+        assertThat(result.specPointers).hasSameElementsAs(listOf("/parameters/kebap-case-name/name"))
     }
 
     @Test

@@ -1,8 +1,12 @@
 package de.zalando.zally.apireview;
 
 import de.zalando.zally.dto.ApiDefinitionRequest;
+import de.zalando.zally.dto.ApiDefinitionWrapper;
 import de.zalando.zally.exception.MissingApiDefinitionException;
 import de.zalando.zally.exception.UnaccessibleResourceUrlException;
+import de.zalando.zally.util.ApiDefinitionDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -10,8 +14,12 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+
 @Component
 public class ApiDefinitionReader {
+
+    private final Logger log = LoggerFactory.getLogger(ApiDefinitionReader.class);
 
     // some internal systems add these characters at the end of some urls, don't know why
     private static final String SPECIAL_CHARACTERS_SUFFIX = "%3D%3D";
@@ -23,11 +31,17 @@ public class ApiDefinitionReader {
         this.client = client;
     }
 
-    public String read(ApiDefinitionRequest request) throws MissingApiDefinitionException, UnaccessibleResourceUrlException {
+    public ApiDefinitionWrapper read(ApiDefinitionRequest request) throws MissingApiDefinitionException, UnaccessibleResourceUrlException {
         if (request.getApiDefinition() != null) {
             return request.getApiDefinition();
         } else if (request.getApiDefinitionUrl() != null) {
-            return readFromUrl(request.getApiDefinitionUrl());
+            final String content = readFromUrl(request.getApiDefinitionUrl());
+            try {
+                return ApiDefinitionDeserializer.getApiDefinitionWrapper(content);
+            }catch(IOException ex){
+                log.warn("Unable to parse specification: " + request.getApiDefinitionUrl());
+                return new ApiDefinitionWrapper(content);
+            }
         } else {
             throw new MissingApiDefinitionException();
         }
@@ -45,7 +59,7 @@ public class ApiDefinitionReader {
 
     private String removeSpecialCharactersSuffix(String url) {
         return url.endsWith(SPECIAL_CHARACTERS_SUFFIX)
-            ? url.substring(0, url.length() - SPECIAL_CHARACTERS_SUFFIX.length())
-            : url;
+                ? url.substring(0, url.length() - SPECIAL_CHARACTERS_SUFFIX.length())
+                : url;
     }
 }

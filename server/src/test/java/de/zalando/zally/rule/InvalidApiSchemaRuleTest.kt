@@ -9,7 +9,9 @@ import org.junit.Test
 class InvalidApiSchemaRuleTest {
 
     companion object {
-        val invalidSchemaRule = InvalidApiSchemaRule(testConfig)
+        val invalidSchemaRule: InvalidApiSchemaRule by lazy {
+            InvalidApiSchemaRule(testConfig)
+        }
     }
 
     @Test

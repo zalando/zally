@@ -16,7 +16,7 @@ class HyphenateHttpHeadersRule(@Autowired rulesConfig: Config) : HttpHeadersRule
 
     override fun isViolation(header: String) = !PatternUtil.isHyphenated(header)
 
-    override fun createViolation(paths: List<String>): Violation {
-        return Violation(this, title, "Header names should be hyphenated", violationType, url, paths)
+    override fun createViolation(paths: List<String>, specPointers: List<String>): Violation {
+        return Violation(this, title, "Header names should be hyphenated", violationType, url, paths, specPointers)
     }
 }

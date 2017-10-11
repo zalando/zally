@@ -1,6 +1,7 @@
 package de.zalando.zally.apireview;
 
 import de.zalando.zally.dto.ApiDefinitionRequest;
+import de.zalando.zally.dto.ApiDefinitionWrapper;
 import de.zalando.zally.exception.MissingApiDefinitionException;
 import de.zalando.zally.util.JadlerUtil;
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer;
@@ -40,15 +41,15 @@ public class ApiDefinitionReaderTest {
 
     @Test
     public void shouldReturnStringWhenApiDefinitionIsFound() {
-        ApiDefinitionRequest request = new ApiDefinitionRequest(contentInJson, "http://zalando.de", emptyList());
-        String result = reader.read(request);
+        ApiDefinitionRequest request = new ApiDefinitionRequest(new ApiDefinitionWrapper(contentInJson), "http://zalando.de", emptyList());
+        String result = reader.read(request).getApiDefinition();
         assertEquals(contentInJson, result);
     }
 
     @Test
     public void shouldReadJsonSwaggerDefinitionFromUrl() {
         String url = JadlerUtil.stubResource("test.json", contentInJson);
-        String result = reader.read(ApiDefinitionRequest.Factory.fromUrl(url));
+        String result = reader.read(ApiDefinitionRequest.Factory.fromUrl(url)).getApiDefinition();
         assertEquals(contentInJson, result);
     }
 
@@ -56,7 +57,7 @@ public class ApiDefinitionReaderTest {
     public void shouldReadYamlSwaggerDefinitionFromUrl() {
         String contentInYaml = "swagger: \"2.0\"";
         String url = JadlerUtil.stubResource("test.yaml", contentInYaml, APPLICATION_X_YAML_VALUE);
-        String result = reader.read(ApiDefinitionRequest.Factory.fromUrl(url));
+        String result = reader.read(ApiDefinitionRequest.Factory.fromUrl(url)).getApiDefinition();
 
         assertEquals(contentInYaml, result);
     }
@@ -64,7 +65,7 @@ public class ApiDefinitionReaderTest {
     @Test
     public void shouldRetryLoadingOfUrlIfEndsWithSpecialEncodedCharacters() {
         String url = JadlerUtil.stubResource("test.json", contentInJson);
-        String result = reader.read(ApiDefinitionRequest.Factory.fromUrl(url + "%3D%3D"));
+        String result = reader.read(ApiDefinitionRequest.Factory.fromUrl(url + "%3D%3D")).getApiDefinition();
         assertEquals(contentInJson, result);
     }
 }

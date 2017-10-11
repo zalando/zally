@@ -58,7 +58,8 @@ open class InvalidApiSchemaRule(@Autowired rulesConfig: Config) : JsonRule() {
     override fun validate(swagger: JsonNode): List<Violation> {
         return jsonSchemaValidator.validate(swagger).let { validationResult ->
             validationResult.messages.map { message ->
-                Violation(this, this.title, message.message, this.violationType, this.url, listOf(message.path))
+                val paths = listOf(message.path)
+                Violation(this, this.title, message.message, this.violationType, this.url, paths, paths)
             }
         }
     }

@@ -5,6 +5,7 @@ import de.zalando.zally.rule.Violation;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ViolationsCounterTest {
     private static void assertCounters(Map<ViolationType, Integer> expectedCounters, List<Violation> violations)
-        throws AssertionError {
+            throws AssertionError {
 
         final ViolationsCounter counter = new ViolationsCounter(violations);
         for (ViolationType violationType : expectedCounters.keySet()) {
@@ -39,7 +40,7 @@ public class ViolationsCounterTest {
     public void countsMustViolations() {
         final List<Violation> violations = new ArrayList<>();
         IntStream.range(0, 5).forEach(
-            (i) -> violations.add(generateViolation(ViolationType.MUST))
+                (i) -> violations.add(generateViolation(ViolationType.MUST))
         );
         final Map<ViolationType, Integer> expectedCounters = new HashMap<>();
         expectedCounters.put(ViolationType.MUST, 5);
@@ -54,7 +55,7 @@ public class ViolationsCounterTest {
     public void countsShouldViolations() {
         final List<Violation> violations = new ArrayList<>();
         IntStream.range(0, 5).forEach(
-            (i) -> violations.add(generateViolation(ViolationType.SHOULD))
+                (i) -> violations.add(generateViolation(ViolationType.SHOULD))
         );
         final Map<ViolationType, Integer> expectedCounters = new HashMap<>();
         expectedCounters.put(ViolationType.MUST, 0);
@@ -68,7 +69,7 @@ public class ViolationsCounterTest {
     public void countsMayViolations() {
         final List<Violation> violations = new ArrayList<>();
         IntStream.range(0, 5).forEach(
-            (i) -> violations.add(generateViolation(ViolationType.MAY))
+                (i) -> violations.add(generateViolation(ViolationType.MAY))
         );
         final Map<ViolationType, Integer> expectedCounters = new HashMap<>();
         expectedCounters.put(ViolationType.MUST, 0);
@@ -83,7 +84,7 @@ public class ViolationsCounterTest {
     public void countsHintViolations() {
         final List<Violation> violations = new ArrayList<>();
         IntStream.range(0, 5).forEach(
-            (i) -> violations.add(generateViolation(ViolationType.HINT))
+                (i) -> violations.add(generateViolation(ViolationType.HINT))
         );
         final Map<ViolationType, Integer> expectedCounters = new HashMap<>();
         expectedCounters.put(ViolationType.MUST, 0);
@@ -96,12 +97,13 @@ public class ViolationsCounterTest {
 
     private Violation generateViolation(ViolationType violationType) {
         return new Violation(
-            new AvoidTrailingSlashesRule(),
-            "Test Name",
-            "Test Description",
-            violationType,
-            "https://www.example.com/",
-            new ArrayList<>()
+                new AvoidTrailingSlashesRule(),
+                "Test Name",
+                "Test Description",
+                violationType,
+                "https://www.example.com/",
+                Collections.emptyList(),
+                Collections.emptyList()
         );
     }
 }

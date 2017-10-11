@@ -237,4 +237,5 @@ public class RestApiViolationsTest extends RestApiBaseTest {
 
         assertThat(result.getResponse().getStatus()).isEqualTo(400);
     }
+
 }

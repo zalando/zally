@@ -6,7 +6,7 @@ import io.swagger.models.Swagger
 import org.springframework.stereotype.Component
 
 @Component
-class AvoidTrailingSlashesRule : SwaggerRule() {
+class AvoidTrailingSlashesRule() : SwaggerRule() {
     override val title = "Avoid Trailing Slashes"
     override val url = "/#136"
     override val violationType = ViolationType.MUST
@@ -16,6 +16,7 @@ class AvoidTrailingSlashesRule : SwaggerRule() {
 
     override fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().keys.filter { it != null && PatternUtil.hasTrailingSlash(it) }
-        return if (!paths.isEmpty()) Violation(this, title, DESCRIPTION, violationType, url, paths) else null
+        val specPointers = paths.map(SpecPointerProvider::forPath)
+        return if (!paths.isEmpty()) Violation(this, title, DESCRIPTION, violationType, url, paths, specPointers) else null
     }
 }

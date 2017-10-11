@@ -47,7 +47,8 @@ class AvoidSynonymsRule(
             val details = names.toSet().groupBy(reversedDictionary::get)
                 .map { (canonical, synonyms) -> canonical + " instead of " + synonyms.joinToString(", ") }
                 .joinToString("\n")
-            Violation(this, title, "$descPattern:\n$details", violationType, url, paths.toSet().toList())
+            val distinctPaths = paths.toSet().toList()
+            Violation(this, title, "$descPattern:\n$details", violationType, url, distinctPaths)
         } else {
             null
         }

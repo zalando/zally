@@ -149,7 +149,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
     }
 
     private List<Violation> createRandomViolations() {
-        return Arrays.asList(new Violation(new AvoidTrailingSlashesRule(), "", "", ViolationType.MUST, "", Arrays.asList("path")));
+        return Arrays.asList(new Violation(new AvoidTrailingSlashesRule(), "", "", ViolationType.MUST, "", Arrays.asList("path"), Arrays.asList("path")));
     }
 
     private void assertBadRequestFor(Object from, Object to) {
