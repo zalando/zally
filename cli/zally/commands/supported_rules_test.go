@@ -1,10 +1,12 @@
 package commands
 
 import (
+	"bytes"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"fmt"
@@ -123,6 +125,25 @@ func TestValidateType(t *testing.T) {
 	})
 }
 
+func TestPrintRules(t *testing.T) {
+	t.Run("prints rules", func(t *testing.T) {
+		var shouldRule domain.Rule
+		shouldRule.Title = "Second Rule"
+		shouldRule.Type = "SHOULD"
+		shouldRule.Code = "S001"
+		shouldRule.IsActive = true
+		shouldRule.URL = "https://example.com/second-rule"
+
+		var rules domain.Rules
+		rules.Rules = []domain.Rule{shouldRule}
+
+		tests.AssertEquals(
+			t,
+			"\x1b[33mS001\x1b[0m \x1b[33mSHOULD\x1b[0m: Second Rule\n\thttps://example.com/second-rule\n\n",
+			capturePrintRulesOutput(&rules))
+	})
+}
+
 func getSupportedRulesContext(url string, ruleType string) *cli.Context {
 	globalSet := flag.NewFlagSet("test", 0)
 	globalSet.String("linter-service", url, "doc")
@@ -134,4 +155,19 @@ func getSupportedRulesContext(url string, ruleType string) *cli.Context {
 	globalCtx := cli.NewContext(nil, globalSet, nil)
 
 	return cli.NewContext(cli.NewApp(), localSet, globalCtx)
+}
+
+func capturePrintRulesOutput(rules *domain.Rules) string {
+	oldStdout := os.Stdout // keep backup of the real stdout
+	reader, writer, _ := os.Pipe()
+	os.Stdout = writer
+
+	printRules(rules)
+
+	writer.Close()
+	os.Stdout = oldStdout
+
+	var buffer bytes.Buffer
+	io.Copy(&buffer, reader)
+	return buffer.String()
 }
