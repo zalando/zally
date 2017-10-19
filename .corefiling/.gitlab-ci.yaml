@@ -116,6 +116,8 @@ docker web-ui: *docker
 
 deploy:
   <<: *deploy
+  except: 
+    - rjo
   dependencies:
     - build charts
     - docker server
