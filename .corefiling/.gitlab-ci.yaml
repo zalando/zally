@@ -117,7 +117,7 @@ docker web-ui: *docker
 deploy branch:
   <<: *deploy
   except: 
-    - rjo
+    - develop
   dependencies:
     - build charts
     - docker server
@@ -136,10 +136,10 @@ deploy branch:
       $HELM_RELEASE zally-*.tgz
     - /kube/checkRunning
 
-deploy rjo:
+deploy develop:
   <<: *deploy
   only:
-    - rjo
+    - develop
   dependencies:
     - build charts
     - docker server
