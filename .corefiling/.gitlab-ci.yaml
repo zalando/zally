@@ -114,7 +114,7 @@ docker web-ui: *docker
   before_script:
     - /kube/init $KUBE_AUTH_TOKEN "$TILLER_NAMESPACE"
 
-deploy:
+deploy branch:
   <<: *deploy
   except: 
     - rjo
@@ -136,7 +136,7 @@ deploy:
       $HELM_RELEASE zally-*.tgz
     - /kube/checkRunning
 
-deploy static:
+deploy rjo:
   <<: *deploy
   only:
     - rjo
