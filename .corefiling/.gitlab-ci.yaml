@@ -114,20 +114,46 @@ docker web-ui: *docker
   before_script:
     - /kube/init $KUBE_AUTH_TOKEN "$TILLER_NAMESPACE"
 
-deploy:
+deploy branch:
   <<: *deploy
+  except: 
+    - develop
   dependencies:
     - build charts
     - docker server
     - docker web-ui
   script:
-    - SERVER_HOST="$CI_ENVIRONMENT_SLUG-server.kube.int.corefiling.com"
+    - SERVER_SLUG="$CI_ENVIRONMENT_SLUG"
+    - SERVER_API="$SERVER_SLUG-server.kube.int.corefiling.com"
+    - SERVER_UI="$SERVER_SLUG.kube.int.corefiling.com"
     - helm upgrade --install
       --set "web-ui.image.tag=$( cat web-ui.imageTag )"
-      --set "web-ui.ingress.hosts={$CI_ENVIRONMENT_SLUG.kube.int.corefiling.com}"
-      --set "web-ui.api.url=https://$SERVER_HOST"
+      --set "web-ui.ingress.hosts={$SERVER_UI}"
+      --set "web-ui.api.url=https://$SERVER_API"
       --set "server.image.tag=$( cat server.imageTag )"
-      --set "server.ingress.hosts={$SERVER_HOST}"
+      --set "server.ingress.hosts={$SERVER_API}"
+      --namespace=$TILLER_NAMESPACE
+      $HELM_RELEASE zally-*.tgz
+    - /kube/checkRunning
+
+deploy develop:
+  <<: *deploy
+  only:
+    - develop
+  dependencies:
+    - build charts
+    - docker server
+    - docker web-ui
+  script:
+    - SERVER_SLUG="zally"
+    - SERVER_API="$SERVER_SLUG-server.kube.int.corefiling.com"
+    - SERVER_UI="$SERVER_SLUG.kube.int.corefiling.com"
+    - helm upgrade --install
+      --set "web-ui.image.tag=$( cat web-ui.imageTag )"
+      --set "web-ui.ingress.hosts={$SERVER_UI}"
+      --set "web-ui.api.url=https://$SERVER_API"
+      --set "server.image.tag=$( cat server.imageTag )"
+      --set "server.ingress.hosts={$SERVER_API}"
       --namespace=$TILLER_NAMESPACE
       $HELM_RELEASE zally-*.tgz
     - /kube/checkRunning
