@@ -128,10 +128,10 @@ deploy:
     - SERVER_UI="$SERVER_SLUG.kube.int.corefiling.com"
     - helm upgrade --install
       --set "web-ui.image.tag=$( cat web-ui.imageTag )"
-      --set "web-ui.ingress.hosts=$SERVER_UI"
+      --set "web-ui.ingress.hosts={$SERVER_UI}"
       --set "web-ui.api.url=https://$SERVER_API"
       --set "server.image.tag=$( cat server.imageTag )"
-      --set "server.ingress.hosts=$SERVER_API"
+      --set "server.ingress.hosts={$SERVER_API}"
       --namespace=$TILLER_NAMESPACE
       $HELM_RELEASE zally-*.tgz
     - /kube/checkRunning
@@ -150,10 +150,10 @@ deploy static:
     - SERVER_UI="$SERVER_SLUG.kube.int.corefiling.com"
     - helm upgrade --install
       --set "web-ui.image.tag=$( cat web-ui.imageTag )"
-      --set "web-ui.ingress.hosts=$SERVER_UI"
+      --set "web-ui.ingress.hosts={$SERVER_UI}"
       --set "web-ui.api.url=https://$SERVER_API"
       --set "server.image.tag=$( cat server.imageTag )"
-      --set "server.ingress.hosts=$SERVER_API"
+      --set "server.ingress.hosts={$SERVER_API}"
       --namespace=$TILLER_NAMESPACE
       $HELM_RELEASE zally-*.tgz
     - /kube/checkRunning
