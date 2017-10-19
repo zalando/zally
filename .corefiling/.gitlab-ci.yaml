@@ -134,6 +134,26 @@ deploy:
       $HELM_RELEASE zally-*.tgz
     - /kube/checkRunning
 
+deploy static:
+  <<: *deploy
+  only:
+    - rjo
+  dependencies:
+    - build charts
+    - docker server
+    - docker web-ui
+  script:
+    - SERVER_HOST="zallyapi.kube.int.corefiling.com"
+    - helm upgrade --install
+      --set "web-ui.image.tag=$( cat web-ui.imageTag )"
+      --set "web-ui.ingress.hosts=zally.kube.int.corefiling.com"
+      --set "web-ui.api.url=https://$SERVER_HOST"
+      --set "server.image.tag=$( cat server.imageTag )"
+      --set "server.ingress.hosts={$SERVER_HOST}"
+      --namespace=$TILLER_NAMESPACE
+      $HELM_RELEASE zally-*.tgz
+    - /kube/checkRunning
+
 undeploy:
   <<: *deploy
   when: manual
