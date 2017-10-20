@@ -31,7 +31,28 @@ export function App(props) {
             />
             Zally API Linter
           </Link>
+          &emsp;
+          <span className="main-navigation-bar__link">
+            <a
+              href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md"
+              target="_blank"
+              className="main-navigation-bar__link"
+            >
+              Swagger 2.0
+            </a>
+          </span>
+          &emsp;
+          <span className="main-navigation-bar__link">
+            <a
+              href="https://wiki.int.corefiling.com/platform/APIGuidelines/"
+              target="_blank"
+              className="main-navigation-bar__link"
+            >
+              Our Guidelines
+            </a>
+          </span>
         </h1>
+
         {OAUTH_ENABLED === true ? (
           <UserInfo
             username={user.username}

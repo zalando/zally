@@ -19,25 +19,6 @@ export function ViolationsTab({
   }
   return (
     <div className="dc-container">
-      <h4 className="dc-h4">
-        Check if your&nbsp;
-        <a
-          href="http://swagger.io/specification/"
-          target="_blank"
-          className="dc-link"
-        >
-          SWAGGER Schema
-        </a>{' '}
-        conforms to&nbsp;
-        <a
-          href="http://zalando.github.io/restful-api-guidelines/"
-          target="_blank"
-          className="dc-link"
-        >
-          Zalando's REST API Guidelines
-        </a>
-      </h4>
-
       <ul className="dc-tab">
         <IndexLinkContainer
           to="/"
