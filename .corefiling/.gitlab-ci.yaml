@@ -68,6 +68,22 @@ build web-ui:
       - web-ui/server.js
       - web-ui/src
 
+build cli:
+  <<: *build
+  image: golang:1.9
+  variables:
+    JAVA_OPTS: -Dorg.gradle.daemon=false
+    GRADLE_USER_HOME: /opt/gradle/caches
+  script:
+    - env
+    - pwd
+    - ls -l
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - server/Dockerfile
+      - server/build/libs
+
 ##
 # Docker
 ##
