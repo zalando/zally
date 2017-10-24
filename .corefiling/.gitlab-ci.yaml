@@ -78,8 +78,8 @@ build cli:
     - export GOZALANDO=$GOPATH/src/github.com/zalando-incubator
     - mkdir --parents            $GOZALANDO
     - ln --symbolic `pwd`/zally/ $GOZALANDO/zally
-    - ls -l                      $GOZALANDO/zally
     - cd                         $GOZALANDO/zally
+    - ls -l
     - go get -t -v
     - go test -v./...
     - go build
