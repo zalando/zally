@@ -76,7 +76,7 @@ build cli:
     GRADLE_USER_HOME: /opt/gradle/caches
   script:
     - mkdir --parents $GOPATH/github.com/zalando-incubator
-    - ln --symbolic zally $GOPATH/github.com/zalando-incubator/zally
+    - ln --symbolic $GOPATH/github.com/zalando-incubator/zally zally
     - cd $GOPATH/github.com/zalando-incubator/zally
     - ls -l
     - go get -t -v
