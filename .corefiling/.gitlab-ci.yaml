@@ -75,9 +75,13 @@ build cli:
     JAVA_OPTS: -Dorg.gradle.daemon=false
     GRADLE_USER_HOME: /opt/gradle/caches
   script:
-    - env
-    - pwd
+    - mkdir --parents $GOPATH/github.com/zalando-incubator
+    - ln --symbolic zally $GOPATH/github.com/zalando-incubator/zally
+    - cd $GOPATH/github.com/zalando-incubator/zally
     - ls -l
+    - go get -t -v
+    - go test -v./...
+    - go build
   artifacts:
     expire_in: 1 week
     paths:
