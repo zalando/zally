@@ -71,23 +71,18 @@ build web-ui:
 build cli:
   <<: *build
   image: golang:1.9
-  variables:
-    JAVA_OPTS: -Dorg.gradle.daemon=false
-    GRADLE_USER_HOME: /opt/gradle/caches
   script:
     - export GOZALANDO=$GOPATH/src/github.com/zalando-incubator
-    - mkdir --parents            $GOZALANDO
+    - mkdir --parents $GOZALANDO
     - ln --symbolic `pwd`/../ $GOZALANDO/zally
-    - cd                         $GOZALANDO/zally/cli/zally
+    - cd $GOZALANDO/zally/cli/zally
     - go get -t -v
     - go test -v ./...
-    - GOOS=linux go build && mv zally zally-linux
-    - GOOS=darwin go build && mv zally zally-osx
-    - GOOS=windows go build && mv zally.exe zally-windows.exe    
+    - go build
   artifacts:
     expire_in: 1 week
     paths:
-      - cli/zally/zally-*
+      - cli/zally/zally
 
 ##
 # Docker
