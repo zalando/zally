@@ -79,9 +79,8 @@ build cli:
     - mkdir --parents            $GOZALANDO
     - ln --symbolic `pwd`/../ $GOZALANDO/zally
     - cd                         $GOZALANDO/zally/cli/zally
-    - ls -la
     - go get -t -v
-    - go test -v./...
+    - go test -v ./...
     - go build
   artifacts:
     expire_in: 1 week
