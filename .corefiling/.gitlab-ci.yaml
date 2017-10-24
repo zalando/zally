@@ -81,12 +81,13 @@ build cli:
     - cd                         $GOZALANDO/zally/cli/zally
     - go get -t -v
     - go test -v ./...
-    - go build
+    - GOOS=linux go build && mv zally zally-linux
+    - GOOS=darwin go build && mv zally zally-osx
+    - GOOS=windows go build && mv zally.exe zally-windows.exe    
   artifacts:
     expire_in: 1 week
     paths:
-      - server/Dockerfile
-      - server/build/libs
+      - cli/zally/zally-*
 
 ##
 # Docker
