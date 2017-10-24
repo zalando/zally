@@ -75,10 +75,11 @@ build cli:
     JAVA_OPTS: -Dorg.gradle.daemon=false
     GRADLE_USER_HOME: /opt/gradle/caches
   script:
-    - mkdir --parents $GOPATH/src/github.com/zalando-incubator
-    - ln --symbolic `pwd`/zally/ $GOPATH/src/github/zalando-incubator/zally
-    - ls -l $GOPATH/src/github.com/zalando-incubator/zally
-    - cd $GOPATH/src/github.com/zalando-incubator/zally
+    - export GOZALANDO=$GOPATH/src/github.com/zalando-incubator
+    - mkdir --parents            $GOZALANDO
+    - ln --symbolic `pwd`/zally/ $GOZALANDO/zally
+    - ls -l                      $GOZALANDO/zally
+    - cd                         $GOZALANDO/zally
     - go get -t -v
     - go test -v./...
     - go build
