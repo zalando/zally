@@ -10,21 +10,19 @@ import org.springframework.stereotype.Component
 class CollectionsReturnXTotalItemsHeader : CoreFilingSwaggerRule() {
     override val title = "Collection Resources Return X-Total-Items Header"
     override val violationType = ViolationType.SHOULD
-    private val DESCRIPTION = "Collection resources return the X-Total-Items header " +
+    override val description = "Collection resources return the X-Total-Items header " +
             "with type:integer and format:int32 so that clients can easily access the total"
 
     override fun validate(swagger: Swagger): Violation? {
 
-        var failures = mutableListOf<String>()
+        val failures = mutableListOf<String>()
 
         collectionPaths(swagger)?.forEach { pattern, path ->
             if (path.get!=null) {
                 path.get.responses?.forEach { code, response ->
                     if (Integer.parseInt(code) < 300) {
                         val header = response.headers?.get("X-Total-Items")
-                        if (header==null ||
-                                header.type!="integer" ||
-                                header.format!="int32") {
+                        if (header == null || header.type != "integer" || header.format != "int32") {
                             failures.add(pattern + " GET " + code)
                         }
                     }
@@ -33,6 +31,6 @@ class CollectionsReturnXTotalItemsHeader : CoreFilingSwaggerRule() {
         }
 
         return if (failures.isEmpty()) null else
-            Violation(this, title, DESCRIPTION, violationType, url, failures)
+            Violation(this, title, description, violationType, url, failures)
     }
 }

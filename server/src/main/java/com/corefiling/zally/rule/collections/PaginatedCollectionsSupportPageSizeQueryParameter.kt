@@ -12,12 +12,12 @@ import java.math.BigDecimal
 class PaginatedCollectionsSupportPageSizeQueryParameter : CoreFilingSwaggerRule() {
     override val title = "Paginated Resources Support 'pageSize' Query Parameter"
     override val violationType = ViolationType.SHOULD
-    private val DESCRIPTION = "Paginated resources support a 'pageSize' query parameter " +
+    override val description = "Paginated resources support a 'pageSize' query parameter " +
             "with type:integer, format:int32, minimum:1 so that clients can easily iterate over the collection."
 
     override fun validate(swagger: Swagger): Violation? {
 
-        var failures = mutableListOf<String>()
+        val failures = mutableListOf<String>()
 
         collectionPaths(swagger)?.forEach { pattern, path ->
             if (path.get!=null) {
@@ -42,6 +42,6 @@ class PaginatedCollectionsSupportPageSizeQueryParameter : CoreFilingSwaggerRule(
         }
 
         return if (failures.isEmpty()) null else
-            Violation(this, title, DESCRIPTION, violationType, url, failures)
+            Violation(this, title, description, violationType, url, failures)
     }
 }
