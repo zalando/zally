@@ -6,6 +6,7 @@ abstract class CoreFilingSwaggerRule : SwaggerRule() {
     override val url = page(javaClass) + "#" + code(javaClass)
     override val code = code(javaClass)
     override val guidelinesCode = code(javaClass)
+    abstract val description : String
 }
 
 fun <T> code(clazz: Class<T>): String {

@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component
 class CollectionsReturnArrays : CoreFilingSwaggerRule() {
     override val title = "Collection Resources Return Arrays"
     override val violationType = ViolationType.MUST
-    private val DESCRIPTION = "Collection resources return arrays so that they can be acted upon easily"
+    override val description = "Collection resources return arrays so that they can be acted upon easily"
 
     override fun validate(swagger: Swagger): Violation? {
 
-        var failures = mutableListOf<String>()
+        val failures = mutableListOf<String>()
 
         collectionPaths(swagger)?.forEach { pattern, path ->
             if (path.get!=null) {
@@ -43,6 +43,6 @@ class CollectionsReturnArrays : CoreFilingSwaggerRule() {
         }
 
         return if (failures.isEmpty()) null else
-            Violation(this, title, DESCRIPTION, violationType, url, failures)
+            Violation(this, title, description, violationType, url, failures)
     }
 }
