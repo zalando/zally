@@ -4,7 +4,7 @@ import de.zalando.zally.apireview.ApiReview;
 import de.zalando.zally.apireview.RestApiBaseTest;
 import de.zalando.zally.dto.ApiDefinitionRequest;
 import de.zalando.zally.dto.ViolationType;
-import de.zalando.zally.rule.AvoidTrailingSlashesRule;
+import de.zalando.zally.rule.impl.AvoidTrailingSlashesRule;
 import de.zalando.zally.rule.Violation;
 import de.zalando.zally.util.ErrorResponse;
 import de.zalando.zally.util.TestDateUtil;
