@@ -61,9 +61,9 @@ func validateType(ruleType string) error {
 }
 
 func fetchRules(requestBuilder *utils.RequestBuilder, rulesType string) (*domain.Rules, error) {
-	uri := "/supported-rules"
+	uri := "/supported-rules?is_active=true"
 	if rulesType != "" {
-		uri += "?type=" + rulesType
+		uri += "&type=" + rulesType
 	}
 	request, err := requestBuilder.Build("GET", uri, nil)
 	if err != nil {

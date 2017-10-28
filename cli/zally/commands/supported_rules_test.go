@@ -47,7 +47,7 @@ func TestListRules(t *testing.T) {
 
 		err := listRules(getSupportedRulesContext(testServer.URL, "must"))
 		expectedError := fmt.Sprintf(
-			"Get %s/supported-rules?type=must: net/http: request canceled"+
+			"Get %s/supported-rules?is_active=true&type=must: net/http: request canceled"+
 				" (Client.Timeout exceeded while awaiting headers)",
 			testServer.URL,
 		)
@@ -98,7 +98,7 @@ func TestFetchRules(t *testing.T) {
 			fixture, _ := ioutil.ReadFile("testdata/rules_response.json")
 			w.Header().Set("Content-Type", "application/json")
 			io.WriteString(w, string(fixture))
-			tests.AssertEquals(t, r.URL.RawQuery, "type=must")
+			tests.AssertEquals(t, r.URL.RawQuery, "is_active=true&type=must")
 		}
 		testServer := httptest.NewServer(http.HandlerFunc(handler))
 		defer testServer.Close()
