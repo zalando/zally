@@ -4,10 +4,11 @@ import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
 import io.swagger.models.Swagger
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class MediaTypesRule : SwaggerRule() {
+class MediaTypesRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
 
     override val title = "Prefer standard media type names"
     override val url = "/#172"

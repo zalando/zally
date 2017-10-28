@@ -7,16 +7,18 @@ import org.junit.Test
 
 class LimitNumberOfResourcesRuleTest {
 
+    private val rule = LimitNumberOfResourcesRule(ZalandoRuleSet(), testConfig)
+
     @Test
     fun positiveCase() {
         val swagger = getFixture("limitNumberOfResourcesValid.json")
-        assertThat(LimitNumberOfResourcesRule(testConfig).validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun negativeCase() {
         val swagger = getFixture("limitNumberOfResourcesInvalid.json")
-        val result = LimitNumberOfResourcesRule(testConfig).validate(swagger)!!
+        val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(listOf(
             "/items",
             "/items/{item_id}",

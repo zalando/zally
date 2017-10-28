@@ -2,10 +2,11 @@ package de.zalando.zally.rule
 
 import de.zalando.zally.dto.ViolationType
 import io.swagger.models.Swagger
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class ExtractBasePathRule : SwaggerRule() {
+class ExtractBasePathRule(@Autowired ruleSet: ZallyRuleSet) : SwaggerRule(ruleSet) {
 
     override val title = "Base path can be extracted"
     override val url = "/naming/Naming.html"

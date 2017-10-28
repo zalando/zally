@@ -15,10 +15,11 @@ import io.swagger.models.properties.MapProperty
 import io.swagger.models.properties.ObjectProperty
 import io.swagger.models.properties.Property
 import io.swagger.models.properties.RefProperty
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class NoUnusedDefinitionsRule : SwaggerRule() {
+class NoUnusedDefinitionsRule(@Autowired ruleSet: ZallyRuleSet) : SwaggerRule(ruleSet) {
     override val title = "Do not leave unused definitions"
     override val violationType = ViolationType.SHOULD
     // TODO: Provide URL

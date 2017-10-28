@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) : SwaggerRule() {
+class PluralizeResourceNamesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : SwaggerRule(ruleSet) {
     override val title = "Pluralize Resource Names"
     override val url = "/#134"
     override val violationType = ViolationType.SHOULD

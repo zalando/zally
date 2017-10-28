@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class UseSpecificHttpStatusCodes(@Autowired rulesConfig: Config) : SwaggerRule() {
+class UseSpecificHttpStatusCodes(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : SwaggerRule(ruleSet) {
     override val title = "Use Specific HTTP Status Codes"
     override val url = "/#150"
 

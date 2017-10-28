@@ -7,16 +7,18 @@ import org.junit.Test
 
 class FormatForNumbersRuleTest {
 
+    private val rule = FormatForNumbersRule(ZalandoRuleSet(), testConfig)
+
     @Test
     fun positiveCase() {
         val swagger = getFixture("formatForNumbersValid.json")
-        assertThat(FormatForNumbersRule(testConfig).validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun negativeCase() {
         val swagger = getFixture("formatForNumbersInvalid.json")
-        val result = FormatForNumbersRule(testConfig).validate(swagger)!!
+        val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(listOf("#/parameters/PetFullPrice", "#/definitions/Pet", "/pets"))
         assertThat(result.description).contains("other_price", "full_price", "number_of_legs")
     }
@@ -24,12 +26,12 @@ class FormatForNumbersRuleTest {
     @Test
     fun positiveCaseSpp() {
         val swagger = getFixture("api_spp.json")
-        assertThat(FormatForNumbersRule(testConfig).validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun positiveCaseTinbox() {
         val swagger = getFixture("api_tinbox.yaml")
-        assertThat(FormatForNumbersRule(testConfig).validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 }

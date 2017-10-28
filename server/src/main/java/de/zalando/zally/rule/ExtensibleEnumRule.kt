@@ -17,10 +17,11 @@ import io.swagger.models.properties.LongProperty
 import io.swagger.models.properties.PasswordProperty
 import io.swagger.models.properties.Property
 import io.swagger.models.properties.StringProperty
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class ExtensibleEnumRule : SwaggerRule() {
+class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
     override val title = "Prefer Compatible Extensions"
     override val url = "/#107"
     override val violationType = SHOULD

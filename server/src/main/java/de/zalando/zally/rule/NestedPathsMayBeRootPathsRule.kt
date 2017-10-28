@@ -3,10 +3,11 @@ package de.zalando.zally.rule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.util.PatternUtil.isPathVariable
 import io.swagger.models.Swagger
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class NestedPathsMayBeRootPathsRule : SwaggerRule() {
+class NestedPathsMayBeRootPathsRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
     override val title = "Consider Using (Non-) Nested URLs"
     override val url = "/#145"
     override val violationType = ViolationType.MAY

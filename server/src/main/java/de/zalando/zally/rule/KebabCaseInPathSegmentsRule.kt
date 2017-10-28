@@ -3,10 +3,11 @@ package de.zalando.zally.rule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class KebabCaseInPathSegmentsRule : SwaggerRule() {
+class KebabCaseInPathSegmentsRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
 
     override val title = "Lowercase words with hyphens"
     override val url = "/#129"

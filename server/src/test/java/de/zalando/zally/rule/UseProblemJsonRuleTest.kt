@@ -6,16 +6,18 @@ import org.junit.Test
 
 class UseProblemJsonRuleTest {
 
+    private val rule = UseProblemJsonRule(ZalandoRuleSet())
+
     @Test
     fun shouldReturnNoViolationsWhenErrorsReferencingToProblemJson() {
         val swagger = getFixture("problem_json.yaml")
-        assertThat(UseProblemJsonRule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun shouldReturnViolationsWhenErrorsReferencingToProblemJsonButNotProducingJson() {
         val swagger = getFixture("problem_json_not_produces_json.yaml")
-        val result = UseProblemJsonRule().validate(swagger)!!
+        val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(listOf(
             "/products GET 400",
             "/products GET 401",
@@ -28,13 +30,13 @@ class UseProblemJsonRuleTest {
     @Test
     fun shouldReturnNoViolationsWhenOperationsAreProducingJson() {
         val swagger = getFixture("problem_json_operations_produce_json.yaml")
-        assertThat(UseProblemJsonRule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun shouldReturnViolationsWhenCustomReferenceIsUsed() {
         val swagger = getFixture("api_tinbox.yaml")
-        val result = UseProblemJsonRule().validate(swagger)!!
+        val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(listOf(
             "/merchants GET 400",
             "/merchants GET 401",
@@ -107,7 +109,7 @@ class UseProblemJsonRuleTest {
     @Test
     fun shouldReturnViolationsWhenNoReferenceIsUsed() {
         val swagger = getFixture("api_spp.json")
-        val result = UseProblemJsonRule().validate(swagger)!!
+        val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(listOf(
             "/product-put-requests/{product_path} POST 400",
             "/product-put-requests/{product_path} POST 406",
@@ -130,7 +132,7 @@ class UseProblemJsonRuleTest {
     @Test
     fun shouldNotThrowExOnSchemasWithReferencesToEmptyDefinitions() {
         val swagger = getFixture("missing_definitions.yaml")
-        val result = UseProblemJsonRule().validate(swagger)!!
+        val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(listOf(
                 "/identifier-types/{identifier_type}/source-ids/{source_identifier} GET 401",
                 "/identifier-types/{identifier_type}/source-ids/{source_identifier} GET 403",

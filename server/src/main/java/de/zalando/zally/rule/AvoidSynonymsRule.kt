@@ -9,8 +9,8 @@ import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServi
 import org.springframework.stereotype.Component
 
 @Component
-class AvoidSynonymsRule(
-    @Autowired rulesConfig: Config, @Autowired metricServices: DropwizardMetricServices) : SwaggerRule() {
+class AvoidSynonymsRule(@Autowired ruleSet: ZalandoRuleSet,
+    @Autowired rulesConfig: Config, @Autowired metricServices: DropwizardMetricServices) : SwaggerRule(ruleSet) {
 
     override val title = "Use common property names"
     override val url = "/#174"

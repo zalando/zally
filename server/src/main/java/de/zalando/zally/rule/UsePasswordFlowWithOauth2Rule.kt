@@ -3,8 +3,9 @@ package de.zalando.zally.rule
 import de.zalando.zally.dto.ViolationType
 import io.swagger.models.Swagger
 import io.swagger.models.auth.OAuth2Definition
+import org.springframework.beans.factory.annotation.Autowired
 
-class UsePasswordFlowWithOauth2Rule : SwaggerRule() {
+class UsePasswordFlowWithOauth2Rule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
     override val title = "Set Flow to Password When Using OAuth 2.0"
     override val url = "/#104"
     override val violationType = ViolationType.MUST

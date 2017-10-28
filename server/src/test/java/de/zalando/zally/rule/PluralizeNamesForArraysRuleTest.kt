@@ -6,16 +6,18 @@ import org.junit.Test
 
 class PluralizeNamesForArraysRuleTest {
 
+    private val rule = PluralizeNamesForArraysRule(ZalandoRuleSet())
+
     @Test
     fun positiveCase() {
         val swagger = getFixture("pluralizeArrayNamesValid.json")
-        assertThat(PluralizeNamesForArraysRule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun negativeCase() {
         val swagger = getFixture("pluralizeArrayNamesInvalid.json")
-        val result = PluralizeNamesForArraysRule().validate(swagger)!!
+        val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(listOf("#/definitions/Pet"))
         assertThat(result.description).contains("name", "tag")
     }
@@ -23,12 +25,12 @@ class PluralizeNamesForArraysRuleTest {
     @Test
     fun positiveCaseSpp() {
         val swagger = getFixture("api_spp.json")
-        assertThat(PluralizeNamesForArraysRule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun positiveCaseTinbox() {
         val swagger = getFixture("api_tinbox.yaml")
-        assertThat(PluralizeNamesForArraysRule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 }

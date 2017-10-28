@@ -5,17 +5,19 @@ import io.swagger.models.Swagger
 import io.swagger.models.auth.ApiKeyAuthDefinition
 import io.swagger.models.auth.BasicAuthDefinition
 import io.swagger.models.auth.OAuth2Definition
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class UsePasswordFlowWithOauth2RuleTest {
 
+    private val rule = UsePasswordFlowWithOauth2Rule(ZalandoRuleSet())
+
     val expectedViolation = Violation(
-            UsePasswordFlowWithOauth2Rule(),
+            rule,
             "Set Flow to Password When Using OAuth 2.0",
             "OAuth2 security definitions should use password flow",
             ViolationType.MUST,
-            UsePasswordFlowWithOauth2Rule().url,
+            rule.url,
             emptyList())
 
     @Test
@@ -26,7 +28,7 @@ class UsePasswordFlowWithOauth2RuleTest {
                     "ApiKey" to ApiKeyAuthDefinition()
             )
         }
-        Assertions.assertThat(UsePasswordFlowWithOauth2Rule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
@@ -39,7 +41,7 @@ class UsePasswordFlowWithOauth2RuleTest {
                     }
             )
         }
-        Assertions.assertThat(UsePasswordFlowWithOauth2Rule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
@@ -52,7 +54,7 @@ class UsePasswordFlowWithOauth2RuleTest {
                     }
             )
         }
-        Assertions.assertThat(UsePasswordFlowWithOauth2Rule().validate(swagger)).isEqualTo(expectedViolation)
+        assertThat(rule.validate(swagger)).isEqualTo(expectedViolation)
     }
 
     @Test
@@ -63,7 +65,7 @@ class UsePasswordFlowWithOauth2RuleTest {
                     "Oauth2" to OAuth2Definition()
             )
         }
-        Assertions.assertThat(UsePasswordFlowWithOauth2Rule().validate(swagger)).isEqualTo(expectedViolation)
+        assertThat(rule.validate(swagger)).isEqualTo(expectedViolation)
     }
 
     @Test
@@ -76,6 +78,6 @@ class UsePasswordFlowWithOauth2RuleTest {
                     }
             )
         }
-        Assertions.assertThat(UsePasswordFlowWithOauth2Rule().validate(swagger)).isEqualTo(expectedViolation)
+        assertThat(rule.validate(swagger)).isEqualTo(expectedViolation)
     }
 }

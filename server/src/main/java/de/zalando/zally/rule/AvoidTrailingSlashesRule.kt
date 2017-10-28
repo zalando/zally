@@ -3,10 +3,11 @@ package de.zalando.zally.rule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class AvoidTrailingSlashesRule : SwaggerRule() {
+class AvoidTrailingSlashesRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
     override val title = "Avoid Trailing Slashes"
     override val url = "/#136"
     override val violationType = ViolationType.MUST

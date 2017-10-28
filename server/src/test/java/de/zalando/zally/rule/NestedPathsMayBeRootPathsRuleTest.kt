@@ -6,16 +6,18 @@ import org.junit.Test
 
 class NestedPathsMayBeRootPathsRuleTest {
 
+    private val rule = NestedPathsMayBeRootPathsRule(ZalandoRuleSet())
+
     @Test
     fun avoidLinkHeadersValidJson() {
         val swagger = getFixture("api_spp.json")
-        val result = NestedPathsMayBeRootPathsRule().validate(swagger)!!
+        val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(listOf("/products/{product_id}/updates/{update_id}"))
     }
 
     @Test
     fun avoidLinkHeadersValidYaml() {
         val swagger = getFixture("api_spa.yaml")
-        assertThat(NestedPathsMayBeRootPathsRule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 }

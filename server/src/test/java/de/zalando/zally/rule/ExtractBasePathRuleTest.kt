@@ -10,21 +10,23 @@ import org.junit.Test
 class ExtractBasePathRuleTest {
     val DESC_PATTERN = "All paths start with prefix '%s'. This prefix could be part of base path."
 
+    private val rule = ExtractBasePathRule(ZallyRuleSet())
+
     @Test
     fun validateEmptyPath() {
-        assertThat(ExtractBasePathRule().validate(Swagger())).isNull()
+        assertThat(rule.validate(Swagger())).isNull()
     }
 
     @Test
     fun simplePositiveCase() {
         val swagger = swaggerWithPaths("/orders/{order_id}", "/orders/{updates}", "/merchants")
-        assertThat(ExtractBasePathRule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun singlePathShouldPass() {
         val swagger = swaggerWithPaths("/orders/{order_id}")
-        assertThat(ExtractBasePathRule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
@@ -34,8 +36,8 @@ class ExtractBasePathRuleTest {
             "/shipment/{shipment_id}/status",
             "/shipment/{shipment_id}/details"
         )
-        val rule = ExtractBasePathRule()
-        val expected = Violation(ExtractBasePathRule(), rule.title, DESC_PATTERN.format("/shipment"),
+        val rule = rule
+        val expected = Violation(rule, rule.title, DESC_PATTERN.format("/shipment"),
             ViolationType.HINT, rule.url, emptyList())
         assertThat(rule.validate(swagger)).isEqualTo(expected)
     }
@@ -48,8 +50,8 @@ class ExtractBasePathRuleTest {
             "/queue/models/{model-id}",
             "/queue/models/summaries"
         )
-        val rule = ExtractBasePathRule()
-        val expected = Violation(ExtractBasePathRule(), rule.title, DESC_PATTERN.format("/queue/models"),
+        val rule = rule
+        val expected = Violation(rule, rule.title, DESC_PATTERN.format("/queue/models"),
             ViolationType.HINT, rule.url, emptyList())
         assertThat(rule.validate(swagger)).isEqualTo(expected)
     }
@@ -62,18 +64,18 @@ class ExtractBasePathRuleTest {
             "/applications/{app_id}",
             "/applications/"
         )
-        assertThat(ExtractBasePathRule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun positiveCaseSpp() {
         val swagger = getFixture("api_spp.json")
-        assertThat(ExtractBasePathRule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun positiveCaseTinbox() {
         val swagger = getFixture("api_tinbox.yaml")
-        assertThat(ExtractBasePathRule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 }

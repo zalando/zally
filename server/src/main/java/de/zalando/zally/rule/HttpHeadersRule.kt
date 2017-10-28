@@ -5,7 +5,7 @@ import io.swagger.models.Response
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
 
-abstract class HttpHeadersRule(rulesConfig: Config) : SwaggerRule() {
+abstract class HttpHeadersRule(ruleSet: ZalandoRuleSet, rulesConfig: Config) : SwaggerRule(ruleSet) {
 
     private val headersWhitelist = rulesConfig.getStringList(HttpHeadersRule::class.simpleName + ".whitelist").toSet()
 

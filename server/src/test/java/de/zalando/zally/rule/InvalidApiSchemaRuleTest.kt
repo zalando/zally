@@ -8,15 +8,14 @@ import org.junit.Test
 
 class InvalidApiSchemaRuleTest {
 
-    companion object {
-        val invalidSchemaRule = InvalidApiSchemaRule(testConfig)
-    }
+    private val ruleSet = ZalandoRuleSet()
+    private val rule = InvalidApiSchemaRule(ruleSet, testConfig)
 
     @Test
     fun shouldNotFailOnCorrectYaml() {
         listOf("all_definitions.yaml", "api_spa.yaml", "api_without_scopes_defined.yaml").forEach { filePath ->
             val swaggerJson = getResourceJson(filePath)
-            val validations = invalidSchemaRule.validate(swaggerJson)
+            val validations = rule.validate(swaggerJson)
             assertThat(validations).hasSize(0)
         }
     }
@@ -25,7 +24,7 @@ class InvalidApiSchemaRuleTest {
     fun shouldNotFailOnCorrectJson() {
         listOf("api_spp.json", "snakeCaseForQueryParamsInvalidLocalParam.json", "limitNumberOfResourcesValid.json").forEach { filePath ->
             val swaggerJson = getResourceJson(filePath)
-            val validations = invalidSchemaRule.validate(swaggerJson)
+            val validations = rule.validate(swaggerJson)
             assertThat(validations).hasSize(0)
         }
     }
@@ -33,7 +32,7 @@ class InvalidApiSchemaRuleTest {
     @Test
     fun shouldProduceViolationsAnyOfOneOf() {
         val swaggerJson = getResourceJson("api_tinbox.yaml")
-        val validations = invalidSchemaRule.validate(swaggerJson)
+        val validations = rule.validate(swaggerJson)
         assertThat(validations).hasSize(2)
         assertThat(validations[0].description).isEqualTo("""instance failed to match at least one required schema among 2""")
         assertThat(validations[0].paths[0]).isEqualTo("/definitions/ConfigReviewStatusEntityJson/properties/date/type")
@@ -43,7 +42,7 @@ class InvalidApiSchemaRuleTest {
     @Test
     fun shouldProduceViolationsRequiredProperties() {
         val swaggerJson = getResourceJson("common_fields_invalid.yaml")
-        val validations = invalidSchemaRule.validate(swaggerJson)
+        val validations = rule.validate(swaggerJson)
         assertThat(validations).hasSize(1)
         assertThat(validations[0].description).isEqualTo("""object has missing required properties (["paths"])""")
     }
@@ -51,7 +50,7 @@ class InvalidApiSchemaRuleTest {
     @Test
     fun shouldProduceViolationsNotAllowedProperties() {
         val swaggerJson = getResourceJson("successResponseAsJsonObjectValid.json")
-        val validations = invalidSchemaRule.validate(swaggerJson)
+        val validations = rule.validate(swaggerJson)
         assertThat(validations).hasSize(3)
         assertThat(validations[0].description).isEqualTo("""object instance has properties ["anyOf"] which are not allowed by the schema: #/definitions/schema""")
         assertThat(validations[1].description).isEqualTo("""object instance has properties ["oneOf"] which are not allowed by the schema: #/definitions/schema""")
@@ -70,7 +69,7 @@ class InvalidApiSchemaRuleTest {
         """)
 
         val swaggerJson = getResourceJson("common_fields_invalid.yaml")
-        val validations = InvalidApiSchemaRule(config).validate(swaggerJson)
+        val validations = InvalidApiSchemaRule(ruleSet, config).validate(swaggerJson)
         assertThat(validations).hasSize(1)
         assertThat(validations[0].description).isEqualTo("""object has missing required properties (["paths"])""")
 
@@ -85,7 +84,7 @@ class InvalidApiSchemaRuleTest {
         """)
 
         val swaggerJson = getResourceJson("common_fields_invalid.yaml")
-        val validations = InvalidApiSchemaRule(config).validate(swaggerJson)
+        val validations = InvalidApiSchemaRule(ruleSet, config).validate(swaggerJson)
         assertThat(validations).hasSize(1)
         assertThat(validations[0].description).isEqualTo("""object has missing required properties (["paths"])""")
 

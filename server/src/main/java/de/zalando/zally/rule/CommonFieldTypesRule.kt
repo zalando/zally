@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class CommonFieldTypesRule(@Autowired rulesConfig: Config) : SwaggerRule() {
+class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : SwaggerRule(ruleSet) {
     override val title = "Use common field names"
     override val url = "/#174"
     override val violationType = ViolationType.MUST

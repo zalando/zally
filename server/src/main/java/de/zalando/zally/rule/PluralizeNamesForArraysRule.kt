@@ -4,10 +4,11 @@ import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.util.WordUtil.isPlural
 import de.zalando.zally.util.getAllJsonObjects
 import io.swagger.models.Swagger
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class PluralizeNamesForArraysRule : SwaggerRule() {
+class PluralizeNamesForArraysRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
     override val title = "Array names should be pluralized"
     override val url = "/#120"
     override val violationType = ViolationType.SHOULD

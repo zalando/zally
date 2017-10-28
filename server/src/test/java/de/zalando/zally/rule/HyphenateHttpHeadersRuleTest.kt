@@ -10,41 +10,43 @@ import org.junit.Test
 
 class HyphenateHttpHeadersRuleTest {
 
+    private val rule = HyphenateHttpHeadersRule(ZalandoRuleSet(), testConfig)
+
     @Test
     fun simplePositiveCase() {
         val swagger = swaggerWithHeaderParams("Right-Name")
-        assertThat(HyphenateHttpHeadersRule(testConfig).validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun simpleNegativeCase() {
         val swagger = swaggerWithHeaderParams("CamelCaseName")
-        val result = HyphenateHttpHeadersRule(testConfig).validate(swagger)!!
+        val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(listOf("parameters CamelCaseName"))
     }
 
     @Test
     fun mustAcceptValuesFromWhitelist() {
         val swagger = swaggerWithHeaderParams("ETag", "X-Trace-ID")
-        assertThat(HyphenateHttpHeadersRule(testConfig).validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun emptySwaggerShouldPass() {
         val swagger = Swagger()
         swagger.parameters = HashMap<String, Parameter>()
-        assertThat(HyphenateHttpHeadersRule(testConfig).validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun positiveCaseSpp() {
         val swagger = getFixture("api_spp.json")
-        assertThat(HyphenateHttpHeadersRule(testConfig).validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun positiveCaseTinbox() {
         val swagger = getFixture("api_tinbox.yaml")
-        assertThat(HyphenateHttpHeadersRule(testConfig).validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 }

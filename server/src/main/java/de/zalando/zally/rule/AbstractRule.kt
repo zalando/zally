@@ -1,6 +1,8 @@
 package de.zalando.zally.rule
 
-abstract class AbstractRule : Rule {
+abstract class AbstractRule(ruleSet: RuleSet) : Rule {
+
+    override val ruleSet = ruleSet
 
     val zallyIgnoreExtension = "x-zally-ignore"
 

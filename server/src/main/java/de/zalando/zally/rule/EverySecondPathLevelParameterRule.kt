@@ -3,10 +3,11 @@ package de.zalando.zally.rule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.util.PatternUtil.isPathVariable
 import io.swagger.models.Swagger
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class EverySecondPathLevelParameterRule : SwaggerRule() {
+class EverySecondPathLevelParameterRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
     override val title = "Every Second Path Level To Be Parameter"
     override val url = "/#143"
     override val violationType = ViolationType.MUST

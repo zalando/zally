@@ -7,11 +7,14 @@ import de.zalando.zally.rule.CompositeRulesValidator;
 import de.zalando.zally.rule.InvalidApiSchemaRule;
 import de.zalando.zally.rule.JsonRule;
 import de.zalando.zally.rule.JsonRulesValidator;
+import de.zalando.zally.rule.RuleSet;
 import de.zalando.zally.rule.RulesPolicy;
 import de.zalando.zally.rule.SwaggerRule;
 import de.zalando.zally.rule.SwaggerRulesValidator;
 import de.zalando.zally.rule.Violation;
+import de.zalando.zally.rule.ZalandoRuleSet;
 import io.swagger.models.Swagger;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,10 +44,14 @@ public class RestApiTestConfiguration {
         );
         return new CompositeRulesValidator(
                 new SwaggerRulesValidator(rules, rulesPolicy, invalidApiRule),
-                new JsonRulesValidator(Arrays.asList(new CheckApiNameIsPresentJsonRule()), rulesPolicy, invalidApiRule));
+                new JsonRulesValidator(Arrays.asList(new CheckApiNameIsPresentJsonRule(new ZalandoRuleSet())), rulesPolicy, invalidApiRule));
     }
 
-    private static  class CheckApiNameIsPresentJsonRule extends  JsonRule{
+    private static  class CheckApiNameIsPresentJsonRule extends JsonRule {
+
+        public CheckApiNameIsPresentJsonRule(@NotNull RuleSet ruleSet) {
+            super(ruleSet);
+        }
 
         @Override
         public Iterable<Violation> validate(final JsonNode swagger) {
@@ -88,6 +95,7 @@ public class RestApiTestConfiguration {
         private final String apiName;
 
         CheckApiNameIsPresentRule(String apiName) {
+            super(new ZalandoRuleSet());
             this.apiName = apiName;
         }
 
@@ -127,6 +135,10 @@ public class RestApiTestConfiguration {
     }
 
     private static class AlwaysGiveAHintRule extends SwaggerRule {
+        public AlwaysGiveAHintRule() {
+            super(new ZalandoRuleSet());
+        }
+
         @Override
         public Violation validate(Swagger swagger) {
             return new Violation(

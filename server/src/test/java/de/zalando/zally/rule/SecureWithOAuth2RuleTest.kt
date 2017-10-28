@@ -11,25 +11,27 @@ import org.junit.Test
 
 class SecureWithOAuth2RuleTest {
 
+    private val rule = SecureWithOAuth2Rule(ZalandoRuleSet())
+
     val expectedOauthViolation = Violation(
-            SecureWithOAuth2Rule(),
+            rule,
             "Secure Endpoints with OAuth 2.0",
             "No OAuth2 security definitions found",
             ViolationType.MUST,
-            SecureWithOAuth2Rule().url,
+            rule.url,
             emptyList())
 
     val expectedHttpsViolation = Violation(
-            SecureWithOAuth2Rule(),
+            rule,
             "Secure Endpoints with OAuth 2.0",
             "OAuth2 should be only used together with https",
             ViolationType.MUST,
-            SecureWithOAuth2Rule().url,
+            rule.url,
             emptyList())
 
     @Test
     fun emptySwagger() {
-        assertThat(SecureWithOAuth2Rule().validate(Swagger())).isEqualTo(expectedOauthViolation)
+        assertThat(rule.validate(Swagger())).isEqualTo(expectedOauthViolation)
     }
 
     @Test
@@ -37,7 +39,7 @@ class SecureWithOAuth2RuleTest {
         val swagger = Swagger().apply {
             securityDefinitions = emptyMap()
         }
-        assertThat(SecureWithOAuth2Rule().validate(swagger)).isEqualTo(expectedOauthViolation)
+        assertThat(rule.validate(swagger)).isEqualTo(expectedOauthViolation)
     }
 
     @Test
@@ -48,7 +50,7 @@ class SecureWithOAuth2RuleTest {
                 "ApiKey" to ApiKeyAuthDefinition()
             )
         }
-        assertThat(SecureWithOAuth2Rule().validate(swagger)).isEqualTo(expectedOauthViolation)
+        assertThat(rule.validate(swagger)).isEqualTo(expectedOauthViolation)
     }
 
     @Test
@@ -59,7 +61,7 @@ class SecureWithOAuth2RuleTest {
                     "Oauth2" to OAuth2Definition()
             )
         }
-        assertThat(SecureWithOAuth2Rule().validate(swagger)).isEqualTo(expectedHttpsViolation)
+        assertThat(rule.validate(swagger)).isEqualTo(expectedHttpsViolation)
     }
 
     @Test
@@ -71,6 +73,6 @@ class SecureWithOAuth2RuleTest {
                 "Oauth2" to OAuth2Definition()
             )
         }
-        assertThat(SecureWithOAuth2Rule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 }

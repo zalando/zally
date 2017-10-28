@@ -14,29 +14,31 @@ class VersionInInfoSectionRuleTest {
             }
         }
 
+    private val rule = VersionInInfoSectionRule(ZalandoRuleSet())
+
     @Test
     fun emptySwagger() {
-        val result = VersionInInfoSectionRule().validate(Swagger())!!
+        val result = rule.validate(Swagger())!!
         assertThat(result.description).contains("Version is missing")
     }
 
     @Test
     fun missingVersion() {
         val swagger = Swagger().apply { info = Info() }
-        val result = VersionInInfoSectionRule().validate(swagger)!!
+        val result = rule.validate(swagger)!!
         assertThat(result.description).contains("Version is missing")
     }
 
     @Test
     fun wrongVersionFormat() {
         val swagger = swaggerWithVersion("1.2.3-a")
-        val result = VersionInInfoSectionRule().validate(swagger)!!
+        val result = rule.validate(swagger)!!
         assertThat(result.description).contains("Specified version has incorrect format")
     }
 
     @Test
     fun correctVersion() {
         val swagger = swaggerWithVersion("1.2.3")
-        assertThat(VersionInInfoSectionRule().validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 }

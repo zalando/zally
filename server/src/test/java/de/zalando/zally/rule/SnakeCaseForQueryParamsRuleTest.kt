@@ -11,26 +11,28 @@ class SnakeCaseForQueryParamsRuleTest {
     private val invalidSwaggerWIthInternalRef = getFixture("snakeCaseForQueryParamsInvalidInternalRef.json")
     private val invalidSwaggerWithExternalRef = getFixture("snakeCaseForQueryParamsInvalidExternalRef.json")
 
+    private val rule = SnakeCaseForQueryParamsRule(ZalandoRuleSet())
+
     @Test
     fun shouldFindNoViolations() {
-        assertThat(SnakeCaseForQueryParamsRule().validate(validSwagger)).isNull()
+        assertThat(rule.validate(validSwagger)).isNull()
     }
 
     @Test
     fun shouldFindViolationsInLocalRef() {
-        val result = SnakeCaseForQueryParamsRule().validate(invalidSwaggerWithLocalParam)!!
+        val result = rule.validate(invalidSwaggerWithLocalParam)!!
         assertThat(result.paths).hasSameElementsAs(listOf("/items GET"))
     }
 
     @Test
     fun shouldFindViolationsInInternalRef() {
-        val result = SnakeCaseForQueryParamsRule().validate(invalidSwaggerWIthInternalRef)!!
+        val result = rule.validate(invalidSwaggerWIthInternalRef)!!
         assertThat(result.paths).hasSameElementsAs(listOf("/items GET"))
     }
 
     @Test
     fun shouldFindViolationsInExternalRef() {
-        val result = SnakeCaseForQueryParamsRule().validate(invalidSwaggerWithExternalRef)!!
+        val result = rule.validate(invalidSwaggerWithExternalRef)!!
         assertThat(result.paths).hasSameElementsAs(listOf("/items GET"))
     }
 }

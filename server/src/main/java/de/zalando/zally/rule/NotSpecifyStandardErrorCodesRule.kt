@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class NotSpecifyStandardErrorCodesRule(@Autowired rulesConfig: Config) : SwaggerRule() {
+class NotSpecifyStandardErrorCodesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : SwaggerRule(ruleSet) {
     override val title = "Not Specify Standard Error Codes"
     override val url = "/#151"
     override val violationType = ViolationType.HINT

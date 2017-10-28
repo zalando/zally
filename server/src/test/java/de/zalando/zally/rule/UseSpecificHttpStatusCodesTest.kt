@@ -2,10 +2,12 @@ package de.zalando.zally.rule
 
 import de.zalando.zally.swaggerWithOperations
 import de.zalando.zally.testConfig
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class UseSpecificHttpStatusCodesTest {
+    private val codes = UseSpecificHttpStatusCodes(ZalandoRuleSet(), testConfig)
+
     @Test
     fun shouldPassIfOperationsAreAllowed() {
         val allowedToAll = listOf(
@@ -22,7 +24,7 @@ class UseSpecificHttpStatusCodesTest {
 
         val swagger = swaggerWithOperations(operations)
 
-        Assertions.assertThat(UseSpecificHttpStatusCodes(testConfig).validate(swagger)).isNull()
+        assertThat(codes.validate(swagger)).isNull()
     }
 
     @Test
@@ -47,8 +49,8 @@ class UseSpecificHttpStatusCodesTest {
             }
         }
 
-        val violation = UseSpecificHttpStatusCodes(testConfig).validate(swagger)
+        val violation = codes.validate(swagger)
 
-        Assertions.assertThat(violation?.paths.orEmpty()).containsExactlyInAnyOrder(*expectedPaths.toTypedArray())
+        assertThat(violation?.paths.orEmpty()).containsExactlyInAnyOrder(*expectedPaths.toTypedArray())
     }
 }

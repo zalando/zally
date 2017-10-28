@@ -3,10 +3,12 @@ package de.zalando.zally.rule
 import de.zalando.zally.dto.ViolationType
 import io.swagger.models.Swagger
 import io.swagger.models.properties.Property
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class Use429HeaderForRateLimitRule : SwaggerRule() {
+class Use429HeaderForRateLimitRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+
     override val title = "Use 429 With Header For Rate Limits"
     override val url = "/#153"
     override val violationType = ViolationType.MUST

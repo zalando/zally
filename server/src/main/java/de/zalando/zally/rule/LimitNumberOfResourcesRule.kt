@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class LimitNumberOfResourcesRule(@Autowired rulesConfig: Config) : SwaggerRule() {
+class LimitNumberOfResourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : SwaggerRule(ruleSet) {
     override val title = "Limit number of Resources"
     override val url = "/#146"
     override val violationType = ViolationType.SHOULD

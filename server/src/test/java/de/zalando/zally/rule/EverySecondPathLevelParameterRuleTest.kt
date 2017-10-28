@@ -8,9 +8,10 @@ import org.junit.Test
 
 class EverySecondPathLevelParameterRuleTest {
 
+    private val rule = EverySecondPathLevelParameterRule(ZalandoRuleSet())
+
     @Test
     fun positiveCase() {
-        val rule = EverySecondPathLevelParameterRule()
         val swagger = swaggerWithPaths(
             "/some/{param-1}/path/",
             "/another/{param-1}/path/{param-2}/third",
@@ -21,7 +22,6 @@ class EverySecondPathLevelParameterRuleTest {
 
     @Test
     fun negativeCase() {
-        val rule = EverySecondPathLevelParameterRule()
         val swagger = swaggerWithPaths(
             "/api/some/{param-1}/path/",
             "/another/{param-0}/{param-1}",
@@ -39,14 +39,12 @@ class EverySecondPathLevelParameterRuleTest {
 
     @Test
     fun positiveCaseSpp() {
-        val rule = EverySecondPathLevelParameterRule()
         val swagger = getFixture("api_spp.json")
         assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun negativeCaseSpa() {
-        val rule = EverySecondPathLevelParameterRule()
         val swagger = getFixture("api_spa.yaml")
         assertThat(rule.validate(swagger)!!.paths).hasSameElementsAs(listOf("/reports/jobs", "/reports/jobs/{job-id}"))
     }

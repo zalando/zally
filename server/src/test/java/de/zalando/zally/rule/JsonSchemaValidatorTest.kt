@@ -1,7 +1,7 @@
 package de.zalando.zally.rule
 
 import com.google.common.io.Resources
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class JsonSchemaValidatorTest {
@@ -24,8 +24,8 @@ class JsonSchemaValidatorTest {
         """)
 
         val valResult = jsonSchemaValidator.validate(jsonToValidate)
-        Assertions.assertThat(valResult.isSuccess).isFalse()
-        Assertions.assertThat(valResult.messages[0].message).isEqualTo("numeric instance is lower than the required minimum (minimum: 0, found: -10)")
+        assertThat(valResult.isSuccess).isFalse()
+        assertThat(valResult.messages[0].message).isEqualTo("numeric instance is lower than the required minimum (minimum: 0, found: -10)")
     }
 
     @Test
@@ -40,7 +40,7 @@ class JsonSchemaValidatorTest {
         val specJson = ObjectTreeReader().readYaml(Resources.getResource("fixtures/api_tinbox.yaml"))
 
         val valResult = jsonSchemaValidator.validate(specJson)
-        Assertions.assertThat(valResult.isSuccess).isFalse()
-        Assertions.assertThat(valResult.messages[0].message).isEqualTo("instance failed to match at least one required schema among 2")
+        assertThat(valResult.isSuccess).isFalse()
+        assertThat(valResult.messages[0].message).isEqualTo("instance failed to match at least one required schema among 2")
     }
 }

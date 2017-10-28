@@ -7,21 +7,23 @@ import org.junit.Test
 
 class AvoidTrailingSlashesRuleTest {
 
+    private val rule = AvoidTrailingSlashesRule(ZalandoRuleSet())
+
     @Test
     fun emptySwagger() {
-        assertThat(AvoidTrailingSlashesRule().validate(Swagger())).isNull()
+        assertThat(rule.validate(Swagger())).isNull()
     }
 
     @Test
     fun positiveCase() {
         val testAPI = swaggerWithPaths("/api/test-api")
-        assertThat(AvoidTrailingSlashesRule().validate(testAPI)).isNull()
+        assertThat(rule.validate(testAPI)).isNull()
     }
 
     @Test
     fun negativeCase() {
         val testAPI = swaggerWithPaths("/api/test-api/", "/api/test", "/some/other/path", "/long/bad/path/with/slash/")
-        assertThat(AvoidTrailingSlashesRule().validate(testAPI)!!.paths).hasSameElementsAs(
+        assertThat(rule.validate(testAPI)!!.paths).hasSameElementsAs(
             listOf("/api/test-api/", "/long/bad/path/with/slash/"))
     }
 }

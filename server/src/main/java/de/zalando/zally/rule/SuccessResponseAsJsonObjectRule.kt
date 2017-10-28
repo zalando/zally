@@ -6,10 +6,11 @@ import io.swagger.models.ModelImpl
 import io.swagger.models.Swagger
 import io.swagger.models.properties.Property
 import io.swagger.models.properties.RefProperty
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class SuccessResponseAsJsonObjectRule : SwaggerRule() {
+class SuccessResponseAsJsonObjectRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
 
     override val title = "Response As JSON Object"
     override val violationType = ViolationType.MUST

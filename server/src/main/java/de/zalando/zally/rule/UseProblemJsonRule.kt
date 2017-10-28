@@ -10,10 +10,11 @@ import io.swagger.models.Response
 import io.swagger.models.Swagger
 import io.swagger.models.properties.ObjectProperty
 import io.swagger.models.properties.RefProperty
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class UseProblemJsonRule : SwaggerRule() {
+class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
     override val title = "Use Problem JSON"
     override val url = "/#176"
     override val violationType = ViolationType.MUST

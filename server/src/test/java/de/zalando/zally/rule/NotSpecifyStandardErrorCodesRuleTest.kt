@@ -2,7 +2,7 @@ package de.zalando.zally.rule
 
 import de.zalando.zally.swaggerWithOperations
 import de.zalando.zally.testConfig
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class NotSpecifyStandardErrorCodesRuleTest {
@@ -15,13 +15,15 @@ class NotSpecifyStandardErrorCodesRuleTest {
 
     private val allOperations = listOf("get", "post", "put", "patch", "delete", "head", "options")
 
+    private val rule = NotSpecifyStandardErrorCodesRule(ZalandoRuleSet(), testConfig)
+
     @Test
     fun shouldPassIfErrorCodeNotStandard() {
         val operations = allOperations.associateBy({ it }, { notStandardErrorCodes })
 
         val swagger = swaggerWithOperations(operations)
 
-        Assertions.assertThat(NotSpecifyStandardErrorCodesRule(testConfig).validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
@@ -39,8 +41,8 @@ class NotSpecifyStandardErrorCodesRuleTest {
             }
         }
 
-        val violation = NotSpecifyStandardErrorCodesRule(testConfig).validate(swagger)
+        val violation = rule.validate(swagger)
 
-        Assertions.assertThat(violation?.paths.orEmpty()).containsExactlyInAnyOrder(*expectedPaths.toTypedArray())
+        assertThat(violation?.paths.orEmpty()).containsExactlyInAnyOrder(*expectedPaths.toTypedArray())
     }
 }

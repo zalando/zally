@@ -12,7 +12,7 @@ import java.io.IOException
 import java.net.URL
 
 @Component
-open class InvalidApiSchemaRule(@Autowired rulesConfig: Config) : JsonRule() {
+open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : JsonRule(ruleSet) {
 
     private val log = LoggerFactory.getLogger(InvalidApiSchemaRule::class.java)
 

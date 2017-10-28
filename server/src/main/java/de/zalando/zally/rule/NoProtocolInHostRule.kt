@@ -2,10 +2,11 @@ package de.zalando.zally.rule
 
 import de.zalando.zally.dto.ViolationType
 import io.swagger.models.Swagger
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class NoProtocolInHostRule : SwaggerRule() {
+class NoProtocolInHostRule(@Autowired ruleSet: ZallyRuleSet) : SwaggerRule(ruleSet) {
     override val title = "Host should not contain protocol"
     // TODO: Provide URL
     override val url = ""

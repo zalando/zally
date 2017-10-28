@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class FormatForNumbersRule(@Autowired rulesConfig: Config) : SwaggerRule() {
+class FormatForNumbersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : SwaggerRule(ruleSet) {
     override val title = "Define Format for Type Number and Integer"
     override val url = "/#171"
     override val violationType = ViolationType.MUST

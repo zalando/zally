@@ -5,10 +5,11 @@ import de.zalando.zally.dto.ViolationType.MUST
 import io.swagger.models.Operation
 import io.swagger.models.Swagger
 import io.swagger.models.auth.OAuth2Definition
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class DefineOAuthScopesRule : SwaggerRule() {
+class DefineOAuthScopesRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
     override val title = "Define and Assign Access Rights (Scopes)"
     override val url = "/#104"
     override val violationType = MUST

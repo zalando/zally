@@ -8,16 +8,18 @@ import org.junit.Test
 class LimitNumberOfSubresourcesRuleTest {
     val ruleConfig = testConfig
 
+    private val rule = LimitNumberOfSubresourcesRule(ZalandoRuleSet(), ruleConfig)
+
     @Test
     fun positiveCase() {
         val swagger = getFixture("limitNumberOfSubresourcesValid.json")
-        assertThat(LimitNumberOfSubresourcesRule(ruleConfig).validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun negativeCase() {
         val swagger = getFixture("limitNumberOfSubresourcesInvalid.json")
-        val result = LimitNumberOfSubresourcesRule(ruleConfig).validate(swagger)!!
+        val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(
             listOf("/items/{some_id}/item_level_1/{level1_id}/item-level-2/{level2_id}/item-level-3/{level3_id}/item-level-4")
         )
@@ -26,12 +28,12 @@ class LimitNumberOfSubresourcesRuleTest {
     @Test
     fun positiveCaseSpp() {
         val swagger = getFixture("api_spp.json")
-        assertThat(LimitNumberOfSubresourcesRule(ruleConfig).validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
     fun positiveCaseSpa() {
         val swagger = getFixture("api_spa.yaml")
-        assertThat(LimitNumberOfSubresourcesRule(ruleConfig).validate(swagger)).isNull()
+        assertThat(rule.validate(swagger)).isNull()
     }
 }

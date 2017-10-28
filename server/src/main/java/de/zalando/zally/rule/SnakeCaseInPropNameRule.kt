@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class SnakeCaseInPropNameRule(@Autowired rulesConfig: Config) : SwaggerRule() {
+class SnakeCaseInPropNameRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : SwaggerRule(ruleSet) {
     override val title = "snake_case property names"
     override val url = "/#118"
     override val violationType = ViolationType.MUST

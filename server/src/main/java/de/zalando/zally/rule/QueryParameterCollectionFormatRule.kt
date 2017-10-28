@@ -4,8 +4,9 @@ import de.zalando.zally.dto.ViolationType
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
 import io.swagger.models.parameters.QueryParameter
+import org.springframework.beans.factory.annotation.Autowired
 
-class QueryParameterCollectionFormatRule : SwaggerRule() {
+class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
 
     override val title = "Explicitly define the Collection Format of Query Parameters"
     override val url = "/#154"

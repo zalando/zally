@@ -10,7 +10,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class MediaTypesRuleTest {
-    private val rule = MediaTypesRule()
+    private val rule = MediaTypesRule(ZalandoRuleSet())
 
     fun swaggerWithMediaTypes(vararg pathToMedia: Pair<String, List<String>>): Swagger =
         Swagger().apply {

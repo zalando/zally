@@ -4,6 +4,7 @@ import de.zalando.zally.dto.ViolationType
 
 interface Rule {
 
+    val ruleSet: RuleSet
     val title: String
     val violationType: ViolationType
     val url: String?

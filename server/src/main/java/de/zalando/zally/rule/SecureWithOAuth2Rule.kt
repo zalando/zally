@@ -3,10 +3,11 @@ package de.zalando.zally.rule
 import de.zalando.zally.dto.ViolationType
 import io.swagger.models.Scheme
 import io.swagger.models.Swagger
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class SecureWithOAuth2Rule : SwaggerRule() {
+class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
     override val title = "Secure Endpoints with OAuth 2.0"
     override val url = "/#104"
     override val violationType = ViolationType.MUST

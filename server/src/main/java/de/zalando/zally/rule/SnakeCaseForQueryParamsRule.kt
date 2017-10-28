@@ -4,13 +4,14 @@ import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.QueryParameter
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 /**
  * Lint for snake case for query params
  */
 @Component
-class SnakeCaseForQueryParamsRule : SwaggerRule() {
+class SnakeCaseForQueryParamsRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
     override val title = "Use snake_case (never camelCase) for Query Parameters"
     override val url = "/#130"
     override val violationType = ViolationType.MUST
