@@ -6,7 +6,6 @@ import { Msg } from './msg.jsx';
 export function RulesTab({ rules, error }) {
   return (
     <div>
-      <h3>SUPPORTED RULES</h3>
       {error ? <Msg type="error" title="ERROR" text={error} /> : null}
       <FluidContainer>
         <ul className="violations-content">
@@ -34,7 +33,6 @@ export function Rule(props) {
         {rule.type} {'\u2013'} {rule.title}
       </h4>
       {rule.url ? <RuleLink url={rule.url} /> : null}
-      <p className="dc--text-small">{rule.is_active ? 'Active' : 'Inactive'}</p>
     </li>
   );
 }
