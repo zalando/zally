@@ -37,7 +37,7 @@ class PascalCaseHttpHeadersRuleTest {
 
     @Test
     fun mustAcceptRateLimitHeaders() {
-        val swagger = swaggerWithHeaderParams("X-RateLimit-Limit","X-RateLimit-Remaining","X-RateLimit-Reset")
+        val swagger = swaggerWithHeaderParams("X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset")
         assertThat(PascalCaseHttpHeadersRule(testConfig).validate(swagger)).isNull()
     }
 

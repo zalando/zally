@@ -48,7 +48,7 @@ class HyphenateHttpHeadersRuleTest {
 
     @Test
     fun issue572RateLimitHeadersAreAccepted() {
-        val swagger = swaggerWithHeaderParams("X-RateLimit-Limit","X-RateLimit-Remaining","X-RateLimit-Reset")
+        val swagger = swaggerWithHeaderParams("X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset")
         assertThat(HyphenateHttpHeadersRule(testConfig).validate(swagger)).isNull()
     }
 }
