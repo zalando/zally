@@ -21,7 +21,8 @@ class HyphenateHttpHeadersRuleTest {
     fun simplePositiveCamelCase() {
         // CamelCaseName IS a valid 'hypenated' header, it just has a single term
         val swagger = swaggerWithHeaderParams("CamelCaseName")
-        assertThat(rule.validate(swagger)).isNull()}
+        assertThat(rule.validate(swagger)).isNull()
+    }
 
     @Test
     fun mustAcceptValuesFromWhitelist() {
@@ -32,7 +33,8 @@ class HyphenateHttpHeadersRuleTest {
     @Test
     fun emptySwaggerShouldPass() {
         val swagger = Swagger()
-        assertThat(rule.validate(swagger)).isNull() }
+        assertThat(rule.validate(swagger)).isNull()
+    }
 
     @Test
     fun positiveCaseSpp() {
@@ -48,7 +50,7 @@ class HyphenateHttpHeadersRuleTest {
 
     @Test
     fun issue572RateLimitHeadersAreAccepted() {
-        val swagger = swaggerWithHeaderParams("X-RateLimit-Limit","X-RateLimit-Remaining","X-RateLimit-Reset")
+        val swagger = swaggerWithHeaderParams("X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset")
         assertThat(rule.validate(swagger)).isNull()
     }
 }
