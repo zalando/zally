@@ -17,7 +17,7 @@ import io.swagger.parser.util.ClasspathHelper
 import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices
 
 val testConfig: Config by lazy {
-    ConfigFactory.load("rules-config-test.conf")
+    ConfigFactory.load("rules-config.conf")
 }
 
 val testMetricRegistry: MetricRegistry by lazy {

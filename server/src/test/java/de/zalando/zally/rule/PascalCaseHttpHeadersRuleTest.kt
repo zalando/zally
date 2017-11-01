@@ -10,7 +10,7 @@ import org.junit.Test
 class PascalCaseHttpHeadersRuleTest {
 
     @Test
-    fun simplePoisitiveCase() {
+    fun simplePositiveCase() {
         val swagger = swaggerWithHeaderParams("Right-Name")
         assertThat(PascalCaseHttpHeadersRule(testConfig).validate(swagger)).isNull()
     }
@@ -29,9 +29,15 @@ class PascalCaseHttpHeadersRuleTest {
     }
 
     @Test
-    fun mustAccepZalandoHeaders() {
+    fun mustAcceptZalandoHeaders() {
         val swagger = swaggerWithHeaderParams("X-Flow-ID", "X-UID", "X-Tenant-ID", "X-Sales-Channel", "X-Frontend-Type",
-            "X-Device-Type", "X-Device-OS", "X-App-Domain")
+                "X-Device-Type", "X-Device-OS", "X-App-Domain")
+        assertThat(PascalCaseHttpHeadersRule(testConfig).validate(swagger)).isNull()
+    }
+
+    @Test
+    fun mustAcceptRateLimitHeaders() {
+        val swagger = swaggerWithHeaderParams("X-RateLimit-Limit","X-RateLimit-Remaining","X-RateLimit-Reset")
         assertThat(PascalCaseHttpHeadersRule(testConfig).validate(swagger)).isNull()
     }
 
