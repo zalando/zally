@@ -42,9 +42,7 @@ export const RestService = {
         'Content-Type': 'application/json',
       },
     };
-    const url =
-      `${window.env.ZALLY_API_URL}/supported-rules` +
-      this.objectToParams(params);
+    const url = `${window.env.ZALLY_API_URL}/supported-rules?is_active=true`;
     return client
       .fetch(url, options)
       .then(response => response.json())
