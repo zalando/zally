@@ -75,7 +75,6 @@ describe('Rule component', () => {
     expect(RuleLink.length).toEqual(1);
     expect(RuleLink.prop('url')).toEqual('someurl');
     expect(component.find('RuleType').length).toEqual(1);
-    expect(component.find('.dc--text-small').text()).toEqual('Active');
   });
 
   test('should render a rule without url', () => {
@@ -93,6 +92,5 @@ describe('Rule component', () => {
     expect(component.find('RuleType').length).toEqual(1);
     expect(RuleLink.length).toEqual(0);
     expect(component.find('RuleType').length).toEqual(1);
-    expect(component.find('.dc--text-small').text()).toEqual('Inactive');
   });
 });
