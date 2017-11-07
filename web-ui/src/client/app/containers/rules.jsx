@@ -88,31 +88,6 @@ export class Rules extends Component {
     return (
       <div>
         <div className="dc-row">
-          <div className="dc-column dc-column--small-12 dc-column--large-7">
-            <label className="dc-label filter-navigation__label">
-              Show only
-            </label>
-            <div className="dc-btn-group dc-btn-group--in-row">
-              <NavLink
-                to={{ pathname: '/rules', search: '?is_active=true' }}
-                className="dc-btn dc-btn--small dc-btn--in-btn-group"
-                activeClassName="dc-btn--primary"
-                isActive={this.sameFilter(true)}
-              >
-                Active
-              </NavLink>
-              <NavLink
-                to={{ pathname: '/rules', search: '?is_active=false' }}
-                className="dc-btn dc-btn--small dc-btn--in-btn-group"
-                activeClassName="dc-btn--primary"
-                isActive={this.sameFilter(false)}
-              >
-                Inactive
-              </NavLink>
-            </div>
-          </div>
-        </div>
-        <div className="dc-row">
           <div className="dc-column">
             <div className="dc-column__contents">
               <RulesTab error={this.state.error} rules={this.state.rules} />
