@@ -21,8 +21,9 @@ class PathParamIsWholePathComponent : CoreFilingSwaggerRule() {
 
             val components = pattern.split('/')
             val failure = components
-                    .map { pathParamRegex.replaceFirst(it, "XXXXX") }
-                    .any { it !="XXXXX" }
+                .filter { pathParamRegex.find(it) != null }
+                .map { pathParamRegex.replaceFirst(it, "XXXXX") }
+                .any { it !="XXXXX" }
 
             if (failure) {
                 failures.add(pattern)
