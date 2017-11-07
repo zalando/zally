@@ -22,7 +22,7 @@ class CollectionsArePlural : CoreFilingSwaggerRule() {
             val word = pattern.split(Regex("\\W")).last{ it.isNotBlank() }
 
             if (!isPlural(word)) {
-                failures.add(pattern)
+                failures.add("${word} in ${pattern}")
             }
         }
 
