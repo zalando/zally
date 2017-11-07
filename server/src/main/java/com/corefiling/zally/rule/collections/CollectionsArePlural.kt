@@ -19,7 +19,7 @@ class CollectionsArePlural : CoreFilingSwaggerRule() {
 
         collectionPaths(swagger)?.forEach { pattern, _ ->
 
-            val word = pattern.split(Regex("\\W")).last()
+            val word = pattern.split(Regex("\\W")).last{ it.isNotBlank() }
 
             if (!isPlural(word)) {
                 failures.add(pattern)
