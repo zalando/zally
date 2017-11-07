@@ -126,7 +126,9 @@ describe('RestService', () => {
 
     return RestService.getSupportedRules().then(rules => {
       expect(rules).toBe(mockRules);
-      expect(client.fetch).toHaveBeenCalledWith('/zally-api/supported-rules', {
+      expect(
+        client.fetch
+      ).toHaveBeenCalledWith('/zally-api/supported-rules?is_active=true', {
         method: 'GET',
         headers: {
           Accept: 'application/json',
