@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class CollectionsArePlural : CoreFilingSwaggerRule() {
-    override val title = "Collection Resources Return Arrays"
+    override val title = "Collection Resources Are Plural"
     override val violationType = ViolationType.SHOULD
-    override val description = "Collection resources return arrays so that they can be acted upon easily"
+    override val description = "Collection resources are plural to indicate that they multiple child resources will be available"
 
     override fun validate(swagger: Swagger): Violation? {
 
