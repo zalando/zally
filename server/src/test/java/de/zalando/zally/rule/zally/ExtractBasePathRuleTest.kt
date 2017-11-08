@@ -1,7 +1,8 @@
-package de.zalando.zally.rule
+package de.zalando.zally.rule.zally
 
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.getFixture
+import de.zalando.zally.rule.Violation
 import de.zalando.zally.swaggerWithPaths
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
@@ -38,7 +39,7 @@ class ExtractBasePathRuleTest {
         )
         val rule = rule
         val expected = Violation(rule, rule.title, DESC_PATTERN.format("/shipment"),
-            ViolationType.HINT, rule.url, emptyList())
+                ViolationType.HINT, rule.url, emptyList())
         assertThat(rule.validate(swagger)).isEqualTo(expected)
     }
 
@@ -52,7 +53,7 @@ class ExtractBasePathRuleTest {
         )
         val rule = rule
         val expected = Violation(rule, rule.title, DESC_PATTERN.format("/queue/models"),
-            ViolationType.HINT, rule.url, emptyList())
+                ViolationType.HINT, rule.url, emptyList())
         assertThat(rule.validate(swagger)).isEqualTo(expected)
     }
 

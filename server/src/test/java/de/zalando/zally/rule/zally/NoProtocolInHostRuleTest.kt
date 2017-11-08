@@ -1,6 +1,7 @@
-package de.zalando.zally.rule
+package de.zalando.zally.rule.zally
 
 import de.zalando.zally.getFixture
+import de.zalando.zally.rule.Violation
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test

@@ -1,5 +1,6 @@
-package de.zalando.zally.rule
+package de.zalando.zally.rule.zally
 
+import de.zalando.zally.rule.RuleSet
 import org.springframework.stereotype.Component
 import java.net.URI
 

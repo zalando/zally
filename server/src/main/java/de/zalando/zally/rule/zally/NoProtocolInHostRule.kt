@@ -1,6 +1,8 @@
-package de.zalando.zally.rule
+package de.zalando.zally.rule.zally
 
 import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.Violation
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

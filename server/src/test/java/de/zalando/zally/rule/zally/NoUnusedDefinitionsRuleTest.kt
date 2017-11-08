@@ -1,4 +1,4 @@
-package de.zalando.zally.rule
+package de.zalando.zally.rule.zally
 
 import de.zalando.zally.getFixture
 import io.swagger.models.Swagger
