@@ -35,7 +35,7 @@ apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'de.undercouch.download'
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.14.1'
+    gradleVersion = '4.3.1'
 }
 
 jar {
