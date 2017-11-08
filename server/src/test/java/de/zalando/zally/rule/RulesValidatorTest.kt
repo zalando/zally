@@ -1,6 +1,8 @@
 package de.zalando.zally.rule
 
 import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
+import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test

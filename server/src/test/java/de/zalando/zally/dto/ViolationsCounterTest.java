@@ -1,8 +1,8 @@
 package de.zalando.zally.dto;
 
-import de.zalando.zally.rule.AvoidTrailingSlashesRule;
+import de.zalando.zally.rule.zalando.AvoidTrailingSlashesRule;
 import de.zalando.zally.rule.Violation;
-import de.zalando.zally.rule.ZalandoRuleSet;
+import de.zalando.zally.rule.zalando.ZalandoRuleSet;
 import org.junit.Test;
 
 import java.util.ArrayList;
