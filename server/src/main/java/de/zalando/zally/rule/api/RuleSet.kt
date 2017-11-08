@@ -1,4 +1,4 @@
-package de.zalando.zally.rule
+package de.zalando.zally.rule.api
 
 import java.net.URI
 

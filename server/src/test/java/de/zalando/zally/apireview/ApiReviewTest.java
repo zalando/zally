@@ -2,8 +2,8 @@ package de.zalando.zally.apireview;
 
 import de.zalando.zally.dto.ApiDefinitionRequest;
 import de.zalando.zally.dto.ViolationType;
-import de.zalando.zally.rule.Rule;
-import de.zalando.zally.rule.RuleSet;
+import de.zalando.zally.rule.api.Rule;
+import de.zalando.zally.rule.api.RuleSet;
 import de.zalando.zally.rule.Violation;
 import de.zalando.zally.util.ResourceUtil;
 import org.jetbrains.annotations.NotNull;
