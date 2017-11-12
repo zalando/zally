@@ -8,4 +8,6 @@ class RulesPolicy(@Value("\${zally.ignoreRules:}") val ignoreRules: Array<String
     fun accepts(rule: Rule): Boolean {
         return !ignoreRules.contains(rule.code)
     }
+
+    fun withMoreIgnores(moreIgnores: List<String>) = RulesPolicy(ignoreRules + moreIgnores)
 }

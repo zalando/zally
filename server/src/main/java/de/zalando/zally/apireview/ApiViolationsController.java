@@ -8,6 +8,7 @@ import de.zalando.zally.dto.ViolationsCounter;
 import de.zalando.zally.exception.MissingApiDefinitionException;
 import de.zalando.zally.exception.UnaccessibleResourceUrlException;
 import de.zalando.zally.rule.ApiValidator;
+import de.zalando.zally.rule.RulesPolicy;
 import de.zalando.zally.rule.Violation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,7 @@ public class ApiViolationsController {
     private final ApiDefinitionReader apiDefinitionReader;
     private final ApiReviewRepository apiReviewRepository;
     private final ServerMessageService serverMessageService;
+    private final RulesPolicy configPolicy;
 
     @Value("${zally.apiGuidelinesBaseUrl:}")
     private String baseUrl;
@@ -44,12 +46,14 @@ public class ApiViolationsController {
                                    DropwizardMetricServices metricServices,
                                    ApiDefinitionReader apiDefinitionReader,
                                    ApiReviewRepository apiReviewRepository,
-                                   ServerMessageService serverMessageService) {
+                                   ServerMessageService serverMessageService,
+                                   RulesPolicy configPolicy) {
         this.rulesValidator = rulesValidator;
         this.metricServices = metricServices;
         this.apiDefinitionReader = apiDefinitionReader;
         this.apiReviewRepository = apiReviewRepository;
         this.serverMessageService = serverMessageService;
+        this.configPolicy = configPolicy;
     }
 
     @ResponseBody
@@ -59,12 +63,25 @@ public class ApiViolationsController {
         metricServices.increment("meter.api-reviews.requested");
 
         String apiDefinition = retrieveApiDefinition(request);
-        List<Violation> violations = rulesValidator.validate(apiDefinition, request.getIgnoreRules());
+
+        RulesPolicy requestPolicy = retrieveRulesPolicy(request);
+
+        List<Violation> violations = rulesValidator.validate(apiDefinition, requestPolicy);
         apiReviewRepository.save(new ApiReview(request, apiDefinition, violations));
 
         ApiDefinitionResponse response = buildApiDefinitionResponse(violations, userAgent);
         metricServices.increment("meter.api-reviews.processed");
         return response;
+    }
+
+    private RulesPolicy retrieveRulesPolicy(ApiDefinitionRequest request) {
+        final List<String> requestRules = request.getIgnoreRules();
+        if (requestRules==null) {
+            return configPolicy;
+        }
+        else {
+            return configPolicy.withMoreIgnores(requestRules);
+        }
     }
 
     private String retrieveApiDefinition(ApiDefinitionRequest request) {
