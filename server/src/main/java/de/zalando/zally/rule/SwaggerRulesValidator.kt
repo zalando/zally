@@ -1,5 +1,6 @@
 package de.zalando.zally.rule
 
+import com.fasterxml.jackson.databind.JsonNode
 import io.swagger.parser.SwaggerParser
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -13,11 +14,10 @@ class SwaggerRulesValidator(@Autowired rules: List<SwaggerRule>,
                             @Autowired invalidApiRule: InvalidApiSchemaRule) : RulesValidator<SwaggerRule>(rules, invalidApiRule) {
 
     @Throws(java.lang.Exception::class)
-    override fun createRuleChecker(swaggerContent: String): (SwaggerRule) -> Iterable<Violation> {
-        val swagger = SwaggerParser().parse(swaggerContent)!!
+    override fun createRuleChecker(json: JsonNode): (SwaggerRule) -> Iterable<Violation> {
+        val swagger = SwaggerParser().read(json)!!
         return {
-            if (it.accepts(swagger)) listOfNotNull(it.validate(swagger))
-            else emptyList()
+            listOfNotNull(it.validate(swagger))
         }
     }
 

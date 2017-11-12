@@ -2,8 +2,6 @@ package de.zalando.zally.rule
 
 abstract class AbstractRule : Rule {
 
-    val zallyIgnoreExtension = "x-zally-ignore"
-
     override val name: String = javaClass.simpleName
 
     override fun equals(other: Any?): Boolean {
