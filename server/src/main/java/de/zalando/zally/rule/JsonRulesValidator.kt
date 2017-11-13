@@ -9,7 +9,7 @@ class JsonRulesValidator(@Autowired rules: List<JsonRule>,
                          @Autowired invalidApiRule: InvalidApiSchemaRule) : RulesValidator<JsonRule>(rules, invalidApiRule) {
 
     @Throws(java.lang.Exception::class)
-    override fun createRuleChecker(json: JsonNode): (JsonRule) -> Iterable<Violation> {
+    override fun validator(json: JsonNode): (JsonRule) -> Iterable<Violation> {
         return {
             it.validate(json)
         }

@@ -14,7 +14,7 @@ class SwaggerRulesValidator(@Autowired rules: List<SwaggerRule>,
                             @Autowired invalidApiRule: InvalidApiSchemaRule) : RulesValidator<SwaggerRule>(rules, invalidApiRule) {
 
     @Throws(java.lang.Exception::class)
-    override fun createRuleChecker(content: JsonNode): (SwaggerRule) -> Iterable<Violation> {
+    override fun validator(content: JsonNode): (SwaggerRule) -> Iterable<Violation> {
         val swagger = SwaggerParser().read(content)!!
         return {
             listOfNotNull(it.validate(swagger))

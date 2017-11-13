@@ -13,8 +13,8 @@ abstract class RulesValidator<RuleT>(val rules: List<RuleT>, val invalidApiRule:
 
         return try {
             rules
-                    .filter { contentPolicy.accepts(it) }
-                    .flatMap(createRuleChecker(json))
+                    .filter(contentPolicy::accepts)
+                    .flatMap(validator(json))
                     .sortedBy(Violation::violationType)
         } catch (e: Exception) {
             listOf(invalidApiRule.getGeneralViolation())
@@ -24,12 +24,12 @@ abstract class RulesValidator<RuleT>(val rules: List<RuleT>, val invalidApiRule:
     private fun rulesPolicy(json: JsonNode, requestPolicy: RulesPolicy): RulesPolicy {
         val node = json.path("x-zally-ignore")
         return if (node.isArray) {
-            requestPolicy.withMoreIgnores(node.map { it.asText() })
+            requestPolicy.withMoreIgnores(node.map(JsonNode::asText))
         } else {
             requestPolicy
         }
     }
 
     @Throws(java.lang.Exception::class)
-    abstract fun createRuleChecker(content: JsonNode): (RuleT) -> Iterable<Violation>
+    abstract fun validator(content: JsonNode): (RuleT) -> Iterable<Violation>
 }
