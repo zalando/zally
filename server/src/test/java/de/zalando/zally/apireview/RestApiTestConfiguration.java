@@ -7,7 +7,6 @@ import de.zalando.zally.rule.CompositeRulesValidator;
 import de.zalando.zally.rule.InvalidApiSchemaRule;
 import de.zalando.zally.rule.JsonRule;
 import de.zalando.zally.rule.JsonRulesValidator;
-import de.zalando.zally.rule.RulesPolicy;
 import de.zalando.zally.rule.SwaggerRule;
 import de.zalando.zally.rule.SwaggerRulesValidator;
 import de.zalando.zally.rule.Violation;
@@ -26,9 +25,6 @@ import java.util.List;
 public class RestApiTestConfiguration {
 
     @Autowired
-    private RulesPolicy rulesPolicy;
-
-    @Autowired
     private InvalidApiSchemaRule invalidApiRule;
 
     @Bean
@@ -40,8 +36,8 @@ public class RestApiTestConfiguration {
             new AlwaysGiveAHintRule()
         );
         return new CompositeRulesValidator(
-                new SwaggerRulesValidator(rules, rulesPolicy, invalidApiRule),
-                new JsonRulesValidator(Arrays.asList(new CheckApiNameIsPresentJsonRule()), rulesPolicy, invalidApiRule));
+                new SwaggerRulesValidator(rules, invalidApiRule),
+                new JsonRulesValidator(Arrays.asList(new CheckApiNameIsPresentJsonRule()), invalidApiRule));
     }
 
     private static  class CheckApiNameIsPresentJsonRule extends  JsonRule{
