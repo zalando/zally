@@ -12,7 +12,7 @@ class PascalCaseHttpHeadersRuleTest {
     private val rule = PascalCaseHttpHeadersRule(ZalandoRuleSet(), testConfig)
 
     @Test
-    fun simplePoisitiveCase() {
+    fun simplePositiveCase() {
         val swagger = swaggerWithHeaderParams("Right-Name")
         assertThat(rule.validate(swagger)).isNull()
     }
@@ -31,9 +31,15 @@ class PascalCaseHttpHeadersRuleTest {
     }
 
     @Test
-    fun mustAccepZalandoHeaders() {
+    fun mustAcceptZalandoHeaders() {
         val swagger = swaggerWithHeaderParams("X-Flow-ID", "X-UID", "X-Tenant-ID", "X-Sales-Channel", "X-Frontend-Type",
             "X-Device-Type", "X-Device-OS", "X-App-Domain")
+        assertThat(rule.validate(swagger)).isNull()
+    }
+
+    @Test
+    fun mustAcceptRateLimitHeaders() {
+        val swagger = swaggerWithHeaderParams("X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset")
         assertThat(rule.validate(swagger)).isNull()
     }
 

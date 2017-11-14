@@ -4,7 +4,6 @@ import de.zalando.zally.getFixture
 import de.zalando.zally.swaggerWithHeaderParams
 import de.zalando.zally.testConfig
 import io.swagger.models.Swagger
-import io.swagger.models.parameters.Parameter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -19,10 +18,10 @@ class HyphenateHttpHeadersRuleTest {
     }
 
     @Test
-    fun simpleNegativeCase() {
+    fun simplePositiveCamelCase() {
+        // CamelCaseName IS a valid 'hypenated' header, it just has a single term
         val swagger = swaggerWithHeaderParams("CamelCaseName")
-        val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("parameters CamelCaseName"))
+        assertThat(rule.validate(swagger)).isNull()
     }
 
     @Test
@@ -34,7 +33,6 @@ class HyphenateHttpHeadersRuleTest {
     @Test
     fun emptySwaggerShouldPass() {
         val swagger = Swagger()
-        swagger.parameters = HashMap<String, Parameter>()
         assertThat(rule.validate(swagger)).isNull()
     }
 
@@ -47,6 +45,12 @@ class HyphenateHttpHeadersRuleTest {
     @Test
     fun positiveCaseTinbox() {
         val swagger = getFixture("api_tinbox.yaml")
+        assertThat(rule.validate(swagger)).isNull()
+    }
+
+    @Test
+    fun issue572RateLimitHeadersAreAccepted() {
+        val swagger = swaggerWithHeaderParams("X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset")
         assertThat(rule.validate(swagger)).isNull()
     }
 }
