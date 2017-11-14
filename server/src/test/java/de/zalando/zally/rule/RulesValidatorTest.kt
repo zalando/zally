@@ -1,6 +1,8 @@
 package de.zalando.zally.rule
 
 import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
+import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -15,7 +17,7 @@ class RulesValidatorTest {
 
     val swaggerContent = javaClass.classLoader.getResource("fixtures/api_spp.json").readText(Charsets.UTF_8)
 
-    class FirstRule(val result: Violation?) : SwaggerRule() {
+    class FirstRule(val result: Violation?) : SwaggerRule(ZalandoRuleSet()) {
         override val title = "First Rule"
         override val url = null
         override val violationType = ViolationType.SHOULD
@@ -24,7 +26,7 @@ class RulesValidatorTest {
         override fun validate(swagger: Swagger): Violation? = result
     }
 
-    class SecondRule(val result: Violation?) : SwaggerRule() {
+    class SecondRule(val result: Violation?) : SwaggerRule(ZalandoRuleSet()) {
         override val title = "Second Rule"
         override val url = null
         override val violationType = ViolationType.MUST
