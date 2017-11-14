@@ -13,7 +13,13 @@ import org.springframework.stereotype.Component
 class SwaggerRulesValidator(@Autowired rules: List<SwaggerRule>,
                             @Autowired invalidApiRule: InvalidApiSchemaRule) : RulesValidator<SwaggerRule, Swagger>(rules, invalidApiRule) {
 
-    override fun parse(content: String): Swagger = SwaggerParser().parse(content)!!
+    override fun parse(content: String): Swagger? {
+        return try {
+            SwaggerParser().parse(content)!!
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     override fun ignores(root: Swagger): List<String> {
         val ignores = root.vendorExtensions?.get(zallyIgnoreExtension)

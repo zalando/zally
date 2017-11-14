@@ -10,7 +10,13 @@ class JsonRulesValidator(@Autowired rules: List<JsonRule>,
 
     private val reader = ObjectTreeReader()
 
-    override fun parse(content: String): JsonNode = reader.read(content)
+    override fun parse(content: String): JsonNode? {
+        return try {
+            reader.read(content)
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     override fun ignores(root: JsonNode): List<String> {
         val ignores = root.path(zallyIgnoreExtension)

@@ -7,20 +7,17 @@ abstract class RulesValidator<RuleT, RootT>(val rules: List<RuleT>, val invalidA
     val zallyIgnoreExtension = "x-zally-ignore"
 
     final override fun validate(content: String, requestPolicy: RulesPolicy): List<Violation> {
-        return try {
-            val root = parse(content)
-            val contentPolicy = requestPolicy.withMoreIgnores(ignores(root))
+        val root = parse(content) ?: return listOf(invalidApiRule.getGeneralViolation())
 
-            rules
-                    .filter(contentPolicy::accepts)
-                    .flatMap(validator(root))
-                    .sortedBy(Violation::violationType)
-        } catch (e: Exception) {
-            listOf(invalidApiRule.getGeneralViolation())
-        }
+        val contentPolicy = requestPolicy.withMoreIgnores(ignores(root))
+
+        return rules
+                .filter(contentPolicy::accepts)
+                .flatMap(validator(root))
+                .sortedBy(Violation::violationType)
     }
 
-    abstract fun parse(content: String): RootT
+    abstract fun parse(content: String): RootT?
 
     abstract fun ignores(root: RootT): List<String>
 
