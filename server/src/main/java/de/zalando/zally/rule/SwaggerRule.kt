@@ -1,8 +1,9 @@
 package de.zalando.zally.rule
 
+import de.zalando.zally.rule.api.RuleSet
 import io.swagger.models.Swagger
 
-abstract class SwaggerRule : AbstractRule() {
+abstract class SwaggerRule(ruleSet: RuleSet) : AbstractRule(ruleSet) {
 
     fun accepts(swagger: Swagger): Boolean {
         val ignoredCodes = swagger.vendorExtensions?.get(zallyIgnoreExtension)

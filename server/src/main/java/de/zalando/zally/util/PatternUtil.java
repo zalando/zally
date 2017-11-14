@@ -1,7 +1,5 @@
 package de.zalando.zally.util;
 
-import java.util.Arrays;
-
 /**
  * Utility library for matching common patterns
  */
@@ -57,7 +55,7 @@ public class PatternUtil {
     }
 
     public static boolean isHyphenated(String input) {
-        return Arrays.stream(input.split("-")).allMatch(p -> p.matches("([A-Z][^A-Z ]*)|([^A-Z ]+)"));
+        return input.matches("^[A-Za-z0-9.]+(-[A-Za-z0-9.]+)*$");
     }
 
     public static boolean hasVersionInUrl(String input) {

@@ -4,6 +4,7 @@ import de.zalando.zally.dto.RuleDTO;
 import de.zalando.zally.dto.RulesListDTO;
 import de.zalando.zally.dto.ViolationType;
 import de.zalando.zally.dto.ViolationTypeBinder;
+import de.zalando.zally.rule.api.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.WebDataBinder;

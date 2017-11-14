@@ -3,6 +3,7 @@ package de.zalando.zally.rule;
 import de.zalando.zally.apireview.RestApiBaseTest;
 import de.zalando.zally.dto.RuleDTO;
 import de.zalando.zally.dto.ViolationType;
+import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.util.ErrorResponse;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

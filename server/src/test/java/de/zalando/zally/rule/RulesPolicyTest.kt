@@ -1,13 +1,14 @@
 package de.zalando.zally.rule
 
 import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import io.swagger.models.Swagger
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class RulesPolicyTest {
-    class TestRule(val result: Violation?) : SwaggerRule() {
+    class TestRule(val result: Violation?) : SwaggerRule(ZalandoRuleSet()) {
         override val title = "Test Rule"
         override val url = null
         override val violationType = ViolationType.MUST
