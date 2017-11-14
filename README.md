@@ -16,7 +16,7 @@ Its standard configuration will check your APIs against the rules defined in [Za
 Zally's easy-to-use [CLI](cli/README.md) uses the server in the background so that you can check your API *on the spot*. It also features an intuitive [Web UI](web-ui/README.md) that shows implemented rules and lints external files and (with its online editor) API definitions.
 
 More about Zally:
-- Swagger-friendly: accepts [Swagger](https://swagger.io) .yaml and JSON formats; includes a server that lints your Swagger files; and parses Swagger files using [swagger-parser](https://github.com/swagger-api/swagger-parser)
+- OpenAPI-friendly: accepts [OpenAPI (fka Swagger) Specifications](https://github.com/OAI/OpenAPI-Specification) .yaml and JSON formats; includes a server that lints your OpenAPI files; and parses OpenAPI files using [swagger-parser](https://github.com/swagger-api/swagger-parser)
 - Using `x-zally-ignore` extension in your API definition, you can disable rules for a specific API
 - Applying rule changes is only necessary in the server component
 - API-specific code written in Java 8 with [Spring Boot](https://github.com/spring-projects/spring-boot) for better integration
