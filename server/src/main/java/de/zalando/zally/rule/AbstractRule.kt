@@ -1,6 +1,11 @@
 package de.zalando.zally.rule
 
-abstract class AbstractRule : Rule {
+import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.RuleSet
+
+abstract class AbstractRule(ruleSet: RuleSet) : Rule {
+
+    override val ruleSet = ruleSet
 
     override val name: String = javaClass.simpleName
 

@@ -1,6 +1,7 @@
 package de.zalando.zally.rule
 
 import io.swagger.models.Swagger
+import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
 import io.swagger.parser.SwaggerParser
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

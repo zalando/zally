@@ -96,18 +96,26 @@ public class PatternUtilTest {
 
     @Test
     public void checkIsHyphenated() {
+        // uncontroversial positive cases
         assertTrue(isHyphenated("A"));
         assertTrue(isHyphenated("low"));
         assertTrue(isHyphenated("Aa"));
-        assertFalse(isHyphenated("aA"));
-        assertFalse(isHyphenated("AA"));
         assertTrue(isHyphenated("A-A"));
         assertTrue(isHyphenated("X-Auth-2.0"));
         assertTrue(isHyphenated("This-Is-Some-Hyphenated-String"));
         assertTrue(isHyphenated("this-is-other-hyphenated-string"));
+
+        // uncontroversial negative cases
         assertFalse(isHyphenated("Sorry no hyphens here"));
-        assertFalse(isHyphenated("CamelCaseIsNotAcceptableAndShouldBeIllegal"));
         assertFalse(isHyphenated("a--a"));
+
+        // issue 572
+        assertTrue(isHyphenated("X-RateLimit-Reset"));
+
+        // the following are all perfectly valid single-term 'hypenated' headers
+        assertTrue(isHyphenated("aA"));
+        assertTrue(isHyphenated("AA"));
+        assertTrue(isHyphenated("CamelCaseIsNotAcceptableAndShouldBeIllegal"));
     }
 
     @Test

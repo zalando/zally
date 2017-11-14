@@ -1,5 +1,8 @@
 package de.zalando.zally.rule
 
+import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
+import de.zalando.zally.rule.api.Rule
+
 abstract class RulesValidator<RuleT, RootT>(val rules: List<RuleT>, val invalidApiRule: InvalidApiSchemaRule) : ApiValidator where RuleT : Rule {
 
     private val reader = ObjectTreeReader()

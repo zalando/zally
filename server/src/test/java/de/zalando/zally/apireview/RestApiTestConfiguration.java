@@ -4,13 +4,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import de.zalando.zally.dto.ViolationType;
 import de.zalando.zally.rule.ApiValidator;
 import de.zalando.zally.rule.CompositeRulesValidator;
-import de.zalando.zally.rule.InvalidApiSchemaRule;
+import de.zalando.zally.rule.zalando.InvalidApiSchemaRule;
 import de.zalando.zally.rule.JsonRule;
 import de.zalando.zally.rule.JsonRulesValidator;
+import de.zalando.zally.rule.api.RuleSet;
 import de.zalando.zally.rule.SwaggerRule;
 import de.zalando.zally.rule.SwaggerRulesValidator;
 import de.zalando.zally.rule.Violation;
+import de.zalando.zally.rule.zalando.ZalandoRuleSet;
 import io.swagger.models.Swagger;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,10 +40,14 @@ public class RestApiTestConfiguration {
         );
         return new CompositeRulesValidator(
                 new SwaggerRulesValidator(rules, invalidApiRule),
-                new JsonRulesValidator(Arrays.asList(new CheckApiNameIsPresentJsonRule()), invalidApiRule));
+                new JsonRulesValidator(Arrays.asList(new CheckApiNameIsPresentJsonRule(new ZalandoRuleSet())), invalidApiRule));
     }
 
-    private static  class CheckApiNameIsPresentJsonRule extends  JsonRule{
+    private static  class CheckApiNameIsPresentJsonRule extends JsonRule {
+
+        public CheckApiNameIsPresentJsonRule(@NotNull RuleSet ruleSet) {
+            super(ruleSet);
+        }
 
         @Override
         public Iterable<Violation> validate(final JsonNode swagger) {
@@ -84,6 +91,7 @@ public class RestApiTestConfiguration {
         private final String apiName;
 
         CheckApiNameIsPresentRule(String apiName) {
+            super(new ZalandoRuleSet());
             this.apiName = apiName;
         }
 
@@ -123,6 +131,10 @@ public class RestApiTestConfiguration {
     }
 
     private static class AlwaysGiveAHintRule extends SwaggerRule {
+        public AlwaysGiveAHintRule() {
+            super(new ZalandoRuleSet());
+        }
+
         @Override
         public Violation validate(Swagger swagger) {
             return new Violation(

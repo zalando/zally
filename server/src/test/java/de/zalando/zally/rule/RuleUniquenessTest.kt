@@ -1,5 +1,6 @@
 package de.zalando.zally.rule
 
+import de.zalando.zally.rule.api.Rule
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith

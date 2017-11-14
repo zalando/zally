@@ -1,5 +1,6 @@
 package de.zalando.zally.rule
 
+import de.zalando.zally.rule.api.Rule
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
