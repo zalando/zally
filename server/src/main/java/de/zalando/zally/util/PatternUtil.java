@@ -20,6 +20,7 @@ public class PatternUtil {
     private static final String PATTERN_APPLICATION_PROBLEM_JSON = "^application/(problem\\+)?json$";
     private static final String PATTERN_CUSTOM_WITH_VERSIONING = "^\\w+/[-+.\\w]+;v(ersion)?=\\d+$";
 
+
     public static boolean hasTrailingSlash(String input) {
         return input.trim().endsWith("/");
     }
@@ -56,8 +57,8 @@ public class PatternUtil {
         return input.matches(KEBAB_CASE_PATTERN);
     }
 
-    public static boolean isHyphenated(String input) {
-        return Arrays.stream(input.split("-")).allMatch(p -> p.matches("([A-Z][^A-Z ]*)|([^A-Z ]+)"));
+    public static boolean isHyphenatedExcludingID(String input) {
+        return Arrays.stream(input.split("-")).allMatch(p -> p.matches("([A-Z][^A-Z ]*)|([^A-Z ]+)|([I][D])"));
     }
 
     public static boolean hasVersionInUrl(String input) {

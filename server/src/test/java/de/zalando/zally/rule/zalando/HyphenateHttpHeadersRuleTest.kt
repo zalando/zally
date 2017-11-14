@@ -26,6 +26,19 @@ class HyphenateHttpHeadersRuleTest {
     }
 
     @Test
+    fun stringIDShouldPass() {
+        val swagger = swaggerWithHeaderParams("Right-ID")
+        assertThat(rule.validate(swagger)).isNull()
+    }
+
+    @Test
+    fun stringIDShouldFail() {
+        val swagger = swaggerWithHeaderParams("Wrong-IDD")
+        val result = rule.validate(swagger)!!
+        assertThat(result.paths).hasSameElementsAs(listOf("parameters Wrong-IDD"))
+    }
+
+    @Test
     fun mustAcceptValuesFromWhitelist() {
         val swagger = swaggerWithHeaderParams("ETag", "X-Trace-ID")
         assertThat(rule.validate(swagger)).isNull()
