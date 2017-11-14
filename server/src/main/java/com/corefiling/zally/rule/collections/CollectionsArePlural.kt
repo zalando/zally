@@ -1,14 +1,16 @@
 package com.corefiling.zally.rule.collections
 
+import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.util.WordUtil.isPlural
 import io.swagger.models.Swagger
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class CollectionsArePlural : CoreFilingSwaggerRule() {
+class CollectionsArePlural(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
     override val title = "Collection Resources Are Plural"
     override val violationType = ViolationType.SHOULD
     override val description = "Collection resources are plural to indicate that they multiple child resources will be available"

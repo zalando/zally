@@ -1,13 +1,15 @@
 package com.corefiling.zally.rule.resources
 
+import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
 import io.swagger.models.Swagger
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class SlashesNotDoubled : CoreFilingSwaggerRule() {
+class SlashesNotDoubled(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
     override val title = "Resources Separated by Single /"
     override val violationType = ViolationType.MUST
     override val description = "Resources pattern separated by single slashes, not //"

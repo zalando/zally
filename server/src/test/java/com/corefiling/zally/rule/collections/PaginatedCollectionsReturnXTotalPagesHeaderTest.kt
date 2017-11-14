@@ -1,5 +1,6 @@
 package com.corefiling.zally.rule.collections
 
+import com.corefiling.zally.rule.CoreFilingRuleSet
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import org.assertj.core.api.Assertions
@@ -7,7 +8,7 @@ import org.junit.Test
 
 class PaginatedCollectionsReturnXTotalPagesHeaderTest {
 
-    val cut = PaginatedCollectionsReturnXTotalPagesHeader()
+    val cut = PaginatedCollectionsReturnXTotalPagesHeader(CoreFilingRuleSet())
 
     @Test
     fun withEmptyReturnsNull() {

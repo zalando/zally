@@ -1,5 +1,6 @@
 package com.corefiling.zally.rule.resources
 
+import com.corefiling.zally.rule.CoreFilingRuleSet
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import org.assertj.core.api.Assertions
@@ -7,7 +8,7 @@ import org.junit.Test
 
 class SlashesAtEndTest {
 
-    val cut = SlashesAtEnd()
+    val cut = SlashesAtEnd(CoreFilingRuleSet())
 
     @Test
     fun withEmptyReturnsNull() {
