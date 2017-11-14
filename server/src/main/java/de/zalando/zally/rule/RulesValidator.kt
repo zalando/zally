@@ -1,19 +1,31 @@
 package de.zalando.zally.rule
 
-abstract class RulesValidator<RuleT>(val rules: List<RuleT>, val invalidApiRule: InvalidApiSchemaRule) : ApiValidator where RuleT : Rule {
+abstract class RulesValidator<RuleT, RootT>(val rules: List<RuleT>, val invalidApiRule: InvalidApiSchemaRule) : ApiValidator where RuleT : Rule {
 
-    final override fun validate(swaggerContent: String, requestPolicy: RulesPolicy): List<Violation> {
-        val ruleChecker = try {
-            createRuleChecker(swaggerContent)
+    private val reader = ObjectTreeReader()
+
+    val zallyIgnoreExtension = "x-zally-ignore"
+
+    final override fun validate(content: String, requestPolicy: RulesPolicy): List<Violation> {
+        return try {
+            val root = parse(content)
+            val contentPolicy = requestPolicy.withMoreIgnores(ignores(root))
+
+            rules
+                    .filter(contentPolicy::accepts)
+                    .flatMap(validator(root))
+                    .sortedBy(Violation::violationType)
         } catch (e: Exception) {
-            return listOf(invalidApiRule.getGeneralViolation())
+            listOf(invalidApiRule.getGeneralViolation())
         }
-        return rules
-                .filter { requestPolicy.accepts(it) }
-                .flatMap(ruleChecker)
-                .sortedBy(Violation::violationType)
     }
 
     @Throws(java.lang.Exception::class)
-    abstract fun createRuleChecker(swaggerContent: String): (RuleT) -> Iterable<Violation>
+    abstract fun parse(content: String): RootT
+
+    @Throws(java.lang.Exception::class)
+    abstract fun ignores(root: RootT): List<String>
+
+    @Throws(java.lang.Exception::class)
+    abstract fun validator(root: RootT): (RuleT) -> Iterable<Violation>
 }
