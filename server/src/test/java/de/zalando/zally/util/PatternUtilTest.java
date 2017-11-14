@@ -5,7 +5,7 @@ import org.junit.Test;
 import static de.zalando.zally.util.PatternUtil.hasTrailingSlash;
 import static de.zalando.zally.util.PatternUtil.hasVersionInUrl;
 import static de.zalando.zally.util.PatternUtil.isCamelCase;
-import static de.zalando.zally.util.PatternUtil.isHyphenated;
+import static de.zalando.zally.util.PatternUtil.isHyphenatedExcludingID;
 import static de.zalando.zally.util.PatternUtil.isHyphenatedCamelCase;
 import static de.zalando.zally.util.PatternUtil.isHyphenatedPascalCase;
 import static de.zalando.zally.util.PatternUtil.isKebabCase;
@@ -96,18 +96,21 @@ public class PatternUtilTest {
 
     @Test
     public void checkIsHyphenated() {
-        assertTrue(isHyphenated("A"));
-        assertTrue(isHyphenated("low"));
-        assertTrue(isHyphenated("Aa"));
-        assertFalse(isHyphenated("aA"));
-        assertFalse(isHyphenated("AA"));
-        assertTrue(isHyphenated("A-A"));
-        assertTrue(isHyphenated("X-Auth-2.0"));
-        assertTrue(isHyphenated("This-Is-Some-Hyphenated-String"));
-        assertTrue(isHyphenated("this-is-other-hyphenated-string"));
-        assertFalse(isHyphenated("Sorry no hyphens here"));
-        assertFalse(isHyphenated("CamelCaseIsNotAcceptableAndShouldBeIllegal"));
-        assertFalse(isHyphenated("a--a"));
+        assertTrue(isHyphenatedExcludingID("A"));
+        assertTrue(isHyphenatedExcludingID("low"));
+        assertTrue(isHyphenatedExcludingID("Aa"));
+        assertFalse(isHyphenatedExcludingID("aA"));
+        assertFalse(isHyphenatedExcludingID("AA"));
+        assertTrue(isHyphenatedExcludingID("A-A"));
+        assertTrue(isHyphenatedExcludingID("X-Auth-2.0"));
+        assertTrue(isHyphenatedExcludingID("This-Is-Some-Hyphenated-String"));
+        assertTrue(isHyphenatedExcludingID("this-is-other-hyphenated-string"));
+        assertFalse(isHyphenatedExcludingID("Sorry no hyphens here"));
+        assertFalse(isHyphenatedExcludingID("CamelCaseIsNotAcceptableAndShouldBeIllegal"));
+        assertFalse(isHyphenatedExcludingID("a--a"));
+        assertTrue(isHyphenatedExcludingID("ID"));
+        assertTrue(isHyphenatedExcludingID("X-ID"));
+        assertFalse(isHyphenatedExcludingID("X-IDAndfalse"));
     }
 
     @Test
