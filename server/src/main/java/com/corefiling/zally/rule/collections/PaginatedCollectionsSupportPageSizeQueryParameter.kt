@@ -1,15 +1,17 @@
 package com.corefiling.zally.rule.collections
 
+import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.QueryParameter
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 
 @Component
-class PaginatedCollectionsSupportPageSizeQueryParameter : CoreFilingSwaggerRule() {
+class PaginatedCollectionsSupportPageSizeQueryParameter(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
     override val title = "Paginated Resources Support 'pageSize' Query Parameter"
     override val violationType = ViolationType.SHOULD
     override val description = "Paginated resources support a 'pageSize' query parameter " +

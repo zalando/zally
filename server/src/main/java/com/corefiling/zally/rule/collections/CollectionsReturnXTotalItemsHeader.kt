@@ -1,13 +1,15 @@
 package com.corefiling.zally.rule.collections
 
+import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
 import io.swagger.models.Swagger
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class CollectionsReturnXTotalItemsHeader : CoreFilingSwaggerRule() {
+class CollectionsReturnXTotalItemsHeader(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
     override val title = "Collection Resources Return X-Total-Items Header"
     override val violationType = ViolationType.SHOULD
     override val description = "Collection resources return the X-Total-Items header " +

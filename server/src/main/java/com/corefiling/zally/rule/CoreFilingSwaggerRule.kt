@@ -1,8 +1,9 @@
 package com.corefiling.zally.rule
 
 import de.zalando.zally.rule.SwaggerRule
+import org.springframework.beans.factory.annotation.Autowired
 
-abstract class CoreFilingSwaggerRule : SwaggerRule() {
+abstract class CoreFilingSwaggerRule(@Autowired ruleSet: CoreFilingRuleSet) : SwaggerRule(ruleSet) {
     override val url = page(javaClass) + "#" + code(javaClass)
     override val code = code(javaClass)
     override val guidelinesCode = code(javaClass)
