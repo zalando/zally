@@ -20,12 +20,9 @@ abstract class RulesValidator<RuleT, RootT>(val rules: List<RuleT>, val invalidA
         }
     }
 
-    @Throws(java.lang.Exception::class)
     abstract fun parse(content: String): RootT
 
-    @Throws(java.lang.Exception::class)
     abstract fun ignores(root: RootT): List<String>
 
-    @Throws(java.lang.Exception::class)
     abstract fun validator(root: RootT): (RuleT) -> Iterable<Violation>
 }

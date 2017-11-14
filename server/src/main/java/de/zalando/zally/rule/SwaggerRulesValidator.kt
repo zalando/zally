@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component
 class SwaggerRulesValidator(@Autowired rules: List<SwaggerRule>,
                             @Autowired invalidApiRule: InvalidApiSchemaRule) : RulesValidator<SwaggerRule, Swagger>(rules, invalidApiRule) {
 
-    @Throws(java.lang.Exception::class)
     override fun parse(content: String): Swagger = SwaggerParser().parse(content)!!
 
     override fun ignores(root: Swagger): List<String> {
@@ -25,7 +24,6 @@ class SwaggerRulesValidator(@Autowired rules: List<SwaggerRule>,
         }
     }
 
-    @Throws(java.lang.Exception::class)
     override fun validator(root: Swagger): (SwaggerRule) -> Iterable<Violation> {
         return {
             listOfNotNull(it.validate(root))

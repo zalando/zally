@@ -10,7 +10,6 @@ class JsonRulesValidator(@Autowired rules: List<JsonRule>,
 
     private val reader = ObjectTreeReader()
 
-    @Throws(java.lang.Exception::class)
     override fun parse(content: String): JsonNode = reader.read(content)
 
     override fun ignores(root: JsonNode): List<String> {
@@ -22,7 +21,6 @@ class JsonRulesValidator(@Autowired rules: List<JsonRule>,
         }
     }
 
-    @Throws(java.lang.Exception::class)
     override fun validator(root: JsonNode): (JsonRule) -> Iterable<Violation> {
         return {
             it.validate(root)
