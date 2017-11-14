@@ -58,7 +58,7 @@ public class PatternUtil {
     }
 
     public static boolean isHyphenatedExcludingID(String input) {
-        return Arrays.stream(input.split("-")).allMatch(p -> p.matches("([A-Z][^A-Z ]*)|([^A-Z ]+)|([I][D])"));
+        return Arrays.stream(input.split("-")).allMatch(p -> p.matches("([A-Z][^A-Z ]*)|([^A-Z ]+)|ID"));
     }
 
     public static boolean hasVersionInUrl(String input) {
