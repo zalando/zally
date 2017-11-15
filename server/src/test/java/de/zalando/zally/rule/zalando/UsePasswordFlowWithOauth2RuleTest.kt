@@ -17,7 +17,7 @@ class UsePasswordFlowWithOauth2RuleTest {
             rule,
             "Set Flow to Password When Using OAuth 2.0",
             "OAuth2 security definitions should use password flow",
-            ViolationType.MUST,
+            ViolationType.SHOULD,
             rule.url,
             emptyList())
 
