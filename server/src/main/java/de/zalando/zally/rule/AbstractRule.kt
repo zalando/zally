@@ -7,8 +7,6 @@ abstract class AbstractRule(ruleSet: RuleSet) : Rule {
 
     override val ruleSet = ruleSet
 
-    val zallyIgnoreExtension = "x-zally-ignore"
-
     override val name: String = javaClass.simpleName
 
     override fun equals(other: Any?): Boolean {

@@ -20,14 +20,25 @@ class RulesPolicyTest {
     @Test
     fun shouldAcceptRuleIfNotFiltered() {
         val policy = RulesPolicy(arrayOf("M001", "M002"))
-        val violation = Violation(TestRule(null), "dummy1", "dummy", ViolationType.MUST, "dummy", listOf("x"))
-        assertTrue(policy.accepts(TestRule(violation)))
+        assertTrue(policy.accepts(TestRule(null)))
     }
 
     @Test
     fun shouldNotAcceptRuleIfFiltered() {
         val policy = RulesPolicy(arrayOf("M001", "M999"))
-        val violation = Violation(TestRule(null), "dummy1", "dummy", ViolationType.MUST, "dummy", listOf("x"))
-        assertFalse(policy.accepts(TestRule(violation)))
+        assertFalse(policy.accepts(TestRule(null)))
+    }
+
+    @Test
+    fun withMoreIgnoresAllowsExtension() {
+
+        val original = RulesPolicy(emptyArray())
+        assertTrue(original.accepts(TestRule(null)))
+
+        val extended = original.withMoreIgnores(listOf("M001", "M999"))
+        assertFalse(extended.accepts(TestRule(null)))
+
+        // original is unmodified
+        assertTrue(original.accepts(TestRule(null)))
     }
 }
