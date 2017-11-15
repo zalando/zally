@@ -1,5 +1,6 @@
 package de.zalando.zally.rule
 
+import io.swagger.models.Swagger
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
 import io.swagger.parser.SwaggerParser
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,15 +12,28 @@ import org.springframework.stereotype.Component
  */
 @Component
 class SwaggerRulesValidator(@Autowired rules: List<SwaggerRule>,
-                            @Autowired rulesPolicy: RulesPolicy,
-                            @Autowired invalidApiRule: InvalidApiSchemaRule) : RulesValidator<SwaggerRule>(rules, rulesPolicy, invalidApiRule) {
+                            @Autowired invalidApiRule: InvalidApiSchemaRule) : RulesValidator<SwaggerRule, Swagger>(rules, invalidApiRule) {
 
-    @Throws(java.lang.Exception::class)
-    override fun createRuleChecker(swaggerContent: String): (SwaggerRule) -> Iterable<Violation> {
-        val swagger = SwaggerParser().parse(swaggerContent)!!
+    override fun parse(content: String): Swagger? {
+        return try {
+            SwaggerParser().parse(content)!!
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    override fun ignores(root: Swagger): List<String> {
+        val ignores = root.vendorExtensions?.get(zallyIgnoreExtension)
+        return if (ignores is Iterable<*>) {
+            ignores.map { it.toString() }
+        } else {
+            emptyList()
+        }
+    }
+
+    override fun validator(root: Swagger): (SwaggerRule) -> Iterable<Violation> {
         return {
-            if (it.accepts(swagger)) listOfNotNull(it.validate(swagger))
-            else emptyList()
+            listOfNotNull(it.validate(root))
         }
     }
 
