@@ -78,6 +78,9 @@ public class PatternUtilTest {
     public void checkIsSnakeCase() {
         assertTrue(isSnakeCase("test_case"));
         assertTrue(isSnakeCase("test"));
+        assertTrue(isSnakeCase("v1_id"));
+        assertTrue(isSnakeCase("0_1_2_3"));
+        assertFalse(isSnakeCase("test__case"));
         assertFalse(isSnakeCase("TestCase"));
         assertFalse(isSnakeCase("Test_Case"));
         assertFalse(isSnakeCase(""));
