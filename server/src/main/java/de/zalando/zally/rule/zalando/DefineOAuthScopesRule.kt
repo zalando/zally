@@ -1,11 +1,13 @@
 package de.zalando.zally.rule.zalando
 
 import com.google.common.collect.Sets
+import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.dto.ViolationType.MUST
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
 import io.swagger.models.Operation
+import io.swagger.models.Scheme
 import io.swagger.models.Swagger
 import io.swagger.models.auth.OAuth2Definition
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,7 +23,33 @@ class DefineOAuthScopesRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ru
     private val DESC = "Every endpoint must be secured by proper OAuth2 scope"
 
     @Check
-    fun validate(swagger: Swagger): Violation? {
+    fun secureWithOAuth2(swagger: Swagger): Violation? {
+        val hasOAuth = swagger.securityDefinitions.orEmpty().values.any { it.type?.toLowerCase() == "oauth2" }
+        val containsHttpScheme = swagger.schemes.orEmpty().contains(Scheme.HTTP)
+        return if (!hasOAuth)
+            Violation(this, "Secure Endpoints with OAuth 2.0", "No OAuth2 security definitions found", violationType, url, emptyList())
+        else if (containsHttpScheme)
+            Violation(this, "Secure Endpoints with OAuth 2.0", "OAuth2 should be only used together with https", violationType, url, emptyList())
+        else
+            null
+    }
+
+    @Check
+    fun usePasswordFlowWithOAuth2(swagger: Swagger): Violation? {
+        val definitionsWithoutPasswordFlow = swagger
+                .securityDefinitions
+                .orEmpty()
+                .values
+                .filter { it.type?.toLowerCase() == "oauth2" }
+                .filter { (it as OAuth2Definition).flow != "password" }
+
+        return if (definitionsWithoutPasswordFlow.any())
+            Violation(this, "Set Flow to Password When Using OAuth 2.0", "OAuth2 security definitions should use password flow", ViolationType.SHOULD, url, emptyList())
+        else null
+    }
+
+    @Check
+    fun defineOAuthScopes(swagger: Swagger): Violation? {
         val definedScopes = getDefinedScopes(swagger)
         val hasTopLevelScope = hasTopLevelScope(swagger, definedScopes)
         val paths = swagger.paths.orEmpty().entries.flatMap { (pathKey, path) ->

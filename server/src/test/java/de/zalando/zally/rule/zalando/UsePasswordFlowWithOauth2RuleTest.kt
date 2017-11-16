@@ -11,7 +11,7 @@ import org.junit.Test
 
 class UsePasswordFlowWithOauth2RuleTest {
 
-    private val rule = UsePasswordFlowWithOauth2Rule(ZalandoRuleSet())
+    private val rule = DefineOAuthScopesRule(ZalandoRuleSet())
 
     val expectedViolation = Violation(
             rule,
@@ -29,7 +29,7 @@ class UsePasswordFlowWithOauth2RuleTest {
                     "ApiKey" to ApiKeyAuthDefinition()
             )
         }
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.usePasswordFlowWithOAuth2(swagger)).isNull()
     }
 
     @Test
@@ -42,7 +42,7 @@ class UsePasswordFlowWithOauth2RuleTest {
                     }
             )
         }
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.usePasswordFlowWithOAuth2(swagger)).isNull()
     }
 
     @Test
@@ -55,7 +55,7 @@ class UsePasswordFlowWithOauth2RuleTest {
                     }
             )
         }
-        assertThat(rule.validate(swagger)).isEqualTo(expectedViolation)
+        assertThat(rule.usePasswordFlowWithOAuth2(swagger)).isEqualTo(expectedViolation)
     }
 
     @Test
@@ -66,7 +66,7 @@ class UsePasswordFlowWithOauth2RuleTest {
                     "Oauth2" to OAuth2Definition()
             )
         }
-        assertThat(rule.validate(swagger)).isEqualTo(expectedViolation)
+        assertThat(rule.usePasswordFlowWithOAuth2(swagger)).isEqualTo(expectedViolation)
     }
 
     @Test
@@ -79,6 +79,6 @@ class UsePasswordFlowWithOauth2RuleTest {
                     }
             )
         }
-        assertThat(rule.validate(swagger)).isEqualTo(expectedViolation)
+        assertThat(rule.usePasswordFlowWithOAuth2(swagger)).isEqualTo(expectedViolation)
     }
 }

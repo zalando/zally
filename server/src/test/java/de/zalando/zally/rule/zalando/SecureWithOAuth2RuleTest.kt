@@ -12,7 +12,7 @@ import org.junit.Test
 
 class SecureWithOAuth2RuleTest {
 
-    private val rule = SecureWithOAuth2Rule(ZalandoRuleSet())
+    private val rule = DefineOAuthScopesRule(ZalandoRuleSet())
 
     val expectedOauthViolation = Violation(
             rule,
@@ -32,7 +32,7 @@ class SecureWithOAuth2RuleTest {
 
     @Test
     fun emptySwagger() {
-        assertThat(rule.validate(Swagger())).isEqualTo(expectedOauthViolation)
+        assertThat(rule.secureWithOAuth2(Swagger())).isEqualTo(expectedOauthViolation)
     }
 
     @Test
@@ -40,7 +40,7 @@ class SecureWithOAuth2RuleTest {
         val swagger = Swagger().apply {
             securityDefinitions = emptyMap()
         }
-        assertThat(rule.validate(swagger)).isEqualTo(expectedOauthViolation)
+        assertThat(rule.secureWithOAuth2(swagger)).isEqualTo(expectedOauthViolation)
     }
 
     @Test
@@ -51,7 +51,7 @@ class SecureWithOAuth2RuleTest {
                 "ApiKey" to ApiKeyAuthDefinition()
             )
         }
-        assertThat(rule.validate(swagger)).isEqualTo(expectedOauthViolation)
+        assertThat(rule.secureWithOAuth2(swagger)).isEqualTo(expectedOauthViolation)
     }
 
     @Test
@@ -62,7 +62,7 @@ class SecureWithOAuth2RuleTest {
                     "Oauth2" to OAuth2Definition()
             )
         }
-        assertThat(rule.validate(swagger)).isEqualTo(expectedHttpsViolation)
+        assertThat(rule.secureWithOAuth2(swagger)).isEqualTo(expectedHttpsViolation)
     }
 
     @Test
@@ -74,6 +74,6 @@ class SecureWithOAuth2RuleTest {
                 "Oauth2" to OAuth2Definition()
             )
         }
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.secureWithOAuth2(swagger)).isNull()
     }
 }
