@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
 import io.swagger.models.ComposedModel
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class SuccessResponseAsJsonObjectRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+class SuccessResponseAsJsonObjectRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
 
     override val title = "Response As JSON Object"
     override val violationType = ViolationType.MUST

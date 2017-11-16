@@ -2,7 +2,7 @@ package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
 import io.swagger.models.HttpMethod
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class UseSpecificHttpStatusCodes(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : SwaggerRule(ruleSet) {
+class UseSpecificHttpStatusCodes(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Use Specific HTTP Status Codes"
     override val url = "/#150"
 

@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.WordUtil.isPlural
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class PluralizeNamesForArraysRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+class PluralizeNamesForArraysRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Array names should be pluralized"
     override val url = "/#120"
     override val violationType = ViolationType.SHOULD

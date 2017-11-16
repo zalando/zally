@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.PatternUtil.isVersion
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class VersionInInfoSectionRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+class VersionInInfoSectionRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Provide version information"
     override val url = "/#116"
     override val violationType = ViolationType.SHOULD

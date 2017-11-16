@@ -3,7 +3,7 @@ package de.zalando.zally.rule.zalando
 import com.google.common.collect.Sets
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.dto.ViolationType.MUST
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
 import io.swagger.models.Operation
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class DefineOAuthScopesRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+class DefineOAuthScopesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Define and Assign Access Rights (Scopes)"
     override val url = "/#104"
     override val violationType = MUST

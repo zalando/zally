@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
 import io.swagger.models.ComposedModel
@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Use Problem JSON"
     override val url = "/#176"
     override val violationType = ViolationType.MUST

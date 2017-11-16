@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.PatternUtil
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class NoVersionInUriRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+class NoVersionInUriRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Do Not Use URI Versioning"
     override val url = "/#115"
     override val violationType = ViolationType.MUST

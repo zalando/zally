@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType.SHOULD
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
 import io.swagger.models.Operation
@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Prefer Compatible Extensions"
     override val url = "/#107"
     override val violationType = SHOULD

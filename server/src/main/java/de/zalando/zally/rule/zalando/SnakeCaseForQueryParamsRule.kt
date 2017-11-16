@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.PatternUtil
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
  * Lint for snake case for query params
  */
 @Component
-class SnakeCaseForQueryParamsRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+class SnakeCaseForQueryParamsRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Use snake_case (never camelCase) for Query Parameters"
     override val url = "/#130"
     override val violationType = ViolationType.MUST

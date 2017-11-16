@@ -2,6 +2,7 @@ package de.zalando.zally.rule
 
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
 import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import io.swagger.models.Swagger
@@ -18,7 +19,7 @@ class RulesValidatorTest {
 
     val swaggerContent = javaClass.classLoader.getResource("fixtures/api_spp.json").readText(Charsets.UTF_8)
 
-    class FirstRule(val result: Violation?) : SwaggerRule(ZalandoRuleSet()) {
+    class FirstRule(val result: Violation?) : AbstractRule(ZalandoRuleSet()) {
         override val title = "First Rule"
         override val url = null
         override val violationType = ViolationType.SHOULD
@@ -29,7 +30,7 @@ class RulesValidatorTest {
         fun validate(swagger: Swagger): Violation? = result
     }
 
-    class SecondRule(val result: Violation?) : SwaggerRule(ZalandoRuleSet()) {
+    class SecondRule(val result: Violation?) : AbstractRule(ZalandoRuleSet()) {
         override val title = "Second Rule"
         override val url = null
         override val violationType = ViolationType.MUST
@@ -91,7 +92,7 @@ class RulesValidatorTest {
         assertThat(valResult[0].title).isEqualTo(resultRule.title)
     }
 
-    fun getRules(violations: List<Violation>): List<SwaggerRule> {
+    fun getRules(violations: List<Violation>): List<Rule> {
         return violations.map {
             if (it.rule is FirstRule) {
                 FirstRule(it)

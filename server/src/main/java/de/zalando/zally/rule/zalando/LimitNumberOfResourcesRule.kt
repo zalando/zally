@@ -2,7 +2,7 @@ package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
 import io.swagger.models.Swagger
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class LimitNumberOfResourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : SwaggerRule(ruleSet) {
+class LimitNumberOfResourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Limit number of Resources"
     override val url = "/#146"
     override val violationType = ViolationType.SHOULD

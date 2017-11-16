@@ -2,7 +2,7 @@ package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.PatternUtil
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class PluralizeResourceNamesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : SwaggerRule(ruleSet) {
+class PluralizeResourceNamesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Pluralize Resource Names"
     override val url = "/#134"
     override val violationType = ViolationType.SHOULD
