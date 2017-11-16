@@ -27,10 +27,4 @@ class JsonRulesValidator(@Autowired rules: List<JsonRule>,
             emptyList()
         }
     }
-
-    override fun validator(root: JsonNode): (JsonRule) -> Iterable<Violation> {
-        return {
-            it.validate(root)
-        }
-    }
 }

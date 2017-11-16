@@ -1,7 +1,9 @@
 package de.zalando.zally.rule
 
-import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
+import java.lang.reflect.Method
 
 abstract class RulesValidator<RuleT, RootT>(val rules: List<RuleT>, val invalidApiRule: InvalidApiSchemaRule) : ApiValidator where RuleT : Rule {
 
@@ -24,5 +26,23 @@ abstract class RulesValidator<RuleT, RootT>(val rules: List<RuleT>, val invalidA
 
     abstract fun ignores(root: RootT): List<String>
 
-    abstract fun validator(root: RootT): (RuleT) -> Iterable<Violation>
+    private fun validator(root: Any): (RuleT) -> Iterable<Violation> {
+        return { rule: RuleT ->
+            rule::class.java.methods
+                    .filter { it.isAnnotationPresent(Check::class.java) }
+                    .filter { it.parameters.size == 1 }
+                    .filter { it.parameters[0].type.isAssignableFrom(root::class.java) }
+                    .flatMap { invoke(it, rule, root) }
+        }
+    }
+
+    private fun invoke(check: Method, rule: RuleT, root: Any): Iterable<Violation> {
+        val result = check.invoke(rule, root)
+        return when (result) {
+            null -> emptyList()
+            is Violation -> listOf(result)
+            is Iterable<*> -> result as Iterable<Violation>
+            else -> throw Exception("Unsupported return type for a @Check check!: ${result::class.java}")
+        }
+    }
 }

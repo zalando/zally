@@ -50,6 +50,7 @@ public class RestApiTestConfiguration {
             super(ruleSet);
         }
 
+        @Check
         @Override
         public Iterable<Violation> validate(final JsonNode swagger) {
             JsonNode title = swagger.path("info").path("title");
