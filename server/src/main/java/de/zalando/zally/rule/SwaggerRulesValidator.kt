@@ -6,6 +6,7 @@ import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.lang.reflect.Method
 
 /**
  * This validator validates a given Swagger definition based
@@ -34,24 +35,20 @@ class SwaggerRulesValidator(@Autowired rules: List<SwaggerRule>,
 
     override fun validator(root: Swagger): (SwaggerRule) -> Iterable<Violation> {
         return { rule: SwaggerRule ->
-
-            val violations = mutableListOf<Violation>()
-
             rule::class.java.methods
                     .filter { it.isAnnotationPresent(Check::class.java) }
                     .filter { it.parameters.size == 1 }
                     .filter { it.parameters[0].type.isAssignableFrom(root::class.java) }
-                    .forEach {
-                        if (it.returnType == Violation::class.java) {
-                            val violation = it.invoke(rule, root) as Violation?
-                            if (violation != null) {
-                                violations.add(violation)
-                            }
-                        }
-                    }
-
-            violations
+                    .flatMap { invoke(it, rule, root) }
         }
     }
 
+    private fun invoke(check: Method, rule: SwaggerRule, root: Any): Iterable<Violation> {
+        val result = check.invoke(rule, root)
+        return when (result) {
+            null -> emptyList()
+            is Violation -> listOf(result)
+            else -> throw Exception("Unsupported return type for a @Check check!: ${result::class.java}")
+        }
+    }
 }
