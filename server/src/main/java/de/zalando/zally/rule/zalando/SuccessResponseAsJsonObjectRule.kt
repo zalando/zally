@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.ComposedModel
 import io.swagger.models.ModelImpl
 import io.swagger.models.Swagger
@@ -21,7 +22,8 @@ class SuccessResponseAsJsonObjectRule(@Autowired ruleSet: ZalandoRuleSet) : Swag
     override val guidelinesCode = "110"
     private val DESCRIPTION = "Always Return JSON Objects As Top-Level Data Structures To Support Extensibility"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val paths = ArrayList<String>()
         for ((key, value) in swagger.paths.orEmpty()) {
             for ((method, operation) in value.operationMap) {

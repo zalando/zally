@@ -4,6 +4,7 @@ import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -21,7 +22,8 @@ class NotSpecifyStandardErrorCodesRule(@Autowired ruleSet: ZalandoRuleSet, @Auto
     private val standardErrorStatusCodes = rulesConfig.getConfig(name)
             .getIntList("standard_error_codes").toSet()
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
 
         val paths = swagger.paths.orEmpty().flatMap { pathEntry ->
             pathEntry.value.operationMap.orEmpty().flatMap { opEntry ->

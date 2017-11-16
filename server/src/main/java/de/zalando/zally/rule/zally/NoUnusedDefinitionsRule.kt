@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zally
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.ArrayModel
 import io.swagger.models.ComposedModel
 import io.swagger.models.Model
@@ -30,7 +31,8 @@ class NoUnusedDefinitionsRule(@Autowired ruleSet: ZallyRuleSet) : SwaggerRule(ru
     // TODO: Provide guidelines code
     override val guidelinesCode = ""
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val paramsInPaths = swagger.paths.orEmpty().values.flatMap { path ->
             path.operations.orEmpty().flatMap { operation ->
                 operation.parameters.orEmpty()

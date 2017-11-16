@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.dto.ViolationType.SHOULD
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Operation
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
@@ -30,7 +31,8 @@ class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleS
     override val code = "S012"
     override val guidelinesCode = "107"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val properties = enumProperties(swagger)
         val parameters = enumParameters(swagger)
 

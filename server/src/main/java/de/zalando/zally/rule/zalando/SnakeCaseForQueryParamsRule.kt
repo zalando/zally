@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.QueryParameter
@@ -20,7 +21,8 @@ class SnakeCaseForQueryParamsRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerR
     override val code = "M011"
     override val guidelinesCode = "130"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val result = swagger.paths.orEmpty().flatMap { (path, pathObject) ->
             pathObject.operationMap.orEmpty().flatMap { (verb, operation) ->
                 val badParams = operation.parameters.filter { it is QueryParameter && !PatternUtil.isSnakeCase(it.name) }

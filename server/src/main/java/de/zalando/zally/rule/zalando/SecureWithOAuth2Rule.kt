@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Scheme
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +17,8 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(rul
     override val code = "M010"
     override val guidelinesCode = "104"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val hasOAuth = swagger.securityDefinitions.orEmpty().values.any { it.type?.toLowerCase() == "oauth2" }
         val containsHttpScheme = swagger.schemes.orEmpty().contains(Scheme.HTTP)
         return if (!hasOAuth)

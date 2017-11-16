@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zally
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -18,7 +19,8 @@ class ExtractBasePathRule(@Autowired ruleSet: ZallyRuleSet) : SwaggerRule(ruleSe
     override val guidelinesCode = ""
     private val DESC_PATTERN = "All paths start with prefix '%s'. This prefix could be part of base path."
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().keys
         if (paths.size < 2) {
             return null

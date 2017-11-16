@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Swagger
 import io.swagger.models.auth.OAuth2Definition
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +17,8 @@ class UsePasswordFlowWithOauth2Rule(@Autowired ruleSet: ZalandoRuleSet) : Swagge
     override val code = "M017"
     override val guidelinesCode = "104"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val definitionsWithoutPasswordFlow = swagger
                 .securityDefinitions
                 .orEmpty()

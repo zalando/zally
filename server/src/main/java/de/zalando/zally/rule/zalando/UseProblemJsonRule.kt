@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.ComposedModel
 import io.swagger.models.HttpMethod
 import io.swagger.models.Model
@@ -26,7 +27,8 @@ class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleS
         "Whether Caused by Client Or Server"
     private val requiredFields = setOf("title", "status")
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().flatMap { pathEntry ->
             pathEntry.value.operationMap.orEmpty().filter { it.key.shouldContainPayload() }.flatMap { opEntry ->
                 opEntry.value.responses.orEmpty().flatMap { responseEntry ->

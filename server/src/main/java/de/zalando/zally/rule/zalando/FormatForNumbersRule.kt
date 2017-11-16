@@ -4,6 +4,7 @@ import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.getAllJsonObjects
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.AbstractSerializableParameter
@@ -23,7 +24,8 @@ class FormatForNumbersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
     private val type2format = rulesConfig.getConfig("$name.formats").entrySet()
             .map { (key, config) -> key to config.unwrapped() as List<String> }.toMap()
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val fromObjects = swagger.getAllJsonObjects().flatMap { (def, path) ->
             val badProps = def.entries.filterNot { (_, prop) -> isValid(prop.type, prop.format) }.map { it.key }
             if (badProps.isNotEmpty()) listOf(badProps to path) else emptyList()

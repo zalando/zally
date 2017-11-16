@@ -4,6 +4,7 @@ import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,7 +20,8 @@ class LimitNumberOfSubresourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowir
     private val DESC = "Number of sub-resources should not exceed 3"
     private val subresourcesLimit = rulesConfig.getConfig(name).getInt("subresources_limit")
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().keys.filter { path ->
             path.split("/").filter { it.isNotEmpty() && !PatternUtil.isPathVariable(it) }.size - 1 > subresourcesLimit
         }

@@ -1,6 +1,7 @@
 package de.zalando.zally.rule
 
 import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import io.swagger.models.Swagger
 import org.junit.Assert.assertFalse
@@ -14,7 +15,9 @@ class RulesPolicyTest {
         override val violationType = ViolationType.MUST
         override val code = "M999"
         override val guidelinesCode = "000"
-        override fun validate(swagger: Swagger): Violation? = result
+
+        @Check
+        fun validate(swagger: Swagger): Violation? = result
     }
 
     @Test

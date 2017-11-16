@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import de.zalando.zally.dto.ViolationType;
 import de.zalando.zally.rule.ApiValidator;
 import de.zalando.zally.rule.CompositeRulesValidator;
+import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule;
 import de.zalando.zally.rule.JsonRule;
 import de.zalando.zally.rule.JsonRulesValidator;
@@ -95,7 +96,7 @@ public class RestApiTestConfiguration {
             this.apiName = apiName;
         }
 
-        @Override
+        @Check
         public Violation validate(Swagger swagger) {
             if (swagger != null && swagger.getInfo().getTitle().contains(apiName)) {
                 return new Violation(new CheckApiNameIsPresentRule(null), "dummy1", "dummy", ViolationType.MUST, "dummy", Collections.emptyList());
@@ -135,7 +136,7 @@ public class RestApiTestConfiguration {
             super(new ZalandoRuleSet());
         }
 
-        @Override
+        @Check
         public Violation validate(Swagger swagger) {
             return new Violation(
                 new AlwaysGiveAHintRule(),

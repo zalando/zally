@@ -4,6 +4,7 @@ import com.google.common.collect.Sets
 import de.zalando.zally.dto.ViolationType.MUST
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Operation
 import io.swagger.models.Swagger
 import io.swagger.models.auth.OAuth2Definition
@@ -19,7 +20,8 @@ class DefineOAuthScopesRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ru
     override val guidelinesCode = "104"
     private val DESC = "Every endpoint must be secured by proper OAuth2 scope"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val definedScopes = getDefinedScopes(swagger)
         val hasTopLevelScope = hasTopLevelScope(swagger, definedScopes)
         val paths = swagger.paths.orEmpty().entries.flatMap { (pathKey, path) ->

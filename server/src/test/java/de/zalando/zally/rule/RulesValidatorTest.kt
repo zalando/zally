@@ -1,6 +1,7 @@
 package de.zalando.zally.rule
 
 import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
 import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import io.swagger.models.Swagger
@@ -23,7 +24,9 @@ class RulesValidatorTest {
         override val violationType = ViolationType.SHOULD
         override val code = "S999"
         override val guidelinesCode = "000"
-        override fun validate(swagger: Swagger): Violation? = result
+
+        @Check
+        fun validate(swagger: Swagger): Violation? = result
     }
 
     class SecondRule(val result: Violation?) : SwaggerRule(ZalandoRuleSet()) {
@@ -32,7 +35,9 @@ class RulesValidatorTest {
         override val violationType = ViolationType.MUST
         override val code = "M999"
         override val guidelinesCode = "000"
-        override fun validate(swagger: Swagger): Violation? = result
+
+        @Check
+        fun validate(swagger: Swagger): Violation? = result
     }
 
     val invalidApiSchemaRule: InvalidApiSchemaRule = mock(InvalidApiSchemaRule::class.java)

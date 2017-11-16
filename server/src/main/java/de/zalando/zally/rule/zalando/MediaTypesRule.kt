@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
 import io.swagger.models.Swagger
@@ -19,7 +20,8 @@ class MediaTypesRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) 
     override val guidelinesCode = "172"
     private val DESCRIPTION = "Custom media types should only be used for versioning"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().entries.flatMap { (pathName, path) ->
             path.operationMap.orEmpty().entries.flatMap { (verb, operation) ->
                 val mediaTypes = ArrayList<String>() + operation.produces.orEmpty() + operation.consumes.orEmpty()

@@ -1,7 +1,8 @@
 package de.zalando.zally.rule
 
-import io.swagger.models.Swagger
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
+import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -32,8 +33,25 @@ class SwaggerRulesValidator(@Autowired rules: List<SwaggerRule>,
     }
 
     override fun validator(root: Swagger): (SwaggerRule) -> Iterable<Violation> {
-        return {
-            listOfNotNull(it.validate(root))
+        return { rule: SwaggerRule ->
+
+            val violations = mutableListOf<Violation>()
+
+            rule::class.java.methods
+                    .filter { it.isAnnotationPresent(Check::class.java) }
+                    .filter { it.parameters.size == 1 }
+                    .filter { it.parameters[0].type.isAssignableFrom(root::class.java) }
+                    .forEach {
+                        it.isAccessible = true
+                        if (it.returnType == Violation::class.java) {
+                            val violation = it.invoke(rule, root) as Violation?
+                            if (violation != null) {
+                                violations.add(violation)
+                            }
+                        }
+                    }
+
+            violations
         }
     }
 

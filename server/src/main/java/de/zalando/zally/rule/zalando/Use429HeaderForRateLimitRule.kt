@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Swagger
 import io.swagger.models.properties.Property
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,7 +20,8 @@ class Use429HeaderForRateLimitRule(@Autowired ruleSet: ZalandoRuleSet) : Swagger
     private val DESCRIPTION = "If Client Exceed Request Rate, Response Code Must Contain Header Information Providing Further Details to Client"
     private val X_RATE_LIMIT_TRIO = listOf("X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset")
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().flatMap { (path, pathObj) ->
             pathObj.operationMap.orEmpty().entries.flatMap { (verb, operation) ->
                 operation.responses.orEmpty().flatMap { (code, response) ->

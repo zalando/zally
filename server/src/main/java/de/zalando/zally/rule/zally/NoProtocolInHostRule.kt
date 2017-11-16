@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zally
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -18,7 +19,8 @@ class NoProtocolInHostRule(@Autowired ruleSet: ZallyRuleSet) : SwaggerRule(ruleS
     override val guidelinesCode = ""
     private val desc = "Information about protocol should be placed in schema. Current host value '%s' violates this rule"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val host = swagger.host.orEmpty()
         return if ("://" in host)
             Violation(this, title, desc.format(host), violationType, url, emptyList())

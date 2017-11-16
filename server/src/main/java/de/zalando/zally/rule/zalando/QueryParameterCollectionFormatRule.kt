@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.SwaggerRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
 import io.swagger.models.parameters.QueryParameter
@@ -18,7 +19,8 @@ class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : S
     val formatsAllowed = listOf("csv", "multi")
     val violationDescription = "CollectionFormat should be one of: {formatsAllowed}"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         fun Collection<Parameter>?.extractInvalidQueryParam(path: String) =
             orEmpty().filterIsInstance<QueryParameter>()
                 .filter { it.`type` == "array" && it.collectionFormat !in formatsAllowed }
