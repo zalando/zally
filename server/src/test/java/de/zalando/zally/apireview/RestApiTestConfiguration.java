@@ -44,7 +44,7 @@ public class RestApiTestConfiguration {
                 new JsonRulesValidator(Arrays.asList(new CheckApiNameIsPresentJsonRule(new ZalandoRuleSet())), invalidApiRule));
     }
 
-    private static  class CheckApiNameIsPresentJsonRule extends JsonRule {
+    public static class CheckApiNameIsPresentJsonRule extends JsonRule {
 
         public CheckApiNameIsPresentJsonRule(@NotNull RuleSet ruleSet) {
             super(ruleSet);
@@ -87,7 +87,7 @@ public class RestApiTestConfiguration {
         }
     }
 
-    private static class CheckApiNameIsPresentRule extends SwaggerRule {
+    public static class CheckApiNameIsPresentRule extends SwaggerRule {
 
         private final String apiName;
 
@@ -131,7 +131,7 @@ public class RestApiTestConfiguration {
         }
     }
 
-    private static class AlwaysGiveAHintRule extends SwaggerRule {
+    public static class AlwaysGiveAHintRule extends SwaggerRule {
         public AlwaysGiveAHintRule() {
             super(new ZalandoRuleSet());
         }

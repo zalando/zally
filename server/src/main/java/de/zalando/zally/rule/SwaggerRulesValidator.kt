@@ -42,7 +42,6 @@ class SwaggerRulesValidator(@Autowired rules: List<SwaggerRule>,
                     .filter { it.parameters.size == 1 }
                     .filter { it.parameters[0].type.isAssignableFrom(root::class.java) }
                     .forEach {
-                        it.isAccessible = true
                         if (it.returnType == Violation::class.java) {
                             val violation = it.invoke(rule, root) as Violation?
                             if (violation != null) {
