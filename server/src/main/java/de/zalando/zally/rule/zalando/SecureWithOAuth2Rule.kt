@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class DefineOAuthScopesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
+class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Define and Assign Access Rights (Scopes)"
     override val url = "/#104"
     override val violationType = MUST
@@ -23,7 +23,7 @@ class DefineOAuthScopesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(r
     private val DESC = "Every endpoint must be secured by proper OAuth2 scope"
 
     @Check
-    fun secureWithOAuth2(swagger: Swagger): Violation? {
+    fun checkSecurityDefinitions(swagger: Swagger): Violation? {
         val hasOAuth = swagger.securityDefinitions.orEmpty().values.any { it.type?.toLowerCase() == "oauth2" }
         val containsHttpScheme = swagger.schemes.orEmpty().contains(Scheme.HTTP)
         return if (!hasOAuth)
@@ -35,7 +35,7 @@ class DefineOAuthScopesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(r
     }
 
     @Check
-    fun usePasswordFlowWithOAuth2(swagger: Swagger): Violation? {
+    fun checkPasswordFlow(swagger: Swagger): Violation? {
         val definitionsWithoutPasswordFlow = swagger
                 .securityDefinitions
                 .orEmpty()
@@ -49,7 +49,7 @@ class DefineOAuthScopesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(r
     }
 
     @Check
-    fun defineOAuthScopes(swagger: Swagger): Violation? {
+    fun checkUsedScopes(swagger: Swagger): Violation? {
         val definedScopes = getDefinedScopes(swagger)
         val hasTopLevelScope = hasTopLevelScope(swagger, definedScopes)
         val paths = swagger.paths.orEmpty().entries.flatMap { (pathKey, path) ->
