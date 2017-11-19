@@ -3,9 +3,12 @@ package de.zalando.zally.rule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
+import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 
-abstract class RulesValidator<RuleT, RootT>(val rules: List<RuleT>, val invalidApiRule: InvalidApiSchemaRule) : ApiValidator where RuleT : Rule {
+abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private val invalidApiRule: InvalidApiSchemaRule) : ApiValidator where RuleT : Rule {
+
+    private val log = LoggerFactory.getLogger(RulesValidator::class.java)
 
     private val reader = ObjectTreeReader()
 
@@ -14,7 +17,10 @@ abstract class RulesValidator<RuleT, RootT>(val rules: List<RuleT>, val invalidA
     final override fun validate(content: String, requestPolicy: RulesPolicy): List<Violation> {
         val root = parse(content) ?: return listOf(invalidApiRule.getGeneralViolation())
 
-        val contentPolicy = requestPolicy.withMoreIgnores(ignores(root))
+        val moreIgnores = ignores(root)
+        log.debug("ignoring $moreIgnores from document as well as ${requestPolicy.ignoreRules}")
+
+        val contentPolicy = requestPolicy.withMoreIgnores(moreIgnores)
 
         return rules
                 .filter(contentPolicy::accepts)
@@ -28,6 +34,7 @@ abstract class RulesValidator<RuleT, RootT>(val rules: List<RuleT>, val invalidA
 
     private fun validator(root: Any): (RuleT) -> Iterable<Violation> {
         return { rule: RuleT ->
+            log.debug("validating ${rule.name} rule")
             rule::class.java.methods
                     .filter { it.isAnnotationPresent(Check::class.java) }
                     .filter { it.parameters.size == 1 }
@@ -37,12 +44,15 @@ abstract class RulesValidator<RuleT, RootT>(val rules: List<RuleT>, val invalidA
     }
 
     private fun invoke(check: Method, rule: RuleT, root: Any): Iterable<Violation> {
+        log.debug("validating ${check.name} of ${rule.name} rule")
         val result = check.invoke(rule, root)
-        return when (result) {
+        val violations = when (result) {
             null -> emptyList()
             is Violation -> listOf(result)
             is Iterable<*> -> result as Iterable<Violation>
             else -> throw Exception("Unsupported return type for a @Check check!: ${result::class.java}")
         }
+        log.debug("${violations.count()} violations identified")
+        return violations
     }
 }
