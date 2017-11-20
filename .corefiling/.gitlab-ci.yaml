@@ -68,6 +68,24 @@ build web-ui:
       - web-ui/server.js
       - web-ui/src
 
+build cli:
+  <<: *build
+  image: golang:1.9
+  script:
+    - cp ../.corefiling/cli.Dockerfile Dockerfile
+    - export GOZALANDO=$GOPATH/src/github.com/zalando-incubator
+    - mkdir --parents $GOZALANDO
+    - ln --symbolic `pwd`/../ $GOZALANDO/zally
+    - cd $GOZALANDO/zally/cli/zally
+    - go get -t -v
+    - go test -v ./...
+    - go build
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - cli/Dockerfile
+      - cli/zally/zally
+
 ##
 # Docker
 ##
@@ -96,6 +114,7 @@ build web-ui:
 
 docker server: *docker
 docker web-ui: *docker
+docker cli: *docker
 
 ##
 # Deploy
@@ -116,7 +135,7 @@ docker web-ui: *docker
 
 deploy branch:
   <<: *deploy
-  except: 
+  except:
     - develop
   dependencies:
     - build charts
