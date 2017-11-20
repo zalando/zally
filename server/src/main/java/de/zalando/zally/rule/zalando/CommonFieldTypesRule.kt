@@ -2,8 +2,9 @@ package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.getAllJsonObjects
 import io.swagger.models.Swagger
 import io.swagger.models.properties.Property
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : SwaggerRule(ruleSet) {
+class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Use common field names"
     override val url = "/#174"
     override val violationType = ViolationType.MUST
@@ -31,7 +32,8 @@ class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
             else null
         }
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val res = swagger.getAllJsonObjects().map { (def, path) ->
             val badProps = def.entries.map { checkField(it.key, it.value) }.filterNotNull()
             if (badProps.isNotEmpty())

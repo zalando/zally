@@ -1,14 +1,15 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
 import io.swagger.models.parameters.QueryParameter
 import org.springframework.beans.factory.annotation.Autowired
 
-class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
 
     override val title = "Explicitly define the Collection Format of Query Parameters"
     override val url = "/#154"
@@ -18,7 +19,8 @@ class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : S
     val formatsAllowed = listOf("csv", "multi")
     val violationDescription = "CollectionFormat should be one of: {formatsAllowed}"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         fun Collection<Parameter>?.extractInvalidQueryParam(path: String) =
             orEmpty().filterIsInstance<QueryParameter>()
                 .filter { it.`type` == "array" && it.collectionFormat !in formatsAllowed }

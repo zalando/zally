@@ -1,10 +1,14 @@
 package de.zalando.zally.rule
 
+import com.fasterxml.jackson.databind.JsonNode
 import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
 import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
@@ -17,22 +21,40 @@ class RulesValidatorTest {
 
     val swaggerContent = javaClass.classLoader.getResource("fixtures/api_spp.json").readText(Charsets.UTF_8)
 
-    class FirstRule(val result: Violation?) : SwaggerRule(ZalandoRuleSet()) {
+    class FirstRule(val result: Violation?) : AbstractRule(ZalandoRuleSet()) {
         override val title = "First Rule"
         override val url = null
         override val violationType = ViolationType.SHOULD
         override val code = "S999"
         override val guidelinesCode = "000"
-        override fun validate(swagger: Swagger): Violation? = result
+
+        @Check
+        fun validate(swagger: Swagger): Violation? = result
     }
 
-    class SecondRule(val result: Violation?) : SwaggerRule(ZalandoRuleSet()) {
+    class SecondRule(val result: Violation?) : AbstractRule(ZalandoRuleSet()) {
         override val title = "Second Rule"
         override val url = null
         override val violationType = ViolationType.MUST
         override val code = "M999"
         override val guidelinesCode = "000"
-        override fun validate(swagger: Swagger): Violation? = result
+
+        @Check
+        fun validate(swagger: Swagger): List<Violation> = listOfNotNull(result)
+    }
+
+    class BadRule() : AbstractRule(ZalandoRuleSet()) {
+        override val title = "Third Rule"
+        override val url = null
+        override val violationType = ViolationType.MUST
+        override val code = "M666"
+        override val guidelinesCode = "666"
+
+        @Check
+        fun invalid(swagger: Swagger): String = "Hello World!"
+
+        @Check
+        fun invalidParams(swagger: Swagger, json: JsonNode): Violation? = null
     }
 
     val invalidApiSchemaRule: InvalidApiSchemaRule = mock(InvalidApiSchemaRule::class.java)
@@ -86,7 +108,15 @@ class RulesValidatorTest {
         assertThat(valResult[0].title).isEqualTo(resultRule.title)
     }
 
-    fun getRules(violations: List<Violation>): List<SwaggerRule> {
+    @Test
+    fun checkReturnsStringThrowsException() {
+        assertThatThrownBy {
+            val validator = SwaggerRulesValidator(listOf(BadRule()), invalidApiSchemaRule)
+            validator.validate(swaggerContent, RulesPolicy(arrayOf("M999")))
+        }.hasMessage("Unsupported return type for a @Check check!: class java.lang.String")
+    }
+
+    fun getRules(violations: List<Violation>): List<Rule> {
         return violations.map {
             if (it.rule is FirstRule) {
                 FirstRule(it)

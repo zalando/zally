@@ -5,10 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.io.Resources
 import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.JsonRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -16,7 +17,7 @@ import java.io.IOException
 import java.net.URL
 
 @Component
-open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : JsonRule(ruleSet) {
+open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
 
     private val log = LoggerFactory.getLogger(InvalidApiSchemaRule::class.java)
 
@@ -59,7 +60,8 @@ open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
         return JsonSchemaValidator(schema, schemaRedirects = mapOf(referencedOnlineSchema to localResource))
     }
 
-    override fun validate(swagger: JsonNode): List<Violation> {
+    @Check
+    fun validate(swagger: JsonNode): List<Violation> {
         return jsonSchemaValidator.validate(swagger).let { validationResult ->
             validationResult.messages.map { message ->
                 Violation(this, this.title, message.message, this.violationType, this.url, listOf(message.path))

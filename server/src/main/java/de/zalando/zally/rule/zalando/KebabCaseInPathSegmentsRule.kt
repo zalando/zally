@@ -1,15 +1,16 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class KebabCaseInPathSegmentsRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+class KebabCaseInPathSegmentsRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
 
     override val title = "Lowercase words with hyphens"
     override val url = "/#129"
@@ -18,7 +19,8 @@ class KebabCaseInPathSegmentsRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerR
     override val guidelinesCode = "129"
     private val description = "Use lowercase separate words with hyphens for path segments"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().keys.filterNot {
             val pathSegments = it.split("/").filter { it.isNotEmpty() }
             pathSegments.filter { !PatternUtil.isPathVariable(it) && !PatternUtil.isLowerCaseAndHyphens(it) }.isEmpty()
