@@ -7,7 +7,7 @@ abstract class AbstractRule(ruleSet: RuleSet) : Rule {
 
     override val ruleSet = ruleSet
 
-    override val name: String = javaClass.simpleName
+    val name: String = javaClass.simpleName
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

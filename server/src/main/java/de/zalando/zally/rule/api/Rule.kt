@@ -14,9 +14,6 @@ interface Rule {
     /** The identifier for this rule */
     val id: String
 
-    /** A name for this rule */
-    val name: String
-
     /** A title for this rule */
     val title: String
 

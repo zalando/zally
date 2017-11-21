@@ -34,7 +34,7 @@ abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private 
 
     private fun validator(root: Any): (RuleT) -> Iterable<Violation> {
         return { rule: RuleT ->
-            log.debug("validating ${rule.name} rule")
+            log.debug("validating ${rule.javaClass.simpleName} rule")
             rule::class.java.methods
                     .filter { it.isAnnotationPresent(Check::class.java) }
                     .filter { it.parameters.size == 1 }
@@ -44,7 +44,7 @@ abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private 
     }
 
     private fun invoke(check: Method, rule: RuleT, root: Any): Iterable<Violation> {
-        log.debug("validating ${check.name} of ${rule.name} rule")
+        log.debug("validating ${check.name} of ${rule.javaClass.simpleName} rule")
         val result = check.invoke(rule, root)
         val violations = when (result) {
             null -> emptyList()
