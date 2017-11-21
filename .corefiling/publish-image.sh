@@ -8,8 +8,8 @@ fi
 
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
-project_path="jma/zally"
-image="artifacts.int.corefiling.com:5000/$project_path/$1:jma"
+project_path="pdds/zally"
+image="artifacts.int.corefiling.com:5000/$project_path/$1:local"
 dockerfile="$variant.Dockerfile"
 
 echo "Building $image from $dockerfile"

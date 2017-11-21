@@ -1,3 +1,5 @@
+# Build/publish via `./publish-image.sh build-ui`
+
 FROM artifacts.int.corefiling.com:5000/cfl-node:8-alpine
 
 ENV SASS_BINARY_URL "https://github.com/sass/node-sass/releases/download/v4.5.3/linux-x64-57_binding.node"
