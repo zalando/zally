@@ -59,7 +59,7 @@ func TestPrintRule(t *testing.T) {
 		var rule domain.Rule
 		rule.Title = "Must Rule"
 		rule.Type = "MUST"
-		rule.Code = "M001"
+		rule.Code = "166"
 		rule.IsActive = true
 		rule.URL = "https://example.com/rule"
 
@@ -67,7 +67,7 @@ func TestPrintRule(t *testing.T) {
 
 		tests.AssertEquals(
 			t,
-			"\x1b[31mM001\x1b[0m \x1b[31mMUST\x1b[0m: Must Rule\n\thttps://example.com/rule\n\n",
+			"\x1b[31m166\x1b[0m \x1b[31mMUST\x1b[0m: Must Rule\n\thttps://example.com/rule\n\n",
 			buffer.String())
 	})
 }
@@ -76,7 +76,7 @@ func TestPrintRules(t *testing.T) {
 	var mustRule domain.Rule
 	mustRule.Title = "First Rule"
 	mustRule.Type = "MUST"
-	mustRule.Code = "M001"
+	mustRule.Code = "166"
 	mustRule.IsActive = true
 	mustRule.URL = "https://example.com/first-rule"
 
@@ -105,7 +105,7 @@ func TestPrintRules(t *testing.T) {
 
 		tests.AssertEquals(
 			t,
-			"\x1b[31mM001\x1b[0m \x1b[31mMUST\x1b[0m: First Rule\n\thttps://example.com/first-rule\n\n\x1b[33mS001\x1b[0m "+
+			"\x1b[31m166\x1b[0m \x1b[31mMUST\x1b[0m: First Rule\n\thttps://example.com/first-rule\n\n\x1b[33mS001\x1b[0m "+
 				"\x1b[33mSHOULD\x1b[0m: Second Rule\n\thttps://example.com/second-rule\n\n\x1b[32mC001\x1b[0m "+
 				"\x1b[32mMAY\x1b[0m: Third Rule\n\thttps://example.com/third-rule\n\n",
 			buffer.String())

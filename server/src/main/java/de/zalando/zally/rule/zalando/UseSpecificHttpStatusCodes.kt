@@ -18,7 +18,7 @@ class UseSpecificHttpStatusCodes(@Autowired ruleSet: ZalandoRuleSet, @Autowired 
 
     // as a quick fix this rule is only SHOULD (normally MUST), see https://github.com/zalando-incubator/zally/issues/374
     override val violationType = ViolationType.SHOULD
-    override val code = "M016"
+    override val code = "150"
     override val guidelinesCode = "150"
     private val description = "Operatons should use specific HTTP status codes"
 

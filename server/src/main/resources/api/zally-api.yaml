@@ -379,7 +379,7 @@ definitions:
         example: 'Do Not Use URI Versioning'
       code:
         type: string
-        example: 'M009'
+        example: '115'
       type:
         type: string
         example: 'MUST'

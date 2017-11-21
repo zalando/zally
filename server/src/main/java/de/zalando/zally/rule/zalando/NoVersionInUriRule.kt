@@ -14,7 +14,7 @@ class NoVersionInUriRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
     override val title = "Do Not Use URI Versioning"
     override val url = "/#115"
     override val violationType = ViolationType.MUST
-    override val code = "M009"
+    override val code = "115"
     override val guidelinesCode = "115"
     private val description = "basePath attribute contains version number"
 

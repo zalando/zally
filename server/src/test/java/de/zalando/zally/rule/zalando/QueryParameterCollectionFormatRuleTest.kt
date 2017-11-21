@@ -20,7 +20,7 @@ class QueryParameterCollectionFormatRuleTest {
 
         val result = rule.validate(swagger)!!
         assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
-        assertThat(result.rule.code).isEqualTo("S011")
+        assertThat(result.rule.code).isEqualTo("154")
     }
 
     @Test
@@ -32,7 +32,7 @@ class QueryParameterCollectionFormatRuleTest {
 
         val result = rule.validate(swagger)!!
         assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
-        assertThat(result.rule.code).isEqualTo("S011")
+        assertThat(result.rule.code).isEqualTo("154")
     }
 
     @Test
@@ -43,7 +43,7 @@ class QueryParameterCollectionFormatRuleTest {
 
         val result = rule.validate(swagger)!!
         assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
-        assertThat(result.rule.code).isEqualTo("S011")
+        assertThat(result.rule.code).isEqualTo("154")
     }
 
     @Test
@@ -55,7 +55,7 @@ class QueryParameterCollectionFormatRuleTest {
 
         val result = rule.validate(swagger)!!
         assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
-        assertThat(result.rule.code).isEqualTo("S011")
+        assertThat(result.rule.code).isEqualTo("154")
     }
 
     @Test

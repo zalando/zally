@@ -18,7 +18,7 @@ class SuccessResponseAsJsonObjectRule(@Autowired ruleSet: ZalandoRuleSet) : Abst
     override val title = "Response As JSON Object"
     override val violationType = ViolationType.MUST
     override val url = "/#110"
-    override val code = "M013"
+    override val code = "110"
     override val guidelinesCode = "110"
     private val DESCRIPTION = "Always Return JSON Objects As Top-Level Data Structures To Support Extensibility"
 

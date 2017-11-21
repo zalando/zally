@@ -78,7 +78,7 @@ public class RestApiTestConfiguration {
 
         @Override
         public String getCode() {
-            return "M001";
+            return "166";
         }
 
         @Override
@@ -122,7 +122,7 @@ public class RestApiTestConfiguration {
 
         @Override
         public String getCode() {
-            return "M999";
+            return "999";
         }
 
         @Override

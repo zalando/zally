@@ -16,7 +16,7 @@ class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
     override val title = "Use common field names"
     override val url = "/#174"
     override val violationType = ViolationType.MUST
-    override val code = "M003"
+    override val code = "174"
     override val guidelinesCode = "174"
 
     @Suppress("UNCHECKED_CAST")

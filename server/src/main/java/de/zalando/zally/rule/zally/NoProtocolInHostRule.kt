@@ -15,8 +15,7 @@ class NoProtocolInHostRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(rule
     override val url = ""
     override val violationType = ViolationType.MUST
     override val code = "M008"
-    // TODO: Provide guidelines code
-    override val guidelinesCode = ""
+    override val guidelinesCode = "M008"
     private val desc = "Information about protocol should be placed in schema. Current host value '%s' violates this rule"
 
     @Check

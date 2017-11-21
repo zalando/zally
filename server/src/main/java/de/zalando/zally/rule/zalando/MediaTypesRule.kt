@@ -16,7 +16,7 @@ class MediaTypesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet)
     override val title = "Prefer standard media type names"
     override val url = "/#172"
     override val violationType = ViolationType.SHOULD
-    override val code = "S004"
+    override val code = "172"
     override val guidelinesCode = "172"
     private val DESCRIPTION = "Custom media types should only be used for versioning"
 

@@ -19,10 +19,19 @@ class RuleUniquenessTest {
     @Test
     fun rulesShouldBeUnique() {
         val duplicatedCodes = rules
-            .groupBy { it.code }
-            .filterValues { it.size > 1 }
-            .keys
+                .groupBy { it.code }
+                .filterValues { it.size > 1 }
+                .keys
 
         assertEquals("Duplicated rules found: " + duplicatedCodes, 0, duplicatedCodes.count())
+    }
+
+    @Test
+    fun codeAndGuidelinesMustMatch() {
+        val exceptions = rules
+                .filter { it.code != it.guidelinesCode }
+                .toList()
+
+        assertEquals("Mismatches found: " + exceptions, 0, exceptions.size)
     }
 }

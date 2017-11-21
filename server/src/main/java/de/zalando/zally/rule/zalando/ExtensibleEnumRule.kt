@@ -28,7 +28,7 @@ class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
     override val title = "Prefer Compatible Extensions"
     override val url = "/#107"
     override val violationType = SHOULD
-    override val code = "S012"
+    override val code = "107"
     override val guidelinesCode = "107"
 
     @Check

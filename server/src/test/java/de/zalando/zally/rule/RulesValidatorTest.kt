@@ -36,7 +36,7 @@ class RulesValidatorTest {
         override val title = "Second Rule"
         override val url = null
         override val violationType = ViolationType.MUST
-        override val code = "M999"
+        override val code = "999"
         override val guidelinesCode = "000"
 
         @Check
@@ -91,7 +91,7 @@ class RulesValidatorTest {
     fun shouldIgnoreSpecifiedRules() {
         val violations = listOf(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2, DUMMY_VIOLATION_3)
         val validator = SwaggerRulesValidator(getRules(violations), invalidApiSchemaRule)
-        assertThat(validator.validate(swaggerContent, RulesPolicy(arrayOf("M999")))).containsExactly(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2)
+        assertThat(validator.validate(swaggerContent, RulesPolicy(arrayOf("999")))).containsExactly(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2)
     }
 
     @Test
@@ -112,7 +112,7 @@ class RulesValidatorTest {
     fun checkReturnsStringThrowsException() {
         assertThatThrownBy {
             val validator = SwaggerRulesValidator(listOf(BadRule()), invalidApiSchemaRule)
-            validator.validate(swaggerContent, RulesPolicy(arrayOf("M999")))
+            validator.validate(swaggerContent, RulesPolicy(arrayOf("999")))
         }.hasMessage("Unsupported return type for a @Check check!: class java.lang.String")
     }
 

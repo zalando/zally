@@ -12,7 +12,7 @@ class HyphenateHttpHeadersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired ru
     override val title = "Use Hyphenated HTTP Headers"
     override val url = "/#131"
     override val violationType = ViolationType.MUST
-    override val code = "M006"
+    override val code = "131"
     override val guidelinesCode = "131"
 
     override fun isViolation(header: String) = !PatternUtil.isHyphenated(header)

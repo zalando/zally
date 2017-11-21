@@ -11,7 +11,7 @@ class AvoidLinkHeadersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
     override val title = "Avoid Link in Header Rule"
     override val violationType = ViolationType.MUST
     override val url = "/#166"
-    override val code = "M001"
+    override val code = "166"
     override val guidelinesCode = "166"
     private val DESCRIPTION = "Do Not Use Link Headers with JSON entities"
 

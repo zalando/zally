@@ -16,7 +16,7 @@ class PluralizeResourceNamesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired 
     override val title = "Pluralize Resource Names"
     override val url = "/#134"
     override val violationType = ViolationType.SHOULD
-    override val code = "S008"
+    override val code = "134"
     override val guidelinesCode = "134"
     private val DESC_PATTERN = "Resources %s are singular (but we are not sure)"
     private val allowedPrefixes = rulesConfig.getConfig(name).getStringList("whitelist_prefixes")

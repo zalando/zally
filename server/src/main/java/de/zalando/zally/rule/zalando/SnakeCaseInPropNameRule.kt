@@ -16,7 +16,7 @@ class SnakeCaseInPropNameRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rul
     override val title = "snake_case property names"
     override val url = "/#118"
     override val violationType = ViolationType.MUST
-    override val code = "M012"
+    override val code = "118"
     override val guidelinesCode = "118"
     private val description = "Property names must be snake_case: "
 

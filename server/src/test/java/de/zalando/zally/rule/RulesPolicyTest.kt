@@ -13,7 +13,7 @@ class RulesPolicyTest {
         override val title = "Test Rule"
         override val url = null
         override val violationType = ViolationType.MUST
-        override val code = "M999"
+        override val code = "999"
         override val guidelinesCode = "000"
 
         @Check
@@ -22,13 +22,13 @@ class RulesPolicyTest {
 
     @Test
     fun shouldAcceptRuleIfNotFiltered() {
-        val policy = RulesPolicy(arrayOf("M001", "M002"))
+        val policy = RulesPolicy(arrayOf("166", "136"))
         assertTrue(policy.accepts(TestRule(null)))
     }
 
     @Test
     fun shouldNotAcceptRuleIfFiltered() {
-        val policy = RulesPolicy(arrayOf("M001", "M999"))
+        val policy = RulesPolicy(arrayOf("166", "999"))
         assertFalse(policy.accepts(TestRule(null)))
     }
 
@@ -38,7 +38,7 @@ class RulesPolicyTest {
         val original = RulesPolicy(emptyArray())
         assertTrue(original.accepts(TestRule(null)))
 
-        val extended = original.withMoreIgnores(listOf("M001", "M999"))
+        val extended = original.withMoreIgnores(listOf("166", "999"))
         assertFalse(extended.accepts(TestRule(null)))
 
         // original is unmodified

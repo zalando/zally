@@ -15,7 +15,7 @@ class KebabCaseInPathSegmentsRule(@Autowired ruleSet: ZalandoRuleSet) : Abstract
     override val title = "Lowercase words with hyphens"
     override val url = "/#129"
     override val violationType = ViolationType.MUST
-    override val code = "M007"
+    override val code = "129"
     override val guidelinesCode = "129"
     private val description = "Use lowercase separate words with hyphens for path segments"
 

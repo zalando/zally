@@ -20,10 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@TestPropertySource(properties = "zally.ignoreRules=M001,C001")
+@TestPropertySource(properties = "zally.ignoreRules=166,145")
 public class RestSupportedRulesTest extends RestApiBaseTest {
 
-    private static final List<String> IGNORED_RULES = Arrays.asList("M001", "C001");
+    private static final List<String> IGNORED_RULES = Arrays.asList("166", "145");
 
     @Autowired
     private List<Rule> implementedRules;

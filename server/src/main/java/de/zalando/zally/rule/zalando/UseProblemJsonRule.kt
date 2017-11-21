@@ -21,7 +21,7 @@ class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
     override val title = "Use Problem JSON"
     override val url = "/#176"
     override val violationType = ViolationType.MUST
-    override val code = "M015"
+    override val code = "176"
     override val guidelinesCode = "176"
     private val description = "Operations Should Return Problem JSON When Any Problem Occurs During Processing " +
         "Whether Caused by Client Or Server"

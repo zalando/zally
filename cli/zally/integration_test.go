@@ -149,7 +149,7 @@ func TestIntegrationDisplayRulesList(t *testing.T) {
 	t.Run("integrationDisplayRulesList", func(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "rules"})
 
-		assert.Contains(t, out, "[31mM001[0m [31mMUST[0m: Avoid Link in Header Rule")
+		assert.Contains(t, out, "[31m166[0m [31mMUST[0m: Avoid Link in Header Rule")
 		assert.Contains(t, out, "http://zalando.github.io/restful-api-guidelines/#166")
 
 		assert.Nil(t, e)

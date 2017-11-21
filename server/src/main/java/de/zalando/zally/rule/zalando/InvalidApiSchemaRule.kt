@@ -24,7 +24,7 @@ open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
     override val title = "OpenAPI 2.0 schema"
     override val violationType = ViolationType.MUST
     override val url = "/#101"
-    override val code = "M000"
+    override val code = "101"
     override val guidelinesCode = "101"
     open val description = "Given file is not OpenAPI 2.0 compliant."
 
