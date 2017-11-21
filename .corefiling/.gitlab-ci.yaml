@@ -51,7 +51,8 @@ build server:
 
 build web-ui:
   <<: *build
-  image: artifacts.int.corefiling.com:5000/jma/zally/build-ui:local
+  # See .corefiling/build-ui.Dockerfile
+  image: artifacts.int.corefiling.com:5000/pdds/zally/build-ui:local
   script:
     - yarn install --frozen-lockfile --non-interactive
     - yarn run build
