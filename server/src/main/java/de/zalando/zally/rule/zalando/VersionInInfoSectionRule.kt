@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 @Component
 class VersionInInfoSectionRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Provide version information"
-    override val url = "/#116"
     override val violationType = ViolationType.SHOULD
     override val id = "116"
     private val DESCRIPTION = "Only the documentation, not the API itself, needs version information. It should be in the " +
@@ -26,6 +25,6 @@ class VersionInInfoSectionRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRul
             !isVersion(version) -> "Specified version has incorrect format: $version"
             else -> null
         }
-        return desc?.let { Violation(this, title, "$DESCRIPTION $it", violationType, url, emptyList()) }
+        return desc?.let { Violation(this, title, "$DESCRIPTION $it", violationType, emptyList()) }
     }
 }

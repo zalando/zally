@@ -7,7 +7,6 @@ import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.util.ErrorResponse;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 
@@ -27,9 +26,6 @@ public class RestSupportedRulesTest extends RestApiBaseTest {
 
     @Autowired
     private List<Rule> implementedRules;
-
-    @Value("${zally.apiGuidelinesBaseUrl:something went wrong!}")
-    private String baseUrl;
 
     @Test
     public void testRulesCount() {
@@ -55,7 +51,6 @@ public class RestSupportedRulesTest extends RestApiBaseTest {
             assertThat(rule.getTitle()).isNotEmpty();
             assertThat(rule.getType()).isNotNull();
             assertThat(rule.getUrl()).isNotNull();
-            assertThat(rule.getUrl()).startsWith(baseUrl);
         }
     }
 

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component
 class Use429HeaderForRateLimitRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
 
     override val title = "Use 429 With Header For Rate Limits"
-    override val url = "/#153"
     override val violationType = ViolationType.MUST
     override val id = "153"
     private val DESCRIPTION = "If Client Exceed Request Rate, Response Code Must Contain Header Information Providing Further Details to Client"
@@ -31,7 +30,7 @@ class Use429HeaderForRateLimitRule(@Autowired ruleSet: ZalandoRuleSet) : Abstrac
             }
         }
         return if (paths.isNotEmpty())
-            Violation(this, title, DESCRIPTION, violationType, url, paths)
+            Violation(this, title, DESCRIPTION, violationType, paths)
         else null
     }
 

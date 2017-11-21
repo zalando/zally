@@ -7,7 +7,6 @@ import de.zalando.zally.rule.api.RuleSet;
 import de.zalando.zally.rule.Violation;
 import de.zalando.zally.util.ResourceUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -38,12 +37,6 @@ public class ApiReviewTest {
             return null;
         }
 
-        @Nullable
-        @Override
-        public String getUrl() {
-            return null;
-        }
-
         @NotNull
         @Override
         public String getId() {
@@ -60,9 +53,9 @@ public class ApiReviewTest {
 
     @Test
     public void shouldAggregateRuleTypeCount() {
-        Violation mustViolation1 = new Violation(dummyRule, "", "", ViolationType.MUST, "", Collections.emptyList());
-        Violation mustViolation2 = new Violation(dummyRule, "", "", ViolationType.MUST, "", Collections.emptyList());
-        Violation shouldViolation = new Violation(dummyRule, "", "", ViolationType.SHOULD, "", Collections.emptyList());
+        Violation mustViolation1 = new Violation(dummyRule, "", "", ViolationType.MUST, Collections.emptyList());
+        Violation mustViolation2 = new Violation(dummyRule, "", "", ViolationType.MUST, Collections.emptyList());
+        Violation shouldViolation = new Violation(dummyRule, "", "", ViolationType.SHOULD, Collections.emptyList());
 
         ApiReview apiReview = new ApiReview(new ApiDefinitionRequest(), "", asList(mustViolation1, mustViolation2, shouldViolation));
 
@@ -74,8 +67,8 @@ public class ApiReviewTest {
 
     @Test
     public void shouldCalculateNumberOfEndpoints() throws IOException {
-        Violation violation1 = new Violation(dummyRule, "", "", ViolationType.MUST, "", asList("1", "2"));
-        Violation violation2 = new Violation(dummyRule, "", "", ViolationType.MUST, "", asList("3"));
+        Violation violation1 = new Violation(dummyRule, "", "", ViolationType.MUST, asList("1", "2"));
+        Violation violation2 = new Violation(dummyRule, "", "", ViolationType.MUST, asList("3"));
 
         String apiDefinition = ResourceUtil.resourceToString("fixtures/limitNumberOfResourcesValid.json");
 

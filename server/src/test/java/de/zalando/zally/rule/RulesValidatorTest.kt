@@ -15,15 +15,14 @@ import org.mockito.Mockito.mock
 
 class RulesValidatorTest {
 
-    val DUMMY_VIOLATION_1 = Violation(FirstRule(null), "dummy1", "dummy", ViolationType.SHOULD, "dummy", listOf("x", "y", "z"))
-    val DUMMY_VIOLATION_2 = Violation(FirstRule(null), "dummy2", "dummy", ViolationType.MAY, "dummy", listOf())
-    val DUMMY_VIOLATION_3 = Violation(SecondRule(null), "dummy3", "dummy", ViolationType.MUST, "dummy", listOf("a"))
+    val DUMMY_VIOLATION_1 = Violation(FirstRule(null), "dummy1", "dummy", ViolationType.SHOULD, listOf("x", "y", "z"))
+    val DUMMY_VIOLATION_2 = Violation(FirstRule(null), "dummy2", "dummy", ViolationType.MAY, listOf())
+    val DUMMY_VIOLATION_3 = Violation(SecondRule(null), "dummy3", "dummy", ViolationType.MUST, listOf("a"))
 
     val swaggerContent = javaClass.classLoader.getResource("fixtures/api_spp.json").readText(Charsets.UTF_8)
 
     class FirstRule(val result: Violation?) : AbstractRule(ZalandoRuleSet()) {
         override val title = "First Rule"
-        override val url = null
         override val violationType = ViolationType.SHOULD
         override val id = "S999"
 
@@ -33,7 +32,6 @@ class RulesValidatorTest {
 
     class SecondRule(val result: Violation?) : AbstractRule(ZalandoRuleSet()) {
         override val title = "Second Rule"
-        override val url = null
         override val violationType = ViolationType.MUST
         override val id = "999"
 
@@ -43,7 +41,6 @@ class RulesValidatorTest {
 
     class BadRule() : AbstractRule(ZalandoRuleSet()) {
         override val title = "Third Rule"
-        override val url = null
         override val violationType = ViolationType.MUST
         override val id = "M666"
 
@@ -97,7 +94,6 @@ class RulesValidatorTest {
         Mockito.`when`(resultRule.title).thenReturn("InvalidApiSchemaRule Title")
         Mockito.`when`(resultRule.description).thenReturn("desc")
         Mockito.`when`(resultRule.violationType).thenReturn(ViolationType.MUST)
-        Mockito.`when`(resultRule.url).thenReturn("url")
 
         val validator = SwaggerRulesValidator(emptyList(), resultRule)
         val valResult = validator.validate("Invalid swagger content !@##", RulesPolicy(emptyArray()))

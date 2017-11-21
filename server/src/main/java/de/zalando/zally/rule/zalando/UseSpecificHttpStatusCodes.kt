@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component
 @Component
 class UseSpecificHttpStatusCodes(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Use Specific HTTP Status Codes"
-    override val url = "/#150"
 
     // as a quick fix this rule is only SHOULD (normally MUST), see https://github.com/zalando-incubator/zally/issues/374
     override val violationType = ViolationType.SHOULD
@@ -30,7 +29,7 @@ class UseSpecificHttpStatusCodes(@Autowired ruleSet: ZalandoRuleSet, @Autowired 
         val badPaths = swagger.paths.orEmpty().flatMap { path ->
             path.value.operationMap.orEmpty().flatMap { getNotAllowedStatusCodes(path.key, it) }
         }
-        return if (badPaths.isNotEmpty()) Violation(this, title, description, violationType, url, badPaths) else null
+        return if (badPaths.isNotEmpty()) Violation(this, title, description, violationType, badPaths) else null
     }
 
     private fun getNotAllowedStatusCodes(path: String, entry: Map.Entry<HttpMethod, Operation>): List<String> {

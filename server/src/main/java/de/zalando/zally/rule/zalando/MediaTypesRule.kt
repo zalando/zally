@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component
 class MediaTypesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
 
     override val title = "Prefer standard media type names"
-    override val url = "/#172"
     override val violationType = ViolationType.SHOULD
     override val id = "172"
     private val DESCRIPTION = "Custom media types should only be used for versioning"
@@ -28,7 +27,7 @@ class MediaTypesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet)
                 if (violatingMediaTypes.isNotEmpty()) listOf("$pathName $verb") else emptyList()
             }
         }
-        return if (paths.isNotEmpty()) Violation(this, title, DESCRIPTION, violationType, url, paths) else null
+        return if (paths.isNotEmpty()) Violation(this, title, DESCRIPTION, violationType, paths) else null
     }
 
     private fun isViolatingMediaType(mediaType: String) =

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 @Component
 class NotSpecifyStandardErrorCodesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Not Specify Standard Error Codes"
-    override val url = "/#151"
     override val violationType = ViolationType.HINT
     override val id = "151"
     private val description = "Not Specify Standard Error Status Codes Like 400, 404, 503 " +
@@ -35,7 +34,7 @@ class NotSpecifyStandardErrorCodesRule(@Autowired ruleSet: ZalandoRuleSet, @Auto
             }
         }
 
-        return if (paths.isNotEmpty()) Violation(this, title, description, violationType, url, paths) else null
+        return if (paths.isNotEmpty()) Violation(this, title, description, violationType, paths) else null
     }
 
     private fun isStandardErrorCode(httpStatusCode: Int?): Boolean {

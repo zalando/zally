@@ -22,8 +22,4 @@ interface Rule {
 
     /** The severity of violations which break this rule */
     val violationType: ViolationType
-
-    /** A location where this rule is documented */
-    val url: String?
-
 }

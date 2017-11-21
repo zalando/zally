@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 @Component
 class NoVersionInUriRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Do Not Use URI Versioning"
-    override val url = "/#115"
     override val violationType = ViolationType.MUST
     override val id = "115"
     private val description = "basePath attribute contains version number"
@@ -20,6 +19,6 @@ class NoVersionInUriRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
     @Check
     fun validate(swagger: Swagger): Violation? {
         val hasVersion = swagger.basePath != null && PatternUtil.hasVersionInUrl(swagger.basePath)
-        return if (hasVersion) Violation(this, title, description, violationType, url, emptyList()) else null
+        return if (hasVersion) Violation(this, title, description, violationType, emptyList()) else null
     }
 }

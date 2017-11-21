@@ -55,7 +55,7 @@ public class RestApiTestConfiguration {
             JsonNode title = swagger.path("info").path("title");
             if (!title.isMissingNode() && title.textValue().contains("Product Service")) {
                 return Arrays.asList(
-                        new Violation(this, getTitle(), "schema incorrect", getViolationType(), getUrl(), Collections.emptyList()));
+                        new Violation(this, getTitle(), "schema incorrect", getViolationType(), Collections.emptyList()));
             } else {
                 return Collections.emptyList();
             }
@@ -69,11 +69,6 @@ public class RestApiTestConfiguration {
         @Override
         public ViolationType getViolationType() {
             return ViolationType.MUST;
-        }
-
-        @Override
-        public String getUrl() {
-            return "url";
         }
 
         @Override
@@ -95,15 +90,10 @@ public class RestApiTestConfiguration {
         @Check
         public Violation validate(Swagger swagger) {
             if (swagger != null && swagger.getInfo().getTitle().contains(apiName)) {
-                return new Violation(new CheckApiNameIsPresentRule(null), "dummy1", "dummy", ViolationType.MUST, "dummy", Collections.emptyList());
+                return new Violation(new CheckApiNameIsPresentRule(null), "dummy1", "dummy", ViolationType.MUST, Collections.emptyList());
             } else {
                 return null;
             }
-        }
-
-        @Override
-        public String getUrl() {
-            return null;
         }
 
         @Override
@@ -132,12 +122,7 @@ public class RestApiTestConfiguration {
         public Violation validate(Swagger swagger) {
             return new Violation(
                 new AlwaysGiveAHintRule(),
-                "dummy2", "dummy", ViolationType.HINT, "dummy", Collections.emptyList());
-        }
-
-        @Override
-        public String getUrl() {
-            return null;
+                "dummy2", "dummy", ViolationType.HINT, Collections.emptyList());
         }
 
         @Override

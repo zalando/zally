@@ -6,7 +6,6 @@ import de.zalando.zally.dto.ViolationType;
 import de.zalando.zally.dto.ViolationTypeBinder;
 import de.zalando.zally.rule.api.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +25,6 @@ public class SupportedRulesController {
 
     private final List<Rule> rules;
     private final RulesPolicy rulesPolicy;
-
-    @Value("${zally.apiGuidelinesBaseUrl:}")
-    private String baseUrl;
 
     @Autowired
     public SupportedRulesController(List<Rule> rules, RulesPolicy rulesPolicy) {
@@ -73,7 +69,7 @@ public class SupportedRulesController {
         return new RuleDTO(
                 rule.getTitle(),
                 rule.getViolationType(),
-                baseUrl + rule.getUrl(),
+                rule.getRuleSet().url(rule).toString(),
                 rule.getId(),
                 rulesPolicy.accepts(rule)
         );

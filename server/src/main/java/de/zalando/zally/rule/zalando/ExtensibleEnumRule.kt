@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component
 @Component
 class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Prefer Compatible Extensions"
-    override val url = "/#107"
     override val violationType = SHOULD
     override val id = "107"
 
@@ -38,7 +37,7 @@ class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
         val enumNames = (properties.keys + parameters.keys).distinct()
         val enumPaths = (properties.values + parameters.values).distinct()
         return if (enumNames.isNotEmpty()) Violation(this, title,
-                "Properties/Parameters $enumNames are not extensible enums", violationType, url, enumPaths)
+                "Properties/Parameters $enumNames are not extensible enums", violationType, enumPaths)
         else null
     }
 

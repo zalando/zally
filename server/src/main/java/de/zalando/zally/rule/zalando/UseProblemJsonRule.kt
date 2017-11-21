@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component
 @Component
 class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Use Problem JSON"
-    override val url = "/#176"
     override val violationType = ViolationType.MUST
     override val id = "176"
     private val description = "Operations Should Return Problem JSON When Any Problem Occurs During Processing " +
@@ -39,7 +38,7 @@ class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
             }
         }
 
-        return if (paths.isNotEmpty()) Violation(this, title, description, violationType, url, paths) else null
+        return if (paths.isNotEmpty()) Violation(this, title, description, violationType, paths) else null
     }
 
     private fun isValidProblemJson(swagger: Swagger, response: Response, operation: Operation) =

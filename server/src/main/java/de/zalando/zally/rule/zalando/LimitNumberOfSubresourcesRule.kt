@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component
 @Component
 class LimitNumberOfSubresourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Limit number of Sub-resources level"
-    override val url = "/#147"
     override val violationType = ViolationType.SHOULD
     override val id = "147"
     private val DESC = "Number of sub-resources should not exceed 3"
@@ -24,6 +23,6 @@ class LimitNumberOfSubresourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowir
         val paths = swagger.paths.orEmpty().keys.filter { path ->
             path.split("/").filter { it.isNotEmpty() && !PatternUtil.isPathVariable(it) }.size - 1 > subresourcesLimit
         }
-        return if (paths.isNotEmpty()) Violation(this, title, DESC, violationType, url, paths) else null
+        return if (paths.isNotEmpty()) Violation(this, title, DESC, violationType, paths) else null
     }
 }

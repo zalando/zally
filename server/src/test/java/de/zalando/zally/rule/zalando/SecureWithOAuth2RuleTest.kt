@@ -20,7 +20,6 @@ class SecureWithOAuth2RuleTest {
             "Secure Endpoints with OAuth 2.0",
             "No OAuth2 security definitions found",
             ViolationType.MUST,
-            rule.url,
             emptyList())
 
     private val checkSecurityDefinitionsExpectedHttpsViolation = Violation(
@@ -28,7 +27,6 @@ class SecureWithOAuth2RuleTest {
             "Secure Endpoints with OAuth 2.0",
             "OAuth2 should be only used together with https",
             ViolationType.MUST,
-            rule.url,
             emptyList())
 
     private val checkPasswordFlowExpectedViolation = Violation(
@@ -36,7 +34,6 @@ class SecureWithOAuth2RuleTest {
             "Set Flow to Password When Using OAuth 2.0",
             "OAuth2 security definitions should use password flow",
             ViolationType.SHOULD,
-            rule.url,
             emptyList())
 
     @Test

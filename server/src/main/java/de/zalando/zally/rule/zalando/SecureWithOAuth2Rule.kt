@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component
 @Component
 class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Define and Assign Access Rights (Scopes)"
-    override val url = "/#104"
     override val violationType = MUST
     override val id = "104"
     private val DESC = "Every endpoint must be secured by proper OAuth2 scope"
@@ -26,9 +25,9 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
         val hasOAuth = swagger.securityDefinitions.orEmpty().values.any { it.type?.toLowerCase() == "oauth2" }
         val containsHttpScheme = swagger.schemes.orEmpty().contains(Scheme.HTTP)
         return if (!hasOAuth)
-            Violation(this, "Secure Endpoints with OAuth 2.0", "No OAuth2 security definitions found", violationType, url, emptyList())
+            Violation(this, "Secure Endpoints with OAuth 2.0", "No OAuth2 security definitions found", violationType, emptyList())
         else if (containsHttpScheme)
-            Violation(this, "Secure Endpoints with OAuth 2.0", "OAuth2 should be only used together with https", violationType, url, emptyList())
+            Violation(this, "Secure Endpoints with OAuth 2.0", "OAuth2 should be only used together with https", violationType, emptyList())
         else
             null
     }
@@ -43,7 +42,7 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
                 .filter { (it as OAuth2Definition).flow != "password" }
 
         return if (definitionsWithoutPasswordFlow.any())
-            Violation(this, "Set Flow to Password When Using OAuth 2.0", "OAuth2 security definitions should use password flow", ViolationType.SHOULD, url, emptyList())
+            Violation(this, "Set Flow to Password When Using OAuth 2.0", "OAuth2 security definitions should use password flow", ViolationType.SHOULD, emptyList())
         else null
     }
 
@@ -67,7 +66,7 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
             }.filterNotNull()
         }
         return if (!paths.isEmpty()) {
-            Violation(this, title, DESC, violationType, url, paths)
+            Violation(this, title, DESC, violationType, paths)
         } else null
     }
 
