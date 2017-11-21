@@ -77,14 +77,10 @@ public class RestApiTestConfiguration {
         }
 
         @Override
-        public String getCode() {
+        public String getId() {
             return "166";
         }
 
-        @Override
-        public String getGuidelinesCode() {
-            return "000";
-        }
     }
 
     public static class CheckApiNameIsPresentRule extends AbstractRule {
@@ -121,14 +117,10 @@ public class RestApiTestConfiguration {
         }
 
         @Override
-        public String getCode() {
+        public String getId() {
             return "999";
         }
 
-        @Override
-        public String getGuidelinesCode() {
-            return "000";
-        }
     }
 
     public static class AlwaysGiveAHintRule extends AbstractRule {
@@ -159,13 +151,9 @@ public class RestApiTestConfiguration {
         }
 
         @Override
-        public String getCode() {
+        public String getId() {
             return "H999";
         }
 
-        @Override
-        public String getGuidelinesCode() {
-            return "000";
-        }
     }
 }

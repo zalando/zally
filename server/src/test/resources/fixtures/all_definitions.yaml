@@ -212,10 +212,10 @@ definitions:
 
   Error:
     required:
-      - code
+      - id
       - message
     properties:
-      code:
+      id:
         type: integer
         format: int32
       message:

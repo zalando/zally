@@ -369,7 +369,7 @@ definitions:
     description: Rule
     required:
       - title
-      - code
+      - id
       - type
       - url
       - is_active
@@ -377,7 +377,7 @@ definitions:
       title:
         type: string
         example: 'Do Not Use URI Versioning'
-      code:
+      id:
         type: string
         example: '115'
       type:

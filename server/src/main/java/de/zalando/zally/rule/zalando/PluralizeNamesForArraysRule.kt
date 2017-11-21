@@ -15,8 +15,7 @@ class PluralizeNamesForArraysRule(@Autowired ruleSet: ZalandoRuleSet) : Abstract
     override val title = "Array names should be pluralized"
     override val url = "/#120"
     override val violationType = ViolationType.SHOULD
-    override val code = "120"
-    override val guidelinesCode = "120"
+    override val id = "120"
 
     @Check
     fun validate(swagger: Swagger): Violation? {

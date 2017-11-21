@@ -945,11 +945,11 @@ definitions:
   CommodityGroupJson:
     required:
     - "children"
-    - "code"
+    - "id"
     - "full_code"
     - "label"
     properties:
-      code:
+      id:
         type: "string"
       full_code:
         type: "string"
@@ -971,12 +971,12 @@ definitions:
     description: "ColorsJson"
   Error:
     required:
-    - "code"
+    - "id"
     - "title"
     properties:
       title:
         type: "string"
-      code:
+      id:
         type: "string"
     description: "Error"
   MerchantsEntityJson:

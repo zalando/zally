@@ -17,8 +17,7 @@ class FormatForNumbersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
     override val title = "Define Format for Type Number and Integer"
     override val url = "/#171"
     override val violationType = ViolationType.MUST
-    override val code = "171"
-    override val guidelinesCode = "171"
+    override val id = "171"
     private val description = """Numeric properties must have valid format specified: """
 
     private val type2format = rulesConfig.getConfig("$name.formats").entrySet()

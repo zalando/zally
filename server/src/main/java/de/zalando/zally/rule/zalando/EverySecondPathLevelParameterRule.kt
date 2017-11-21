@@ -14,8 +14,7 @@ class EverySecondPathLevelParameterRule(@Autowired ruleSet: ZalandoRuleSet) : Ab
     override val title = "Every Second Path Level To Be Parameter"
     override val url = "/#143"
     override val violationType = ViolationType.MUST
-    override val code = "143"
-    override val guidelinesCode = "143"
+    override val id = "143"
     private val DESCRIPTION = "Every second path level must be a path parameter"
 
     @Check

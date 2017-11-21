@@ -14,8 +14,7 @@ class ExtractBasePathRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(ruleS
     override val title = "Base path can be extracted"
     override val url = "/naming/Naming.html"
     override val violationType = ViolationType.HINT
-    override val code = "H001"
-    override val guidelinesCode = "H001"
+    override val id = "H001"
     private val DESC_PATTERN = "All paths start with prefix '%s'. This prefix could be part of base path."
 
     @Check

@@ -27,8 +27,7 @@ class NoUnusedDefinitionsRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(r
     override val violationType = ViolationType.SHOULD
     // TODO: Provide URL
     override val url = ""
-    override val code = "S005"
-    override val guidelinesCode = "S005"
+    override val id = "S005"
 
     @Check
     fun validate(swagger: Swagger): Violation? {

@@ -13,8 +13,7 @@ class RulesPolicyTest {
         override val title = "Test Rule"
         override val url = null
         override val violationType = ViolationType.MUST
-        override val code = "999"
-        override val guidelinesCode = "000"
+        override val id = "999"
 
         @Check
         fun validate(swagger: Swagger): Violation? = result

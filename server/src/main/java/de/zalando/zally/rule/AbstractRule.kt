@@ -20,5 +20,5 @@ abstract class AbstractRule(ruleSet: RuleSet) : Rule {
 
     override fun hashCode(): Int = name.hashCode()
 
-    override fun toString(): String = "$code-$name"
+    override fun toString(): String = "$id-$name"
 }

@@ -14,8 +14,7 @@ class AvoidTrailingSlashesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRul
     override val title = "Avoid Trailing Slashes"
     override val url = "/#136"
     override val violationType = ViolationType.MUST
-    override val code = "136"
-    override val guidelinesCode = "136"
+    override val id = "136"
     private val DESCRIPTION = "Rule avoid trailing slashes is not followed"
 
     @Check

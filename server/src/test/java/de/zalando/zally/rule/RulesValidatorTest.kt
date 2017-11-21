@@ -25,8 +25,7 @@ class RulesValidatorTest {
         override val title = "First Rule"
         override val url = null
         override val violationType = ViolationType.SHOULD
-        override val code = "S999"
-        override val guidelinesCode = "000"
+        override val id = "S999"
 
         @Check
         fun validate(swagger: Swagger): Violation? = result
@@ -36,8 +35,7 @@ class RulesValidatorTest {
         override val title = "Second Rule"
         override val url = null
         override val violationType = ViolationType.MUST
-        override val code = "999"
-        override val guidelinesCode = "000"
+        override val id = "999"
 
         @Check
         fun validate(swagger: Swagger): List<Violation> = listOfNotNull(result)
@@ -47,8 +45,7 @@ class RulesValidatorTest {
         override val title = "Third Rule"
         override val url = null
         override val violationType = ViolationType.MUST
-        override val code = "M666"
-        override val guidelinesCode = "666"
+        override val id = "M666"
 
         @Check
         fun invalid(swagger: Swagger): String = "Hello World!"

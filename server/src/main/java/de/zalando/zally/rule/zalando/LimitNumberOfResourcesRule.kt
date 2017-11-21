@@ -14,8 +14,7 @@ class LimitNumberOfResourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired 
     override val title = "Limit number of Resources"
     override val url = "/#146"
     override val violationType = ViolationType.SHOULD
-    override val code = "146"
-    override val guidelinesCode = "146"
+    override val id = "146"
     private val pathCountLimit = rulesConfig.getConfig(name).getInt("paths_count_limit")
 
     @Check

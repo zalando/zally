@@ -74,7 +74,7 @@ public class SupportedRulesController {
                 rule.getTitle(),
                 rule.getViolationType(),
                 baseUrl + rule.getUrl(),
-                rule.getCode(),
+                rule.getId(),
                 rulesPolicy.accepts(rule)
         );
     }

@@ -18,8 +18,7 @@ class SnakeCaseForQueryParamsRule(@Autowired ruleSet: ZalandoRuleSet) : Abstract
     override val title = "Use snake_case (never camelCase) for Query Parameters"
     override val url = "/#130"
     override val violationType = ViolationType.MUST
-    override val code = "130"
-    override val guidelinesCode = "130"
+    override val id = "130"
 
     @Check
     fun validate(swagger: Swagger): Violation? {

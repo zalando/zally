@@ -14,8 +14,7 @@ class NestedPathsMayBeRootPathsRule(@Autowired ruleSet: ZalandoRuleSet) : Abstra
     override val title = "Consider Using (Non-) Nested URLs"
     override val url = "/#145"
     override val violationType = ViolationType.MAY
-    override val code = "145"
-    override val guidelinesCode = "145"
+    override val id = "145"
     private val DESCRIPTION = "Nested paths / URLs may be top-level resource"
 
     @Check

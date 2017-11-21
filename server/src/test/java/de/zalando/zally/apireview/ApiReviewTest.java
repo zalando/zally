@@ -46,13 +46,7 @@ public class ApiReviewTest {
 
         @NotNull
         @Override
-        public String getCode() {
-            return null;
-        }
-
-        @NotNull
-        @Override
-        public String getGuidelinesCode() {
+        public String getId() {
             return null;
         }
 

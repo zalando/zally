@@ -18,8 +18,7 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
     override val title = "Define and Assign Access Rights (Scopes)"
     override val url = "/#104"
     override val violationType = MUST
-    override val code = "104"
-    override val guidelinesCode = "104"
+    override val id = "104"
     private val DESC = "Every endpoint must be secured by proper OAuth2 scope"
 
     @Check

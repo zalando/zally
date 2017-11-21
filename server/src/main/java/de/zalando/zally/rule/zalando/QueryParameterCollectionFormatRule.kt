@@ -14,8 +14,7 @@ class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : A
     override val title = "Explicitly define the Collection Format of Query Parameters"
     override val url = "/#154"
     override val violationType = ViolationType.SHOULD
-    override val code = "154"
-    override val guidelinesCode = "154"
+    override val id = "154"
     val formatsAllowed = listOf("csv", "multi")
     val violationDescription = "CollectionFormat should be one of: {formatsAllowed}"
 

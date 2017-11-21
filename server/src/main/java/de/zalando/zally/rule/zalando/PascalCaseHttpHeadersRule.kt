@@ -12,8 +12,7 @@ class PascalCaseHttpHeadersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
     override val title = "Prefer Hyphenated-Pascal-Case for HTTP header fields"
     override val url = "/#132"
     override val violationType = ViolationType.SHOULD
-    override val code = "132"
-    override val guidelinesCode = "132"
+    override val id = "132"
 
     override fun isViolation(header: String) = !PatternUtil.isHyphenatedPascalCase(header)
 
