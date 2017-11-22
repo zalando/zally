@@ -8,7 +8,7 @@ package de.zalando.zally.external.jbossdna;
  * See the AUTHORS.txt file in the distribution for a full listing of
  * individual contributors.
  *
- * JBoss DNA is free software. Unless otherwise indicated, all id in JBoss DNA
+ * JBoss DNA is free software. Unless otherwise indicated, all code in JBoss DNA
  * is licensed to you under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
@@ -65,10 +65,10 @@ public class Inflector {
      * Utility method to replace all occurrences given by the specific backreference with its uppercased form, and remove all
      * other backreferences.
      * <p>
-     * The Java {@link Pattern regular expression processing} does not use the preprocessing directives <id>\l</id>,
-     * <id>&#92;u</id>, <id>\L</id>, and <id>\U</id>. If so, such directives could be used in the replacement string
-     * to uppercase or lowercase the backreferences. For example, <id>\L1</id> would lowercase the first backreference, and
-     * <id>&#92;u3</id> would uppercase the 3rd backreference.
+     * The Java {@link Pattern regular expression processing} does not use the preprocessing directives <code>\l</code>,
+     * <code>&#92;u</code>, <code>\L</code>, and <code>\U</code>. If so, such directives could be used in the replacement string
+     * to uppercase or lowercase the backreferences. For example, <code>\L1</code> would lowercase the first backreference, and
+     * <code>&#92;u3</code> would uppercase the 3rd backreference.
      *
      * @param input
      * @param regex
@@ -223,7 +223,7 @@ public class Inflector {
     }
 
     /**
-     * By default, this method converts strings to UpperCamelCase. If the <id>uppercaseFirstLetter</id> argument to false,
+     * By default, this method converts strings to UpperCamelCase. If the <code>uppercaseFirstLetter</code> argument to false,
      * then this method produces lowerCamelCase. This method will also use any extra delimiter characters to identify word
      * boundaries.
      * <p>
