@@ -124,6 +124,6 @@ paths:
               type: string
 """
         Assertions.assertThat(cut.validate(SwaggerParser().parse(yaml))!!.paths)
-                .hasSameElementsAs(listOf("/things GET"))
+                .hasSameElementsAs(listOf("paths /things GET parameters: does not include a valid pageNumber query parameter"))
     }
 }

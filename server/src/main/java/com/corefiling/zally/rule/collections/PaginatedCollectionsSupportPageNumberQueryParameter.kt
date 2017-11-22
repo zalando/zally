@@ -4,7 +4,9 @@ import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
+import io.swagger.models.Operation
 import io.swagger.models.Swagger
+import io.swagger.models.parameters.Parameter
 import io.swagger.models.parameters.QueryParameter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -17,34 +19,33 @@ class PaginatedCollectionsSupportPageNumberQueryParameter(@Autowired ruleSet: Co
     override val description = "Paginated resources support a 'pageNumber' query parameter " +
             "with type:integer, format:int32, minimum:1 so that clients can easily iterate over the collection."
 
-    override fun validate(swagger: Swagger): Violation? {
-
-        val failures = mutableListOf<String>()
-
-        collectionPaths(swagger)?.forEach { pattern, path ->
-            if (path.get!=null) {
-
-                var found = false
-
-                path.get.parameters?.forEach { param ->
-                    if (param is QueryParameter && param.name=="pageNumber") {
-                        found = true
-                        if (param.type!="integer" ||
-                                param.format!="int32" ||
-                                param.minimum!= BigDecimal(1) ||
-                                !param.required) {
-                            failures.add(pattern + " GET")
-                        }
+    override fun validate(swagger: Swagger): Violation? = swagger.collections()
+                .map { (pattern, path) ->
+                    when {
+                        (hasPageNumberQueryParam(path.get)) -> null
+                        else -> "paths $pattern GET parameters: does not include a valid pageNumber query parameter"
                     }
                 }
-
-                if (!found) {
-                    failures.add(pattern + " GET")
+                .filterNotNull()
+                .takeIf(List<String>::isNotEmpty)
+                ?.let { it: List<String> ->
+                    Violation(this, title, description, violationType, url, it)
                 }
-            }
-        }
 
-        return if (failures.isEmpty()) null else
-            Violation(this, title, description, violationType, url, failures)
+    private fun hasPageNumberQueryParam(op: Operation?): Boolean =
+            op?.parameters?.find { isPageNumberQueryParam(it) } != null
+
+    private fun isPageNumberQueryParam(param: Parameter): Boolean {
+        if (param !is QueryParameter) {
+            return false
+        }
+        return when {
+            param.name != "pageNumber" -> false
+            param.type != "integer" -> false
+            param.format != "int32" -> false
+            param.minimum != BigDecimal(1) -> false
+            !param.required -> false
+            else -> true
+        }
     }
 }

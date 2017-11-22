@@ -14,9 +14,11 @@ import io.swagger.models.properties.RefProperty
 import io.swagger.parser.ResolverCache
 import kotlin.collections.Map.Entry
 
-fun collectionPaths(swagger: Swagger?): Map<String, Path>? {
-    return swagger?.paths?.filter {
-        entry: Entry<String, Path> -> detectCollection(swagger, entry.key, entry.value)
+fun Swagger.collections(): Map<String, Path> = collectionPaths(this)
+
+fun collectionPaths(swagger: Swagger?): Map<String, Path> {
+    return swagger?.paths.orEmpty().filter {
+        entry: Entry<String, Path> -> detectCollection(swagger!!, entry.key, entry.value)
     }
 }
 

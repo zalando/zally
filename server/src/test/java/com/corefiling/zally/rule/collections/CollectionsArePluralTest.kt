@@ -76,7 +76,7 @@ paths:
               type: string
 """
         Assertions.assertThat(cut.validate(SwaggerParser().parse(yaml))!!.paths)
-                .hasSameElementsAs(listOf("thing in /thing"))
+                .hasSameElementsAs(listOf("paths /thing: 'thing' appears to be singular"))
     }
 
     @Test
@@ -98,6 +98,6 @@ paths:
               type: string
 """
         Assertions.assertThat(cut.validate(SwaggerParser().parse(yaml))!!.paths)
-                .hasSameElementsAs(listOf("package in /path/to/taxonomy-package/"))
+                .hasSameElementsAs(listOf("paths /path/to/taxonomy-package/: 'package' appears to be singular"))
     }
 }

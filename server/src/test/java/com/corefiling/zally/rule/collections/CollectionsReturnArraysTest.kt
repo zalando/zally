@@ -59,6 +59,6 @@ paths:
         required: true
 """
         assertThat(cut.validate(SwaggerParser().parse(yaml))!!.paths)
-                .hasSameElementsAs(listOf("/things"))
+                .hasSameElementsAs(listOf("paths /things GET responses 200 schema type: expected array but found object"))
     }
 }

@@ -60,6 +60,6 @@ paths:
               type: string
 """
         Assertions.assertThat(cut.validate(SwaggerParser().parse(yaml))!!.paths)
-                .hasSameElementsAs(listOf("/things GET 200"))
+                .hasSameElementsAs(listOf("paths /things GET responses 200 headers: does not include an int32 format integer X-Total-Pages header"))
     }
 }

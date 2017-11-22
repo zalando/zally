@@ -53,7 +53,7 @@ paths:
     get:
 """
         Assertions.assertThat(cut.validate(SwaggerParser().parse(yaml))!!.paths)
-                .hasSameElementsAs(listOf("/{indexes}/query"))
+                .hasSameElementsAs(listOf("paths /{indexes}/query: {indexes} parameter has no proceeding component"))
     }
 
     @Test
@@ -68,7 +68,7 @@ paths:
     get:
 """
         Assertions.assertThat(cut.validate(SwaggerParser().parse(yaml))!!.paths)
-                .hasSameElementsAs(listOf("/thing/{indexes}/query"))
+                .hasSameElementsAs(listOf("paths /thing/{indexes}/query: {indexes} parameter has proceeding component 'thing' which appears to be singular"))
     }
 
     @Test
@@ -83,6 +83,6 @@ paths:
     get:
 """
         Assertions.assertThat(cut.validate(SwaggerParser().parse(yaml))!!.paths)
-                .hasSameElementsAs(listOf("/indexes/{indexes}/{source}/query"))
+                .hasSameElementsAs(listOf("paths /indexes/{indexes}/{source}/query: {source} parameter has proceeding parameter {indexes} rather than a non-parameter"))
     }
 }
