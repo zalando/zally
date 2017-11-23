@@ -6,6 +6,7 @@ import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
 import io.swagger.models.ArrayModel
 import io.swagger.models.Model
+import io.swagger.models.Response
 import io.swagger.models.Swagger
 import io.swagger.models.properties.ArrayProperty
 import io.swagger.models.properties.RefProperty
@@ -19,32 +20,31 @@ class CollectionsReturnArrays(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilin
     override val violationType = ViolationType.MUST
     override val description = "Collection resources return arrays so that they can be acted upon easily"
 
-    override fun validate(swagger: Swagger): Violation? {
-
-        val failures = mutableListOf<String>()
-
-        collectionPaths(swagger)?.forEach { pattern, path ->
-            if (path.get!=null) {
-
-                path.get.responses?.forEach { code, response ->
-                    if (Integer.parseInt(code) < 300) {
-                        var array = response.schema is ArrayProperty
-
-                        if (response.schema is RefProperty) {
-                            val ref = response.schema as RefProperty
-                            val resolver = ResolverCache(swagger, null, null)
-                            array = resolver.loadRef(ref.`$ref`, ref.refFormat, Model::class.java) is ArrayModel
+    override fun validate(swagger: Swagger): Violation? = swagger.collections()
+            .flatMap { (pattern, path) ->
+                path.get?.responses.orEmpty()
+                        .filterKeys { Integer.parseInt(it) in 200..299 }
+                        .filterValues { !isArrayResponse(it, swagger) }
+                        .map { (code, response) ->
+                            "paths $pattern GET responses $code schema type: expected array but found ${response?.schema?.type}"
                         }
-
-                        if (!array) {
-                            failures.add(pattern)
-                        }
-                    }
-                }
             }
+            .takeIf(List<String>::isNotEmpty)?.let { it: List<String> ->
+                Violation(this, title, description, violationType, url, it)
+            }
+
+    private fun isArrayResponse(response: Response, swagger: Swagger): Boolean {
+        val schema = response.schema ?: return false
+
+        if (schema is ArrayProperty) {
+            return true
         }
 
-        return if (failures.isEmpty()) null else
-            Violation(this, title, description, violationType, url, failures)
+        if (schema is RefProperty) {
+            val resolver = ResolverCache(swagger, null, null)
+            return resolver.loadRef(schema.`$ref`, schema.refFormat, Model::class.java) is ArrayModel
+        }
+
+        return false
     }
 }

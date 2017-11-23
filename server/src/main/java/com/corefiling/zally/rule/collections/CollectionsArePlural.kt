@@ -15,22 +15,21 @@ class CollectionsArePlural(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSw
     override val violationType = ViolationType.SHOULD
     override val description = "Collection resources are plural to indicate that they multiple child resources will be available"
 
-    override fun validate(swagger: Swagger): Violation? {
-
-        val failures = mutableListOf<String>()
-
-        collectionPaths(swagger)?.forEach { pattern, _ ->
-
-            val word = pattern
-                    .split(Regex("\\W"))
-                    .last { it.isNotBlank() }
-
-            if (!isPlural(word)) {
-                failures.add("$word in $pattern")
+    override fun validate(swagger: Swagger): Violation? = swagger.collections()
+            .map { (pattern, path) ->
+                val lastWord = pattern
+                        .split(Regex("\\W"))
+                        .last { it.isNotBlank() }
+                if (isPlural(lastWord)) {
+                    null
+                } else {
+                    "paths $pattern: '$lastWord' appears to be singular"
+                }
             }
-        }
+            .filterNotNull()
+            .takeIf(List<String>::isNotEmpty)
+            ?.let { it: List<String> ->
+                Violation(this, title, description, violationType, url, it)
+            }
 
-        return if (failures.isEmpty()) null else
-            Violation(this, title, description, violationType, url, failures)
-    }
 }

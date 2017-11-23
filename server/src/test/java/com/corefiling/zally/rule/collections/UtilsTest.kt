@@ -3,19 +3,18 @@ package com.corefiling.zally.rule.collections
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Test
 
 class UtilsTest {
 
     @Test
-    fun collectionPathsWithNullReturnsNull() {
-        assertNull(collectionPaths(null))
+    fun collectionPathsWithNullReturnsEmpty() {
+        assertEquals(0, collectionPaths(null).size)
     }
 
     @Test
-    fun collectionPathsWithDefaultReturnsNull() {
-        assertNull(collectionPaths(Swagger()))
+    fun collectionPathsWithDefaultReturnsEmpty() {
+        assertEquals(0, collectionPaths(Swagger()).size)
     }
 
     @Test
