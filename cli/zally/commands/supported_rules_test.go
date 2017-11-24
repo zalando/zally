@@ -73,7 +73,7 @@ func TestFetchRules(t *testing.T) {
 		tests.AssertEquals(t, len(rules.Rules), 15)
 		tests.AssertEquals(t, "166", rules.Rules[0].Code)
 		tests.AssertEquals(t, "Avoid Link in Header Rule", rules.Rules[0].Title)
-		tests.AssertEquals(t, "http://zalando.github.io/restful-api-guidelines/hyper-media/Hypermedia.html#must-do-not-use-link-headers-with-json-entities", rules.Rules[0].URL)
+		tests.AssertEquals(t, "https://zalando.github.io/restful-api-guidelines/hyper-media/Hypermedia.html#must-do-not-use-link-headers-with-json-entities", rules.Rules[0].URL)
 		tests.AssertEquals(t, true, rules.Rules[0].IsActive)
 		tests.AssertEquals(t, "MUST", rules.Rules[0].Type)
 	})
