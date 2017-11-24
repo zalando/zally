@@ -1,6 +1,6 @@
 # Zally Rule Sets
 
-Zally comes with a number of Rule Sets which can be selected used. The built in rule sets are documented below.
+Zally comes with a number of Rule Sets which can be selected and used. The built in rule sets are documented below.
 
 # ZalandoRuleSet
 
