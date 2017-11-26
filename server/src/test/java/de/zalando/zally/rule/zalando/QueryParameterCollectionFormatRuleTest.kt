@@ -1,6 +1,5 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
 import io.swagger.models.Operation
 import io.swagger.models.Path
 import io.swagger.models.Swagger
@@ -19,8 +18,9 @@ class QueryParameterCollectionFormatRuleTest {
         }
 
         val result = rule.validate(swagger)!!
-        assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
-        assertThat(result.rule.id).isEqualTo("154")
+        assertThat(result)
+                .hasFieldOrPropertyWithValue("description", "CollectionFormat should be one of: [csv, multi]")
+                .hasFieldOrPropertyWithValue("paths", listOf("parameters test"))
     }
 
     @Test
@@ -31,8 +31,9 @@ class QueryParameterCollectionFormatRuleTest {
         }
 
         val result = rule.validate(swagger)!!
-        assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
-        assertThat(result.rule.id).isEqualTo("154")
+        assertThat(result)
+                .hasFieldOrPropertyWithValue("description", "CollectionFormat should be one of: [csv, multi]")
+                .hasFieldOrPropertyWithValue("paths", listOf("/apis test"))
     }
 
     @Test
@@ -42,8 +43,9 @@ class QueryParameterCollectionFormatRuleTest {
         }
 
         val result = rule.validate(swagger)!!
-        assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
-        assertThat(result.rule.id).isEqualTo("154")
+        assertThat(result)
+                .hasFieldOrPropertyWithValue("description", "CollectionFormat should be one of: [csv, multi]")
+                .hasFieldOrPropertyWithValue("paths", listOf("parameters test"))
     }
 
     @Test
@@ -54,8 +56,9 @@ class QueryParameterCollectionFormatRuleTest {
         }
 
         val result = rule.validate(swagger)!!
-        assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
-        assertThat(result.rule.id).isEqualTo("154")
+        assertThat(result)
+                .hasFieldOrPropertyWithValue("description", "CollectionFormat should be one of: [csv, multi]")
+                .hasFieldOrPropertyWithValue("paths", listOf("/apis test"))
     }
 
     @Test
@@ -95,5 +98,4 @@ class QueryParameterCollectionFormatRuleTest {
 
         assertThat(rule.validate(swagger)).isNull()
     }
-
 }

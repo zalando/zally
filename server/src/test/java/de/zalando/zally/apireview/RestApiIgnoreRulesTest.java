@@ -2,6 +2,7 @@ package de.zalando.zally.apireview;
 
 import de.zalando.zally.dto.ApiDefinitionResponse;
 import de.zalando.zally.dto.ViolationDTO;
+import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.springframework.test.context.TestPropertySource;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import static de.zalando.zally.util.ResourceUtil.readApiDefinition;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = "zally.ignoreRules=H999")
@@ -20,9 +22,12 @@ public class RestApiIgnoreRulesTest extends RestApiBaseTest {
         ApiDefinitionResponse response = sendApiDefinition(readApiDefinition("fixtures/api_spp.json"));
 
         List<ViolationDTO> violations = response.getViolations();
-        assertThat(violations).hasSize(2);
-        assertThat(violations.get(0).getTitle()).isEqualTo("dummy1");
-        assertThat(violations.get(1).getTitle()).isEqualTo("schema");
+        assertThat(violations)
+                .extracting("description","paths")
+                .containsExactly(
+                        new Tuple("dummy1", emptyList()),
+                        new Tuple("schema incorrect", emptyList())
+                );
 
         Map<String, Integer> count = response.getViolationsCount();
         assertThat(count.get("must")).isEqualTo(2);

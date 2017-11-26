@@ -12,7 +12,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,10 +62,26 @@ public class RestSupportedRulesTest extends RestApiBaseTest {
 
     @Test
     public void testFilterByType() {
-        for (ViolationType ruleType : ViolationType.values()) {
-            assertFilteredByRuleType(ruleType.toString());
-            assertFilteredByRuleType(ruleType.toString().toLowerCase());
-        }
+
+        final int expectedCount = implementedRules.size();
+
+        final int mustCount = getSupportedRules("MuSt", null).size();
+        assertThat(mustCount).isLessThan(expectedCount);
+
+        final int shouldCount = getSupportedRules("ShOuLd", null).size();
+        assertThat(shouldCount).isLessThan(expectedCount);
+
+        final int mayCount = getSupportedRules("MaY", null).size();
+        assertThat(mayCount).isLessThan(expectedCount);
+
+        final int couldCount = getSupportedRules("CoUlD", null).size();
+        assertThat(couldCount).isLessThan(expectedCount);
+
+        final int hintCount = getSupportedRules("HiNt", null).size();
+        assertThat(hintCount).isLessThan(expectedCount);
+
+        final int actualCount = mustCount + shouldCount + mayCount + couldCount + hintCount;
+        assertThat(actualCount).isEqualTo(expectedCount);
     }
 
     @Test
@@ -90,19 +105,5 @@ public class RestSupportedRulesTest extends RestApiBaseTest {
     public void testFilterByActiveFalse() {
         List<RuleDTO> rules = getSupportedRules(null, false);
         assertThat(rules.size()).isEqualTo(IGNORED_RULES.size());
-    }
-
-    private void assertFilteredByRuleType(String ruleType) throws AssertionError {
-        List<RuleDTO> rules = getSupportedRules(ruleType, null);
-        List<Rule> expectedRules = getRulesByType(ViolationType.valueOf(ruleType.toUpperCase()));
-
-        assertThat(rules.size()).isEqualTo(expectedRules.size());
-    }
-
-    private List<Rule> getRulesByType(ViolationType violationType) {
-        return implementedRules
-            .stream()
-            .filter(r -> r.getViolationType() == violationType)
-            .collect(Collectors.toList());
     }
 }
