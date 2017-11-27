@@ -65,13 +65,13 @@ func TestIntegrationWithSomeOtherLocalYamlFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_tinbox.yaml"})
 
 		assert.Contains(t, out, "OpenAPI 2.0 schema")
-		assert.Contains(t, out, "MUST violations: 8")
-		assert.Contains(t, out, "SHOULD violations: 4")
+		assert.Contains(t, out, "MUST violations: 9")
+		assert.Contains(t, out, "SHOULD violations: 3")
 		assert.Contains(t, out, "MAY violations: 0")
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, "Failing because: 8 must violation(s) found", e.Error())
+		assert.Equal(t, "Failing because: 9 must violation(s) found", e.Error())
 	})
 }
 
