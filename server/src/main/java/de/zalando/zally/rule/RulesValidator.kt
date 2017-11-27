@@ -36,12 +36,15 @@ abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private 
         return { rule: RuleT ->
             log.debug("validating ${rule.javaClass.simpleName} rule")
             rule::class.java.methods
-                    .filter { it.isAnnotationPresent(Check::class.java) }
-                    .filter { it.parameters.size == 1 }
-                    .filter { it.parameters[0].type.isAssignableFrom(root::class.java) }
+                    .filter { isCheckMethod(it, root) }
                     .flatMap { invoke(it, rule, root) }
         }
     }
+
+    private fun isCheckMethod(it: Method, root: Any) =
+            it.isAnnotationPresent(Check::class.java) &&
+                    it.parameters.size == 1 &&
+                    it.parameters[0].type.isAssignableFrom(root::class.java)
 
     private fun invoke(check: Method, rule: RuleT, root: Any): Iterable<Violation> {
         log.debug("validating ${check.name} of ${rule.javaClass.simpleName} rule")
