@@ -15,10 +15,8 @@ import org.springframework.stereotype.Component
 @Component
 class FormatForNumbersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Define Format for Type Number and Integer"
-    override val url = "/#171"
     override val violationType = ViolationType.MUST
-    override val code = "M018"
-    override val guidelinesCode = "171"
+    override val id = "171"
     private val description = """Numeric properties must have valid format specified: """
 
     private val type2format = rulesConfig.getConfig("$name.formats").entrySet()
@@ -43,7 +41,7 @@ class FormatForNumbersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
         return if (result.isNotEmpty()) {
             val (props, paths) = result.unzip()
             val properties = props.flatten().toSet().joinToString(", ")
-            Violation(this, title, description + properties, violationType, url, paths)
+            Violation(this, title, description + properties, violationType, paths)
         } else null
     }
 

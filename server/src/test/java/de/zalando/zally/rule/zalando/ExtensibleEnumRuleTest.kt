@@ -22,7 +22,6 @@ class ExtensibleEnumRuleTest {
         val expectedViolation = Violation(rule = rule,
                 title = rule.title,
                 violationType = ViolationType.SHOULD,
-                ruleLink = rule.url,
                 description = "Properties/Parameters [status] are not extensible enums",
                 paths = listOf("#/definitions/CrawledAPIDefinition/properties/status"))
 
@@ -38,7 +37,6 @@ class ExtensibleEnumRuleTest {
         val expectedViolation = Violation(rule = rule,
                 title = rule.title,
                 violationType = ViolationType.SHOULD,
-                ruleLink = rule.url,
                 description = "Properties/Parameters [lifecycle_state, environment] are not extensible enums",
                 paths = listOf("#/paths/apis/{api_id}/versions/GET/parameters/lifecycle_state",
                         "#/paths/apis/GET/parameters/environment"))

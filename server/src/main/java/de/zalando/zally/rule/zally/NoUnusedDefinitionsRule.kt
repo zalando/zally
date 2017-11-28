@@ -25,11 +25,7 @@ import org.springframework.stereotype.Component
 class NoUnusedDefinitionsRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(ruleSet) {
     override val title = "Do not leave unused definitions"
     override val violationType = ViolationType.SHOULD
-    // TODO: Provide URL
-    override val url = ""
-    override val code = "S005"
-    // TODO: Provide guidelines code
-    override val guidelinesCode = ""
+    override val id = "S005"
 
     @Check
     fun validate(swagger: Swagger): Violation? {
@@ -55,7 +51,7 @@ class NoUnusedDefinitionsRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(r
         val paths = unusedParams + unusedDefs
 
         return if (paths.isNotEmpty()) {
-            Violation(this, title, "Found ${paths.size} unused definitions", violationType, url, paths)
+            Violation(this, title, "Found ${paths.size} unused definitions", violationType, paths)
         } else null
     }
 

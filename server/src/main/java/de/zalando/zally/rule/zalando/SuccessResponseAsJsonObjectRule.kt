@@ -17,9 +17,7 @@ class SuccessResponseAsJsonObjectRule(@Autowired ruleSet: ZalandoRuleSet) : Abst
 
     override val title = "Response As JSON Object"
     override val violationType = ViolationType.MUST
-    override val url = "/#110"
-    override val code = "M013"
-    override val guidelinesCode = "110"
+    override val id = "110"
     private val DESCRIPTION = "Always Return JSON Objects As Top-Level Data Structures To Support Extensibility"
 
     @Check
@@ -39,7 +37,7 @@ class SuccessResponseAsJsonObjectRule(@Autowired ruleSet: ZalandoRuleSet) : Abst
             }
         }
 
-        return if (paths.isNotEmpty()) Violation(this, title, DESCRIPTION, violationType, url, paths) else null
+        return if (paths.isNotEmpty()) Violation(this, title, DESCRIPTION, violationType, paths) else null
     }
 
     private fun Property?.isRefToObject(swagger: Swagger) =

@@ -12,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired
 class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
 
     override val title = "Explicitly define the Collection Format of Query Parameters"
-    override val url = "/#154"
     override val violationType = ViolationType.SHOULD
-    override val code = "S011"
-    override val guidelinesCode = "154"
+    override val id = "154"
     val formatsAllowed = listOf("csv", "multi")
     val violationDescription = "CollectionFormat should be one of: {formatsAllowed}"
 
@@ -42,7 +40,7 @@ class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : A
     }
 
     fun createViolation(paths: List<String>): Violation {
-        return Violation(this, title, violationDescription, violationType, url, paths)
+        return Violation(this, title, violationDescription, violationType, paths)
     }
 
 }

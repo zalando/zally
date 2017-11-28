@@ -13,10 +13,8 @@ import org.springframework.stereotype.Component
 class KebabCaseInPathSegmentsRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
 
     override val title = "Lowercase words with hyphens"
-    override val url = "/#129"
     override val violationType = ViolationType.MUST
-    override val code = "M007"
-    override val guidelinesCode = "129"
+    override val id = "129"
     private val description = "Use lowercase separate words with hyphens for path segments"
 
     @Check
@@ -25,6 +23,6 @@ class KebabCaseInPathSegmentsRule(@Autowired ruleSet: ZalandoRuleSet) : Abstract
             val pathSegments = it.split("/").filter { it.isNotEmpty() }
             pathSegments.filter { !PatternUtil.isPathVariable(it) && !PatternUtil.isLowerCaseAndHyphens(it) }.isEmpty()
         }
-        return if (paths.isNotEmpty()) Violation(this, title, description, violationType, url, paths) else null
+        return if (paths.isNotEmpty()) Violation(this, title, description, violationType, paths) else null
     }
 }

@@ -12,15 +12,13 @@ import org.springframework.stereotype.Component
 @Component
 class AvoidTrailingSlashesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Avoid Trailing Slashes"
-    override val url = "/#136"
     override val violationType = ViolationType.MUST
-    override val code = "M002"
-    override val guidelinesCode = "136"
+    override val id = "136"
     private val DESCRIPTION = "Rule avoid trailing slashes is not followed"
 
     @Check
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().keys.filter { it != null && PatternUtil.hasTrailingSlash(it) }
-        return if (!paths.isEmpty()) Violation(this, title, DESCRIPTION, violationType, url, paths) else null
+        return if (!paths.isEmpty()) Violation(this, title, DESCRIPTION, violationType, paths) else null
     }
 }

@@ -78,7 +78,7 @@ public class ApiReview implements Serializable {
 
         this.name = ApiNameParser.extractApiName(apiDefinition);
         this.ruleViolations = violations.stream()
-            .map(v -> new RuleViolation(this, v.getRule().getName(), v.getViolationType(), v.getPaths().size()))
+            .map(v -> new RuleViolation(this, v.getRule().getClass().getSimpleName(), v.getViolationType(), v.getPaths().size()))
             .collect(Collectors.toList());
 
         this.numberOfEndpoints = EndpointCounter.count(apiDefinition);

@@ -14,10 +14,8 @@ import org.springframework.stereotype.Component
 @Component
 class SnakeCaseInPropNameRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "snake_case property names"
-    override val url = "/#118"
     override val violationType = ViolationType.MUST
-    override val code = "M012"
-    override val guidelinesCode = "118"
+    override val id = "118"
     private val description = "Property names must be snake_case: "
 
     private val whitelist = rulesConfig.getStringList(SnakeCaseInPropNameRule::class.simpleName + ".whitelist").toSet()
@@ -31,7 +29,7 @@ class SnakeCaseInPropNameRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rul
         return if (result.isNotEmpty()) {
             val (props, paths) = result.unzip()
             val properties = props.flatten().toSet().joinToString(", ")
-            Violation(this, title, description + properties, violationType, url, paths)
+            Violation(this, title, description + properties, violationType, paths)
         } else null
     }
 }

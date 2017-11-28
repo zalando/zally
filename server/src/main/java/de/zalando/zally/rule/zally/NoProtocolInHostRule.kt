@@ -11,19 +11,15 @@ import org.springframework.stereotype.Component
 @Component
 class NoProtocolInHostRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(ruleSet) {
     override val title = "Host should not contain protocol"
-    // TODO: Provide URL
-    override val url = ""
     override val violationType = ViolationType.MUST
-    override val code = "M008"
-    // TODO: Provide guidelines code
-    override val guidelinesCode = ""
+    override val id = "M008"
     private val desc = "Information about protocol should be placed in schema. Current host value '%s' violates this rule"
 
     @Check
     fun validate(swagger: Swagger): Violation? {
         val host = swagger.host.orEmpty()
         return if ("://" in host)
-            Violation(this, title, desc.format(host), violationType, url, emptyList())
+            Violation(this, title, desc.format(host), violationType, emptyList())
         else null
     }
 }

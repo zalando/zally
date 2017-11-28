@@ -39,7 +39,7 @@ class ExtractBasePathRuleTest {
         )
         val rule = rule
         val expected = Violation(rule, rule.title, DESC_PATTERN.format("/shipment"),
-                ViolationType.HINT, rule.url, emptyList())
+                ViolationType.HINT, emptyList())
         assertThat(rule.validate(swagger)).isEqualTo(expected)
     }
 
@@ -53,7 +53,7 @@ class ExtractBasePathRuleTest {
         )
         val rule = rule
         val expected = Violation(rule, rule.title, DESC_PATTERN.format("/queue/models"),
-                ViolationType.HINT, rule.url, emptyList())
+                ViolationType.HINT, emptyList())
         assertThat(rule.validate(swagger)).isEqualTo(expected)
     }
 

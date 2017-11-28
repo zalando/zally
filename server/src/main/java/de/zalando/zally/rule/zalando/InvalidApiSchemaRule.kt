@@ -23,9 +23,7 @@ open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
 
     override val title = "OpenAPI 2.0 schema"
     override val violationType = ViolationType.MUST
-    override val url = "/#101"
-    override val code = "M000"
-    override val guidelinesCode = "101"
+    override val id = "101"
     open val description = "Given file is not OpenAPI 2.0 compliant."
 
     val jsonSchemaValidator: JsonSchemaValidator
@@ -64,11 +62,11 @@ open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
     fun validate(swagger: JsonNode): List<Violation> {
         return jsonSchemaValidator.validate(swagger).let { validationResult ->
             validationResult.messages.map { message ->
-                Violation(this, this.title, message.message, this.violationType, this.url, listOf(message.path))
+                Violation(this, this.title, message.message, this.violationType, listOf(message.path))
             }
         }
     }
 
     fun getGeneralViolation(): Violation =
-            Violation(this, title, description, violationType, url, emptyList())
+            Violation(this, title, description, violationType, emptyList())
 }

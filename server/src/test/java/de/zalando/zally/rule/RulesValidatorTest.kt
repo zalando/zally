@@ -15,18 +15,16 @@ import org.mockito.Mockito.mock
 
 class RulesValidatorTest {
 
-    val DUMMY_VIOLATION_1 = Violation(FirstRule(null), "dummy1", "dummy", ViolationType.SHOULD, "dummy", listOf("x", "y", "z"))
-    val DUMMY_VIOLATION_2 = Violation(FirstRule(null), "dummy2", "dummy", ViolationType.MAY, "dummy", listOf())
-    val DUMMY_VIOLATION_3 = Violation(SecondRule(null), "dummy3", "dummy", ViolationType.MUST, "dummy", listOf("a"))
+    val DUMMY_VIOLATION_1 = Violation(FirstRule(null), "dummy1", "dummy", ViolationType.SHOULD, listOf("x", "y", "z"))
+    val DUMMY_VIOLATION_2 = Violation(FirstRule(null), "dummy2", "dummy", ViolationType.MAY, listOf())
+    val DUMMY_VIOLATION_3 = Violation(SecondRule(null), "dummy3", "dummy", ViolationType.MUST, listOf("a"))
 
     val swaggerContent = javaClass.classLoader.getResource("fixtures/api_spp.json").readText(Charsets.UTF_8)
 
     class FirstRule(val result: Violation?) : AbstractRule(ZalandoRuleSet()) {
         override val title = "First Rule"
-        override val url = null
         override val violationType = ViolationType.SHOULD
-        override val code = "S999"
-        override val guidelinesCode = "000"
+        override val id = "S999"
 
         @Check
         fun validate(swagger: Swagger): Violation? = result
@@ -34,10 +32,8 @@ class RulesValidatorTest {
 
     class SecondRule(val result: Violation?) : AbstractRule(ZalandoRuleSet()) {
         override val title = "Second Rule"
-        override val url = null
         override val violationType = ViolationType.MUST
-        override val code = "M999"
-        override val guidelinesCode = "000"
+        override val id = "999"
 
         @Check
         fun validate(swagger: Swagger): List<Violation> = listOfNotNull(result)
@@ -45,10 +41,8 @@ class RulesValidatorTest {
 
     class BadRule() : AbstractRule(ZalandoRuleSet()) {
         override val title = "Third Rule"
-        override val url = null
         override val violationType = ViolationType.MUST
-        override val code = "M666"
-        override val guidelinesCode = "666"
+        override val id = "M666"
 
         @Check
         fun invalid(swagger: Swagger): String = "Hello World!"
@@ -91,7 +85,7 @@ class RulesValidatorTest {
     fun shouldIgnoreSpecifiedRules() {
         val violations = listOf(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2, DUMMY_VIOLATION_3)
         val validator = SwaggerRulesValidator(getRules(violations), invalidApiSchemaRule)
-        assertThat(validator.validate(swaggerContent, RulesPolicy(arrayOf("M999")))).containsExactly(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2)
+        assertThat(validator.validate(swaggerContent, RulesPolicy(arrayOf("999")))).containsExactly(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2)
     }
 
     @Test
@@ -100,7 +94,6 @@ class RulesValidatorTest {
         Mockito.`when`(resultRule.title).thenReturn("InvalidApiSchemaRule Title")
         Mockito.`when`(resultRule.description).thenReturn("desc")
         Mockito.`when`(resultRule.violationType).thenReturn(ViolationType.MUST)
-        Mockito.`when`(resultRule.url).thenReturn("url")
 
         val validator = SwaggerRulesValidator(emptyList(), resultRule)
         val valResult = validator.validate("Invalid swagger content !@##", RulesPolicy(emptyArray()))
@@ -112,7 +105,7 @@ class RulesValidatorTest {
     fun checkReturnsStringThrowsException() {
         assertThatThrownBy {
             val validator = SwaggerRulesValidator(listOf(BadRule()), invalidApiSchemaRule)
-            validator.validate(swaggerContent, RulesPolicy(arrayOf("M999")))
+            validator.validate(swaggerContent, RulesPolicy(arrayOf("999")))
         }.hasMessage("Unsupported return type for a @Check check!: class java.lang.String")
     }
 

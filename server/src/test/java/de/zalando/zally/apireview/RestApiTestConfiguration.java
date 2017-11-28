@@ -55,7 +55,7 @@ public class RestApiTestConfiguration {
             JsonNode title = swagger.path("info").path("title");
             if (!title.isMissingNode() && title.textValue().contains("Product Service")) {
                 return Arrays.asList(
-                        new Violation(this, getTitle(), "schema incorrect", getViolationType(), getUrl(), Collections.emptyList()));
+                        new Violation(this, getTitle(), "schema incorrect", getViolationType(), Collections.emptyList()));
             } else {
                 return Collections.emptyList();
             }
@@ -72,19 +72,10 @@ public class RestApiTestConfiguration {
         }
 
         @Override
-        public String getUrl() {
-            return "url";
+        public String getId() {
+            return "166";
         }
 
-        @Override
-        public String getCode() {
-            return "M001";
-        }
-
-        @Override
-        public String getGuidelinesCode() {
-            return "000";
-        }
     }
 
     public static class CheckApiNameIsPresentRule extends AbstractRule {
@@ -99,15 +90,10 @@ public class RestApiTestConfiguration {
         @Check
         public Violation validate(Swagger swagger) {
             if (swagger != null && swagger.getInfo().getTitle().contains(apiName)) {
-                return new Violation(new CheckApiNameIsPresentRule(null), "dummy1", "dummy", ViolationType.MUST, "dummy", Collections.emptyList());
+                return new Violation(new CheckApiNameIsPresentRule(null), "dummy1", "dummy", ViolationType.MUST, Collections.emptyList());
             } else {
                 return null;
             }
-        }
-
-        @Override
-        public String getUrl() {
-            return null;
         }
 
         @Override
@@ -121,14 +107,10 @@ public class RestApiTestConfiguration {
         }
 
         @Override
-        public String getCode() {
-            return "M999";
+        public String getId() {
+            return "999";
         }
 
-        @Override
-        public String getGuidelinesCode() {
-            return "000";
-        }
     }
 
     public static class AlwaysGiveAHintRule extends AbstractRule {
@@ -140,12 +122,7 @@ public class RestApiTestConfiguration {
         public Violation validate(Swagger swagger) {
             return new Violation(
                 new AlwaysGiveAHintRule(),
-                "dummy2", "dummy", ViolationType.HINT, "dummy", Collections.emptyList());
-        }
-
-        @Override
-        public String getUrl() {
-            return null;
+                "dummy2", "dummy", ViolationType.HINT, Collections.emptyList());
         }
 
         @Override
@@ -159,13 +136,9 @@ public class RestApiTestConfiguration {
         }
 
         @Override
-        public String getCode() {
+        public String getId() {
             return "H999";
         }
 
-        @Override
-        public String getGuidelinesCode() {
-            return "000";
-        }
     }
 }
