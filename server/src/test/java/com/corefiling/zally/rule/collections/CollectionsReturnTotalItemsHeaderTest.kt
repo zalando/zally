@@ -6,9 +6,9 @@ import io.swagger.parser.SwaggerParser
 import org.assertj.core.api.Assertions
 import org.junit.Test
 
-class PaginatedCollectionsReturnXTotalPagesHeaderTest {
+class CollectionsReturnTotalItemsHeaderTest {
 
-    val cut = PaginatedCollectionsReturnXTotalPagesHeader(CoreFilingRuleSet())
+    val cut = CollectionsReturnTotalItemsHeader(CoreFilingRuleSet())
 
     @Test
     fun withEmptyReturnsNull() {
@@ -29,10 +29,10 @@ paths:
         '200':
           description: describe me
           headers:
-            X-Total-Pages:
+            Total-Items:
               type: integer
               format: int32
-              description: The total number of pages in the collection
+              description: The total number of items in the collection
           schema:
             type: array
             items:
@@ -60,6 +60,6 @@ paths:
               type: string
 """
         Assertions.assertThat(cut.validate(SwaggerParser().parse(yaml))!!.paths)
-                .hasSameElementsAs(listOf("paths /things GET responses 200 headers: does not include an int32 format integer X-Total-Pages header"))
+                .hasSameElementsAs(listOf("paths /things GET responses 200 headers: does not include an int32 format integer Total-Items header"))
     }
 }

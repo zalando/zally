@@ -10,19 +10,19 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class PaginatedCollectionsReturnXTotalPagesHeader(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
-    override val title = "Paginated Resources Return X-Total-Pages Header"
+class PaginatedCollectionsReturnTotalPagesHeader(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
+    override val title = "Paginated Resources Return Total-Pages Header"
     override val violationType = ViolationType.SHOULD
-    override val description = "Paginated resources return the X-Total-Pages header " +
+    override val description = "Paginated resources return the Total-Pages header " +
             "with type:integer and format:int32 so that clients can easily iterate over the collection."
 
     override fun validate(swagger: Swagger): Violation? = swagger.collections()
             .flatMap { (pattern, path) ->
                 path.get?.responses.orEmpty()
                         .filterKeys { Integer.parseInt(it) in 200..299 }
-                        .filterValues { !hasXTotalPagesHeader(it) }
+                        .filterValues { !hasTotalPagesHeader(it) }
                         .map { (code, _) ->
-                            "paths $pattern GET responses $code headers: does not include an int32 format integer X-Total-Pages header"
+                            "paths $pattern GET responses $code headers: does not include an int32 format integer Total-Pages header"
                         }
             }
             .takeIf(List<String>::isNotEmpty)
@@ -30,8 +30,8 @@ class PaginatedCollectionsReturnXTotalPagesHeader(@Autowired ruleSet: CoreFiling
                 Violation(this, title, description, violationType, url, it)
             }
 
-    private fun hasXTotalPagesHeader(response: Response?): Boolean {
-        val header = response?.headers?.get("X-Total-Pages") ?: return false
+    private fun hasTotalPagesHeader(response: Response?): Boolean {
+        val header = response?.headers?.get("Total-Pages") ?: return false
         return when {
             header.type != "integer" -> false
             header.format != "int32" -> false
