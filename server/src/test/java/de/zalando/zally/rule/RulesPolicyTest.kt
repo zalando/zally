@@ -2,6 +2,7 @@ package de.zalando.zally.rule
 
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import io.swagger.models.Swagger
 import org.junit.Assert.assertFalse

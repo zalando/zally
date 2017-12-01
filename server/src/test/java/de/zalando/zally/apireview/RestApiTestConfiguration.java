@@ -7,7 +7,7 @@ import de.zalando.zally.rule.ApiValidator;
 import de.zalando.zally.rule.CompositeRulesValidator;
 import de.zalando.zally.rule.JsonRulesValidator;
 import de.zalando.zally.rule.SwaggerRulesValidator;
-import de.zalando.zally.rule.Violation;
+import de.zalando.zally.rule.api.Violation;
 import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.rule.api.RuleSet;

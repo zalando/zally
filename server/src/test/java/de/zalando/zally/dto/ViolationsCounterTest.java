@@ -1,7 +1,7 @@
 package de.zalando.zally.dto;
 
+import de.zalando.zally.rule.Result;
 import de.zalando.zally.rule.zalando.AvoidTrailingSlashesRule;
-import de.zalando.zally.rule.Violation;
 import de.zalando.zally.rule.zalando.ZalandoRuleSet;
 import org.junit.Test;
 
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 
 
 public class ViolationsCounterTest {
-    private static void assertCounters(Map<ViolationType, Integer> expectedCounters, List<Violation> violations)
+    private static void assertCounters(Map<ViolationType, Integer> expectedCounters, List<Result> violations)
         throws AssertionError {
 
         final ViolationsCounter counter = new ViolationsCounter(violations);
@@ -26,7 +26,7 @@ public class ViolationsCounterTest {
 
     @Test
     public void returnsZerosWhenViolationListIsEmpty() {
-        final List<Violation> violations = new ArrayList<>();
+        final List<Result> violations = new ArrayList<>();
         final Map<ViolationType, Integer> expectedCounters = new HashMap<>();
         expectedCounters.put(ViolationType.MUST, 0);
         expectedCounters.put(ViolationType.SHOULD, 0);
@@ -38,7 +38,7 @@ public class ViolationsCounterTest {
 
     @Test
     public void countsMustViolations() {
-        final List<Violation> violations = new ArrayList<>();
+        final List<Result> violations = new ArrayList<>();
         IntStream.range(0, 5).forEach(
             (i) -> violations.add(generateViolation(ViolationType.MUST))
         );
@@ -53,7 +53,7 @@ public class ViolationsCounterTest {
 
     @Test
     public void countsShouldViolations() {
-        final List<Violation> violations = new ArrayList<>();
+        final List<Result> violations = new ArrayList<>();
         IntStream.range(0, 5).forEach(
             (i) -> violations.add(generateViolation(ViolationType.SHOULD))
         );
@@ -67,7 +67,7 @@ public class ViolationsCounterTest {
 
     @Test
     public void countsMayViolations() {
-        final List<Violation> violations = new ArrayList<>();
+        final List<Result> violations = new ArrayList<>();
         IntStream.range(0, 5).forEach(
             (i) -> violations.add(generateViolation(ViolationType.MAY))
         );
@@ -82,7 +82,7 @@ public class ViolationsCounterTest {
 
     @Test
     public void countsHintViolations() {
-        final List<Violation> violations = new ArrayList<>();
+        final List<Result> violations = new ArrayList<>();
         IntStream.range(0, 5).forEach(
             (i) -> violations.add(generateViolation(ViolationType.HINT))
         );
@@ -95,8 +95,8 @@ public class ViolationsCounterTest {
         assertCounters(expectedCounters, violations);
     }
 
-    private Violation generateViolation(ViolationType violationType) {
-        return new Violation(
+    private Result generateViolation(ViolationType violationType) {
+        return new Result(
             new AvoidTrailingSlashesRule(new ZalandoRuleSet()),
             "Test Name",
             "Test Description",

@@ -2,7 +2,7 @@ package de.zalando.zally.apireview;
 
 import de.zalando.zally.dto.ApiDefinitionRequest;
 import de.zalando.zally.dto.ViolationType;
-import de.zalando.zally.rule.Violation;
+import de.zalando.zally.rule.Result;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -69,7 +69,7 @@ public class ApiReview implements Serializable {
         this(request, null, Collections.emptyList());
     }
 
-    public ApiReview(ApiDefinitionRequest request, String apiDefinition, List<Violation> violations) {
+    public ApiReview(ApiDefinitionRequest request, String apiDefinition, List<Result> violations) {
         this.jsonPayload = request.toString();
         this.apiDefinition = apiDefinition;
         this.successfulProcessed = StringUtils.isNotBlank(apiDefinition);

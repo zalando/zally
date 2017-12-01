@@ -2,7 +2,7 @@ package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Check
 import io.swagger.models.ComposedModel
 import io.swagger.models.HttpMethod

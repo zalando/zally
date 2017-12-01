@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
 import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import io.swagger.models.Swagger
@@ -63,21 +64,21 @@ class RulesValidatorTest {
     fun shouldReturnOneViolation() {
         val violations = listOf(DUMMY_VIOLATION_1)
         val validator = SwaggerRulesValidator(getRules(violations), invalidApiSchemaRule)
-        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray()))).hasSameElementsAs(violations)
+        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray())).map(Result::toViolation)).hasSameElementsAs(violations)
     }
 
     @Test
     fun shouldCollectViolationsOfAllRules() {
         val violations = listOf(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2)
         val validator = SwaggerRulesValidator(getRules(violations), invalidApiSchemaRule)
-        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray()))).hasSameElementsAs(violations)
+        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray())).map(Result::toViolation)).hasSameElementsAs(violations)
     }
 
     @Test
     fun shouldSortViolationsByViolationType() {
         val violations = listOf(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2, DUMMY_VIOLATION_3)
         val validator = SwaggerRulesValidator(getRules(violations), invalidApiSchemaRule)
-        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray())))
+        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray())).map(Result::toViolation))
                 .containsExactly(DUMMY_VIOLATION_3, DUMMY_VIOLATION_1, DUMMY_VIOLATION_2)
     }
 
@@ -85,7 +86,7 @@ class RulesValidatorTest {
     fun shouldIgnoreSpecifiedRules() {
         val violations = listOf(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2, DUMMY_VIOLATION_3)
         val validator = SwaggerRulesValidator(getRules(violations), invalidApiSchemaRule)
-        assertThat(validator.validate(swaggerContent, RulesPolicy(arrayOf("999")))).containsExactly(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2)
+        assertThat(validator.validate(swaggerContent, RulesPolicy(arrayOf("999"))).map(Result::toViolation)).containsExactly(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2)
     }
 
     @Test

@@ -1,10 +1,8 @@
-package de.zalando.zally.rule
+package de.zalando.zally.rule.api
 
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.api.Rule
 
 data class Violation(
-
     val rule: Rule,
     val title: String,
     val description: String,

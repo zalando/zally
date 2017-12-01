@@ -8,8 +8,8 @@ import de.zalando.zally.dto.ViolationsCounter;
 import de.zalando.zally.exception.MissingApiDefinitionException;
 import de.zalando.zally.exception.UnaccessibleResourceUrlException;
 import de.zalando.zally.rule.ApiValidator;
+import de.zalando.zally.rule.Result;
 import de.zalando.zally.rule.RulesPolicy;
-import de.zalando.zally.rule.Violation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -62,7 +62,7 @@ public class ApiViolationsController {
 
         RulesPolicy requestPolicy = retrieveRulesPolicy(request);
 
-        List<Violation> violations = rulesValidator.validate(apiDefinition, requestPolicy);
+        List<Result> violations = rulesValidator.validate(apiDefinition, requestPolicy);
         apiReviewRepository.save(new ApiReview(request, apiDefinition, violations));
 
         ApiDefinitionResponse response = buildApiDefinitionResponse(violations, userAgent);
@@ -89,7 +89,7 @@ public class ApiViolationsController {
         }
     }
 
-    private ApiDefinitionResponse buildApiDefinitionResponse(List<Violation> violations, String userAgent) {
+    private ApiDefinitionResponse buildApiDefinitionResponse(List<Result> violations, String userAgent) {
         ApiDefinitionResponse response = new ApiDefinitionResponse();
         response.setMessage(serverMessageService.serverMessage(userAgent));
         response.setViolations(violations.stream().map(this::toDto).collect(toList()));
@@ -97,7 +97,7 @@ public class ApiViolationsController {
         return response;
     }
 
-    private ViolationDTO toDto(Violation violation) {
+    private ViolationDTO toDto(Result violation) {
         return new ViolationDTO(
             violation.getTitle(),
             violation.getDescription(),
@@ -107,7 +107,7 @@ public class ApiViolationsController {
         );
     }
 
-    private Map<String, Integer> buildViolationsCount(List<Violation> violations) {
+    private Map<String, Integer> buildViolationsCount(List<Result> violations) {
         ViolationsCounter counter = new ViolationsCounter(violations);
         return Arrays.stream(ViolationType.values()).collect(toMap(
             violationType -> violationType.toString().toLowerCase(),

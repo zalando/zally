@@ -3,7 +3,7 @@ package de.zalando.zally.rule.zalando
 import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.PatternUtil
 import de.zalando.zally.util.WordUtil.isPlural

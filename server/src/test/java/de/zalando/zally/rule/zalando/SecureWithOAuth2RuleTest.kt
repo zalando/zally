@@ -2,7 +2,7 @@ package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.getFixture
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Scheme
 import io.swagger.models.Swagger
 import io.swagger.models.auth.ApiKeyAuthDefinition

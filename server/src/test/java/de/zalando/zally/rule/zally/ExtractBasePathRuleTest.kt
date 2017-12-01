@@ -2,7 +2,7 @@ package de.zalando.zally.rule.zally
 
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.getFixture
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.swaggerWithPaths
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat

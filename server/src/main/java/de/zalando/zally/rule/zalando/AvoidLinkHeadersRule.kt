@@ -2,7 +2,7 @@ package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Violation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

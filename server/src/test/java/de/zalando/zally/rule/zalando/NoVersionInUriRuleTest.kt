@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
