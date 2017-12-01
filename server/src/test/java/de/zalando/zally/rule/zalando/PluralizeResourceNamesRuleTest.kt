@@ -41,5 +41,4 @@ class PluralizeResourceNamesRuleTest {
         assertThat(result.paths).hasSameElementsAs(listOf("/queue/configs/{config-id}", "/queue/models",
             "/queue/models/{model-id}", "/queue/summaries"))
     }
-
 }

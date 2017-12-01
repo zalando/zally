@@ -32,5 +32,4 @@ class ObjectTreeReader {
 
     private fun isYaml(specContent: String): Boolean =
             !specContent.matches(jsonRegex)
-
 }

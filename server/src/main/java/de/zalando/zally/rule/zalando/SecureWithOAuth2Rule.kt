@@ -90,5 +90,4 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
                 scopes.any { scope -> (group to scope) in definedScopes }
             }
         } ?: false
-
 }

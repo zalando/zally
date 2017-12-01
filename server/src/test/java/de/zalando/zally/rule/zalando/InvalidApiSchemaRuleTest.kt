@@ -72,7 +72,6 @@ class InvalidApiSchemaRuleTest {
         val validations = InvalidApiSchemaRule(ruleSet, config).validate(swaggerJson)
         assertThat(validations).hasSize(1)
         assertThat(validations[0].description).isEqualTo("""object has missing required properties (["paths"])""")
-
     }
 
     @Test
@@ -87,7 +86,5 @@ class InvalidApiSchemaRuleTest {
         val validations = InvalidApiSchemaRule(ruleSet, config).validate(swaggerJson)
         assertThat(validations).hasSize(1)
         assertThat(validations[0].description).isEqualTo("""object has missing required properties (["paths"])""")
-
     }
-
 }
