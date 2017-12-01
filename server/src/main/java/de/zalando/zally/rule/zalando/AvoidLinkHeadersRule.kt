@@ -16,6 +16,6 @@ class AvoidLinkHeadersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
     override fun isViolation(header: String) = header == "Link"
 
     override fun createViolation(paths: List<String>): Violation {
-        return Violation(this, DESCRIPTION, violationType, paths)
+        return Violation(DESCRIPTION, violationType, paths)
     }
 }

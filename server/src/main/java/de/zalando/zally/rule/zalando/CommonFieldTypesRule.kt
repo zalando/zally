@@ -3,8 +3,8 @@ package de.zalando.zally.rule.zalando
 import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.getAllJsonObjects
 import io.swagger.models.Swagger
 import io.swagger.models.properties.Property
@@ -41,7 +41,7 @@ class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
 
         return if (res.isNotEmpty()) {
             val (desc, paths) = res.unzip()
-            Violation(this, desc.joinToString(", "), violationType, paths)
+            Violation(desc.joinToString(", "), violationType, paths)
         } else null
     }
 }

@@ -16,19 +16,16 @@ class SecureWithOAuth2RuleTest {
     private val rule = SecureWithOAuth2Rule(ZalandoRuleSet())
 
     private val checkSecurityDefinitionsExpectedOauthViolation = Violation(
-            rule,
             "No OAuth2 security definitions found",
             ViolationType.MUST,
             emptyList())
 
     private val checkSecurityDefinitionsExpectedHttpsViolation = Violation(
-            rule,
             "OAuth2 should be only used together with https",
             ViolationType.MUST,
             emptyList())
 
     private val checkPasswordFlowExpectedViolation = Violation(
-            rule,
             "OAuth2 security definitions should use password flow",
             ViolationType.SHOULD,
             emptyList())

@@ -58,6 +58,6 @@ abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private 
         }
         log.debug("${violations.count()} violations identified")
         return violations
-                .map { Result(it.rule, it.rule.title, it.description, it.violationType, it.paths) }
+                .map { Result(rule, rule.title, it.description, it.violationType, it.paths) }
     }
 }

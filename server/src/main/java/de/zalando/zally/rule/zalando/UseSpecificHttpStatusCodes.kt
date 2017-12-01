@@ -29,7 +29,7 @@ class UseSpecificHttpStatusCodes(@Autowired ruleSet: ZalandoRuleSet, @Autowired 
         val badPaths = swagger.paths.orEmpty().flatMap { path ->
             path.value.operationMap.orEmpty().flatMap { getNotAllowedStatusCodes(path.key, it) }
         }
-        return if (badPaths.isNotEmpty()) Violation(this, description, violationType, badPaths) else null
+        return if (badPaths.isNotEmpty()) Violation(description, violationType, badPaths) else null
     }
 
     private fun getNotAllowedStatusCodes(path: String, entry: Map.Entry<HttpMethod, Operation>): List<String> {

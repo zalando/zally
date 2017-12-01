@@ -11,5 +11,5 @@ data class Result(
         val violationType: ViolationType,
         val paths: List<String>
 ) {
-    fun toViolation(): Violation = Violation(rule, description, violationType, paths)
+    fun toViolation(): Violation = Violation(description, violationType, paths)
 }

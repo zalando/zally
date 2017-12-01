@@ -28,7 +28,7 @@ class PluralizeNamesForArraysRule(@Autowired ruleSet: ZalandoRuleSet) : Abstract
 
         return if (res.isNotEmpty()) {
             val (desc, paths) = res.unzip()
-            Violation(this, desc.joinToString("\n"), violationType, paths)
+            Violation(desc.joinToString("\n"), violationType, paths)
         } else null
     }
 }

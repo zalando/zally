@@ -34,7 +34,7 @@ class NotSpecifyStandardErrorCodesRule(@Autowired ruleSet: ZalandoRuleSet, @Auto
             }
         }
 
-        return if (paths.isNotEmpty()) Violation(this, description, violationType, paths) else null
+        return if (paths.isNotEmpty()) Violation(description, violationType, paths) else null
     }
 
     private fun isStandardErrorCode(httpStatusCode: Int?): Boolean {

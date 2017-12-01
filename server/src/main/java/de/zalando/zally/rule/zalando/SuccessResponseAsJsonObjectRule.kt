@@ -37,7 +37,7 @@ class SuccessResponseAsJsonObjectRule(@Autowired ruleSet: ZalandoRuleSet) : Abst
             }
         }
 
-        return if (paths.isNotEmpty()) Violation(this, DESCRIPTION, violationType, paths) else null
+        return if (paths.isNotEmpty()) Violation(DESCRIPTION, violationType, paths) else null
     }
 
     private fun Property?.isRefToObject(swagger: Swagger) =

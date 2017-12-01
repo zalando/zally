@@ -19,6 +19,6 @@ class NoVersionInUriRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
     @Check
     fun validate(swagger: Swagger): Violation? {
         val hasVersion = swagger.basePath != null && PatternUtil.hasVersionInUrl(swagger.basePath)
-        return if (hasVersion) Violation(this, description, violationType, emptyList()) else null
+        return if (hasVersion) Violation(description, violationType, emptyList()) else null
     }
 }

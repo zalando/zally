@@ -55,7 +55,7 @@ public class RestApiTestConfiguration {
             JsonNode title = swagger.path("info").path("title");
             if (!title.isMissingNode() && title.textValue().contains("Product Service")) {
                 return Arrays.asList(
-                        new Violation(this, "schema incorrect", getViolationType(), Collections.emptyList()));
+                        new Violation("schema incorrect", getViolationType(), Collections.emptyList()));
             } else {
                 return Collections.emptyList();
             }
@@ -90,7 +90,7 @@ public class RestApiTestConfiguration {
         @Check
         public Violation validate(Swagger swagger) {
             if (swagger != null && swagger.getInfo().getTitle().contains(apiName)) {
-                return new Violation(new CheckApiNameIsPresentRule(null), "dummy", ViolationType.MUST, Collections.emptyList());
+                return new Violation("dummy", ViolationType.MUST, Collections.emptyList());
             } else {
                 return null;
             }
@@ -120,9 +120,7 @@ public class RestApiTestConfiguration {
 
         @Check
         public Violation validate(Swagger swagger) {
-            return new Violation(
-                new AlwaysGiveAHintRule(),
-                    "dummy", ViolationType.HINT, Collections.emptyList());
+            return new Violation("dummy", ViolationType.HINT, Collections.emptyList());
         }
 
         @Override

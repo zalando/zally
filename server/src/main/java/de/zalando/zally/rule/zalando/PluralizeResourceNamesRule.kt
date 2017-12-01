@@ -32,7 +32,7 @@ class PluralizeResourceNamesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired 
         return if (res != null && res.isNotEmpty()) {
             val desc = res.map { "'${it.first}'" }.toSet().joinToString(", ")
             val paths = res.map { it.second }
-            Violation(this, String.format(DESC_PATTERN, desc), violationType, paths)
+            Violation(String.format(DESC_PATTERN, desc), violationType, paths)
         } else null
     }
 }

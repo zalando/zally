@@ -38,7 +38,7 @@ class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
             }
         }
 
-        return if (paths.isNotEmpty()) Violation(this, description, violationType, paths) else null
+        return if (paths.isNotEmpty()) Violation(description, violationType, paths) else null
     }
 
     private fun isValidProblemJson(swagger: Swagger, response: Response, operation: Operation) =

@@ -23,6 +23,6 @@ class KebabCaseInPathSegmentsRule(@Autowired ruleSet: ZalandoRuleSet) : Abstract
             val pathSegments = it.split("/").filter { it.isNotEmpty() }
             pathSegments.filter { !PatternUtil.isPathVariable(it) && !PatternUtil.isLowerCaseAndHyphens(it) }.isEmpty()
         }
-        return if (paths.isNotEmpty()) Violation(this, description, violationType, paths) else null
+        return if (paths.isNotEmpty()) Violation(description, violationType, paths) else null
     }
 }

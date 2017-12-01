@@ -29,7 +29,7 @@ class SnakeCaseInPropNameRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rul
         return if (result.isNotEmpty()) {
             val (props, paths) = result.unzip()
             val properties = props.flatten().toSet().joinToString(", ")
-            Violation(this, description + properties, violationType, paths)
+            Violation(description + properties, violationType, paths)
         } else null
     }
 }

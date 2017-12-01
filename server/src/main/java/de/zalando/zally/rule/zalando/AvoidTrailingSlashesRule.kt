@@ -19,6 +19,6 @@ class AvoidTrailingSlashesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRul
     @Check
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().keys.filter { it != null && PatternUtil.hasTrailingSlash(it) }
-        return if (!paths.isEmpty()) Violation(this, DESCRIPTION, violationType, paths) else null
+        return if (!paths.isEmpty()) Violation(DESCRIPTION, violationType, paths) else null
     }
 }

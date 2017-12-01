@@ -51,7 +51,7 @@ class NoUnusedDefinitionsRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(r
         val paths = unusedParams + unusedDefs
 
         return if (paths.isNotEmpty()) {
-            Violation(this, "Found ${paths.size} unused definitions", violationType, paths)
+            Violation("Found ${paths.size} unused definitions", violationType, paths)
         } else null
     }
 

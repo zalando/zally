@@ -24,7 +24,7 @@ class ExtractBasePathRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(ruleS
         }
         val commonPrefix = paths.reduce { s1, s2 -> findCommonPrefix(s1, s2) }
         return if (commonPrefix.isNotEmpty())
-            Violation(this, DESC_PATTERN.format(commonPrefix), violationType, emptyList())
+            Violation(DESC_PATTERN.format(commonPrefix), violationType, emptyList())
         else null
     }
 

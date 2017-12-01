@@ -30,7 +30,7 @@ class Use429HeaderForRateLimitRule(@Autowired ruleSet: ZalandoRuleSet) : Abstrac
             }
         }
         return if (paths.isNotEmpty())
-            Violation(this, DESCRIPTION, violationType, paths)
+            Violation(DESCRIPTION, violationType, paths)
         else null
     }
 

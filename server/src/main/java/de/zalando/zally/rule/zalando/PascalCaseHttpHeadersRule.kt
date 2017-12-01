@@ -16,6 +16,6 @@ class PascalCaseHttpHeadersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
     override fun isViolation(header: String) = !PatternUtil.isHyphenatedPascalCase(header)
 
     override fun createViolation(paths: List<String>): Violation {
-        return Violation(this, "Header is not Hyphenated-Pascal-Case", violationType, paths)
+        return Violation("Header is not Hyphenated-Pascal-Case", violationType, paths)
     }
 }

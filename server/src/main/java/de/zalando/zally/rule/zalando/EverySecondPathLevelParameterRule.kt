@@ -22,6 +22,6 @@ class EverySecondPathLevelParameterRule(@Autowired ruleSet: ZalandoRuleSet) : Ab
             val pathSegments = it.split("/").filter { it.isNotEmpty() }
             pathSegments.filterIndexed { i, segment -> isPathVariable(segment) == (i % 2 == 0) }.isEmpty()
         }
-        return if (paths.isNotEmpty()) Violation(this, DESCRIPTION, violationType, paths) else null
+        return if (paths.isNotEmpty()) Violation(DESCRIPTION, violationType, paths) else null
     }
 }
