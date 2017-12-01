@@ -21,6 +21,7 @@ class QueryParameterCollectionFormatRuleTest {
         val result = rule.validate(swagger)!!
         assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
         assertThat(result.rule.id).isEqualTo("154")
+        assertThat(result.description).isEqualTo("CollectionFormat should be one of: [csv, multi]")
     }
 
     @Test
@@ -33,6 +34,7 @@ class QueryParameterCollectionFormatRuleTest {
         val result = rule.validate(swagger)!!
         assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
         assertThat(result.rule.id).isEqualTo("154")
+        assertThat(result.description).isEqualTo("CollectionFormat should be one of: [csv, multi]")
     }
 
     @Test
@@ -44,6 +46,7 @@ class QueryParameterCollectionFormatRuleTest {
         val result = rule.validate(swagger)!!
         assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
         assertThat(result.rule.id).isEqualTo("154")
+        assertThat(result.description).isEqualTo("CollectionFormat should be one of: [csv, multi]")
     }
 
     @Test
@@ -56,6 +59,7 @@ class QueryParameterCollectionFormatRuleTest {
         val result = rule.validate(swagger)!!
         assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
         assertThat(result.rule.id).isEqualTo("154")
+        assertThat(result.description).isEqualTo("CollectionFormat should be one of: [csv, multi]")
     }
 
     @Test
