@@ -63,7 +63,7 @@ public class RestApiTestConfiguration {
 
         @Override
         public String getTitle() {
-            return "schema";
+            return getClass().getSimpleName();
         }
 
         @Override
@@ -90,7 +90,7 @@ public class RestApiTestConfiguration {
         @Check
         public Violation validate(Swagger swagger) {
             if (swagger != null && swagger.getInfo().getTitle().contains(apiName)) {
-                return new Violation(new CheckApiNameIsPresentRule(null), "dummy1", "dummy", ViolationType.MUST, Collections.emptyList());
+                return new Violation(this, getTitle(), "dummy1", ViolationType.MUST, Collections.emptyList());
             } else {
                 return null;
             }
@@ -103,7 +103,7 @@ public class RestApiTestConfiguration {
 
         @Override
         public String getTitle() {
-            return "Test Rule";
+            return getClass().getSimpleName();
         }
 
         @Override
@@ -120,9 +120,7 @@ public class RestApiTestConfiguration {
 
         @Check
         public Violation validate(Swagger swagger) {
-            return new Violation(
-                new AlwaysGiveAHintRule(),
-                "dummy2", "dummy", ViolationType.HINT, Collections.emptyList());
+            return new Violation(this, getTitle(), "dummy2", ViolationType.HINT, Collections.emptyList());
         }
 
         @Override
@@ -132,7 +130,7 @@ public class RestApiTestConfiguration {
 
         @Override
         public String getTitle() {
-            return "Test Hint Rule";
+            return getClass().getSimpleName();
         }
 
         @Override

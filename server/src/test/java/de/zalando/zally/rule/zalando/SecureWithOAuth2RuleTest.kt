@@ -1,8 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.getFixture
-import de.zalando.zally.rule.Violation
 import io.swagger.models.Scheme
 import io.swagger.models.Swagger
 import io.swagger.models.auth.ApiKeyAuthDefinition
@@ -15,30 +13,10 @@ class SecureWithOAuth2RuleTest {
 
     private val rule = SecureWithOAuth2Rule(ZalandoRuleSet())
 
-    private val checkSecurityDefinitionsExpectedOauthViolation = Violation(
-            rule,
-            "Secure Endpoints with OAuth 2.0",
-            "No OAuth2 security definitions found",
-            ViolationType.MUST,
-            emptyList())
-
-    private val checkSecurityDefinitionsExpectedHttpsViolation = Violation(
-            rule,
-            "Secure Endpoints with OAuth 2.0",
-            "OAuth2 should be only used together with https",
-            ViolationType.MUST,
-            emptyList())
-
-    private val checkPasswordFlowExpectedViolation = Violation(
-            rule,
-            "Set Flow to Password When Using OAuth 2.0",
-            "OAuth2 security definitions should use password flow",
-            ViolationType.SHOULD,
-            emptyList())
-
     @Test
     fun checkSecurityDefinitionsWithEmptyReturnsViolation() {
-        assertThat(rule.checkSecurityDefinitions(Swagger())).isEqualTo(checkSecurityDefinitionsExpectedOauthViolation)
+        assertThat(rule.checkSecurityDefinitions(Swagger()))
+                .hasFieldOrPropertyWithValue("description", "No OAuth2 security definitions found")
     }
 
     @Test
@@ -46,7 +24,8 @@ class SecureWithOAuth2RuleTest {
         val swagger = Swagger().apply {
             securityDefinitions = emptyMap()
         }
-        assertThat(rule.checkSecurityDefinitions(swagger)).isEqualTo(checkSecurityDefinitionsExpectedOauthViolation)
+        assertThat(rule.checkSecurityDefinitions(swagger))
+                .hasFieldOrPropertyWithValue("description", "No OAuth2 security definitions found")
     }
 
     @Test
@@ -57,7 +36,8 @@ class SecureWithOAuth2RuleTest {
                 "ApiKey" to ApiKeyAuthDefinition()
             )
         }
-        assertThat(rule.checkSecurityDefinitions(swagger)).isEqualTo(checkSecurityDefinitionsExpectedOauthViolation)
+        assertThat(rule.checkSecurityDefinitions(swagger))
+                .hasFieldOrPropertyWithValue("description", "No OAuth2 security definitions found")
     }
 
     @Test
@@ -68,7 +48,8 @@ class SecureWithOAuth2RuleTest {
                     "Oauth2" to OAuth2Definition()
             )
         }
-        assertThat(rule.checkSecurityDefinitions(swagger)).isEqualTo(checkSecurityDefinitionsExpectedHttpsViolation)
+        assertThat(rule.checkSecurityDefinitions(swagger))
+                .hasFieldOrPropertyWithValue("description", "OAuth2 should be only used together with https")
     }
 
     @Test
@@ -152,7 +133,8 @@ class SecureWithOAuth2RuleTest {
                     }
             )
         }
-        assertThat(rule.checkPasswordFlow(swagger)).isEqualTo(checkPasswordFlowExpectedViolation)
+        assertThat(rule.checkPasswordFlow(swagger))
+                .hasFieldOrPropertyWithValue("description", "OAuth2 security definitions should use password flow")
     }
 
     @Test
@@ -163,7 +145,8 @@ class SecureWithOAuth2RuleTest {
                     "Oauth2" to OAuth2Definition()
             )
         }
-        assertThat(rule.checkPasswordFlow(swagger)).isEqualTo(checkPasswordFlowExpectedViolation)
+        assertThat(rule.checkPasswordFlow(swagger))
+                .hasFieldOrPropertyWithValue("description", "OAuth2 security definitions should use password flow")
     }
 
     @Test
@@ -176,6 +159,7 @@ class SecureWithOAuth2RuleTest {
                     }
             )
         }
-        assertThat(rule.checkPasswordFlow(swagger)).isEqualTo(checkPasswordFlowExpectedViolation)
+        assertThat(rule.checkPasswordFlow(swagger))
+                .hasFieldOrPropertyWithValue("description", "OAuth2 security definitions should use password flow")
     }
 }

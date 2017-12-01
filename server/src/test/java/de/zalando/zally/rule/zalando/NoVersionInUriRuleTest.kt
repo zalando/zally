@@ -1,7 +1,5 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -10,35 +8,36 @@ class NoVersionInUriRuleTest {
 
     private val rule = NoVersionInUriRule(ZalandoRuleSet())
 
-    val expectedViolation = Violation(
-            rule,
-            "Do Not Use URI Versioning",
-            "basePath attribute contains version number",
-            ViolationType.MUST,
-            emptyList())
-
     @Test
     fun returnsViolationsWhenVersionIsInTheBeginingOfBasePath() {
         val swagger = Swagger().apply { basePath = "/v1/tests" }
-        assertThat(rule.validate(swagger)).isEqualTo(expectedViolation)
+        assertThat(rule.validate(swagger))
+                .hasFieldOrPropertyWithValue("description", "basePath attribute contains version number")
+                .hasFieldOrPropertyWithValue("paths", listOf<String>())
     }
 
     @Test
     fun returnsViolationsWhenVersionIsInTheMiddleOfBasePath() {
         val swagger = Swagger().apply { basePath = "/api/v1/tests" }
-        assertThat(rule.validate(swagger)).isEqualTo(expectedViolation)
+        assertThat(rule.validate(swagger))
+                .hasFieldOrPropertyWithValue("description", "basePath attribute contains version number")
+                .hasFieldOrPropertyWithValue("paths", listOf<String>())
     }
 
     @Test
     fun returnsViolationsWhenVersionIsInTheEndOfBasePath() {
         val swagger = Swagger().apply { basePath = "/api/v1" }
-        assertThat(rule.validate(swagger)).isEqualTo(expectedViolation)
+        assertThat(rule.validate(swagger))
+                .hasFieldOrPropertyWithValue("description", "basePath attribute contains version number")
+                .hasFieldOrPropertyWithValue("paths", listOf<String>())
     }
 
     @Test
     fun returnsViolationsWhenVersionIsBig() {
         val swagger = Swagger().apply { basePath = "/v1024/tests" }
-        assertThat(rule.validate(swagger)).isEqualTo(expectedViolation)
+        assertThat(rule.validate(swagger))
+                .hasFieldOrPropertyWithValue("description", "basePath attribute contains version number")
+                .hasFieldOrPropertyWithValue("paths", listOf<String>())
     }
 
     @Test
