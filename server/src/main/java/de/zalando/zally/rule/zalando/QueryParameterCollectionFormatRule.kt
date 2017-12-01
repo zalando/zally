@@ -15,7 +15,7 @@ class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : A
     override val violationType = ViolationType.SHOULD
     override val id = "154"
     val formatsAllowed = listOf("csv", "multi")
-    val violationDescription = "CollectionFormat should be one of: ${formatsAllowed}"
+    val violationDescription = "CollectionFormat should be one of: $formatsAllowed"
 
     @Check
     fun validate(swagger: Swagger): Violation? {
