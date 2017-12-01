@@ -23,6 +23,6 @@ class LimitNumberOfSubresourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowir
         val paths = swagger.paths.orEmpty().keys.filter { path ->
             path.split("/").filter { it.isNotEmpty() && !PatternUtil.isPathVariable(it) }.size - 1 > subresourcesLimit
         }
-        return if (paths.isNotEmpty()) Violation(this, title, DESC, violationType, paths) else null
+        return if (paths.isNotEmpty()) Violation(this, DESC, violationType, paths) else null
     }
 }

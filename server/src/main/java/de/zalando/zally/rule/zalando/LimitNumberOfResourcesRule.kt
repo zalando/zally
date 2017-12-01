@@ -21,7 +21,7 @@ class LimitNumberOfResourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired 
         val paths = swagger.paths.orEmpty()
         val pathsCount = paths.size
         return if (pathsCount > pathCountLimit) {
-            Violation(this, title, "Number of paths $pathsCount is greater than $pathCountLimit",
+            Violation(this, "Number of paths $pathsCount is greater than $pathCountLimit",
                     violationType, paths.keys.toList())
         } else null
     }

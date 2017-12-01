@@ -41,7 +41,7 @@ class FormatForNumbersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
         return if (result.isNotEmpty()) {
             val (props, paths) = result.unzip()
             val properties = props.flatten().toSet().joinToString(", ")
-            Violation(this, title, description + properties, violationType, paths)
+            Violation(this, description + properties, violationType, paths)
         } else null
     }
 

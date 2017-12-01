@@ -23,6 +23,6 @@ class NestedPathsMayBeRootPathsRule(@Autowired ruleSet: ZalandoRuleSet) : Abstra
             // we are only interested in paths that have sub-resource followed by a param: /path1/{param1}/path2/{param2}
             pathSegments.size > 4 && isPathVariable(pathSegments.last())
         }
-        return if (paths.isNotEmpty()) Violation(this, title, DESCRIPTION, violationType, paths) else null
+        return if (paths.isNotEmpty()) Violation(this, DESCRIPTION, violationType, paths) else null
     }
 }

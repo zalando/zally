@@ -30,7 +30,7 @@ class SnakeCaseForQueryParamsRule(@Autowired ruleSet: ZalandoRuleSet) : Abstract
         return if (result.isNotEmpty()) {
             val (paths, params) = result.unzip()
             val description = "Parameters that are not in snake_case: " + params.flatten().map { it.name }.toSet().joinToString(",")
-            Violation(this, title, description, violationType, paths)
+            Violation(this, description, violationType, paths)
         } else null
     }
 }

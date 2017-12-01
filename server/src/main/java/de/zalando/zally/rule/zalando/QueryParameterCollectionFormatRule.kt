@@ -40,6 +40,6 @@ class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : A
     }
 
     fun createViolation(paths: List<String>): Violation {
-        return Violation(this, title, violationDescription, violationType, paths)
+        return Violation(this, violationDescription, violationType, paths)
     }
 }

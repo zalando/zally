@@ -12,7 +12,6 @@ class NoVersionInUriRuleTest {
 
     val expectedViolation = Violation(
             rule,
-            "Do Not Use URI Versioning",
             "basePath attribute contains version number",
             ViolationType.MUST,
             emptyList())

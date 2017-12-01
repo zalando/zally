@@ -16,9 +16,9 @@ import org.mockito.Mockito.mock
 
 class RulesValidatorTest {
 
-    val DUMMY_VIOLATION_1 = Violation(FirstRule(null), "dummy1", "dummy", ViolationType.SHOULD, listOf("x", "y", "z"))
-    val DUMMY_VIOLATION_2 = Violation(FirstRule(null), "dummy2", "dummy", ViolationType.MAY, listOf())
-    val DUMMY_VIOLATION_3 = Violation(SecondRule(null), "dummy3", "dummy", ViolationType.MUST, listOf("a"))
+    val DUMMY_VIOLATION_1 = Violation(FirstRule(null), "dummy", ViolationType.SHOULD, listOf("x", "y", "z"))
+    val DUMMY_VIOLATION_2 = Violation(FirstRule(null), "dummy", ViolationType.MAY, listOf())
+    val DUMMY_VIOLATION_3 = Violation(SecondRule(null), "dummy", ViolationType.MUST, listOf("a"))
 
     val swaggerContent = javaClass.classLoader.getResource("fixtures/api_spp.json").readText(Charsets.UTF_8)
 

@@ -16,6 +16,6 @@ class HyphenateHttpHeadersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired ru
     override fun isViolation(header: String) = !PatternUtil.isHyphenated(header)
 
     override fun createViolation(paths: List<String>): Violation {
-        return Violation(this, title, "Header names should be hyphenated", violationType, paths)
+        return Violation(this, "Header names should be hyphenated", violationType, paths)
     }
 }

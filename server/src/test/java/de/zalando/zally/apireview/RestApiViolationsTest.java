@@ -62,8 +62,8 @@ public class RestApiViolationsTest extends RestApiBaseTest {
 
         List<ViolationDTO> violations = response.getViolations();
         assertThat(violations).hasSize(3);
-        assertThat(violations.get(0).getTitle()).isEqualTo("dummy1");
-        assertThat(violations.get(1).getTitle()).isEqualTo("dummy2");
+        assertThat(violations.get(0).getTitle()).isEqualTo("Test Rule");
+        assertThat(violations.get(1).getTitle()).isEqualTo("Test Hint Rule");
         assertThat(violations.get(2).getTitle()).isEqualTo("schema");
     }
 
@@ -95,7 +95,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
 
         List<ViolationDTO> violations = response.getViolations();
         assertThat(violations).hasSize(1);
-        assertThat(violations.get(0).getTitle()).isEqualTo("dummy2");
+        assertThat(violations.get(0).getTitle()).isEqualTo("Test Hint Rule");
     }
 
     @Test
@@ -106,7 +106,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
 
         List<ViolationDTO> violations = response.getViolations();
         assertThat(violations).hasSize(1);
-        assertThat(violations.get(0).getTitle()).isEqualTo("dummy2");
+        assertThat(violations.get(0).getTitle()).isEqualTo("Test Hint Rule");
     }
 
     @Test
@@ -155,8 +155,8 @@ public class RestApiViolationsTest extends RestApiBaseTest {
         ).getViolations();
 
         assertThat(violations).hasSize(3);
-        assertThat(violations.get(0).getTitle()).isEqualTo("dummy1");
-        assertThat(violations.get(1).getTitle()).isEqualTo("dummy2");
+        assertThat(violations.get(0).getTitle()).isEqualTo("Test Rule");
+        assertThat(violations.get(1).getTitle()).isEqualTo("Test Hint Rule");
     }
 
     @Test
@@ -168,7 +168,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
         ).getViolations();
 
         assertThat(violations).hasSize(1);
-        assertThat(violations.get(0).getTitle()).isEqualTo("dummy2");
+        assertThat(violations.get(0).getTitle()).isEqualTo("Test Hint Rule");
     }
 
     @Test

@@ -36,7 +36,7 @@ class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
 
         val enumNames = (properties.keys + parameters.keys).distinct()
         val enumPaths = (properties.values + parameters.values).distinct()
-        return if (enumNames.isNotEmpty()) Violation(this, title,
+        return if (enumNames.isNotEmpty()) Violation(this,
                 "Properties/Parameters $enumNames are not extensible enums", violationType, enumPaths)
         else null
     }

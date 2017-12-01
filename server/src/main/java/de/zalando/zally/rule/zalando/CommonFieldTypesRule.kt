@@ -41,7 +41,7 @@ class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
 
         return if (res.isNotEmpty()) {
             val (desc, paths) = res.unzip()
-            Violation(this, title, desc.joinToString(", "), violationType, paths)
+            Violation(this, desc.joinToString(", "), violationType, paths)
         } else null
     }
 }

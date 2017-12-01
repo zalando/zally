@@ -11,7 +11,7 @@ class NoProtocolInHostRuleTest {
     private val rule = NoProtocolInHostRule(ZallyRuleSet())
 
     val expectedViolation = rule.let {
-        Violation(it, it.title, "", it.violationType, emptyList())
+        Violation(it, "", it.violationType, emptyList())
     }
 
     @Test

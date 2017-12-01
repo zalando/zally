@@ -19,7 +19,7 @@ class NoProtocolInHostRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(rule
     fun validate(swagger: Swagger): Violation? {
         val host = swagger.host.orEmpty()
         return if ("://" in host)
-            Violation(this, title, desc.format(host), violationType, emptyList())
+            Violation(this, desc.format(host), violationType, emptyList())
         else null
     }
 }

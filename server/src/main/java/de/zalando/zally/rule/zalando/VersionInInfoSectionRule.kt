@@ -25,6 +25,6 @@ class VersionInInfoSectionRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRul
             !isVersion(version) -> "Specified version has incorrect format: $version"
             else -> null
         }
-        return desc?.let { Violation(this, title, "$DESCRIPTION $it", violationType, emptyList()) }
+        return desc?.let { Violation(this, "$DESCRIPTION $it", violationType, emptyList()) }
     }
 }

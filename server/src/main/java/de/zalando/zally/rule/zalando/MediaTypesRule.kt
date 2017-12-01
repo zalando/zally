@@ -27,7 +27,7 @@ class MediaTypesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet)
                 if (violatingMediaTypes.isNotEmpty()) listOf("$pathName $verb") else emptyList()
             }
         }
-        return if (paths.isNotEmpty()) Violation(this, title, DESCRIPTION, violationType, paths) else null
+        return if (paths.isNotEmpty()) Violation(this, DESCRIPTION, violationType, paths) else null
     }
 
     private fun isViolatingMediaType(mediaType: String) =
