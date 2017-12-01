@@ -53,5 +53,4 @@ class ExtensibleEnumRuleTest {
 
         assertThat(rule.validate(swagger)).isNull()
     }
-
 }

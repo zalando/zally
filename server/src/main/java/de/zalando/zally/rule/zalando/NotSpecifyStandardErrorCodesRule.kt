@@ -40,5 +40,4 @@ class NotSpecifyStandardErrorCodesRule(@Autowired ruleSet: ZalandoRuleSet, @Auto
     private fun isStandardErrorCode(httpStatusCode: Int?): Boolean {
         return httpStatusCode in standardErrorStatusCodes
     }
-
 }

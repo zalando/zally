@@ -66,4 +66,3 @@ class PascalCaseHttpHeadersRuleTest {
         assertThat(rule.validate(swagger)).isNull()
     }
 }
-

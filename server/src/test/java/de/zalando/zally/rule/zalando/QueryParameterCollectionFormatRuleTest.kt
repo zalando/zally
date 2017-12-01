@@ -95,5 +95,4 @@ class QueryParameterCollectionFormatRuleTest {
 
         assertThat(rule.validate(swagger)).isNull()
     }
-
 }

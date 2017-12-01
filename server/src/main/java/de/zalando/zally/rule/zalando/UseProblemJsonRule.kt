@@ -75,5 +75,4 @@ class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
 
     private fun HttpMethod.shouldContainPayload(): Boolean =
         name.toLowerCase() !in listOf("head", "options")
-
 }

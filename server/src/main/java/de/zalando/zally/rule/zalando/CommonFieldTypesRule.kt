@@ -44,5 +44,4 @@ class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
             Violation(this, title, desc.joinToString(", "), violationType, paths)
         } else null
     }
-
 }

@@ -73,7 +73,7 @@ class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
         else -> false
     }
 
-    private fun <T> List<T>?.hasValues() : Boolean {
+    private fun <T> List<T>?.hasValues(): Boolean {
         return this.orEmpty().isNotEmpty()
     }
 
