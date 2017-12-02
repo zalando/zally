@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -29,7 +29,7 @@ class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
             else null
         }
 
-    @Check(severity = ViolationType.MUST)
+    @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {
         val res = swagger.getAllJsonObjects().map { (def, path) ->
             val badProps = def.entries.map { checkField(it.key, it.value) }.filterNotNull()

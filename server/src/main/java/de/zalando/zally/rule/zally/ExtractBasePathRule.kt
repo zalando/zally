@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -15,7 +15,7 @@ class ExtractBasePathRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(ruleS
     override val id = "H001"
     private val DESC_PATTERN = "All paths start with prefix '%s'. This prefix could be part of base path."
 
-    @Check(severity = ViolationType.HINT)
+    @Check(severity = Severity.HINT)
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().keys
         if (paths.size < 2) {

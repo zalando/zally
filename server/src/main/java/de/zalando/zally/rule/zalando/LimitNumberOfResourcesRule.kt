@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -15,7 +15,7 @@ class LimitNumberOfResourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired 
     override val id = "146"
     private val pathCountLimit = rulesConfig.getConfig(name).getInt("paths_count_limit")
 
-    @Check(severity = ViolationType.SHOULD)
+    @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty()
         val pathsCount = paths.size

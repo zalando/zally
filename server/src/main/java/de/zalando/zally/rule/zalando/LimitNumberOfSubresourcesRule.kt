@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -17,7 +17,7 @@ class LimitNumberOfSubresourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowir
     private val DESC = "Number of sub-resources should not exceed 3"
     private val subresourcesLimit = rulesConfig.getConfig(name).getInt("subresources_limit")
 
-    @Check(severity = ViolationType.SHOULD)
+    @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().keys.filter { path ->
             path.split("/").filter { it.isNotEmpty() && !PatternUtil.isPathVariable(it) }.size - 1 > subresourcesLimit

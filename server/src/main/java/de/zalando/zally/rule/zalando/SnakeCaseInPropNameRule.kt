@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -19,7 +19,7 @@ class SnakeCaseInPropNameRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rul
 
     private val whitelist = rulesConfig.getStringList(SnakeCaseInPropNameRule::class.simpleName + ".whitelist").toSet()
 
-    @Check(severity = ViolationType.MUST)
+    @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {
         val result = swagger.getAllJsonObjects().flatMap { (def, path) ->
             val badProps = def.keys.filterNot { PatternUtil.isSnakeCase(it) || whitelist.contains(it) }

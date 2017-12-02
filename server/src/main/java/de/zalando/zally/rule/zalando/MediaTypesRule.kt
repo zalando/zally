@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -17,7 +17,7 @@ class MediaTypesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet)
     override val id = "172"
     private val DESCRIPTION = "Custom media types should only be used for versioning"
 
-    @Check(severity = ViolationType.SHOULD)
+    @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().entries.flatMap { (pathName, path) ->
             path.operationMap.orEmpty().entries.flatMap { (verb, operation) ->

@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -18,7 +18,7 @@ class PluralizeResourceNamesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired 
     private val DESC_PATTERN = "Resources %s are singular (but we are not sure)"
     private val allowedPrefixes = rulesConfig.getConfig(name).getStringList("whitelist_prefixes")
 
-    @Check(severity = ViolationType.MUST)
+    @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {
         val res = swagger.paths?.keys?.flatMap { path ->
             val allParts = path.split("/".toRegex())

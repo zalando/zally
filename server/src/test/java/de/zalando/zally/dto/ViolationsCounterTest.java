@@ -1,6 +1,7 @@
 package de.zalando.zally.dto;
 
 import de.zalando.zally.rule.Result;
+import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.zalando.AvoidTrailingSlashesRule;
 import de.zalando.zally.rule.zalando.ZalandoRuleSet;
 import org.junit.Test;
@@ -15,11 +16,11 @@ import static org.junit.Assert.assertEquals;
 
 
 public class ViolationsCounterTest {
-    private static void assertCounters(Map<ViolationType, Integer> expectedCounters, List<Result> violations)
+    private static void assertCounters(Map<Severity, Integer> expectedCounters, List<Result> violations)
         throws AssertionError {
 
         final ViolationsCounter counter = new ViolationsCounter(violations);
-        for (ViolationType violationType : expectedCounters.keySet()) {
+        for (Severity violationType : expectedCounters.keySet()) {
             assertEquals(expectedCounters.get(violationType), counter.getCounter(violationType));
         }
     }
@@ -27,11 +28,11 @@ public class ViolationsCounterTest {
     @Test
     public void returnsZerosWhenViolationListIsEmpty() {
         final List<Result> violations = new ArrayList<>();
-        final Map<ViolationType, Integer> expectedCounters = new HashMap<>();
-        expectedCounters.put(ViolationType.MUST, 0);
-        expectedCounters.put(ViolationType.SHOULD, 0);
-        expectedCounters.put(ViolationType.MAY, 0);
-        expectedCounters.put(ViolationType.HINT, 0);
+        final Map<Severity, Integer> expectedCounters = new HashMap<>();
+        expectedCounters.put(Severity.MUST, 0);
+        expectedCounters.put(Severity.SHOULD, 0);
+        expectedCounters.put(Severity.MAY, 0);
+        expectedCounters.put(Severity.HINT, 0);
 
         assertCounters(expectedCounters, violations);
     }
@@ -40,13 +41,13 @@ public class ViolationsCounterTest {
     public void countsMustViolations() {
         final List<Result> violations = new ArrayList<>();
         IntStream.range(0, 5).forEach(
-            (i) -> violations.add(generateViolation(ViolationType.MUST))
+            (i) -> violations.add(generateViolation(Severity.MUST))
         );
-        final Map<ViolationType, Integer> expectedCounters = new HashMap<>();
-        expectedCounters.put(ViolationType.MUST, 5);
-        expectedCounters.put(ViolationType.SHOULD, 0);
-        expectedCounters.put(ViolationType.MAY, 0);
-        expectedCounters.put(ViolationType.HINT, 0);
+        final Map<Severity, Integer> expectedCounters = new HashMap<>();
+        expectedCounters.put(Severity.MUST, 5);
+        expectedCounters.put(Severity.SHOULD, 0);
+        expectedCounters.put(Severity.MAY, 0);
+        expectedCounters.put(Severity.HINT, 0);
 
         assertCounters(expectedCounters, violations);
     }
@@ -55,13 +56,13 @@ public class ViolationsCounterTest {
     public void countsShouldViolations() {
         final List<Result> violations = new ArrayList<>();
         IntStream.range(0, 5).forEach(
-            (i) -> violations.add(generateViolation(ViolationType.SHOULD))
+            (i) -> violations.add(generateViolation(Severity.SHOULD))
         );
-        final Map<ViolationType, Integer> expectedCounters = new HashMap<>();
-        expectedCounters.put(ViolationType.MUST, 0);
-        expectedCounters.put(ViolationType.SHOULD, 5);
-        expectedCounters.put(ViolationType.MAY, 0);
-        expectedCounters.put(ViolationType.HINT, 0);
+        final Map<Severity, Integer> expectedCounters = new HashMap<>();
+        expectedCounters.put(Severity.MUST, 0);
+        expectedCounters.put(Severity.SHOULD, 5);
+        expectedCounters.put(Severity.MAY, 0);
+        expectedCounters.put(Severity.HINT, 0);
         assertCounters(expectedCounters, violations);
     }
 
@@ -69,13 +70,13 @@ public class ViolationsCounterTest {
     public void countsMayViolations() {
         final List<Result> violations = new ArrayList<>();
         IntStream.range(0, 5).forEach(
-            (i) -> violations.add(generateViolation(ViolationType.MAY))
+            (i) -> violations.add(generateViolation(Severity.MAY))
         );
-        final Map<ViolationType, Integer> expectedCounters = new HashMap<>();
-        expectedCounters.put(ViolationType.MUST, 0);
-        expectedCounters.put(ViolationType.SHOULD, 0);
-        expectedCounters.put(ViolationType.MAY, 5);
-        expectedCounters.put(ViolationType.HINT, 0);
+        final Map<Severity, Integer> expectedCounters = new HashMap<>();
+        expectedCounters.put(Severity.MUST, 0);
+        expectedCounters.put(Severity.SHOULD, 0);
+        expectedCounters.put(Severity.MAY, 5);
+        expectedCounters.put(Severity.HINT, 0);
 
         assertCounters(expectedCounters, violations);
     }
@@ -84,18 +85,18 @@ public class ViolationsCounterTest {
     public void countsHintViolations() {
         final List<Result> violations = new ArrayList<>();
         IntStream.range(0, 5).forEach(
-            (i) -> violations.add(generateViolation(ViolationType.HINT))
+            (i) -> violations.add(generateViolation(Severity.HINT))
         );
-        final Map<ViolationType, Integer> expectedCounters = new HashMap<>();
-        expectedCounters.put(ViolationType.MUST, 0);
-        expectedCounters.put(ViolationType.SHOULD, 0);
-        expectedCounters.put(ViolationType.MAY, 0);
-        expectedCounters.put(ViolationType.HINT, 5);
+        final Map<Severity, Integer> expectedCounters = new HashMap<>();
+        expectedCounters.put(Severity.MUST, 0);
+        expectedCounters.put(Severity.SHOULD, 0);
+        expectedCounters.put(Severity.MAY, 0);
+        expectedCounters.put(Severity.HINT, 5);
 
         assertCounters(expectedCounters, violations);
     }
 
-    private Result generateViolation(ViolationType violationType) {
+    private Result generateViolation(Severity violationType) {
         return new Result(
             new AvoidTrailingSlashesRule(new ZalandoRuleSet()),
             "Test Name",

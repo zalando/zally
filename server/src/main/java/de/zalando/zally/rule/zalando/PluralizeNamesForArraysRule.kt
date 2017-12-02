@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -15,7 +15,7 @@ class PluralizeNamesForArraysRule(@Autowired ruleSet: ZalandoRuleSet) : Abstract
     override val title = "Array names should be pluralized"
     override val id = "120"
 
-    @Check(severity = ViolationType.SHOULD)
+    @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val res = swagger.getAllJsonObjects().map { (def, path) ->
             val badProps = def.entries.filter { "array" == it.value.type && !isPlural(it.key) }

@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -16,7 +16,7 @@ class KebabCaseInPathSegmentsRule(@Autowired ruleSet: ZalandoRuleSet) : Abstract
     override val id = "129"
     private val description = "Use lowercase separate words with hyphens for path segments"
 
-    @Check(severity = ViolationType.MUST)
+    @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().keys.filterNot {
             val pathSegments = it.split("/").filter { it.isNotEmpty() }

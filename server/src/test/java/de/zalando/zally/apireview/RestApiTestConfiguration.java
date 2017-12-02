@@ -1,7 +1,7 @@
 package de.zalando.zally.apireview;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import de.zalando.zally.dto.ViolationType;
+import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.AbstractRule;
 import de.zalando.zally.rule.ApiValidator;
 import de.zalando.zally.rule.CompositeRulesValidator;
@@ -50,7 +50,7 @@ public class RestApiTestConfiguration {
             super(ruleSet);
         }
 
-        @Check(severity = ViolationType.MUST)
+        @Check(severity = Severity.MUST)
         public Iterable<Violation> validate(final JsonNode swagger) {
             JsonNode title = swagger.path("info").path("title");
             if (!title.isMissingNode() && title.textValue().contains("Product Service")) {
@@ -82,7 +82,7 @@ public class RestApiTestConfiguration {
             this.apiName = apiName;
         }
 
-        @Check(severity = ViolationType.MUST)
+        @Check(severity = Severity.MUST)
         public Violation validate(Swagger swagger) {
             if (swagger != null && swagger.getInfo().getTitle().contains(apiName)) {
                 return new Violation("dummy", Collections.emptyList());
@@ -108,7 +108,7 @@ public class RestApiTestConfiguration {
             super(new ZalandoRuleSet());
         }
 
-        @Check(severity = ViolationType.HINT)
+        @Check(severity = Severity.HINT)
         public Violation validate(Swagger swagger) {
             return new Violation("dummy", Collections.emptyList());
         }

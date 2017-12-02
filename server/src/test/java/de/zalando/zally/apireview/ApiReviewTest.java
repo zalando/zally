@@ -1,7 +1,7 @@
 package de.zalando.zally.apireview;
 
 import de.zalando.zally.dto.ApiDefinitionRequest;
-import de.zalando.zally.dto.ViolationType;
+import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.Result;
 import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.rule.api.RuleSet;
@@ -40,9 +40,9 @@ public class ApiReviewTest {
 
     @Test
     public void shouldAggregateRuleTypeCount() {
-        Result mustViolation1 = new Result(dummyRule, "", "", ViolationType.MUST, Collections.emptyList());
-        Result mustViolation2 = new Result(dummyRule, "", "", ViolationType.MUST, Collections.emptyList());
-        Result shouldViolation = new Result(dummyRule, "", "", ViolationType.SHOULD, Collections.emptyList());
+        Result mustViolation1 = new Result(dummyRule, "", "", Severity.MUST, Collections.emptyList());
+        Result mustViolation2 = new Result(dummyRule, "", "", Severity.MUST, Collections.emptyList());
+        Result shouldViolation = new Result(dummyRule, "", "", Severity.SHOULD, Collections.emptyList());
 
         ApiReview apiReview = new ApiReview(new ApiDefinitionRequest(), "", asList(mustViolation1, mustViolation2, shouldViolation));
 
@@ -54,8 +54,8 @@ public class ApiReviewTest {
 
     @Test
     public void shouldCalculateNumberOfEndpoints() throws IOException {
-        Result violation1 = new Result(dummyRule, "", "", ViolationType.MUST, asList("1", "2"));
-        Result violation2 = new Result(dummyRule, "", "", ViolationType.MUST, asList("3"));
+        Result violation1 = new Result(dummyRule, "", "", Severity.MUST, asList("1", "2"));
+        Result violation2 = new Result(dummyRule, "", "", Severity.MUST, asList("3"));
 
         String apiDefinition = ResourceUtil.resourceToString("fixtures/limitNumberOfResourcesValid.json");
 

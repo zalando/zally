@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.io.Resources
 import com.typesafe.config.Config
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.rule.ObjectTreeReader
@@ -58,7 +58,7 @@ open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
         return JsonSchemaValidator(schema, schemaRedirects = mapOf(referencedOnlineSchema to localResource))
     }
 
-    @Check(severity = ViolationType.MUST)
+    @Check(severity = Severity.MUST)
     fun validate(swagger: JsonNode): List<Violation> {
         return jsonSchemaValidator.validate(swagger).let { validationResult ->
             validationResult.messages.map { message ->
@@ -68,5 +68,5 @@ open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
     }
 
     fun getGeneralViolation(): Result =
-            Result(this, title, description, ViolationType.MUST, emptyList())
+            Result(this, title, description, Severity.MUST, emptyList())
 }

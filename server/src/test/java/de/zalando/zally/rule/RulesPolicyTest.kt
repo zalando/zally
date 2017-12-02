@@ -1,6 +1,6 @@
 package de.zalando.zally.rule
 
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.zalando.ZalandoRuleSet
@@ -14,7 +14,7 @@ class RulesPolicyTest {
         override val title = "Test Rule"
         override val id = "999"
 
-        @Check(severity = ViolationType.MUST)
+        @Check(severity = Severity.MUST)
         fun validate(swagger: Swagger): Violation? = result
     }
 

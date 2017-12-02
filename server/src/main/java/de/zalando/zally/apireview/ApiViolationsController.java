@@ -3,7 +3,7 @@ package de.zalando.zally.apireview;
 import de.zalando.zally.dto.ApiDefinitionRequest;
 import de.zalando.zally.dto.ApiDefinitionResponse;
 import de.zalando.zally.dto.ViolationDTO;
-import de.zalando.zally.dto.ViolationType;
+import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.dto.ViolationsCounter;
 import de.zalando.zally.exception.MissingApiDefinitionException;
 import de.zalando.zally.exception.UnaccessibleResourceUrlException;
@@ -109,7 +109,7 @@ public class ApiViolationsController {
 
     private Map<String, Integer> buildViolationsCount(List<Result> violations) {
         ViolationsCounter counter = new ViolationsCounter(violations);
-        return Arrays.stream(ViolationType.values()).collect(toMap(
+        return Arrays.stream(Severity.values()).collect(toMap(
             violationType -> violationType.toString().toLowerCase(),
             counter::getCounter
         ));

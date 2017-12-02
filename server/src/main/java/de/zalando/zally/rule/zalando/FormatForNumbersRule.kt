@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Check
@@ -21,7 +21,7 @@ class FormatForNumbersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
     private val type2format = rulesConfig.getConfig("$name.formats").entrySet()
             .map { (key, config) -> key to config.unwrapped() as List<String> }.toMap()
 
-    @Check(severity = ViolationType.MUST)
+    @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {
         val fromObjects = swagger.getAllJsonObjects().flatMap { (def, path) ->
             val badProps = def.entries.filterNot { (_, prop) -> isValid(prop.type, prop.format) }.map { it.key }

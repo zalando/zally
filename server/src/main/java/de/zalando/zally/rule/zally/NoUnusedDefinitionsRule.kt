@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -26,7 +26,7 @@ class NoUnusedDefinitionsRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(r
     override val title = "Do not leave unused definitions"
     override val id = "S005"
 
-    @Check(severity = ViolationType.SHOULD)
+    @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val paramsInPaths = swagger.paths.orEmpty().values.flatMap { path ->
             path.operations.orEmpty().flatMap { operation ->

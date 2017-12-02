@@ -1,8 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.google.common.collect.Sets
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.dto.ViolationType.MUST
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -19,7 +18,7 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
     override val id = "104"
     private val DESC = "Every endpoint must be secured by proper OAuth2 scope"
 
-    @Check(severity = ViolationType.MUST)
+    @Check(severity = Severity.MUST)
     fun checkSecurityDefinitions(swagger: Swagger): Violation? {
         val hasOAuth = swagger.securityDefinitions.orEmpty().values.any { it.type?.toLowerCase() == "oauth2" }
         val containsHttpScheme = swagger.schemes.orEmpty().contains(Scheme.HTTP)
@@ -31,7 +30,7 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
             null
     }
 
-    @Check(severity = ViolationType.SHOULD)
+    @Check(severity = Severity.SHOULD)
     fun checkPasswordFlow(swagger: Swagger): Violation? {
         val definitionsWithoutPasswordFlow = swagger
                 .securityDefinitions
@@ -45,7 +44,7 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
         else null
     }
 
-    @Check(severity = ViolationType.MUST)
+    @Check(severity = Severity.MUST)
     fun checkUsedScopes(swagger: Swagger): Violation? {
         val definedScopes = getDefinedScopes(swagger)
         val hasTopLevelScope = hasTopLevelScope(swagger, definedScopes)

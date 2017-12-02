@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -19,7 +19,7 @@ class NotSpecifyStandardErrorCodesRule(@Autowired ruleSet: ZalandoRuleSet, @Auto
     private val standardErrorStatusCodes = rulesConfig.getConfig(name)
             .getIntList("standard_error_codes").toSet()
 
-    @Check(severity = ViolationType.HINT)
+    @Check(severity = Severity.HINT)
     fun validate(swagger: Swagger): Violation? {
 
         val paths = swagger.paths.orEmpty().flatMap { pathEntry ->

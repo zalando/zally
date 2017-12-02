@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -24,7 +24,7 @@ class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
         "Whether Caused by Client Or Server"
     private val requiredFields = setOf("title", "status")
 
-    @Check(severity = ViolationType.MUST)
+    @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().flatMap { pathEntry ->
             pathEntry.value.operationMap.orEmpty().filter { it.key.shouldContainPayload() }.flatMap { opEntry ->

@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.dto.ViolationType.SHOULD
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -29,7 +28,7 @@ class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
     override val title = "Prefer Compatible Extensions"
     override val id = "107"
 
-    @Check(severity = ViolationType.SHOULD)
+    @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val properties = enumProperties(swagger)
         val parameters = enumParameters(swagger)

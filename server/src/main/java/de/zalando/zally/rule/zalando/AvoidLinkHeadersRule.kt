@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
@@ -14,7 +14,7 @@ class AvoidLinkHeadersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
     override val id = "166"
     private val DESCRIPTION = "Do Not Use Link Headers with JSON entities"
 
-    @Check(severity = ViolationType.MUST)
+    @Check(severity = Severity.MUST)
     override fun validate(swagger: Swagger): Violation? {
         return super.validate(swagger)
     }

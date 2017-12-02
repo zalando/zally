@@ -1,7 +1,7 @@
 package de.zalando.zally.rule
 
 import com.fasterxml.jackson.databind.JsonNode
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Violation
@@ -22,7 +22,7 @@ class RulesValidatorTest {
         override val title = "First Rule"
         override val id = "S999"
 
-        @Check(severity = ViolationType.SHOULD)
+        @Check(severity = Severity.SHOULD)
         fun validate(swagger: Swagger): List<Violation> = listOf(
                 Violation("dummy1", listOf("x", "y", "z")),
                 Violation("dummy2", listOf()))
@@ -32,7 +32,7 @@ class RulesValidatorTest {
         override val title = "Second Rule"
         override val id = "999"
 
-        @Check(severity = ViolationType.MUST)
+        @Check(severity = Severity.MUST)
         fun validate(swagger: Swagger): Violation? =
                 Violation("dummy3", listOf("a"))
     }
@@ -41,10 +41,10 @@ class RulesValidatorTest {
         override val title = "Third Rule"
         override val id = "M666"
 
-        @Check(severity = ViolationType.MUST)
+        @Check(severity = Severity.MUST)
         fun invalid(swagger: Swagger): String = "Hello World!"
 
-        @Check(severity = ViolationType.MUST)
+        @Check(severity = Severity.MUST)
         fun invalidParams(swagger: Swagger, json: JsonNode): Violation? = null
     }
 

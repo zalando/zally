@@ -1,7 +1,7 @@
 package de.zalando.zally.apireview;
 
 import de.zalando.zally.dto.ApiDefinitionRequest;
-import de.zalando.zally.dto.ViolationType;
+import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.Result;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Parameter;
@@ -82,10 +82,10 @@ public class ApiReview implements Serializable {
             .collect(Collectors.toList());
 
         this.numberOfEndpoints = EndpointCounter.count(apiDefinition);
-        this.mustViolations = (int) ruleViolations.stream().filter(r -> r.getType() == ViolationType.MUST).count();
-        this.shouldViolations = (int) ruleViolations.stream().filter(r -> r.getType() == ViolationType.SHOULD).count();
-        this.mayViolations = (int) ruleViolations.stream().filter(r -> r.getType() == ViolationType.MAY).count();
-        this.hintViolations = (int) ruleViolations.stream().filter(r -> r.getType() == ViolationType.HINT).count();
+        this.mustViolations = (int) ruleViolations.stream().filter(r -> r.getType() == Severity.MUST).count();
+        this.shouldViolations = (int) ruleViolations.stream().filter(r -> r.getType() == Severity.SHOULD).count();
+        this.mayViolations = (int) ruleViolations.stream().filter(r -> r.getType() == Severity.MAY).count();
+        this.hintViolations = (int) ruleViolations.stream().filter(r -> r.getType() == Severity.HINT).count();
     }
 
     public Long getId() {

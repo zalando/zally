@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -16,7 +16,7 @@ class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : A
     val formatsAllowed = listOf("csv", "multi")
     val violationDescription = "CollectionFormat should be one of: $formatsAllowed"
 
-    @Check(severity = ViolationType.SHOULD)
+    @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         fun Collection<Parameter>?.extractInvalidQueryParam(path: String) =
             orEmpty().filterIsInstance<QueryParameter>()

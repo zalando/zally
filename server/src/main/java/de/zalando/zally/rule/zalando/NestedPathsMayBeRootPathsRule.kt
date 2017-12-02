@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -15,7 +15,7 @@ class NestedPathsMayBeRootPathsRule(@Autowired ruleSet: ZalandoRuleSet) : Abstra
     override val id = "145"
     private val DESCRIPTION = "Nested paths / URLs may be top-level resource"
 
-    @Check(severity = ViolationType.MAY)
+    @Check(severity = Severity.MAY)
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().keys.filter {
             val pathSegments = it.split("/".toRegex())

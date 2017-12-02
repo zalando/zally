@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -15,7 +15,7 @@ class AvoidTrailingSlashesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRul
     override val id = "136"
     private val DESCRIPTION = "Rule avoid trailing slashes is not followed"
 
-    @Check(severity = ViolationType.MUST)
+    @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().keys.filter { it != null && PatternUtil.hasTrailingSlash(it) }
         return if (!paths.isEmpty()) Violation(DESCRIPTION, paths) else null

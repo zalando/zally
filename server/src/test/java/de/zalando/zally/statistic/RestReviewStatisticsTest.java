@@ -3,7 +3,7 @@ package de.zalando.zally.statistic;
 import de.zalando.zally.apireview.ApiReview;
 import de.zalando.zally.apireview.RestApiBaseTest;
 import de.zalando.zally.dto.ApiDefinitionRequest;
-import de.zalando.zally.dto.ViolationType;
+import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.Result;
 import de.zalando.zally.rule.zalando.AvoidTrailingSlashesRule;
 import de.zalando.zally.rule.zalando.ZalandoRuleSet;
@@ -150,7 +150,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
     }
 
     private List<Result> createRandomViolations() {
-        return Arrays.asList(new Result(new AvoidTrailingSlashesRule(new ZalandoRuleSet()), "", "", ViolationType.MUST, Arrays.asList("path")));
+        return Arrays.asList(new Result(new AvoidTrailingSlashesRule(new ZalandoRuleSet()), "", "", Severity.MUST, Arrays.asList("path")));
     }
 
     private void assertBadRequestFor(Object from, Object to) {

@@ -2,7 +2,7 @@ package de.zalando.zally.rule;
 
 import de.zalando.zally.apireview.RestApiBaseTest;
 import de.zalando.zally.dto.RuleDTO;
-import de.zalando.zally.dto.ViolationType;
+import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.util.ErrorResponse;
 import org.junit.Test;
@@ -35,8 +35,8 @@ public class RestSupportedRulesTest extends RestApiBaseTest {
     public void testRulesOrdered() {
         final List<RuleDTO> rules = getSupportedRules();
         for(int i=1;i<rules.size();++i) {
-            final ViolationType prev = rules.get(i - 1).getType();
-            final ViolationType next = rules.get(i).getType();
+            final Severity prev = rules.get(i - 1).getType();
+            final Severity next = rules.get(i).getType();
             assertTrue("Item #" + i + " is out of order:\n" +
                     rules.stream().map(Object::toString).collect(joining("\n")),
                     prev.compareTo(next)<=0);

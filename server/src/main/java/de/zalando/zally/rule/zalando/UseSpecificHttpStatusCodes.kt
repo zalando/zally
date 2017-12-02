@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
@@ -22,7 +22,7 @@ class UseSpecificHttpStatusCodes(@Autowired ruleSet: ZalandoRuleSet, @Autowired 
             .getConfig("$name.allowed_codes").entrySet()
             .map { (key, config) -> (key to config.unwrapped() as List<String>) }.toMap()
 
-    @Check(severity = ViolationType.SHOULD)
+    @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val badPaths = swagger.paths.orEmpty().flatMap { path ->
             path.value.operationMap.orEmpty().flatMap { getNotAllowedStatusCodes(path.key, it) }
