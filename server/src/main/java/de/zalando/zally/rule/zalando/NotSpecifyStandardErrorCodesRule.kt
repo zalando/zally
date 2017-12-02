@@ -3,8 +3,8 @@ package de.zalando.zally.rule.zalando
 import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -20,7 +20,7 @@ class NotSpecifyStandardErrorCodesRule(@Autowired ruleSet: ZalandoRuleSet, @Auto
     private val standardErrorStatusCodes = rulesConfig.getConfig(name)
             .getIntList("standard_error_codes").toSet()
 
-    @Check
+    @Check(severity = ViolationType.HINT)
     fun validate(swagger: Swagger): Violation? {
 
         val paths = swagger.paths.orEmpty().flatMap { pathEntry ->
@@ -34,7 +34,7 @@ class NotSpecifyStandardErrorCodesRule(@Autowired ruleSet: ZalandoRuleSet, @Auto
             }
         }
 
-        return if (paths.isNotEmpty()) Violation(description, violationType, paths) else null
+        return if (paths.isNotEmpty()) Violation(description, paths) else null
     }
 
     private fun isStandardErrorCode(httpStatusCode: Int?): Boolean {

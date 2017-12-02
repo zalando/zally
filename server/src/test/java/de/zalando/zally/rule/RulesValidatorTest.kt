@@ -23,10 +23,10 @@ class RulesValidatorTest {
         override val violationType = ViolationType.SHOULD
         override val id = "S999"
 
-        @Check
+        @Check(severity = ViolationType.SHOULD)
         fun validate(swagger: Swagger): List<Violation> = listOf(
-                Violation("dummy1", ViolationType.SHOULD, listOf("x", "y", "z")),
-                Violation("dummy2", ViolationType.MAY, listOf()))
+                Violation("dummy1", listOf("x", "y", "z")),
+                Violation("dummy2", listOf()))
     }
 
     class SecondRule : AbstractRule(ZalandoRuleSet()) {
@@ -34,9 +34,9 @@ class RulesValidatorTest {
         override val violationType = ViolationType.MUST
         override val id = "999"
 
-        @Check
+        @Check(severity = ViolationType.MUST)
         fun validate(swagger: Swagger): Violation? =
-                Violation("dummy3", ViolationType.MUST, listOf("a"))
+                Violation("dummy3", listOf("a"))
     }
 
     class BadRule : AbstractRule(ZalandoRuleSet()) {
@@ -44,10 +44,10 @@ class RulesValidatorTest {
         override val violationType = ViolationType.MUST
         override val id = "M666"
 
-        @Check
+        @Check(severity = ViolationType.MUST)
         fun invalid(swagger: Swagger): String = "Hello World!"
 
-        @Check
+        @Check(severity = ViolationType.MUST)
         fun invalidParams(swagger: Swagger, json: JsonNode): Violation? = null
     }
 
@@ -118,6 +118,6 @@ class RulesValidatorTest {
         assertThatThrownBy {
             val validator = SwaggerRulesValidator(rules, invalidApiSchemaRule)
             validator.validate(swaggerContent, RulesPolicy(arrayOf("999")))
-        }.hasMessage("Unsupported return type for a @Check check!: class java.lang.String")
+        }.hasMessage("Unsupported return type for a @Check method!: class java.lang.String")
     }
 }

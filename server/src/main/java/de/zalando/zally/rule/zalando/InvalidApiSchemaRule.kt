@@ -59,11 +59,11 @@ open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
         return JsonSchemaValidator(schema, schemaRedirects = mapOf(referencedOnlineSchema to localResource))
     }
 
-    @Check
+    @Check(severity = ViolationType.MUST)
     fun validate(swagger: JsonNode): List<Violation> {
         return jsonSchemaValidator.validate(swagger).let { validationResult ->
             validationResult.messages.map { message ->
-                Violation(message.message, this.violationType, listOf(message.path))
+                Violation(message.message, listOf(message.path))
             }
         }
     }

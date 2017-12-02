@@ -50,12 +50,12 @@ public class RestApiTestConfiguration {
             super(ruleSet);
         }
 
-        @Check
+        @Check(severity = ViolationType.MUST)
         public Iterable<Violation> validate(final JsonNode swagger) {
             JsonNode title = swagger.path("info").path("title");
             if (!title.isMissingNode() && title.textValue().contains("Product Service")) {
                 return Arrays.asList(
-                        new Violation("schema incorrect", getViolationType(), Collections.emptyList()));
+                        new Violation("schema incorrect", Collections.emptyList()));
             } else {
                 return Collections.emptyList();
             }
@@ -87,10 +87,10 @@ public class RestApiTestConfiguration {
             this.apiName = apiName;
         }
 
-        @Check
+        @Check(severity = ViolationType.MUST)
         public Violation validate(Swagger swagger) {
             if (swagger != null && swagger.getInfo().getTitle().contains(apiName)) {
-                return new Violation("dummy", ViolationType.MUST, Collections.emptyList());
+                return new Violation("dummy", Collections.emptyList());
             } else {
                 return null;
             }
@@ -118,9 +118,9 @@ public class RestApiTestConfiguration {
             super(new ZalandoRuleSet());
         }
 
-        @Check
+        @Check(severity = ViolationType.HINT)
         public Violation validate(Swagger swagger) {
-            return new Violation("dummy", ViolationType.HINT, Collections.emptyList());
+            return new Violation("dummy", Collections.emptyList());
         }
 
         @Override

@@ -2,8 +2,8 @@ package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.WordUtil.isPlural
 import de.zalando.zally.util.getAllJsonObjects
 import io.swagger.models.Swagger
@@ -16,7 +16,7 @@ class PluralizeNamesForArraysRule(@Autowired ruleSet: ZalandoRuleSet) : Abstract
     override val violationType = ViolationType.SHOULD
     override val id = "120"
 
-    @Check
+    @Check(severity = ViolationType.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val res = swagger.getAllJsonObjects().map { (def, path) ->
             val badProps = def.entries.filter { "array" == it.value.type && !isPlural(it.key) }
@@ -28,7 +28,7 @@ class PluralizeNamesForArraysRule(@Autowired ruleSet: ZalandoRuleSet) : Abstract
 
         return if (res.isNotEmpty()) {
             val (desc, paths) = res.unzip()
-            Violation(desc.joinToString("\n"), violationType, paths)
+            Violation(desc.joinToString("\n"), paths)
         } else null
     }
 }

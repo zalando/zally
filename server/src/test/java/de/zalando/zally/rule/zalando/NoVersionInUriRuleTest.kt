@@ -1,6 +1,5 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
@@ -12,7 +11,6 @@ class NoVersionInUriRuleTest {
 
     val expectedViolation = Violation(
             "basePath attribute contains version number",
-            ViolationType.MUST,
             emptyList())
 
     @Test

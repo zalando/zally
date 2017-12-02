@@ -1,9 +1,10 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.dto.ViolationType.SHOULD
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Operation
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
@@ -29,7 +30,7 @@ class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
     override val violationType = SHOULD
     override val id = "107"
 
-    @Check
+    @Check(severity = ViolationType.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val properties = enumProperties(swagger)
         val parameters = enumParameters(swagger)
@@ -37,7 +38,7 @@ class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
         val enumNames = (properties.keys + parameters.keys).distinct()
         val enumPaths = (properties.values + parameters.values).distinct()
         return if (enumNames.isNotEmpty()) Violation(
-                "Properties/Parameters $enumNames are not extensible enums", violationType, enumPaths)
+                "Properties/Parameters $enumNames are not extensible enums", enumPaths)
         else null
     }
 

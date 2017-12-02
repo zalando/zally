@@ -2,7 +2,9 @@ package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Violation
+import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -13,9 +15,14 @@ class AvoidLinkHeadersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
     override val id = "166"
     private val DESCRIPTION = "Do Not Use Link Headers with JSON entities"
 
+    @Check(severity = ViolationType.MUST)
+    override fun validate(swagger: Swagger): Violation? {
+        return super.validate(swagger)
+    }
+
     override fun isViolation(header: String) = header == "Link"
 
     override fun createViolation(paths: List<String>): Violation {
-        return Violation(DESCRIPTION, violationType, paths)
+        return Violation(DESCRIPTION, paths)
     }
 }

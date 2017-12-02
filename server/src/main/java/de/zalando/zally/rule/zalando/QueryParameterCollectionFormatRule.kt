@@ -17,7 +17,7 @@ class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : A
     val formatsAllowed = listOf("csv", "multi")
     val violationDescription = "CollectionFormat should be one of: $formatsAllowed"
 
-    @Check
+    @Check(severity = ViolationType.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         fun Collection<Parameter>?.extractInvalidQueryParam(path: String) =
             orEmpty().filterIsInstance<QueryParameter>()
@@ -40,6 +40,6 @@ class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : A
     }
 
     fun createViolation(paths: List<String>): Violation {
-        return Violation(violationDescription, violationType, paths)
+        return Violation(violationDescription, paths)
     }
 }

@@ -47,17 +47,18 @@ abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private 
                     it.parameters.size == 1 &&
                     it.parameters[0].type.isAssignableFrom(root::class.java)
 
-    private fun invoke(check: Method, rule: RuleT, root: Any): Iterable<Result> {
-        log.debug("validating ${check.name} of ${rule.javaClass.simpleName} rule")
-        val result = check.invoke(rule, root)
+    private fun invoke(method: Method, rule: RuleT, root: Any): Iterable<Result> {
+        log.debug("validating ${method.name} of ${rule.javaClass.simpleName} rule")
+        val check = method.getAnnotation(Check::class.java)
+        val result = method.invoke(rule, root)
         val violations = when (result) {
             null -> emptyList()
             is Violation -> listOf(result)
             is Iterable<*> -> result as Iterable<Violation>
-            else -> throw Exception("Unsupported return type for a @Check check!: ${result::class.java}")
+            else -> throw Exception("Unsupported return type for a @Check method!: ${result::class.java}")
         }
         log.debug("${violations.count()} violations identified")
         return violations
-                .map { Result(rule, rule.title, it.description, it.violationType, it.paths) }
+                .map { Result(rule, rule.title, it.description, check.severity, it.paths) }
     }
 }

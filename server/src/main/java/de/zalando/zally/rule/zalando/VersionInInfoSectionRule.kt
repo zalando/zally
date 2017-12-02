@@ -2,8 +2,8 @@ package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isVersion
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +17,7 @@ class VersionInInfoSectionRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRul
     private val DESCRIPTION = "Only the documentation, not the API itself, needs version information. It should be in the " +
         "format MAJOR.MINOR.DRAFT."
 
-    @Check
+    @Check(severity = ViolationType.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val version = swagger.info?.version
         val desc = when {
@@ -25,6 +25,6 @@ class VersionInInfoSectionRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRul
             !isVersion(version) -> "Specified version has incorrect format: $version"
             else -> null
         }
-        return desc?.let { Violation("$DESCRIPTION $it", violationType, emptyList()) }
+        return desc?.let { Violation("$DESCRIPTION $it", emptyList()) }
     }
 }

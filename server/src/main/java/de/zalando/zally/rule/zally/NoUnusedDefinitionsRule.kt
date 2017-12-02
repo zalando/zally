@@ -2,8 +2,8 @@ package de.zalando.zally.rule.zally
 
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.ArrayModel
 import io.swagger.models.ComposedModel
 import io.swagger.models.Model
@@ -27,7 +27,7 @@ class NoUnusedDefinitionsRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(r
     override val violationType = ViolationType.SHOULD
     override val id = "S005"
 
-    @Check
+    @Check(severity = ViolationType.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val paramsInPaths = swagger.paths.orEmpty().values.flatMap { path ->
             path.operations.orEmpty().flatMap { operation ->
@@ -51,7 +51,7 @@ class NoUnusedDefinitionsRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(r
         val paths = unusedParams + unusedDefs
 
         return if (paths.isNotEmpty()) {
-            Violation("Found ${paths.size} unused definitions", violationType, paths)
+            Violation("Found ${paths.size} unused definitions", paths)
         } else null
     }
 

@@ -2,8 +2,8 @@ package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,9 +16,9 @@ class NoVersionInUriRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
     override val id = "115"
     private val description = "basePath attribute contains version number"
 
-    @Check
+    @Check(severity = ViolationType.MUST)
     fun validate(swagger: Swagger): Violation? {
         val hasVersion = swagger.basePath != null && PatternUtil.hasVersionInUrl(swagger.basePath)
-        return if (hasVersion) Violation(description, violationType, emptyList()) else null
+        return if (hasVersion) Violation(description, emptyList()) else null
     }
 }

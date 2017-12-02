@@ -3,8 +3,8 @@ package de.zalando.zally.rule.zalando
 import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.HttpMethod
 import io.swagger.models.Operation
 import io.swagger.models.Swagger
@@ -24,12 +24,12 @@ class UseSpecificHttpStatusCodes(@Autowired ruleSet: ZalandoRuleSet, @Autowired 
             .getConfig("$name.allowed_codes").entrySet()
             .map { (key, config) -> (key to config.unwrapped() as List<String>) }.toMap()
 
-    @Check
+    @Check(severity = ViolationType.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val badPaths = swagger.paths.orEmpty().flatMap { path ->
             path.value.operationMap.orEmpty().flatMap { getNotAllowedStatusCodes(path.key, it) }
         }
-        return if (badPaths.isNotEmpty()) Violation(description, violationType, badPaths) else null
+        return if (badPaths.isNotEmpty()) Violation(description, badPaths) else null
     }
 
     private fun getNotAllowedStatusCodes(path: String, entry: Map.Entry<HttpMethod, Operation>): List<String> {

@@ -3,7 +3,6 @@ package de.zalando.zally.rule.zalando
 import com.typesafe.config.Config
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Check
 import io.swagger.models.Response
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
@@ -16,8 +15,7 @@ abstract class HttpHeadersRule(ruleSet: ZalandoRuleSet, rulesConfig: Config) : A
 
     abstract fun isViolation(header: String): Boolean
 
-    @Check
-    fun validate(swagger: Swagger): Violation? {
+    open fun validate(swagger: Swagger): Violation? {
         fun Collection<Parameter>?.extractHeaders(path: String) =
             orEmpty().filter { it.`in` == "header" }.map { path to it.name }
 

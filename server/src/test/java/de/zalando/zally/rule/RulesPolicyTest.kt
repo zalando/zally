@@ -15,7 +15,7 @@ class RulesPolicyTest {
         override val violationType = ViolationType.MUST
         override val id = "999"
 
-        @Check
+        @Check(severity = ViolationType.MUST)
         fun validate(swagger: Swagger): Violation? = result
     }
 

@@ -2,8 +2,8 @@ package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isPathVariable
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,12 +16,12 @@ class EverySecondPathLevelParameterRule(@Autowired ruleSet: ZalandoRuleSet) : Ab
     override val id = "143"
     private val DESCRIPTION = "Every second path level must be a path parameter"
 
-    @Check
+    @Check(severity = ViolationType.MUST)
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().keys.filterNot {
             val pathSegments = it.split("/").filter { it.isNotEmpty() }
             pathSegments.filterIndexed { i, segment -> isPathVariable(segment) == (i % 2 == 0) }.isEmpty()
         }
-        return if (paths.isNotEmpty()) Violation(DESCRIPTION, violationType, paths) else null
+        return if (paths.isNotEmpty()) Violation(DESCRIPTION, paths) else null
     }
 }

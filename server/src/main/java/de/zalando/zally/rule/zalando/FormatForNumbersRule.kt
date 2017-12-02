@@ -22,7 +22,7 @@ class FormatForNumbersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
     private val type2format = rulesConfig.getConfig("$name.formats").entrySet()
             .map { (key, config) -> key to config.unwrapped() as List<String> }.toMap()
 
-    @Check
+    @Check(severity = ViolationType.MUST)
     fun validate(swagger: Swagger): Violation? {
         val fromObjects = swagger.getAllJsonObjects().flatMap { (def, path) ->
             val badProps = def.entries.filterNot { (_, prop) -> isValid(prop.type, prop.format) }.map { it.key }
@@ -41,7 +41,7 @@ class FormatForNumbersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
         return if (result.isNotEmpty()) {
             val (props, paths) = result.unzip()
             val properties = props.flatten().toSet().joinToString(", ")
-            Violation(description + properties, violationType, paths)
+            Violation(description + properties, paths)
         } else null
     }
 
