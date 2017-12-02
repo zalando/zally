@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 @Component
 class EverySecondPathLevelParameterRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Every Second Path Level To Be Parameter"
-    override val violationType = ViolationType.MUST
     override val id = "143"
     private val DESCRIPTION = "Every second path level must be a path parameter"
 

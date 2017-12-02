@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 @Component
 class HyphenateHttpHeadersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : HttpHeadersRule(ruleSet, rulesConfig) {
     override val title = "Use Hyphenated HTTP Headers"
-    override val violationType = ViolationType.MUST
     override val id = "131"
 
     @Check(severity = ViolationType.MUST)

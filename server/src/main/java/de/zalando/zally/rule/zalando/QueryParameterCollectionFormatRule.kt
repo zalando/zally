@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired
 class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
 
     override val title = "Explicitly define the Collection Format of Query Parameters"
-    override val violationType = ViolationType.SHOULD
     override val id = "154"
     val formatsAllowed = listOf("csv", "multi")
     val violationDescription = "CollectionFormat should be one of: $formatsAllowed"

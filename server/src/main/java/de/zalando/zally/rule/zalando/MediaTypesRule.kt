@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component
 class MediaTypesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
 
     override val title = "Prefer standard media type names"
-    override val violationType = ViolationType.SHOULD
     override val id = "172"
     private val DESCRIPTION = "Custom media types should only be used for versioning"
 

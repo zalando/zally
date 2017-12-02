@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component
 @Component
 class PluralizeResourceNamesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Pluralize Resource Names"
-    override val violationType = ViolationType.MUST
     override val id = "134"
     private val DESC_PATTERN = "Resources %s are singular (but we are not sure)"
     private val allowedPrefixes = rulesConfig.getConfig(name).getStringList("whitelist_prefixes")

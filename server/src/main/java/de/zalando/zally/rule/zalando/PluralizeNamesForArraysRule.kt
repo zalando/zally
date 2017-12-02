@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component
 @Component
 class PluralizeNamesForArraysRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Array names should be pluralized"
-    override val violationType = ViolationType.SHOULD
     override val id = "120"
 
     @Check(severity = ViolationType.SHOULD)

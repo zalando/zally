@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component
 @Component
 class LimitNumberOfSubresourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Limit number of Sub-resources level"
-    override val violationType = ViolationType.SHOULD
     override val id = "147"
     private val DESC = "Number of sub-resources should not exceed 3"
     private val subresourcesLimit = rulesConfig.getConfig(name).getInt("subresources_limit")

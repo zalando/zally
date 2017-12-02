@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 @Component
 class LimitNumberOfResourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Limit number of Resources"
-    override val violationType = ViolationType.SHOULD
     override val id = "146"
     private val pathCountLimit = rulesConfig.getConfig(name).getInt("paths_count_limit")
 

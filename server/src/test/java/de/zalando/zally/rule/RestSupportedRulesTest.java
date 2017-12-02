@@ -12,7 +12,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,10 +62,15 @@ public class RestSupportedRulesTest extends RestApiBaseTest {
 
     @Test
     public void testFilterByType() {
-        for (ViolationType ruleType : ViolationType.values()) {
-            assertFilteredByRuleType(ruleType.toString());
-            assertFilteredByRuleType(ruleType.toString().toLowerCase());
-        }
+
+        int count = 0;
+        count += getSupportedRules("MuST", null).size();
+        count += getSupportedRules("ShOuLd", null).size();
+        count += getSupportedRules("MaY", null).size();
+        count += getSupportedRules("CoUlD", null).size();
+        count += getSupportedRules("HiNt", null).size();
+
+        assertThat(count).isEqualTo(implementedRules.size());
     }
 
     @Test
@@ -92,17 +96,4 @@ public class RestSupportedRulesTest extends RestApiBaseTest {
         assertThat(rules.size()).isEqualTo(IGNORED_RULES.size());
     }
 
-    private void assertFilteredByRuleType(String ruleType) throws AssertionError {
-        List<RuleDTO> rules = getSupportedRules(ruleType, null);
-        List<Rule> expectedRules = getRulesByType(ViolationType.valueOf(ruleType.toUpperCase()));
-
-        assertThat(rules.size()).isEqualTo(expectedRules.size());
-    }
-
-    private List<Rule> getRulesByType(ViolationType violationType) {
-        return implementedRules
-            .stream()
-            .filter(r -> r.getViolationType() == violationType)
-            .collect(Collectors.toList());
-    }
 }

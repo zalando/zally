@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component
 class SuccessResponseAsJsonObjectRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
 
     override val title = "Response As JSON Object"
-    override val violationType = ViolationType.MUST
     override val id = "110"
     private val DESCRIPTION = "Always Return JSON Objects As Top-Level Data Structures To Support Extensibility"
 

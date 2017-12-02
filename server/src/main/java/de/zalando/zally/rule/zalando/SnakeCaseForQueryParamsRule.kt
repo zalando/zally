@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component
 @Component
 class SnakeCaseForQueryParamsRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Use snake_case (never camelCase) for Query Parameters"
-    override val violationType = ViolationType.MUST
     override val id = "130"
 
     @Check(severity = ViolationType.MUST)

@@ -23,7 +23,6 @@ open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
     private val log = LoggerFactory.getLogger(InvalidApiSchemaRule::class.java)
 
     override val title = "OpenAPI 2.0 schema"
-    override val violationType = ViolationType.MUST
     override val id = "101"
     open val description = "Given file is not OpenAPI 2.0 compliant."
 
@@ -69,5 +68,5 @@ open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
     }
 
     fun getGeneralViolation(): Result =
-            Result(this, title, description, violationType, emptyList())
+            Result(this, title, description, ViolationType.MUST, emptyList())
 }

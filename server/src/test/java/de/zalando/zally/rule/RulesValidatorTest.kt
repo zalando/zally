@@ -20,7 +20,6 @@ class RulesValidatorTest {
 
     class FirstRule : AbstractRule(ZalandoRuleSet()) {
         override val title = "First Rule"
-        override val violationType = ViolationType.SHOULD
         override val id = "S999"
 
         @Check(severity = ViolationType.SHOULD)
@@ -31,7 +30,6 @@ class RulesValidatorTest {
 
     class SecondRule : AbstractRule(ZalandoRuleSet()) {
         override val title = "Second Rule"
-        override val violationType = ViolationType.MUST
         override val id = "999"
 
         @Check(severity = ViolationType.MUST)
@@ -41,7 +39,6 @@ class RulesValidatorTest {
 
     class BadRule : AbstractRule(ZalandoRuleSet()) {
         override val title = "Third Rule"
-        override val violationType = ViolationType.MUST
         override val id = "M666"
 
         @Check(severity = ViolationType.MUST)
@@ -103,7 +100,6 @@ class RulesValidatorTest {
         val resultRule = mock(InvalidApiSchemaRule::class.java)
         Mockito.`when`(resultRule.title).thenReturn("InvalidApiSchemaRule Title")
         Mockito.`when`(resultRule.description).thenReturn("desc")
-        Mockito.`when`(resultRule.violationType).thenReturn(ViolationType.MUST)
 
         val rules = emptyList<Rule>()
         val validator = SwaggerRulesValidator(rules, resultRule)

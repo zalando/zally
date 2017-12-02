@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component
 @Component
 class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Prefer Compatible Extensions"
-    override val violationType = SHOULD
     override val id = "107"
 
     @Check(severity = ViolationType.SHOULD)

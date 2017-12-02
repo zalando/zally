@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component
 @Component
 class AvoidLinkHeadersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : HttpHeadersRule(ruleSet, rulesConfig) {
     override val title = "Avoid Link in Header Rule"
-    override val violationType = ViolationType.MUST
     override val id = "166"
     private val DESCRIPTION = "Do Not Use Link Headers with JSON entities"
 

@@ -33,12 +33,6 @@ public class ApiReviewTest {
 
         @NotNull
         @Override
-        public ViolationType getViolationType() {
-            return null;
-        }
-
-        @NotNull
-        @Override
         public String getId() {
             return null;
         }

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component
 @Component
 class SnakeCaseInPropNameRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "snake_case property names"
-    override val violationType = ViolationType.MUST
     override val id = "118"
     private val description = "Property names must be snake_case: "
 

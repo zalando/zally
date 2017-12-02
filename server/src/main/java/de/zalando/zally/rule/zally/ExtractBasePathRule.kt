@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 class ExtractBasePathRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(ruleSet) {
 
     override val title = "Base path can be extracted"
-    override val violationType = ViolationType.HINT
     override val id = "H001"
     private val DESC_PATTERN = "All paths start with prefix '%s'. This prefix could be part of base path."
 

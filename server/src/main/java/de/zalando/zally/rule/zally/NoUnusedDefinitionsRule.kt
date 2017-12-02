@@ -24,7 +24,6 @@ import org.springframework.stereotype.Component
 @Component
 class NoUnusedDefinitionsRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(ruleSet) {
     override val title = "Do not leave unused definitions"
-    override val violationType = ViolationType.SHOULD
     override val id = "S005"
 
     @Check(severity = ViolationType.SHOULD)

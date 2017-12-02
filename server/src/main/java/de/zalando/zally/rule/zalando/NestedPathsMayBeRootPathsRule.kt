@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 @Component
 class NestedPathsMayBeRootPathsRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Consider Using (Non-) Nested URLs"
-    override val violationType = ViolationType.MAY
     override val id = "145"
     private val DESCRIPTION = "Nested paths / URLs may be top-level resource"
 

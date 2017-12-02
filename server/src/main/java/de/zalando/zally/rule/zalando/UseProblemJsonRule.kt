@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component
 @Component
 class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Use Problem JSON"
-    override val violationType = ViolationType.MUST
     override val id = "176"
     private val description = "Operations Should Return Problem JSON When Any Problem Occurs During Processing " +
         "Whether Caused by Client Or Server"

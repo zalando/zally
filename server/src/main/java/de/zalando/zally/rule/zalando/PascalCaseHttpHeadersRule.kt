@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 @Component
 class PascalCaseHttpHeadersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : HttpHeadersRule(ruleSet, rulesConfig) {
     override val title = "Prefer Hyphenated-Pascal-Case for HTTP header fields"
-    override val violationType = ViolationType.SHOULD
     override val id = "132"
 
     @Check(severity = ViolationType.SHOULD)

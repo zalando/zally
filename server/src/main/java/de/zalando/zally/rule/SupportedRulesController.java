@@ -4,6 +4,7 @@ import de.zalando.zally.dto.RuleDTO;
 import de.zalando.zally.dto.RulesListDTO;
 import de.zalando.zally.dto.ViolationType;
 import de.zalando.zally.dto.ViolationTypeBinder;
+import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.api.Rule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
@@ -15,8 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
+import static java.util.Comparator.naturalOrder;
 import static java.util.stream.Collectors.toList;
 
 @CrossOrigin
@@ -62,16 +66,26 @@ public class SupportedRulesController {
     }
 
     private boolean filterByType(Rule rule, ViolationType typeFilter) {
-        return typeFilter == null || rule.getViolationType().equals(typeFilter);
+        return typeFilter == null || typeFilter.equals(violationType(rule));
     }
 
     private RuleDTO toDto(Rule rule) {
         return new RuleDTO(
                 rule.getTitle(),
-                rule.getViolationType(),
+                violationType(rule),
                 rule.getRuleSet().url(rule).toString(),
                 rule.getId(),
                 rulesPolicy.accepts(rule)
         );
     }
+
+    private ViolationType violationType(final Rule rule) {
+        return Stream.of(rule.getClass().getMethods())
+                .map(m -> m.getAnnotation(Check.class))
+                .filter(Objects::nonNull)
+                .map(Check::severity)
+                .min(naturalOrder())
+                .orElse(ViolationType.HINT);
+    }
+
 }

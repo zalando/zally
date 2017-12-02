@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component
 @Component
 class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Use common field names"
-    override val violationType = ViolationType.MUST
     override val id = "174"
 
     @Suppress("UNCHECKED_CAST")

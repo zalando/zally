@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component
 @Component
 class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Define and Assign Access Rights (Scopes)"
-    override val violationType = MUST
     override val id = "104"
     private val DESC = "Every endpoint must be secured by proper OAuth2 scope"
 

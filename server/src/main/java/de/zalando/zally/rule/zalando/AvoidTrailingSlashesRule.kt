@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 @Component
 class AvoidTrailingSlashesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Avoid Trailing Slashes"
-    override val violationType = ViolationType.MUST
     override val id = "136"
     private val DESCRIPTION = "Rule avoid trailing slashes is not followed"
 

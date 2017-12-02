@@ -67,11 +67,6 @@ public class RestApiTestConfiguration {
         }
 
         @Override
-        public ViolationType getViolationType() {
-            return ViolationType.MUST;
-        }
-
-        @Override
         public String getId() {
             return "166";
         }
@@ -97,11 +92,6 @@ public class RestApiTestConfiguration {
         }
 
         @Override
-        public ViolationType getViolationType() {
-            return ViolationType.MUST;
-        }
-
-        @Override
         public String getTitle() {
             return "Test Rule";
         }
@@ -121,11 +111,6 @@ public class RestApiTestConfiguration {
         @Check(severity = ViolationType.HINT)
         public Violation validate(Swagger swagger) {
             return new Violation("dummy", Collections.emptyList());
-        }
-
-        @Override
-        public ViolationType getViolationType() {
-            return ViolationType.MUST;
         }
 
         @Override

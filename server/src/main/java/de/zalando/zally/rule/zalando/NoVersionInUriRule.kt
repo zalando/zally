@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 @Component
 class NoVersionInUriRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Do Not Use URI Versioning"
-    override val violationType = ViolationType.MUST
     override val id = "115"
     private val description = "basePath attribute contains version number"
 
