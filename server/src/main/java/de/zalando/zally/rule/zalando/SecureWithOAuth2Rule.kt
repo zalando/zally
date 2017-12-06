@@ -1,9 +1,9 @@
 package de.zalando.zally.rule.zalando
 
 import com.google.common.collect.Sets
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Operation
 import io.swagger.models.Scheme
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component
 class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Define and Assign Access Rights (Scopes)"
     override val id = "104"
+    override val severity = Severity.MUST
     private val DESC = "Every endpoint must be secured by proper OAuth2 scope"
 
     @Check(severity = Severity.MUST)

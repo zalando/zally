@@ -36,6 +36,12 @@ public class ApiReviewTest {
         public String getId() {
             return null;
         }
+
+        @NotNull
+        @Override
+        public Severity getSeverity() {
+            return null;
+        }
     };
 
     @Test

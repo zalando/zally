@@ -1,10 +1,10 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.getAllJsonObjects
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.AbstractSerializableParameter
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component
 class FormatForNumbersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Define Format for Type Number and Integer"
     override val id = "171"
+    override val severity = Severity.MUST
     private val description = """Numeric properties must have valid format specified: """
 
     private val type2format = rulesConfig.getConfig("$name.formats").entrySet()

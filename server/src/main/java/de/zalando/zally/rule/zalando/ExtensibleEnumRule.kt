@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Operation
 import io.swagger.models.Swagger
@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component
 class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Prefer Compatible Extensions"
     override val id = "107"
+    override val severity = Severity.SHOULD
 
     @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {

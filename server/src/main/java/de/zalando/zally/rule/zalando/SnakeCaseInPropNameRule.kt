@@ -1,9 +1,9 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
 import de.zalando.zally.util.getAllJsonObjects
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component
 class SnakeCaseInPropNameRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "snake_case property names"
     override val id = "118"
+    override val severity = Severity.MUST
     private val description = "Property names must be snake_case: "
 
     private val whitelist = rulesConfig.getStringList(SnakeCaseInPropNameRule::class.simpleName + ".whitelist").toSet()

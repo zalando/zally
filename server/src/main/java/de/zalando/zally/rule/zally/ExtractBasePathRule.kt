@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,6 +13,7 @@ class ExtractBasePathRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(ruleS
 
     override val title = "Base path can be extracted"
     override val id = "H001"
+    override val severity = Severity.HINT
     private val DESC_PATTERN = "All paths start with prefix '%s'. This prefix could be part of base path."
 
     @Check(severity = Severity.HINT)

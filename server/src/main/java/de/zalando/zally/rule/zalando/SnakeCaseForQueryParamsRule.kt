@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component
 class SnakeCaseForQueryParamsRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Use snake_case (never camelCase) for Query Parameters"
     override val id = "130"
+    override val severity = Severity.MUST
 
     @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {

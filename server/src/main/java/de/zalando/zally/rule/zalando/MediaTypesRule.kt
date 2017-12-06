@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
@@ -15,6 +15,7 @@ class MediaTypesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet)
 
     override val title = "Prefer standard media type names"
     override val id = "172"
+    override val severity = Severity.SHOULD
     private val DESCRIPTION = "Custom media types should only be used for versioning"
 
     @Check(severity = Severity.SHOULD)

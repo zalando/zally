@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.ComposedModel
 import io.swagger.models.ModelImpl
@@ -17,6 +17,7 @@ class SuccessResponseAsJsonObjectRule(@Autowired ruleSet: ZalandoRuleSet) : Abst
 
     override val title = "Response As JSON Object"
     override val id = "110"
+    override val severity = Severity.MUST
     private val DESCRIPTION = "Always Return JSON Objects As Top-Level Data Structures To Support Extensibility"
 
     @Check(severity = Severity.MUST)

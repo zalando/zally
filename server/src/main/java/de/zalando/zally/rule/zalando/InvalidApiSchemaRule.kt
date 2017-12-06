@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.io.Resources
 import com.typesafe.config.Config
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.rule.Result
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +24,7 @@ open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
 
     override val title = "OpenAPI 2.0 schema"
     override val id = "101"
+    override val severity = Severity.MUST
     open val description = "Given file is not OpenAPI 2.0 compliant."
 
     val jsonSchemaValidator: JsonSchemaValidator

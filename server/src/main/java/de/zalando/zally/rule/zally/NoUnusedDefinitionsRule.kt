@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.ArrayModel
 import io.swagger.models.ComposedModel
@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component
 class NoUnusedDefinitionsRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(ruleSet) {
     override val title = "Do not leave unused definitions"
     override val id = "S005"
+    override val severity = Severity.SHOULD
 
     @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {

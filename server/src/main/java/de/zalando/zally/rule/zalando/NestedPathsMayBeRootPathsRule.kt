@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isPathVariable
 import io.swagger.models.Swagger
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component
 class NestedPathsMayBeRootPathsRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Consider Using (Non-) Nested URLs"
     override val id = "145"
+    override val severity = Severity.MAY
     private val DESCRIPTION = "Nested paths / URLs may be top-level resource"
 
     @Check(severity = Severity.MAY)

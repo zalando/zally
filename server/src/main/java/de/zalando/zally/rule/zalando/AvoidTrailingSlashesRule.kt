@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component
 class AvoidTrailingSlashesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Avoid Trailing Slashes"
     override val id = "136"
+    override val severity = Severity.MUST
     private val DESCRIPTION = "Rule avoid trailing slashes is not followed"
 
     @Check(severity = Severity.MUST)

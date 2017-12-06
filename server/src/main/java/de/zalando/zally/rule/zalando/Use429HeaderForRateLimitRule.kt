@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
 import io.swagger.models.properties.Property
@@ -14,6 +14,7 @@ class Use429HeaderForRateLimitRule(@Autowired ruleSet: ZalandoRuleSet) : Abstrac
 
     override val title = "Use 429 With Header For Rate Limits"
     override val id = "153"
+    override val severity = Severity.MUST
     private val DESCRIPTION = "If Client Exceed Request Rate, Response Code Must Contain Header Information Providing Further Details to Client"
     private val X_RATE_LIMIT_TRIO = listOf("X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset")
 

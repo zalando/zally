@@ -1,9 +1,9 @@
 package de.zalando.zally.rule
 
 import com.fasterxml.jackson.databind.JsonNode
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
 import de.zalando.zally.rule.zalando.ZalandoRuleSet
@@ -21,6 +21,7 @@ class RulesValidatorTest {
     class FirstRule : AbstractRule(ZalandoRuleSet()) {
         override val title = "First Rule"
         override val id = "S999"
+        override val severity = Severity.SHOULD
 
         @Check(severity = Severity.SHOULD)
         fun validate(swagger: Swagger): List<Violation> = listOf(
@@ -31,6 +32,7 @@ class RulesValidatorTest {
     class SecondRule : AbstractRule(ZalandoRuleSet()) {
         override val title = "Second Rule"
         override val id = "999"
+        override val severity = Severity.MUST
 
         @Check(severity = Severity.MUST)
         fun validate(swagger: Swagger): Violation? =
@@ -40,6 +42,7 @@ class RulesValidatorTest {
     class BadRule : AbstractRule(ZalandoRuleSet()) {
         override val title = "Third Rule"
         override val id = "M666"
+        override val severity = Severity.MUST
 
         @Check(severity = Severity.MUST)
         fun invalid(swagger: Swagger): String = "Hello World!"

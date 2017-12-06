@@ -71,6 +71,10 @@ public class RestApiTestConfiguration {
             return "166";
         }
 
+        @Override
+        public Severity getSeverity() {
+            return Severity.MUST;
+        }
     }
 
     public static class CheckApiNameIsPresentRule extends AbstractRule {
@@ -101,6 +105,11 @@ public class RestApiTestConfiguration {
             return "999";
         }
 
+        @Override
+        public Severity getSeverity() {
+            return Severity.MUST;
+        }
+
     }
 
     public static class AlwaysGiveAHintRule extends AbstractRule {
@@ -121,6 +130,11 @@ public class RestApiTestConfiguration {
         @Override
         public String getId() {
             return "H999";
+        }
+
+        @Override
+        public Severity getSeverity() {
+            return Severity.HINT;
         }
 
     }

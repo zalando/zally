@@ -1,9 +1,9 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.HttpMethod
 import io.swagger.models.Operation
@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component
 @Component
 class UseSpecificHttpStatusCodes(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Use Specific HTTP Status Codes"
-
     override val id = "150"
+    override val severity = Severity.SHOULD
     private val description = "Operatons should use specific HTTP status codes"
 
     private val allowedStatusCodes = rulesConfig

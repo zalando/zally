@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component
 class VersionInInfoSectionRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Provide version information"
     override val id = "116"
+    override val severity = Severity.SHOULD
     private val DESCRIPTION = "Only the documentation, not the API itself, needs version information. It should be in the " +
         "format MAJOR.MINOR.DRAFT."
 

@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component
 class HyphenateHttpHeadersRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : HttpHeadersRule(ruleSet, rulesConfig) {
     override val title = "Use Hyphenated HTTP Headers"
     override val id = "131"
+    override val severity = Severity.MUST
 
     @Check(severity = Severity.MUST)
     override fun validate(swagger: Swagger): Violation? {

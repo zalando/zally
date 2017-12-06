@@ -14,4 +14,7 @@ interface Rule {
 
     /** A title for this rule */
     val title: String
+
+    /** The stated severity for this rule */
+    val severity: Severity
 }
