@@ -67,7 +67,6 @@ public class RestSupportedRulesTest extends RestApiBaseTest {
         count += getSupportedRules("MuST", null).size();
         count += getSupportedRules("ShOuLd", null).size();
         count += getSupportedRules("MaY", null).size();
-        count += getSupportedRules("CoUlD", null).size();
         count += getSupportedRules("HiNt", null).size();
 
         assertThat(count).isEqualTo(implementedRules.size());

@@ -8,8 +8,5 @@ enum class Severity {
     MUST,
     SHOULD,
     MAY,
-
-    @Deprecated("Use MAY instead")
-    COULD,
     HINT
 }
