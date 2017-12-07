@@ -7,7 +7,6 @@ import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.util.ErrorResponse;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 
@@ -20,16 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@TestPropertySource(properties = {"zally.ignoreRules=M001,C001","zally.ignoreRulePackages=com.example.rules"})
+@TestPropertySource(properties = {"zally.ignoreRules=166,145","zally.ignoreRulePackages=com.example.rules"})
 public class RestSupportedRulesTest extends RestApiBaseTest {
 
-    private static final List<String> IGNORED_RULES = Arrays.asList("M001", "C001");
+    private static final List<String> IGNORED_RULES = Arrays.asList("166", "145");
 
     @Autowired
     private List<Rule> implementedRules;
-
-    @Value("${zally.apiGuidelinesBaseUrl:something went wrong!}")
-    private String baseUrl;
 
     @Test
     public void testRulesCount() {
@@ -55,7 +51,6 @@ public class RestSupportedRulesTest extends RestApiBaseTest {
             assertThat(rule.getTitle()).isNotEmpty();
             assertThat(rule.getType()).isNotNull();
             assertThat(rule.getUrl()).isNotNull();
-            assertThat(rule.getUrl()).startsWith(baseUrl);
         }
     }
 

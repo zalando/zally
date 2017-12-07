@@ -1,8 +1,9 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.ComposedModel
 import io.swagger.models.HttpMethod
 import io.swagger.models.Model
@@ -16,17 +17,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Use Problem JSON"
-    override val url = "/#176"
     override val violationType = ViolationType.MUST
-    override val code = "M015"
-    override val guidelinesCode = "176"
+    override val id = "176"
     private val description = "Operations Should Return Problem JSON When Any Problem Occurs During Processing " +
         "Whether Caused by Client Or Server"
     private val requiredFields = setOf("title", "status")
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().flatMap { pathEntry ->
             pathEntry.value.operationMap.orEmpty().filter { it.key.shouldContainPayload() }.flatMap { opEntry ->
                 opEntry.value.responses.orEmpty().flatMap { responseEntry ->
@@ -38,7 +38,7 @@ class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleS
             }
         }
 
-        return if (paths.isNotEmpty()) Violation(this, title, description, violationType, url, paths) else null
+        return if (paths.isNotEmpty()) Violation(this, title, description, violationType, paths) else null
     }
 
     private fun isValidProblemJson(swagger: Swagger, response: Response, operation: Operation) =
@@ -75,5 +75,4 @@ class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleS
 
     private fun HttpMethod.shouldContainPayload(): Boolean =
         name.toLowerCase() !in listOf("head", "options")
-
 }

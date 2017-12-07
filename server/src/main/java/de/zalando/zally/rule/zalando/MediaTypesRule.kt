@@ -1,8 +1,9 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
 import io.swagger.models.Swagger
@@ -10,16 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class MediaTypesRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+class MediaTypesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
 
     override val title = "Prefer standard media type names"
-    override val url = "/#172"
     override val violationType = ViolationType.SHOULD
-    override val code = "S004"
-    override val guidelinesCode = "172"
+    override val id = "172"
     private val DESCRIPTION = "Custom media types should only be used for versioning"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().entries.flatMap { (pathName, path) ->
             path.operationMap.orEmpty().entries.flatMap { (verb, operation) ->
                 val mediaTypes = ArrayList<String>() + operation.produces.orEmpty() + operation.consumes.orEmpty()
@@ -27,7 +27,7 @@ class MediaTypesRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) 
                 if (violatingMediaTypes.isNotEmpty()) listOf("$pathName $verb") else emptyList()
             }
         }
-        return if (paths.isNotEmpty()) Violation(this, title, DESCRIPTION, violationType, url, paths) else null
+        return if (paths.isNotEmpty()) Violation(this, title, DESCRIPTION, violationType, paths) else null
     }
 
     private fun isViolatingMediaType(mediaType: String) =

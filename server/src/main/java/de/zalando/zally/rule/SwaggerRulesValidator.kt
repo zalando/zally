@@ -1,7 +1,8 @@
 package de.zalando.zally.rule
 
-import io.swagger.models.Swagger
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
+import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -11,8 +12,8 @@ import org.springframework.stereotype.Component
  * on set of rules. It will sort the output by path.
  */
 @Component
-class SwaggerRulesValidator(@Autowired rules: List<SwaggerRule>,
-                            @Autowired invalidApiRule: InvalidApiSchemaRule) : RulesValidator<SwaggerRule, Swagger>(rules, invalidApiRule) {
+class SwaggerRulesValidator(@Autowired rules: List<Rule>,
+                            @Autowired invalidApiRule: InvalidApiSchemaRule) : RulesValidator<Rule, Swagger>(rules, invalidApiRule) {
 
     override fun parse(content: String): Swagger? {
         return try {
@@ -30,11 +31,4 @@ class SwaggerRulesValidator(@Autowired rules: List<SwaggerRule>,
             emptyList()
         }
     }
-
-    override fun validator(root: Swagger): (SwaggerRule) -> Iterable<Violation> {
-        return {
-            listOfNotNull(it.validate(root))
-        }
-    }
-
 }

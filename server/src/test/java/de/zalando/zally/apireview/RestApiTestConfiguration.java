@@ -2,15 +2,16 @@ package de.zalando.zally.apireview;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import de.zalando.zally.dto.ViolationType;
+import de.zalando.zally.rule.AbstractRule;
 import de.zalando.zally.rule.ApiValidator;
 import de.zalando.zally.rule.CompositeRulesValidator;
-import de.zalando.zally.rule.zalando.InvalidApiSchemaRule;
-import de.zalando.zally.rule.JsonRule;
 import de.zalando.zally.rule.JsonRulesValidator;
-import de.zalando.zally.rule.api.RuleSet;
-import de.zalando.zally.rule.SwaggerRule;
 import de.zalando.zally.rule.SwaggerRulesValidator;
 import de.zalando.zally.rule.Violation;
+import de.zalando.zally.rule.api.Check;
+import de.zalando.zally.rule.api.Rule;
+import de.zalando.zally.rule.api.RuleSet;
+import de.zalando.zally.rule.zalando.InvalidApiSchemaRule;
 import de.zalando.zally.rule.zalando.ZalandoRuleSet;
 import io.swagger.models.Swagger;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,7 @@ public class RestApiTestConfiguration {
     @Primary
     @Profile("test")
     public ApiValidator validator() {
-        final List<SwaggerRule> rules = Arrays.asList(
+        final List<Rule> rules = Arrays.asList(
             new CheckApiNameIsPresentRule("Product Service"),
             new AlwaysGiveAHintRule()
         );
@@ -43,18 +44,18 @@ public class RestApiTestConfiguration {
                 new JsonRulesValidator(Arrays.asList(new CheckApiNameIsPresentJsonRule(new ZalandoRuleSet())), invalidApiRule));
     }
 
-    private static  class CheckApiNameIsPresentJsonRule extends JsonRule {
+    public static class CheckApiNameIsPresentJsonRule extends AbstractRule {
 
         public CheckApiNameIsPresentJsonRule(@NotNull RuleSet ruleSet) {
             super(ruleSet);
         }
 
-        @Override
+        @Check
         public Iterable<Violation> validate(final JsonNode swagger) {
             JsonNode title = swagger.path("info").path("title");
             if (!title.isMissingNode() && title.textValue().contains("Product Service")) {
                 return Arrays.asList(
-                        new Violation(this, getTitle(), "schema incorrect", getViolationType(), getUrl(), Collections.emptyList()));
+                        new Violation(this, getTitle(), "schema incorrect", getViolationType(), Collections.emptyList()));
             } else {
                 return Collections.emptyList();
             }
@@ -71,22 +72,13 @@ public class RestApiTestConfiguration {
         }
 
         @Override
-        public String getUrl() {
-            return "url";
+        public String getId() {
+            return "166";
         }
 
-        @Override
-        public String getCode() {
-            return "M001";
-        }
-
-        @Override
-        public String getGuidelinesCode() {
-            return "000";
-        }
     }
 
-    private static class CheckApiNameIsPresentRule extends SwaggerRule {
+    public static class CheckApiNameIsPresentRule extends AbstractRule {
 
         private final String apiName;
 
@@ -95,18 +87,13 @@ public class RestApiTestConfiguration {
             this.apiName = apiName;
         }
 
-        @Override
+        @Check
         public Violation validate(Swagger swagger) {
             if (swagger != null && swagger.getInfo().getTitle().contains(apiName)) {
-                return new Violation(new CheckApiNameIsPresentRule(null), "dummy1", "dummy", ViolationType.MUST, "dummy", Collections.emptyList());
+                return new Violation(new CheckApiNameIsPresentRule(null), "dummy1", "dummy", ViolationType.MUST, Collections.emptyList());
             } else {
                 return null;
             }
-        }
-
-        @Override
-        public String getUrl() {
-            return null;
         }
 
         @Override
@@ -120,31 +107,22 @@ public class RestApiTestConfiguration {
         }
 
         @Override
-        public String getCode() {
-            return "M999";
+        public String getId() {
+            return "999";
         }
 
-        @Override
-        public String getGuidelinesCode() {
-            return "000";
-        }
     }
 
-    private static class AlwaysGiveAHintRule extends SwaggerRule {
+    public static class AlwaysGiveAHintRule extends AbstractRule {
         public AlwaysGiveAHintRule() {
             super(new ZalandoRuleSet());
         }
 
-        @Override
+        @Check
         public Violation validate(Swagger swagger) {
             return new Violation(
                 new AlwaysGiveAHintRule(),
-                "dummy2", "dummy", ViolationType.HINT, "dummy", Collections.emptyList());
-        }
-
-        @Override
-        public String getUrl() {
-            return null;
+                "dummy2", "dummy", ViolationType.HINT, Collections.emptyList());
         }
 
         @Override
@@ -158,13 +136,9 @@ public class RestApiTestConfiguration {
         }
 
         @Override
-        public String getCode() {
+        public String getId() {
             return "H999";
         }
 
-        @Override
-        public String getGuidelinesCode() {
-            return "000";
-        }
     }
 }

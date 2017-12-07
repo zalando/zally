@@ -39,5 +39,4 @@ class NoUnusedDefinitionsRuleTest {
         val swagger = getFixture("api_tinbox.yaml")
         assertThat(rule.validate(swagger)).isNull()
     }
-
 }

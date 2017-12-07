@@ -4,6 +4,7 @@ import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.WordUtil.isPlural
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,7 +16,8 @@ class CollectionsArePlural(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSw
     override val violationType = ViolationType.SHOULD
     override val description = "Collection resources are plural to indicate that they multiple child resources will be available"
 
-    override fun validate(swagger: Swagger): Violation? = swagger.collections()
+    @Check
+    fun validate(swagger: Swagger): Violation? = swagger.collections()
             .map { (pattern, path) ->
                 val lastWord = pattern
                         .split(Regex("\\W"))
@@ -29,7 +31,6 @@ class CollectionsArePlural(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSw
             .filterNotNull()
             .takeIf(List<String>::isNotEmpty)
             ?.let { it: List<String> ->
-                Violation(this, title, description, violationType, url, it)
+                Violation(this, title, description, violationType, it)
             }
-
 }

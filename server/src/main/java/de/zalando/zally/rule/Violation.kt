@@ -9,6 +9,5 @@ data class Violation(
     val title: String,
     val description: String,
     val violationType: ViolationType,
-    val ruleLink: String,
     val paths: List<String>
 )

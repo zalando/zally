@@ -13,5 +13,4 @@ class CompositeRulesValidator(
     override fun validate(content: String, requestPolicy: RulesPolicy): List<Violation> =
             swaggerRulesValidator.validate(content, requestPolicy) +
                     jsonRulesValidator.validate(content, requestPolicy)
-
 }

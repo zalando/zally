@@ -4,6 +4,7 @@ import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Response
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +17,8 @@ class PaginatedCollectionsReturnTotalPagesHeader(@Autowired ruleSet: CoreFilingR
     override val description = "Paginated resources return the Total-Pages header " +
             "with type:integer and format:int32 so that clients can easily iterate over the collection."
 
-    override fun validate(swagger: Swagger): Violation? = swagger.collections()
+    @Check
+    fun validate(swagger: Swagger): Violation? = swagger.collections()
             .flatMap { (pattern, path) ->
                 path.get?.responses.orEmpty()
                         .filterKeys { Integer.parseInt(it) in 200..299 }
@@ -27,7 +29,7 @@ class PaginatedCollectionsReturnTotalPagesHeader(@Autowired ruleSet: CoreFilingR
             }
             .takeIf(List<String>::isNotEmpty)
             ?.let { it: List<String> ->
-                Violation(this, title, description, violationType, url, it)
+                Violation(this, title, description, violationType, it)
             }
 
     private fun hasTotalPagesHeader(response: Response?): Boolean {

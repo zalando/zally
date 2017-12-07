@@ -2,8 +2,9 @@ package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
 import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.util.getAllJsonObjects
 import io.swagger.models.Swagger
 import io.swagger.models.properties.Property
@@ -11,12 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : SwaggerRule(ruleSet) {
+class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Use common field names"
-    override val url = "/#174"
     override val violationType = ViolationType.MUST
-    override val code = "M003"
-    override val guidelinesCode = "174"
+    override val id = "174"
 
     @Suppress("UNCHECKED_CAST")
     private val commonFields = rulesConfig.getConfig("$name.common_types").entrySet()
@@ -31,7 +30,8 @@ class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
             else null
         }
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val res = swagger.getAllJsonObjects().map { (def, path) ->
             val badProps = def.entries.map { checkField(it.key, it.value) }.filterNotNull()
             if (badProps.isNotEmpty())
@@ -41,8 +41,7 @@ class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesC
 
         return if (res.isNotEmpty()) {
             val (desc, paths) = res.unzip()
-            Violation(this, title, desc.joinToString(", "), violationType, url, paths)
+            Violation(this, title, desc.joinToString(", "), violationType, paths)
         } else null
     }
-
 }

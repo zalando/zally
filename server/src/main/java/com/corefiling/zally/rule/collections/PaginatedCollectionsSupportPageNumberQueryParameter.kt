@@ -4,6 +4,7 @@ import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Operation
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
@@ -19,7 +20,8 @@ class PaginatedCollectionsSupportPageNumberQueryParameter(@Autowired ruleSet: Co
     override val description = "Paginated resources support a 'pageNumber' query parameter " +
             "with type:integer, format:int32, minimum:1 so that clients can easily iterate over the collection."
 
-    override fun validate(swagger: Swagger): Violation? = swagger.collections()
+    @Check
+    fun validate(swagger: Swagger): Violation? = swagger.collections()
                 .map { (pattern, path) ->
                     when {
                         (hasPageNumberQueryParam(path.get)) -> null
@@ -29,7 +31,7 @@ class PaginatedCollectionsSupportPageNumberQueryParameter(@Autowired ruleSet: Co
                 .filterNotNull()
                 .takeIf(List<String>::isNotEmpty)
                 ?.let { it: List<String> ->
-                    Violation(this, title, description, violationType, url, it)
+                    Violation(this, title, description, violationType, it)
                 }
 
     private fun hasPageNumberQueryParam(op: Operation?): Boolean =

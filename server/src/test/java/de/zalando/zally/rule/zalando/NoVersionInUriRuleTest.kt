@@ -15,7 +15,6 @@ class NoVersionInUriRuleTest {
             "Do Not Use URI Versioning",
             "basePath attribute contains version number",
             ViolationType.MUST,
-            rule.url,
             emptyList())
 
     @Test
