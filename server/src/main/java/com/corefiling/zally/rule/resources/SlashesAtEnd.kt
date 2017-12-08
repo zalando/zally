@@ -4,6 +4,7 @@ import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -14,7 +15,8 @@ class SlashesAtEnd(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRul
     override val violationType = ViolationType.SHOULD
     override val description = "Resources should respond the same whether a trailing slash is specified or not"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
 
         val failures = mutableListOf<String>()
 
@@ -25,6 +27,6 @@ class SlashesAtEnd(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRul
         }
 
         return if (failures.isEmpty()) null else
-            Violation(this, title, description, violationType, url, failures)
+            Violation(this, title, description, violationType, failures)
     }
 }

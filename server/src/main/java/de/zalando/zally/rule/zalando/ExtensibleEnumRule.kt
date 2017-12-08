@@ -1,8 +1,9 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.dto.ViolationType.SHOULD
-import de.zalando.zally.rule.SwaggerRule
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Operation
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
@@ -23,21 +24,20 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleSet) {
+class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Prefer Compatible Extensions"
-    override val url = "/#107"
     override val violationType = SHOULD
-    override val code = "S012"
-    override val guidelinesCode = "107"
+    override val id = "107"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
         val properties = enumProperties(swagger)
         val parameters = enumParameters(swagger)
 
         val enumNames = (properties.keys + parameters.keys).distinct()
         val enumPaths = (properties.values + parameters.values).distinct()
         return if (enumNames.isNotEmpty()) Violation(this, title,
-                "Properties/Parameters $enumNames are not extensible enums", violationType, url, enumPaths)
+                "Properties/Parameters $enumNames are not extensible enums", violationType, enumPaths)
         else null
     }
 
@@ -73,7 +73,7 @@ class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : SwaggerRule(ruleS
         else -> false
     }
 
-    private fun <T> List<T>?.hasValues() : Boolean {
+    private fun <T> List<T>?.hasValues(): Boolean {
         return this.orEmpty().isNotEmpty()
     }
 

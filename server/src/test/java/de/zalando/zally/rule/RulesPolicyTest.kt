@@ -1,6 +1,7 @@
 package de.zalando.zally.rule
 
 import de.zalando.zally.dto.ViolationType
+import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import io.swagger.models.Swagger
 import org.junit.Assert.assertFalse
@@ -8,31 +9,31 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class RulesPolicyTest {
-    class TestRule(val result: Violation?) : SwaggerRule(ZalandoRuleSet()) {
+    class TestRule(val result: Violation?) : AbstractRule(ZalandoRuleSet()) {
         override val title = "Test Rule"
-        override val url = null
         override val violationType = ViolationType.MUST
-        override val code = "M999"
-        override val guidelinesCode = "000"
-        override fun validate(swagger: Swagger): Violation? = result
+        override val id = "999"
+
+        @Check
+        fun validate(swagger: Swagger): Violation? = result
     }
 
     @Test
     fun shouldAcceptRuleIfNotFiltered() {
-        val policy = RulesPolicy(arrayOf("M001", "M002"), arrayOf(""))
+        val policy = RulesPolicy(arrayOf("166", "136"), arrayOf(""))
         assertTrue(policy.accepts(TestRule(null)))
     }
 
     @Test
     fun shouldNotAcceptRuleIfFiltered() {
-        val policy = RulesPolicy(arrayOf("M001", "M999"), arrayOf(""))
+        val policy = RulesPolicy(arrayOf("166", "999"), arrayOf(""))
         assertFalse(policy.accepts(TestRule(null)))
     }
 
     @Test
     fun shouldNotAcceptRuleIfIgnoredPackage() {
         val policy = RulesPolicy(arrayOf(), arrayOf("de.zalando.zally.rule"))
-        val violation = Violation(TestRule(null), "dummy1", "dummy", ViolationType.MUST, "dummy", listOf("x"))
+        val violation = Violation(TestRule(null), "dummy1", "dummy", ViolationType.MUST, listOf("x"))
         assertFalse(policy.accepts(TestRule(violation)))
     }
 
@@ -42,7 +43,7 @@ class RulesPolicyTest {
         val original = RulesPolicy(emptyArray(), emptyArray())
         assertTrue(original.accepts(TestRule(null)))
 
-        val extended = original.withMoreIgnores(listOf("M001", "M999"))
+        val extended = original.withMoreIgnores(listOf("166", "999"))
         assertFalse(extended.accepts(TestRule(null)))
 
         // original is unmodified

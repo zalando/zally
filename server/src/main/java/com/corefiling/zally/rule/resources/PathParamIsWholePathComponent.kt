@@ -5,6 +5,7 @@ import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import com.corefiling.zally.rule.collections.pathParamRegex
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -15,7 +16,8 @@ class PathParamIsWholePathComponent(@Autowired ruleSet: CoreFilingRuleSet) : Cor
     override val violationType = ViolationType.MUST
     override val description = "Path parameters occupy an entire path component between slashes, never a partial component"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
 
         val failures = mutableListOf<String>()
 
@@ -25,7 +27,7 @@ class PathParamIsWholePathComponent(@Autowired ruleSet: CoreFilingRuleSet) : Cor
             val failure = components
                 .filter { pathParamRegex.find(it) != null }
                 .map { pathParamRegex.replaceFirst(it, "XXXXX") }
-                .any { it !="XXXXX" }
+                .any { it != "XXXXX" }
 
             if (failure) {
                 failures.add(pattern)
@@ -33,6 +35,6 @@ class PathParamIsWholePathComponent(@Autowired ruleSet: CoreFilingRuleSet) : Cor
         }
 
         return if (failures.isEmpty()) null else
-            Violation(this, title, description, violationType, url, failures)
+            Violation(this, title, description, violationType, failures)
     }
 }

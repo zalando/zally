@@ -4,6 +4,7 @@ import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.ArrayModel
 import io.swagger.models.Model
 import io.swagger.models.Response
@@ -20,7 +21,8 @@ class CollectionsReturnArrays(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilin
     override val violationType = ViolationType.MUST
     override val description = "Collection resources return arrays so that they can be acted upon easily"
 
-    override fun validate(swagger: Swagger): Violation? = swagger.collections()
+    @Check
+    fun validate(swagger: Swagger): Violation? = swagger.collections()
             .flatMap { (pattern, path) ->
                 path.get?.responses.orEmpty()
                         .filterKeys { Integer.parseInt(it) in 200..299 }
@@ -30,7 +32,7 @@ class CollectionsReturnArrays(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilin
                         }
             }
             .takeIf(List<String>::isNotEmpty)?.let { it: List<String> ->
-                Violation(this, title, description, violationType, url, it)
+                Violation(this, title, description, violationType, it)
             }
 
     private fun isArrayResponse(response: Response, swagger: Swagger): Boolean {

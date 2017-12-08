@@ -90,5 +90,4 @@ class CommonFieldTypesRuleTest {
         assertThat(result.paths).hasSameElementsAs(listOf("#/definitions/Partner", "#/definitions/JobSummary"))
         assertThat(result.description).contains(listOf("'id'", "'created'", "'modified'", "'type"))
     }
-
 }

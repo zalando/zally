@@ -4,6 +4,7 @@ import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Check
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -14,7 +15,8 @@ class SlashesNotDoubled(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwagg
     override val violationType = ViolationType.MUST
     override val description = "Resources pattern separated by single slashes, not //"
 
-    override fun validate(swagger: Swagger): Violation? {
+    @Check
+    fun validate(swagger: Swagger): Violation? {
 
         val failures = mutableListOf<String>()
 
@@ -25,6 +27,6 @@ class SlashesNotDoubled(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwagg
         }
 
         return if (failures.isEmpty()) null else
-            Violation(this, title, description, violationType, url, failures)
+            Violation(this, title, description, violationType, failures)
     }
 }

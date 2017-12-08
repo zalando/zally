@@ -10,7 +10,7 @@ class RulesPolicy(
         @Value("\${zally.ignoreRulePackages:}") val ignoreRulePackages: Array<String>
 ) {
     fun accepts(rule: Rule): Boolean {
-        return !ignoreRules.contains(rule.code) && !ignoreRulePackages.contains(rule.javaClass.`package`.name)
+        return !ignoreRules.contains(rule.id) && !ignoreRulePackages.contains(rule.javaClass.`package`.name)
     }
 
     fun withMoreIgnores(moreIgnores: List<String>) = RulesPolicy(ignoreRules + moreIgnores, ignoreRulePackages)

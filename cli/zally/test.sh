@@ -9,7 +9,7 @@ fi
 
 for package in $GO_PACKAGES; do
     if ! $RUN_TESTS $package ; then
-        rm cover.out
+        [ -e cover.out ] && rm cover.out
         echo "============================"
         echo "CLI Tests Failed. Exiting..."
         echo "============================"

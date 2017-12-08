@@ -31,6 +31,6 @@ public class ApiViolationsControllerTest {
                         .contentType("application/json")
                         .content("{\"api_definition\":\"\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("http://zalando.github.io/restful-api-guidelines")));
+                .andExpect(content().string(containsString("https://zalando.github.io/restful-api-guidelines")));
     }
 }

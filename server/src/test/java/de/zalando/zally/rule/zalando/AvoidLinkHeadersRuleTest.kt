@@ -29,6 +29,5 @@ class AvoidLinkHeadersRuleTest {
         assertThat(violation.violationType).isEqualTo(ViolationType.MUST)
         assertThat(violation.paths).hasSameElementsAs(
             listOf("/product-put-requests/{product_path} Link", "/products Link"))
-
     }
 }

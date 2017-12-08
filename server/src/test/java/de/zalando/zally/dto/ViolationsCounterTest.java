@@ -101,8 +101,7 @@ public class ViolationsCounterTest {
             "Test Name",
             "Test Description",
             violationType,
-            "https://www.example.com/",
-            new ArrayList<>()
+                new ArrayList<>()
         );
     }
 }

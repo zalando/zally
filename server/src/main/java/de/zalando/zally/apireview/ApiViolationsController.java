@@ -11,7 +11,6 @@ import de.zalando.zally.rule.ApiValidator;
 import de.zalando.zally.rule.RulesPolicy;
 import de.zalando.zally.rule.Violation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,9 +36,6 @@ public class ApiViolationsController {
     private final ApiReviewRepository apiReviewRepository;
     private final ServerMessageService serverMessageService;
     private final RulesPolicy configPolicy;
-
-    @Value("${zally.apiGuidelinesBaseUrl:}")
-    private String baseUrl;
 
     @Autowired
     public ApiViolationsController(ApiValidator rulesValidator,
@@ -106,7 +102,7 @@ public class ApiViolationsController {
             violation.getTitle(),
             violation.getDescription(),
             violation.getViolationType(),
-            baseUrl + violation.getRuleLink(),
+            violation.getRule().getRuleSet().url(violation.getRule()).toString(),
             violation.getPaths()
         );
     }

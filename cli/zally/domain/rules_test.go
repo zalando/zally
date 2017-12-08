@@ -11,7 +11,7 @@ func TestRules(t *testing.T) {
 	mustRule.Title = "Must Title"
 	mustRule.URL = "http://example.com/mustRule"
 	mustRule.Type = "MUST"
-	mustRule.Code = "M001"
+	mustRule.Code = "166"
 	mustRule.IsActive = true
 
 	var shouldRule Rule
@@ -25,14 +25,14 @@ func TestRules(t *testing.T) {
 	mayRule.Title = "May Title"
 	mayRule.URL = "http://example.com/mayRule"
 	mayRule.Type = "MAY"
-	mayRule.Code = "M001"
+	mayRule.Code = "166"
 	mayRule.IsActive = true
 
 	var hintRule Rule
 	hintRule.Title = "Hint Title"
 	hintRule.URL = "http://example.com/hintRule"
 	hintRule.Type = "HINT"
-	hintRule.Code = "M001"
+	hintRule.Code = "166"
 	hintRule.IsActive = true
 
 	var Rules Rules

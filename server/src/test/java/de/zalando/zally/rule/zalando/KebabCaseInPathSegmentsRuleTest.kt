@@ -45,5 +45,4 @@ class KebabCaseInPathSegmentsRuleTest {
         val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(listOf(wrongTestPath1, wrongTestPath2))
     }
-
 }

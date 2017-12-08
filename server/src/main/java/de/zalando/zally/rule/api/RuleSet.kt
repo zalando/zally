@@ -17,4 +17,7 @@ interface RuleSet {
 
     /** The base url where documentation for this RuleSet can be found */
     val url: URI
+
+    /** Calculate url where a Rule is documented */
+    fun url(rule: Rule): URI
 }
