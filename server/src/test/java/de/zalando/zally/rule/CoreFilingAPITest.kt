@@ -23,12 +23,19 @@ class CoreFilingAPITest {
     @Test
     fun `document-service`() {
         val results = validate("platform", "document-service",
+                // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "CollectionsReturnTotalItemsHeader",
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
-                        "SlashesAtEnd")))
+                        "SlashesAtEnd",
+                        "132", // PascalCaseHttpHeadersRule
+                        "146", // LimitNumberOfResourcesRule
+                        "150", // UseSpecificHttpStatusCodes
+                        "151", // NotSpecifyStandardErrorCodesRule
+                        "171"  // FormatForNumbersRule
+                )))
 
         assertThat(results).isEmpty()
     }
@@ -36,8 +43,12 @@ class CoreFilingAPITest {
     @Test
     fun `commenting-service`() {
         val results = validate("platform", "commenting-service",
+                // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
-                        "PaginatedCollectionsReturnTotalPagesHeader")))
+                        "PaginatedCollectionsReturnTotalPagesHeader",
+                        "132", // PascalCaseHttpHeadersRule
+                        "150"  // UseSpecificHttpStatusCodes
+                )))
 
         assertThat(results).isEmpty()
     }
@@ -45,6 +56,7 @@ class CoreFilingAPITest {
     @Test
     fun `filing-version-commenting-service`() {
         val results = validate("platform", "filing-version-commenting-service",
+                // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "PaginatedCollectionsReturnTotalPagesHeader")))
 
@@ -54,12 +66,16 @@ class CoreFilingAPITest {
     @Test
     fun `instance-service`() {
         val results = validate("platform", "instance-service",
+                // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "CollectionsReturnTotalItemsHeader",
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
-                        "SlashesAtEnd")))
+                        "SlashesAtEnd",
+                        "150", // UseSpecificHttpStatusCodes
+                        "151"  // NotSpecifyStandardErrorCodesRule
+                )))
 
         assertThat(results).isEmpty()
     }
@@ -67,13 +83,17 @@ class CoreFilingAPITest {
     @Test
     fun `ixbrl-rendering-service`() {
         val results = validate("platform", "ixbrl-rendering-service",
+                // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "CollectionsArePlural",
                         "CollectionsReturnTotalItemsHeader",
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
-                        "SlashesAtEnd")))
+                        "SlashesAtEnd",
+                        "150", // UseSpecificHttpStatusCodes
+                        "151"  // NotSpecifyStandardErrorCodesRule
+                )))
 
         assertThat(results).isEmpty()
     }
@@ -81,13 +101,19 @@ class CoreFilingAPITest {
     @Test
     fun `table-rendering-service`() {
         val results = validate("platform", "table-rendering-service",
+                // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "CollectionsArePlural",
                         "CollectionsReturnTotalItemsHeader",
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
-                        "SlashesAtEnd")))
+                        "SlashesAtEnd",
+                        "120", // PluralizeNamesForArraysRule
+                        "146", // LimitNumberOfResourcesRule
+                        "150", // UseSpecificHttpStatusCodes
+                        "151"  // NotSpecifyStandardErrorCodesRule
+                )))
 
         assertThat(results).isEmpty()
     }
@@ -95,19 +121,26 @@ class CoreFilingAPITest {
     @Test
     fun `validation-service`() {
         val results = validate("platform", "validation-service",
+                // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "CollectionsReturnTotalItemsHeader",
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
-                        "SlashesAtEnd")))
+                        "SlashesAtEnd",
+                        "150", // UseSpecificHttpStatusCodes
+                        "151", // NotSpecifyStandardErrorCodesRule
+                        "171"  // FormatForNumbersRule
+                )))
 
         assertThat(results).isEmpty()
     }
 
     @Test
     fun `beacon-link-service`() {
-        val results = validate("fullbeam", "beacon-link-service-api", policy)
+        val results = validate("fullbeam", "beacon-link-service-api",
+                // ignoring rules that historically failed for this service
+                policy)
 
         assertThat(results).isEmpty()
     }
@@ -116,7 +149,8 @@ class CoreFilingAPITest {
     fun `discrepancies-service`() {
         val results = validate("fullbeam", "discrepancies-service-api",
                 policy.withMoreIgnores(listOf(
-                        "")))
+                        "151" // NotSpecifyStandardErrorCodesRule
+                )))
 
         assertThat(results).isEmpty()
     }
@@ -124,11 +158,15 @@ class CoreFilingAPITest {
     @Test
     fun `saved-search-service`() {
         val results = validate("fullbeam", "saved-search-service-api",
+                // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "CollectionsReturnTotalItemsHeader",
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
-                        "PaginatedCollectionsSupportPageSizeQueryParameter")))
+                        "PaginatedCollectionsSupportPageSizeQueryParameter",
+                        "150", // UseSpecificHttpStatusCodes
+                        "151"  // NotSpecifyStandardErrorCodesRule
+                )))
 
         assertThat(results).isEmpty()
     }
@@ -136,12 +174,17 @@ class CoreFilingAPITest {
     @Test
     fun `table-diff-service`() {
         val results = validate("labs", "table-diff-service",
+                // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "CollectionsReturnTotalItemsHeader",
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
-                        "SlashesAtEnd")))
+                        "SlashesAtEnd",
+                        "146", // LimitNumberOfResourcesRule
+                        "150", // UseSpecificHttpStatusCodes
+                        "151"  // NotSpecifyStandardErrorCodesRule
+        )))
 
         assertThat(results).isEmpty()
     }
@@ -149,12 +192,15 @@ class CoreFilingAPITest {
     @Test
     fun `taxonomy-package-service`() {
         val results = validate("labs", "taxonomy-package-service",
+                // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "CollectionsReturnTotalItemsHeader",
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
-                        "SlashesAtEnd")))
+                        "SlashesAtEnd",
+                        "151" // NotSpecifyStandardErrorCodesRule
+                )))
 
         assertThat(results).isEmpty()
     }
@@ -162,8 +208,10 @@ class CoreFilingAPITest {
     @Test
     fun `digit-frequency-analysis-service`() {
         val results = validate("labs", "digit-frequency-analysis-service",
+                // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
-                        "")))
+                        "151" // NotSpecifyStandardErrorCodesRule
+                )))
 
         assertThat(results).isEmpty()
     }
@@ -171,18 +219,24 @@ class CoreFilingAPITest {
     @Test
     fun `filing-statistics-service`() {
         val results = validate("labs", "filing-statistics-service",
+                // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "CollectionsReturnTotalItemsHeader",
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
-                        "SlashesAtEnd")))
+                        "SlashesAtEnd",
+                        "151", // NotSpecifyStandardErrorCodesRule
+                        "171"  // FormatForNumbersRule
+                )))
 
         assertThat(results).isEmpty()
     }
 
     private fun validate(group: String, project: String, policy: RulesPolicy): List<Violation> {
         val uri = URI.create("https://gitlab.int.corefiling.com/" + group + "/" + project + "/raw/develop/src/swagger.yaml")
+        println(uri)
+
         val text = uri.toURL().readText()
         return validator.validate(text, policy)
     }
