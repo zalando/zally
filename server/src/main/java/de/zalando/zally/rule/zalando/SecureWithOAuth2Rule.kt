@@ -15,19 +15,19 @@ import org.springframework.stereotype.Component
 
 @Component
 class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
-    override val title = "Define and Assign Access Rights (Scopes)"
+    override val title = "Secure Endpoints with OAuth 2.0"
     override val violationType = MUST
     override val id = "104"
-    private val DESC = "Every endpoint must be secured by proper OAuth2 scope"
+    private val DESC = "Every endpoint must be secured by OAuth2 properly"
 
     @Check
     fun checkSecurityDefinitions(swagger: Swagger): Violation? {
         val hasOAuth = swagger.securityDefinitions.orEmpty().values.any { it.type?.toLowerCase() == "oauth2" }
         val containsHttpScheme = swagger.schemes.orEmpty().contains(Scheme.HTTP)
         return if (!hasOAuth)
-            Violation(this, "Secure Endpoints with OAuth 2.0", "No OAuth2 security definitions found", violationType, emptyList())
+            Violation(this, title, "No OAuth2 security definitions found", violationType, emptyList())
         else if (containsHttpScheme)
-            Violation(this, "Secure Endpoints with OAuth 2.0", "OAuth2 should be only used together with https", violationType, emptyList())
+            Violation(this, title, "OAuth2 should be only used together with https", violationType, emptyList())
         else
             null
     }
@@ -35,14 +35,14 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
     @Check
     fun checkPasswordFlow(swagger: Swagger): Violation? {
         val definitionsWithoutPasswordFlow = swagger
-                .securityDefinitions
-                .orEmpty()
-                .values
-                .filter { it.type?.toLowerCase() == "oauth2" }
-                .filter { (it as OAuth2Definition).flow != "password" }
+            .securityDefinitions
+            .orEmpty()
+            .values
+            .filter { it.type?.toLowerCase() == "oauth2" }
+            .filter { (it as OAuth2Definition).flow != "application" }
 
         return if (definitionsWithoutPasswordFlow.any())
-            Violation(this, "Set Flow to Password When Using OAuth 2.0", "OAuth2 security definitions should use password flow", ViolationType.SHOULD, emptyList())
+            Violation(this, "Set Flow to 'application' When Using OAuth 2.0", "OAuth2 security definitions should use application flow", ViolationType.SHOULD, emptyList())
         else null
     }
 
