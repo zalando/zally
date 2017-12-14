@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
-    override val title = "Define and Assign Access Rights (Scopes)"
+    override val title = "Secure Endpoints with OAuth 2.0"
     override val id = "104"
     override val severity = Severity.MUST
-    private val DESC = "Every endpoint must be secured by proper OAuth2 scope"
+    private val DESC = "Every endpoint must be secured by OAuth2 properly"
 
     @Check(severity = Severity.MUST)
     fun checkSecurityDefinitions(swagger: Swagger): Violation? {
@@ -34,14 +34,14 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
     @Check(severity = Severity.SHOULD)
     fun checkPasswordFlow(swagger: Swagger): Violation? {
         val definitionsWithoutPasswordFlow = swagger
-                .securityDefinitions
-                .orEmpty()
-                .values
-                .filter { it.type?.toLowerCase() == "oauth2" }
-                .filter { (it as OAuth2Definition).flow != "password" }
+            .securityDefinitions
+            .orEmpty()
+            .values
+            .filter { it.type?.toLowerCase() == "oauth2" }
+            .filter { (it as OAuth2Definition).flow != "application" }
 
         return if (definitionsWithoutPasswordFlow.any())
-            Violation("OAuth2 security definitions should use password flow", emptyList())
+            Violation("OAuth2 security definitions should use application flow", emptyList())
         else null
     }
 

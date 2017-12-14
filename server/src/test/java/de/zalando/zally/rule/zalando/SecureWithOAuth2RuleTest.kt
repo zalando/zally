@@ -23,7 +23,7 @@ class SecureWithOAuth2RuleTest {
             emptyList())
 
     private val checkPasswordFlowExpectedViolation = Violation(
-            "OAuth2 security definitions should use password flow",
+            "OAuth2 security definitions should use application flow",
             emptyList())
 
     @Test
@@ -55,7 +55,7 @@ class SecureWithOAuth2RuleTest {
         val swagger = Swagger().apply {
             schemes = listOf(Scheme.HTTP, Scheme.HTTPS)
             securityDefinitions = mapOf(
-                    "Oauth2" to OAuth2Definition()
+                "Oauth2" to OAuth2Definition()
             )
         }
         assertThat(rule.checkSecurityDefinitions(swagger)).isEqualTo(checkSecurityDefinitionsExpectedHttpsViolation)
@@ -112,8 +112,8 @@ class SecureWithOAuth2RuleTest {
     fun checkPasswordFlowShouldReturnNoViolationsWhenNoOauth2Found() {
         val swagger = Swagger().apply {
             securityDefinitions = mapOf(
-                    "Basic" to BasicAuthDefinition(),
-                    "ApiKey" to ApiKeyAuthDefinition()
+                "Basic" to BasicAuthDefinition(),
+                "ApiKey" to ApiKeyAuthDefinition()
             )
         }
         assertThat(rule.checkPasswordFlow(swagger)).isNull()
@@ -123,10 +123,10 @@ class SecureWithOAuth2RuleTest {
     fun checkPasswordFlowShouldReturnNoViolationsWhenOauth2DefinitionsHasProperFlow() {
         val swagger = Swagger().apply {
             securityDefinitions = mapOf(
-                    "Basic" to BasicAuthDefinition(),
-                    "Oauth2" to OAuth2Definition().apply {
-                        flow = "password"
-                    }
+                "Basic" to BasicAuthDefinition(),
+                "Oauth2" to OAuth2Definition().apply {
+                    flow = "application"
+                }
             )
         }
         assertThat(rule.checkPasswordFlow(swagger)).isNull()
@@ -136,10 +136,10 @@ class SecureWithOAuth2RuleTest {
     fun checkPasswordFlowShouldReturnViolationsWhenOauth2DefinitionsHasWrongFlow() {
         val swagger = Swagger().apply {
             securityDefinitions = mapOf(
-                    "Basic" to BasicAuthDefinition(),
-                    "Oauth2" to OAuth2Definition().apply {
-                        flow = "implicit"
-                    }
+                "Basic" to BasicAuthDefinition(),
+                "Oauth2" to OAuth2Definition().apply {
+                    flow = "implicit"
+                }
             )
         }
         assertThat(rule.checkPasswordFlow(swagger)).isEqualTo(checkPasswordFlowExpectedViolation)
@@ -149,8 +149,8 @@ class SecureWithOAuth2RuleTest {
     fun checkPasswordFlowShouldReturnViolationsWhenOauth2DefinitionsHasNoFlow() {
         val swagger = Swagger().apply {
             securityDefinitions = mapOf(
-                    "Basic" to BasicAuthDefinition(),
-                    "Oauth2" to OAuth2Definition()
+                "Basic" to BasicAuthDefinition(),
+                "Oauth2" to OAuth2Definition()
             )
         }
         assertThat(rule.checkPasswordFlow(swagger)).isEqualTo(checkPasswordFlowExpectedViolation)
@@ -160,10 +160,10 @@ class SecureWithOAuth2RuleTest {
     fun checkPasswordFlowShouldReturnViolationsWhenOneOfOauth2DefinitionsIsWrong() {
         val swagger = Swagger().apply {
             securityDefinitions = mapOf(
-                    "Oauth2A" to OAuth2Definition(),
-                    "Oauth2B" to OAuth2Definition().apply {
-                        flow = "password"
-                    }
+                "Oauth2A" to OAuth2Definition(),
+                "Oauth2B" to OAuth2Definition().apply {
+                    flow = "application"
+                }
             )
         }
         assertThat(rule.checkPasswordFlow(swagger)).isEqualTo(checkPasswordFlowExpectedViolation)
