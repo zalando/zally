@@ -42,7 +42,7 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
             .filter { (it as OAuth2Definition).flow != "application" }
 
         return if (definitionsWithoutPasswordFlow.any())
-            Violation(this, "Set Flow to 'application' When Using OAuth 2.0", "OAuth2 security definitions should use application flow", ViolationType.SHOULD, emptyList())
+            Violation(this, "Set flow to 'application' when using OAuth2", "OAuth2 security definitions should use application flow", ViolationType.SHOULD, emptyList())
         else null
     }
 

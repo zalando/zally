@@ -31,7 +31,7 @@ class SecureWithOAuth2RuleTest {
 
     private val checkPasswordFlowExpectedViolation = Violation(
         rule,
-        "Set Flow to 'application' When Using OAuth 2.0",
+        "Set flow to 'application' when using OAuth2",
         "OAuth2 security definitions should use application flow",
         ViolationType.SHOULD,
         emptyList())
