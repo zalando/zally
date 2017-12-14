@@ -4,6 +4,7 @@
 bin/
 build/
 .DS_Store
+package-lock.json
 scm-source.json
 out/
 **/classes/

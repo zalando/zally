@@ -97,7 +97,8 @@ export function ViolationsResult(props) {
           !props.pending &&
           props.complete &&
           !props.errorMsgText &&
-          props.violations.length === 0}
+          props.violations.length === 0
+        }
         dataTestId="if-success"
       >
         <Msg
@@ -124,12 +125,3 @@ export function ViolationsResult(props) {
     </div>
   );
 }
-
-ViolationsResult.propTypes = {
-  pending: React.PropTypes.bool,
-  complete: React.PropTypes.bool,
-  errorMsgText: React.PropTypes.string,
-  successMsgTitle: React.PropTypes.string.isRequired,
-  successMsgText: React.PropTypes.string.isRequired,
-  violations: React.PropTypes.array,
-};

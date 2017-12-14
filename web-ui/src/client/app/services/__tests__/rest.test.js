@@ -7,10 +7,8 @@ jest.mock('../http-client');
 
 describe('RestService', () => {
   beforeEach(() => {
-    global.window = {
-      env: {
-        ZALLY_API_URL: '/zally-api',
-      },
+    global.env = {
+      ZALLY_API_URL: '/zally-api',
     };
   });
 
@@ -83,18 +81,18 @@ describe('RestService', () => {
     const apiDefinitionURL = 'foo.json';
     client.fetch.mockReturnValueOnce(Promise.resolve(violationsResponse));
 
-    return RestService.getApiViolationsByURL(
-      apiDefinitionURL
-    ).then(violations => {
-      expect(violations).toBe(mockViolations);
-      expect(client.fetch).toHaveBeenCalledWith(jasmine.any(String), {
-        method: 'POST',
-        headers: jasmine.any(Object),
-        body: JSON.stringify({
-          api_definition_url: apiDefinitionURL,
-        }),
-      });
-    });
+    return RestService.getApiViolationsByURL(apiDefinitionURL).then(
+      violations => {
+        expect(violations).toBe(mockViolations);
+        expect(client.fetch).toHaveBeenCalledWith(jasmine.any(String), {
+          method: 'POST',
+          headers: jasmine.any(Object),
+          body: JSON.stringify({
+            api_definition_url: apiDefinitionURL,
+          }),
+        });
+      }
+    );
   });
 
   test('getApiViolationsBySchema send expected body', () => {
@@ -103,18 +101,18 @@ describe('RestService', () => {
     const apiDefinitionSchema = { schema: '2.0' };
     client.fetch.mockReturnValueOnce(Promise.resolve(violationsResponse));
 
-    return RestService.getApiViolationsBySchema(
-      apiDefinitionSchema
-    ).then(violations => {
-      expect(violations).toBe(mockViolations);
-      expect(client.fetch).toHaveBeenCalledWith(jasmine.any(String), {
-        method: 'POST',
-        headers: jasmine.any(Object),
-        body: JSON.stringify({
-          api_definition: apiDefinitionSchema,
-        }),
-      });
-    });
+    return RestService.getApiViolationsBySchema(apiDefinitionSchema).then(
+      violations => {
+        expect(violations).toBe(mockViolations);
+        expect(client.fetch).toHaveBeenCalledWith(jasmine.any(String), {
+          method: 'POST',
+          headers: jasmine.any(Object),
+          body: JSON.stringify({
+            api_definition: apiDefinitionSchema,
+          }),
+        });
+      }
+    );
   });
 
   test('getSupportedRules call api and resolve with response body representing rules', () => {
@@ -126,15 +124,16 @@ describe('RestService', () => {
 
     return RestService.getSupportedRules().then(rules => {
       expect(rules).toBe(mockRules);
-      expect(
-        client.fetch
-      ).toHaveBeenCalledWith('/zally-api/supported-rules?is_active=true', {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
+      expect(client.fetch).toHaveBeenCalledWith(
+        '/zally-api/supported-rules?is_active=true',
+        {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
     });
   });
 
@@ -147,15 +146,16 @@ describe('RestService', () => {
 
     return RestService.getSupportedRules({ is_active: true }).then(rules => {
       expect(rules).toBe(mockRules);
-      expect(
-        client.fetch
-      ).toHaveBeenCalledWith('/zally-api/supported-rules?is_active=true', {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
+      expect(client.fetch).toHaveBeenCalledWith(
+        '/zally-api/supported-rules?is_active=true',
+        {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
     });
   });
 

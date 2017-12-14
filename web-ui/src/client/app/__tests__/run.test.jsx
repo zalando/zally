@@ -23,15 +23,10 @@ describe('run', () => {
     render: mockRender,
   }));
 
-  global.document = {
-    getElementById: mockGetElementById,
-  };
-
-  global.window = {};
-
   const { run } = require('../run');
 
   test('should render app', () => {
+    document.getElementById = mockGetElementById;
     expect.assertions(2);
     return run().then(() => {
       expect(mockRender).toHaveBeenCalled();
