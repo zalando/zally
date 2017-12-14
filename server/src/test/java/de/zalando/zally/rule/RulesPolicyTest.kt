@@ -32,7 +32,6 @@ class RulesPolicyTest {
 
     @Test
     fun withMoreIgnoresAllowsExtension() {
-
         val original = RulesPolicy(emptyArray())
         assertTrue(original.accepts(TestRule(null)))
 
