@@ -1,4 +1,4 @@
-package de.zalando.zally.rule.zalando
+package de.zalando.zally.rule.zally
 
 import de.zalando.zally.getFixture
 import de.zalando.zally.swaggerWithHeaderParams
@@ -9,7 +9,7 @@ import org.junit.Test
 
 class HyphenateHttpHeadersRuleTest {
 
-    private val rule = HyphenateHttpHeadersRule(ZalandoRuleSet(), testConfig)
+    private val rule = HyphenateHttpHeadersRule(ZallyRuleSet(), testConfig)
 
     @Test
     fun simplePositiveCase() {
