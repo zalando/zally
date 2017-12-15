@@ -19,7 +19,7 @@ securityDefinitions:
   oauth2:
     type: oauth2
     tokenUrl: https://somewhere.on.the.internet
-    flow: password
+    flow: application
     scopes:
       uid: submit API specification for validation
 
