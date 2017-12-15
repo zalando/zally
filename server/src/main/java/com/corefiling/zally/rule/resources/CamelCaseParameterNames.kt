@@ -24,7 +24,7 @@ class CamelCaseParameterNames(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilin
             swagger.paths.orEmpty().flatMap { (pattern, path) ->
                 path.operationMap.orEmpty().flatMap { (method, op) ->
                     op.parameters.orEmpty()
-                            .map { validate(it, "$path $method ${it.`in`} parameter") }
+                            .map { validate(it, "$pattern $method ${it.`in`} parameter ${it.name}") }
                             .filterNotNull()
                 }
             }.takeIf { it.isNotEmpty() }?.let { Violation(this, title, description, violationType, it) }

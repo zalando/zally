@@ -118,6 +118,6 @@ class CamelCaseParameterNamesTest {
             """.trimIndent()
 
         Assertions.assertThat(cut.validate(SwaggerParser().parse(yaml))!!.paths)
-                .hasSameElementsAs(listOf("/things/{a_thing} POST query parameter A-QUERY is not lowerCamelCase"))
+                .hasSameElementsAs(listOf("/things POST query parameter A-QUERY is not lowerCamelCase"))
     }
 }
