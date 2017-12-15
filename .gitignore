@@ -16,3 +16,4 @@ out/
 target
 
 cli/zally/coverage.txt
+web-ui/src/client/public/assets/bundle.js*
