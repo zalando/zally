@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: production
   datasource:
     url: jdbc:hsqldb:mem:storage;sql.syntax_pgs=true
     username: sa
