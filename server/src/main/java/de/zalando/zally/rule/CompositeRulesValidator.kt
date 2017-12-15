@@ -8,7 +8,7 @@ class CompositeRulesValidator(
         @Autowired val swaggerRulesValidator: SwaggerRulesValidator,
         @Autowired val jsonRulesValidator: JsonRulesValidator) : ApiValidator {
 
-    override fun validate(content: String, requestPolicy: RulesPolicy): List<Violation> =
+    override fun validate(content: String, requestPolicy: RulesPolicy): List<Result> =
             swaggerRulesValidator.validate(content, requestPolicy) +
                     jsonRulesValidator.validate(content, requestPolicy)
 }

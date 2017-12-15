@@ -1,8 +1,7 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.getFixture
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Scheme
 import io.swagger.models.Swagger
 import io.swagger.models.auth.ApiKeyAuthDefinition
@@ -16,25 +15,16 @@ class SecureWithOAuth2RuleTest {
     private val rule = SecureWithOAuth2Rule(ZalandoRuleSet())
 
     private val checkSecurityDefinitionsExpectedOauthViolation = Violation(
-        rule,
-        "Secure Endpoints with OAuth 2.0",
-        "No OAuth2 security definitions found",
-        ViolationType.MUST,
-        emptyList())
+            "No OAuth2 security definitions found",
+            emptyList())
 
     private val checkSecurityDefinitionsExpectedHttpsViolation = Violation(
-        rule,
-        "Secure Endpoints with OAuth 2.0",
-        "OAuth2 should be only used together with https",
-        ViolationType.MUST,
-        emptyList())
+            "OAuth2 should be only used together with https",
+            emptyList())
 
     private val checkPasswordFlowExpectedViolation = Violation(
-        rule,
-        "Set flow to 'application' when using OAuth2",
-        "OAuth2 security definitions should use application flow",
-        ViolationType.SHOULD,
-        emptyList())
+            "OAuth2 security definitions should use application flow",
+            emptyList())
 
     @Test
     fun checkSecurityDefinitionsWithEmptyReturnsViolation() {

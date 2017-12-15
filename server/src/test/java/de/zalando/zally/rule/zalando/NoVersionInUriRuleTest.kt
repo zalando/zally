@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -11,10 +10,7 @@ class NoVersionInUriRuleTest {
     private val rule = NoVersionInUriRule(ZalandoRuleSet())
 
     val expectedViolation = Violation(
-            rule,
-            "Do Not Use URI Versioning",
             "basePath attribute contains version number",
-            ViolationType.MUST,
             emptyList())
 
     @Test

@@ -1,13 +1,13 @@
 package de.zalando.zally.apireview;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import de.zalando.zally.dto.ViolationType;
+import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.AbstractRule;
 import de.zalando.zally.rule.ApiValidator;
 import de.zalando.zally.rule.CompositeRulesValidator;
 import de.zalando.zally.rule.JsonRulesValidator;
 import de.zalando.zally.rule.SwaggerRulesValidator;
-import de.zalando.zally.rule.Violation;
+import de.zalando.zally.rule.api.Violation;
 import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.rule.api.RuleSet;
@@ -50,12 +50,12 @@ public class RestApiTestConfiguration {
             super(ruleSet);
         }
 
-        @Check
+        @Check(severity = Severity.MUST)
         public Iterable<Violation> validate(final JsonNode swagger) {
             JsonNode title = swagger.path("info").path("title");
             if (!title.isMissingNode() && title.textValue().contains("Product Service")) {
                 return Arrays.asList(
-                        new Violation(this, getTitle(), "schema incorrect", getViolationType(), Collections.emptyList()));
+                        new Violation("schema incorrect", Collections.emptyList()));
             } else {
                 return Collections.emptyList();
             }
@@ -67,15 +67,14 @@ public class RestApiTestConfiguration {
         }
 
         @Override
-        public ViolationType getViolationType() {
-            return ViolationType.MUST;
-        }
-
-        @Override
         public String getId() {
             return "166";
         }
 
+        @Override
+        public Severity getSeverity() {
+            return Severity.MUST;
+        }
     }
 
     public static class CheckApiNameIsPresentRule extends AbstractRule {
@@ -87,18 +86,13 @@ public class RestApiTestConfiguration {
             this.apiName = apiName;
         }
 
-        @Check
+        @Check(severity = Severity.MUST)
         public Violation validate(Swagger swagger) {
             if (swagger != null && swagger.getInfo().getTitle().contains(apiName)) {
-                return new Violation(new CheckApiNameIsPresentRule(null), "dummy1", "dummy", ViolationType.MUST, Collections.emptyList());
+                return new Violation("dummy", Collections.emptyList());
             } else {
                 return null;
             }
-        }
-
-        @Override
-        public ViolationType getViolationType() {
-            return ViolationType.MUST;
         }
 
         @Override
@@ -111,6 +105,11 @@ public class RestApiTestConfiguration {
             return "999";
         }
 
+        @Override
+        public Severity getSeverity() {
+            return Severity.MUST;
+        }
+
     }
 
     public static class AlwaysGiveAHintRule extends AbstractRule {
@@ -118,16 +117,9 @@ public class RestApiTestConfiguration {
             super(new ZalandoRuleSet());
         }
 
-        @Check
+        @Check(severity = Severity.HINT)
         public Violation validate(Swagger swagger) {
-            return new Violation(
-                new AlwaysGiveAHintRule(),
-                "dummy2", "dummy", ViolationType.HINT, Collections.emptyList());
-        }
-
-        @Override
-        public ViolationType getViolationType() {
-            return ViolationType.MUST;
+            return new Violation("dummy", Collections.emptyList());
         }
 
         @Override
@@ -138,6 +130,11 @@ public class RestApiTestConfiguration {
         @Override
         public String getId() {
             return "H999";
+        }
+
+        @Override
+        public Severity getSeverity() {
+            return Severity.HINT;
         }
 
     }

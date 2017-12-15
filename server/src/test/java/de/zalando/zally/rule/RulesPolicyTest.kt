@@ -1,7 +1,8 @@
 package de.zalando.zally.rule
 
-import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import io.swagger.models.Swagger
 import org.junit.Assert.assertFalse
@@ -11,10 +12,10 @@ import org.junit.Test
 class RulesPolicyTest {
     class TestRule(val result: Violation?) : AbstractRule(ZalandoRuleSet()) {
         override val title = "Test Rule"
-        override val violationType = ViolationType.MUST
         override val id = "999"
+        override val severity = Severity.MUST
 
-        @Check
+        @Check(severity = Severity.MUST)
         fun validate(swagger: Swagger): Violation? = result
     }
 

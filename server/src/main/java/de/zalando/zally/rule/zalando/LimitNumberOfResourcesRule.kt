@@ -1,10 +1,10 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -12,17 +12,17 @@ import org.springframework.stereotype.Component
 @Component
 class LimitNumberOfResourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
     override val title = "Limit number of Resources"
-    override val violationType = ViolationType.SHOULD
     override val id = "146"
+    override val severity = Severity.SHOULD
     private val pathCountLimit = rulesConfig.getConfig(name).getInt("paths_count_limit")
 
-    @Check
+    @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty()
         val pathsCount = paths.size
         return if (pathsCount > pathCountLimit) {
-            Violation(this, title, "Number of paths $pathsCount is greater than $pathCountLimit",
-                    violationType, paths.keys.toList())
+            Violation("Number of paths $pathsCount is greater than $pathCountLimit",
+                    paths.keys.toList())
         } else null
     }
 }

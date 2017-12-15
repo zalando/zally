@@ -1,12 +1,12 @@
 package de.zalando.zally.statistic;
 
 import de.zalando.zally.apireview.RuleViolation;
-import de.zalando.zally.dto.ViolationType;
+import de.zalando.zally.rule.api.Severity;
 
 public class ViolationStatistic {
 
     private String name;
-    private ViolationType type;
+    private Severity type;
     private int occurrence;
 
     ViolationStatistic() {}
@@ -25,11 +25,11 @@ public class ViolationStatistic {
         this.name = name;
     }
 
-    public ViolationType getType() {
+    public Severity getType() {
         return type;
     }
 
-    public void setType(ViolationType type) {
+    public void setType(Severity type) {
         this.type = type;
     }
 

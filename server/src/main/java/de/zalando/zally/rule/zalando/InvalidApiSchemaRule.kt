@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.io.Resources
 import com.typesafe.config.Config
-import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.rule.ObjectTreeReader
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.Result
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -22,8 +23,8 @@ open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
     private val log = LoggerFactory.getLogger(InvalidApiSchemaRule::class.java)
 
     override val title = "OpenAPI 2.0 schema"
-    override val violationType = ViolationType.MUST
     override val id = "101"
+    override val severity = Severity.MUST
     open val description = "Given file is not OpenAPI 2.0 compliant."
 
     val jsonSchemaValidator: JsonSchemaValidator
@@ -58,15 +59,15 @@ open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
         return JsonSchemaValidator(schema, schemaRedirects = mapOf(referencedOnlineSchema to localResource))
     }
 
-    @Check
+    @Check(severity = Severity.MUST)
     fun validate(swagger: JsonNode): List<Violation> {
         return jsonSchemaValidator.validate(swagger).let { validationResult ->
             validationResult.messages.map { message ->
-                Violation(this, this.title, message.message, this.violationType, listOf(message.path))
+                Violation(message.message, listOf(message.path))
             }
         }
     }
 
-    fun getGeneralViolation(): Violation =
-            Violation(this, title, description, violationType, emptyList())
+    fun getGeneralViolation(): Result =
+            Result(this, title, description, Severity.MUST, emptyList())
 }

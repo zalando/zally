@@ -1,10 +1,10 @@
 package de.zalando.zally.apireview;
 
 import de.zalando.zally.dto.ApiDefinitionRequest;
-import de.zalando.zally.dto.ViolationType;
+import de.zalando.zally.rule.api.Severity;
+import de.zalando.zally.rule.Result;
 import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.rule.api.RuleSet;
-import de.zalando.zally.rule.Violation;
 import de.zalando.zally.util.ResourceUtil;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -33,22 +33,22 @@ public class ApiReviewTest {
 
         @NotNull
         @Override
-        public ViolationType getViolationType() {
+        public String getId() {
             return null;
         }
 
         @NotNull
         @Override
-        public String getId() {
+        public Severity getSeverity() {
             return null;
         }
     };
 
     @Test
     public void shouldAggregateRuleTypeCount() {
-        Violation mustViolation1 = new Violation(dummyRule, "", "", ViolationType.MUST, Collections.emptyList());
-        Violation mustViolation2 = new Violation(dummyRule, "", "", ViolationType.MUST, Collections.emptyList());
-        Violation shouldViolation = new Violation(dummyRule, "", "", ViolationType.SHOULD, Collections.emptyList());
+        Result mustViolation1 = new Result(dummyRule, "", "", Severity.MUST, Collections.emptyList());
+        Result mustViolation2 = new Result(dummyRule, "", "", Severity.MUST, Collections.emptyList());
+        Result shouldViolation = new Result(dummyRule, "", "", Severity.SHOULD, Collections.emptyList());
 
         ApiReview apiReview = new ApiReview(new ApiDefinitionRequest(), "", asList(mustViolation1, mustViolation2, shouldViolation));
 
@@ -60,8 +60,8 @@ public class ApiReviewTest {
 
     @Test
     public void shouldCalculateNumberOfEndpoints() throws IOException {
-        Violation violation1 = new Violation(dummyRule, "", "", ViolationType.MUST, asList("1", "2"));
-        Violation violation2 = new Violation(dummyRule, "", "", ViolationType.MUST, asList("3"));
+        Result violation1 = new Result(dummyRule, "", "", Severity.MUST, asList("1", "2"));
+        Result violation2 = new Result(dummyRule, "", "", Severity.MUST, asList("3"));
 
         String apiDefinition = ResourceUtil.resourceToString("fixtures/limitNumberOfResourcesValid.json");
 

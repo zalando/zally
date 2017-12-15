@@ -1,7 +1,5 @@
 package de.zalando.zally.rule.api
 
-import de.zalando.zally.dto.ViolationType
-
 /**
  * An abstract entity representing an external guideline
  * which can be automatically checked.
@@ -17,6 +15,6 @@ interface Rule {
     /** A title for this rule */
     val title: String
 
-    /** The severity of violations which break this rule */
-    val violationType: ViolationType
+    /** The stated severity for this rule */
+    val severity: Severity
 }

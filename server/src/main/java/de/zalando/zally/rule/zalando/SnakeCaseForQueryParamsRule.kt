@@ -1,9 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.QueryParameter
@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component
 @Component
 class SnakeCaseForQueryParamsRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
     override val title = "Use snake_case (never camelCase) for Query Parameters"
-    override val violationType = ViolationType.MUST
     override val id = "130"
+    override val severity = Severity.MUST
 
-    @Check
+    @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {
         val result = swagger.paths.orEmpty().flatMap { (path, pathObject) ->
             pathObject.operationMap.orEmpty().flatMap { (verb, operation) ->
@@ -30,7 +30,7 @@ class SnakeCaseForQueryParamsRule(@Autowired ruleSet: ZalandoRuleSet) : Abstract
         return if (result.isNotEmpty()) {
             val (paths, params) = result.unzip()
             val description = "Parameters that are not in snake_case: " + params.flatten().map { it.name }.toSet().joinToString(",")
-            Violation(this, title, description, violationType, paths)
+            Violation(description, paths)
         } else null
     }
 }

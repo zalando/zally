@@ -2,9 +2,9 @@ package de.zalando.zally.rule;
 
 import de.zalando.zally.dto.RuleDTO;
 import de.zalando.zally.dto.RulesListDTO;
-import de.zalando.zally.dto.ViolationType;
-import de.zalando.zally.dto.ViolationTypeBinder;
+import de.zalando.zally.dto.SeverityBinder;
 import de.zalando.zally.rule.api.Rule;
+import de.zalando.zally.rule.api.Severity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,13 +34,13 @@ public class SupportedRulesController {
 
     @InitBinder
     public void initBinder(final WebDataBinder binder) {
-        binder.registerCustomEditor(ViolationType.class, new ViolationTypeBinder());
+        binder.registerCustomEditor(Severity.class, new SeverityBinder());
     }
 
     @ResponseBody
     @GetMapping("/supported-rules")
     public RulesListDTO listSupportedRules(
-        @RequestParam(value = "type", required = false) ViolationType typeFilter,
+        @RequestParam(value = "type", required = false) Severity typeFilter,
         @RequestParam(value = "is_active", required = false) Boolean isActiveFilter) {
 
         List<RuleDTO> filteredRules = rules
@@ -61,14 +61,14 @@ public class SupportedRulesController {
         return isActiveFilter == null || isActive == isActiveFilter;
     }
 
-    private boolean filterByType(Rule rule, ViolationType typeFilter) {
-        return typeFilter == null || rule.getViolationType().equals(typeFilter);
+    private boolean filterByType(Rule rule, Severity typeFilter) {
+        return typeFilter == null || typeFilter.equals(rule.getSeverity());
     }
 
     private RuleDTO toDto(Rule rule) {
         return new RuleDTO(
                 rule.getTitle(),
-                rule.getViolationType(),
+                rule.getSeverity(),
                 rule.getRuleSet().url(rule).toString(),
                 rule.getId(),
                 rulesPolicy.accepts(rule)

@@ -1,9 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
 import io.swagger.models.parameters.QueryParameter
@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired
 class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
 
     override val title = "Explicitly define the Collection Format of Query Parameters"
-    override val violationType = ViolationType.SHOULD
     override val id = "154"
+    override val severity = Severity.SHOULD
     val formatsAllowed = listOf("csv", "multi")
     val violationDescription = "CollectionFormat should be one of: $formatsAllowed"
 
-    @Check
+    @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         fun Collection<Parameter>?.extractInvalidQueryParam(path: String) =
             orEmpty().filterIsInstance<QueryParameter>()
@@ -40,6 +40,6 @@ class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : A
     }
 
     fun createViolation(paths: List<String>): Violation {
-        return Violation(this, title, violationDescription, violationType, paths)
+        return Violation(violationDescription, paths)
     }
 }
