@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class CamelCaseParameterNames(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
-    override val title = "Lower Camel Case Property Names"
+class LowerCamelCaseParameterNames(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
+    override val title = "Lower Camel Case Parameter Names"
     override val violationType = ViolationType.SHOULD
     override val description = "Query and path parameters should be named in lowerCamelCase style"
 

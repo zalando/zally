@@ -6,9 +6,9 @@ import io.swagger.parser.SwaggerParser
 import org.assertj.core.api.Assertions
 import org.junit.Test
 
-class CamelCaseParameterNamesTest {
+class LowerCamelCaseParameterNamesTest {
 
-    val cut = CamelCaseParameterNames(CoreFilingRuleSet())
+    val cut = LowerCamelCaseParameterNames(CoreFilingRuleSet())
 
     @Test
     fun withEmptyReturnsNull() {
