@@ -32,7 +32,7 @@ class CamelCaseParameterNames(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilin
     fun validate(parameter: Parameter, location: String): String? {
         val name = parameter.name
         return if (isCamelCase(name)) null else {
-            when(parameter) {
+            when (parameter) {
                 is PathParameter -> "$location is not lowerCamelCase"
                 is QueryParameter -> "$location is not lowerCamelCase"
                 else -> null
