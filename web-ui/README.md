@@ -50,6 +50,10 @@ It's implemented as an [express](https://expressjs.com/) app/middleware and a Si
 ```bash
 npm install zally-web-ui --save
 ```
+or 
+```bash
+yarn add zally-web-ui
+```
 
 ## Usage
 
@@ -134,18 +138,18 @@ Optionally implement this endpoint to refresh an expired token (if for example y
 ### Install, build and run in development mode
 
 ```
-npm install
-npm run dev
+yarn
+yarn dev
 ```
 
-> The `npm run dev` task starts the application server in development mode with **nodemon** and **webpack-dev-server** watching for changes.<br>
+> The `yarn dev` task starts the application server in development mode with **nodemon** and **webpack-dev-server** watching for changes.<br>
   The application server acts as a proxy to webpack-dev-server as the target.
 
 ### Run in production mode
 
 ```
-npm run build
-npm start
+yarn build
+yarn start
 ```
 
 ### Build optimized client javascript bundle
@@ -153,7 +157,7 @@ npm start
 Build webpack bundle minified and source-map file(s).
 
 ```
-npm run build
+yarn build
 ```
 
 ## Release it
@@ -167,7 +171,7 @@ npm run build
 
 People interested contributing to the web-ui project can open issues and related pull requests. 
 
-Before opening PRs, be sure the test are running by executing `npm test`.
+Before opening PRs, be sure the test are running by executing `yarn test`.
 
 ### Contact
 
