@@ -56,28 +56,28 @@ class RulesValidatorTest {
     @Test
     fun shouldReturnEmptyViolationsListWithoutRules() {
         val validator = SwaggerRulesValidator(emptyList(), invalidApiSchemaRule)
-        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray(), emptyArray()))).isEmpty()
+        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray()))).isEmpty()
     }
 
     @Test
     fun shouldReturnOneViolation() {
         val violations = listOf(DUMMY_VIOLATION_1)
         val validator = SwaggerRulesValidator(getRules(violations), invalidApiSchemaRule)
-        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray(), emptyArray()))).hasSameElementsAs(violations)
+        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray()))).hasSameElementsAs(violations)
     }
 
     @Test
     fun shouldCollectViolationsOfAllRules() {
         val violations = listOf(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2)
         val validator = SwaggerRulesValidator(getRules(violations), invalidApiSchemaRule)
-        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray(), emptyArray()))).hasSameElementsAs(violations)
+        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray()))).hasSameElementsAs(violations)
     }
 
     @Test
     fun shouldSortViolationsByViolationType() {
         val violations = listOf(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2, DUMMY_VIOLATION_3)
         val validator = SwaggerRulesValidator(getRules(violations), invalidApiSchemaRule)
-        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray(), emptyArray())))
+        assertThat(validator.validate(swaggerContent, RulesPolicy(emptyArray())))
                 .containsExactly(DUMMY_VIOLATION_3, DUMMY_VIOLATION_1, DUMMY_VIOLATION_2)
     }
 
@@ -85,7 +85,7 @@ class RulesValidatorTest {
     fun shouldIgnoreSpecifiedRules() {
         val violations = listOf(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2, DUMMY_VIOLATION_3)
         val validator = SwaggerRulesValidator(getRules(violations), invalidApiSchemaRule)
-        assertThat(validator.validate(swaggerContent, RulesPolicy(arrayOf("999"), emptyArray()))).containsExactly(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2)
+        assertThat(validator.validate(swaggerContent, RulesPolicy(arrayOf("999")))).containsExactly(DUMMY_VIOLATION_1, DUMMY_VIOLATION_2)
     }
 
     @Test
@@ -96,7 +96,7 @@ class RulesValidatorTest {
         Mockito.`when`(resultRule.violationType).thenReturn(ViolationType.MUST)
 
         val validator = SwaggerRulesValidator(emptyList(), resultRule)
-        val valResult = validator.validate("Invalid swagger content !@##", RulesPolicy(emptyArray(), emptyArray()))
+        val valResult = validator.validate("Invalid swagger content !@##", RulesPolicy(emptyArray()))
         assertThat(valResult).hasSize(1)
         assertThat(valResult[0].title).isEqualTo(resultRule.title)
     }
@@ -105,7 +105,7 @@ class RulesValidatorTest {
     fun checkReturnsStringThrowsException() {
         assertThatThrownBy {
             val validator = SwaggerRulesValidator(listOf(BadRule()), invalidApiSchemaRule)
-            validator.validate(swaggerContent, RulesPolicy(arrayOf("999"), emptyArray()))
+            validator.validate(swaggerContent, RulesPolicy(arrayOf("999")))
         }.hasMessage("Unsupported return type for a @Check check!: class java.lang.String")
     }
 
