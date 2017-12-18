@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/zalando-incubator/zally.svg?branch=master)](https://travis-ci.org/zalando-incubator/zally)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/05a7515011504c06b1cb35ede27ac7d4)](https://www.codacy.com/app/zally/zally?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zalando-incubator/zally&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/05a7515011504c06b1cb35ede27ac7d4)](https://www.codacy.com/app/zally/zally?utm_source=github.com&utm_medium=referral&utm_content=zalando-incubator/zally&utm_campaign=Badge_Coverage)
+[![Build Status](https://travis-ci.org/zalando/zally.svg?branch=master)](https://travis-ci.org/zalando/zally)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/05a7515011504c06b1cb35ede27ac7d4)](https://www.codacy.com/app/zally/zally?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zalando/zally&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/05a7515011504c06b1cb35ede27ac7d4)](https://www.codacy.com/app/zally/zally?utm_source=github.com&utm_medium=referral&utm_content=zalando/zally&utm_campaign=Badge_Coverage)
 
 <img src="logo.png" width="200" height="200" />
 
@@ -13,7 +13,7 @@ Zally brings order to your sea of APIs. Use it to:
 
 Its standard configuration will check your APIs against the rules defined in [Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/), but anyone can use it **out-of-the-box**.
 
-Zally's easy-to-use [CLI](https://github.com/zalando-incubator/zally/blob/master/cli/README.md) uses the server in the background so that you can check your API *on the spot*. It also features an intuitive [Web UI](https://github.com/zalando-incubator/zally/blob/master/web-ui/README.md) that shows implemented rules and lints external files and (with its online editor) API definitions.
+Zally's easy-to-use [CLI](https://github.com/zalando/zally/blob/master/cli/README.md) uses the server in the background so that you can check your API *on the spot*. It also features an intuitive [Web UI](https://github.com/zalando/zally/blob/master/web-ui/README.md) that shows implemented rules and lints external files and (with its online editor) API definitions.
 
 More about Zally:
 - Swagger-friendly: accepts [Swagger](https://swagger.io) .yaml and JSON formats; includes a server that lints your Swagger files; and parses Swagger files using [swagger-parser](https://github.com/swagger-api/swagger-parser)
@@ -28,18 +28,18 @@ More about Zally:
 - Golang 1.7+: for CLI
 - Node.js 7.6+: for web UI
 
-Find additional details [here](https://github.com/zalando-incubator/zally/pull/65#issuecomment-269474831). With Spring 5, we consider using Kotlin also directly on the API side.
+Find additional details [here](https://github.com/zalando/zally/pull/65#issuecomment-269474831). With Spring 5, we consider using Kotlin also directly on the API side.
 
 ### Installation and Usage
 
 To give Zally a quick try, first run the server locally and then use the CLI tool.
 
-The [Server Readme](https://github.com/zalando-incubator/zally/blob/master/server/README.md), [CLI Readme](https://github.com/zalando-incubator/zally/blob/master/cli/README.md) and [Web UI Readme](https://github.com/zalando-incubator/zally/blob/master/web-ui/README.md) include more detailed installation steps for each component.
+The [Server Readme](https://github.com/zalando/zally/blob/master/server/README.md), [CLI Readme](https://github.com/zalando/zally/blob/master/cli/README.md) and [Web UI Readme](https://github.com/zalando/zally/blob/master/web-ui/README.md) include more detailed installation steps for each component.
 
 ### Quick start guide
 
 ```bash
-git clone git@github.com:zalando-incubator/zally.git zally
+git clone git@github.com:zalando/zally.git zally
 cd zally
 
 # Disable authentication and start a local version of Zally server
@@ -49,18 +49,18 @@ cd server
 cd ..
 
 # Build CLI tool
-go get github.com/zalando-incubator/zally/cli/zally
-cd $GOPATH/src/github.com/zalando-incubator/zally/cli/zally
+go get github.com/zalando/zally/cli/zally
+cd $GOPATH/src/github.com/zalando/zally/cli/zally
 go build
 ./zally lint /path/to/swagger/definition.yaml
 ```
 
 ### Contributing
 
-Zally welcomes contributions from the open source community. To get started, take a look at our [contributing guidelines](https://github.com/zalando-incubator/zally/blob/master/CONTRIBUTING). Then check our [Project Board](https://github.com/zalando-incubator/zally/projects/1) and [Issues Tracker](https://github.com/zalando-incubator/zally/issues) for ideas. 
+Zally welcomes contributions from the open source community. To get started, take a look at our [contributing guidelines](https://github.com/zalando/zally/blob/master/CONTRIBUTING). Then check our [Project Board](https://github.com/zalando/zally/projects/1) and [Issues Tracker](https://github.com/zalando/zally/issues) for ideas. 
 
 #### Roadmap
-For Zally [version 1.2](https://github.com/zalando-incubator/zally/milestone/3), we're focusing on:
+For Zally [version 1.2](https://github.com/zalando/zally/milestone/3), we're focusing on:
 - generating new rules
 - a new quickstart script
 - better integration testing approaches
@@ -69,9 +69,9 @@ If you have ideas for these items, please let us know.
 
 ### Contact
 
-Feel free to contact one the [maintainers](https://github.com/zalando-incubator/zally/blob/master/MAINTAINERS).
+Feel free to contact one the [maintainers](https://github.com/zalando/zally/blob/master/MAINTAINERS).
 
 
 ### License
 
-MIT license with an exception. See [license file](https://github.com/zalando-incubator/zally/blob/master/LICENSE).
+MIT license with an exception. See [license file](https://github.com/zalando/zally/blob/master/LICENSE).
