@@ -20,15 +20,15 @@ describe('UserInfo component', () => {
   });
 
   test('should render the component', () => {
-    expect(userElem.length).toEqual(1);
+    expect(userElem).toHaveLength(1);
     expect(userElem.text()).toEqual(username);
-    expect(logoutLink.length).toEqual(1);
+    expect(logoutLink).toHaveLength(1);
   });
 
   test('should render the login button', () => {
     component.setProps({ authenticated: false });
-    expect(component.find('.user-info__logout').length).toEqual(0);
-    expect(component.find('.user-info__login').length).toEqual(1);
+    expect(component.find('.user-info__logout')).toHaveLength(0);
+    expect(component.find('.user-info__login')).toHaveLength(1);
   });
 
   describe('when clicking on logout link', () => {

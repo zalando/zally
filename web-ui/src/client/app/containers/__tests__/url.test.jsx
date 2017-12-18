@@ -60,7 +60,8 @@ describe('URL container component', () => {
       const component = shallow(
         <URL Storage={MockStorage} getFile={mockGetFile} />
       );
-      expect.assertions(4);
+      expect.assertions(5);
+      expect(component.find('Redirect')).toHaveLength(0);
       return component
         .instance()
         .handleOnEditFile()
@@ -71,7 +72,8 @@ describe('URL container component', () => {
             'editor-value',
             mockFile
           );
-          expect(component.find('Redirect').length).toEqual(1);
+          component.update();
+          expect(component.find('Redirect')).toHaveLength(1);
         });
     });
 

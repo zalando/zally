@@ -8,7 +8,7 @@ test('If component should hide child component based on test prop result', () =>
       <div>Hello World!</div>
     </If>
   );
-  expect(iff.find('div').length).toEqual(0);
+  expect(iff.find('div')).toHaveLength(0);
 });
 
 test('If component should show child component based on test prop result', () => {
@@ -17,5 +17,5 @@ test('If component should show child component based on test prop result', () =>
       <div>Hello World!</div>
     </If>
   );
-  expect(iff.find('div').length).toEqual(1);
+  expect(iff.find('div')).toHaveLength(1);
 });

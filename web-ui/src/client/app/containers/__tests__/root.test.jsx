@@ -10,6 +10,6 @@ jest.mock('../app.jsx', () => ({
 describe('Root component', () => {
   test('render the app', () => {
     const component = shallow(<Root env={{}} RestService={RestService} />);
-    expect(component.find('App').length).toEqual(1);
+    expect(component.find('App')).toHaveLength(1);
   });
 });

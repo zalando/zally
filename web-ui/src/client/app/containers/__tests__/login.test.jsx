@@ -8,13 +8,13 @@ describe('Login container component', () => {
 
   test('should show login UI if not authenticated', () => {
     const component = shallow(<Login user={{ authenticated: false }} />);
-    expect(component.find(notAuthenticatedSelector).length).toEqual(1);
-    expect(component.find(authenticatedSelector).length).toEqual(0);
+    expect(component.find(notAuthenticatedSelector)).toHaveLength(1);
+    expect(component.find(authenticatedSelector)).toHaveLength(0);
   });
 
   test('should show already logged-in UI if authenticated', () => {
     const component = shallow(<Login user={{ authenticated: true }} />);
-    expect(component.find(authenticatedSelector).length).toEqual(1);
-    expect(component.find(notAuthenticatedSelector).length).toEqual(0);
+    expect(component.find(authenticatedSelector)).toHaveLength(1);
+    expect(component.find(notAuthenticatedSelector)).toHaveLength(0);
   });
 });

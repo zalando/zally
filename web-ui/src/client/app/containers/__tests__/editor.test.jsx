@@ -52,7 +52,7 @@ describe('Editor container component', () => {
     const component = shallow(<Editor Storage={MockStorage} />);
 
     expect(component.state().editorValue).toBe('');
-    expect(component.state().inputValue).toBe('');
+    expect(component.state().inputValue).toBe(undefined);
   });
 
   test('should show an en error if schema parsing fails', () => {

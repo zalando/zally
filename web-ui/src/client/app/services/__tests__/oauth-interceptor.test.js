@@ -16,9 +16,7 @@ describe('OAuthInterceptor', () => {
   beforeEach(() => {
     jest.resetModules();
 
-    global.window = {
-      env: {},
-    };
+    window.env = {};
 
     mockRefreshToken = jest.fn();
     mockLogin = jest.fn();
@@ -33,9 +31,7 @@ describe('OAuthInterceptor', () => {
     OAuthInterceptor = require('../oauth-interceptor').default;
   });
 
-  afterEach(() => {
-    delete global.window;
-  });
+  afterEach(() => delete window.env);
 
   describe('responseError interceptor skip', () => {
     test('if OAuth is disabled', done => {
@@ -105,8 +101,8 @@ describe('OAuthInterceptor', () => {
 
       OAuthInterceptor.responseError(response, request);
       return OAuthInterceptor.responseError(response, request).then(() => {
-        expect(mockRefreshToken.mock.calls.length).toEqual(1);
-        expect(mockFetch.mock.calls.length).toEqual(2);
+        expect(mockRefreshToken.mock.calls).toHaveLength(1);
+        expect(mockFetch.mock.calls).toHaveLength(2);
       });
     });
   });
