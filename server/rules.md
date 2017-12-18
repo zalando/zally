@@ -21,3 +21,7 @@ Unused definitions cause confusion and should be avioded.
 ## H001: Base path can be extracted
 
 If all paths start with the same prefix then it would be cleaner to extract that into the basePath rather than repeating for each path.
+
+## 131: Use Hyphenated HTTP Headers
+
+Header names should be hyphenated rather than use underscores or other separators
