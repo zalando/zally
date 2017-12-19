@@ -149,6 +149,7 @@ class CoreFilingAPITest {
     fun `discrepancies-service`() {
         val results = validate("fullbeam", "discrepancies-service-api",
                 policy.withMoreIgnores(listOf(
+                        "PostResponding200ConsideredSuspicious",
                         "151" // NotSpecifyStandardErrorCodesRule
                 )))
 
@@ -164,6 +165,7 @@ class CoreFilingAPITest {
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
+                        "PostResponding200ConsideredSuspicious",
                         "150", // UseSpecificHttpStatusCodes
                         "151"  // NotSpecifyStandardErrorCodesRule
                 )))

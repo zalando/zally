@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class PutOperationsRequireBodyParameter(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
-    override val title = "Put Operations Require Body Parameter"
+    override val title = "PUT Operations Require Body Parameter"
     override val violationType = ViolationType.MUST
     override val description = "Put operations are meaningless without a body parameter"
 
