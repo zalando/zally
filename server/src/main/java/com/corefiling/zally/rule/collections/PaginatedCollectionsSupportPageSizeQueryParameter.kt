@@ -21,18 +21,15 @@ class PaginatedCollectionsSupportPageSizeQueryParameter(@Autowired ruleSet: Core
             "with type:integer, format:int32, minimum:1 so that clients can easily iterate over the collection."
 
     @Check
-    fun validate(swagger: Swagger): Violation? = swagger.collections()
-            .map { (pattern, path) ->
-                when {
-                    hasPageSizeQueryParam(path.get) -> null
-                    else -> "paths $pattern GET parameters: does not include a valid pageSize query parameter"
-                }
-            }
-            .filterNotNull()
-            .takeIf(List<String>::isNotEmpty)
-            ?.let { it: List<String> ->
-                Violation(this, title, description, violationType, it)
-            }
+    fun validate(swagger: Swagger): Violation? =
+            swagger.collections()
+                    .map { (pattern, path) ->
+                        when {
+                            hasPageSizeQueryParam(path.get) -> null
+                            else -> "paths $pattern GET parameters: does not include a valid pageSize query parameter"
+                        }
+                    }
+                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
 
     private fun hasPageSizeQueryParam(op: Operation?): Boolean =
             op?.parameters?.find { isPageSizeQueryParam(it) } != null

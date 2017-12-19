@@ -22,18 +22,17 @@ class CollectionsReturnArrays(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilin
     override val description = "Collection resources return arrays so that they can be acted upon easily"
 
     @Check
-    fun validate(swagger: Swagger): Violation? = swagger.collections()
-            .flatMap { (pattern, path) ->
-                path.get?.responses.orEmpty()
-                        .filterKeys { Integer.parseInt(it) in 200..299 }
-                        .filterValues { !isArrayResponse(it, swagger) }
-                        .map { (code, response) ->
-                            "paths $pattern GET responses $code schema type: expected array but found ${response?.schema?.type}"
-                        }
-            }
-            .takeIf(List<String>::isNotEmpty)?.let { it: List<String> ->
-                Violation(this, title, description, violationType, it)
-            }
+    fun validate(swagger: Swagger): Violation? =
+            swagger.collections()
+                    .flatMap { (pattern, path) ->
+                        path.get?.responses.orEmpty()
+                                .filterKeys { Integer.parseInt(it) in 200..299 }
+                                .filterValues { !isArrayResponse(it, swagger) }
+                                .map { (code, response) ->
+                                    "paths $pattern GET responses $code schema type: expected array but found ${response?.schema?.type}"
+                                }
+                    }
+                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
 
     private fun isArrayResponse(response: Response, swagger: Swagger): Boolean {
         val schema = response.schema ?: return false

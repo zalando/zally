@@ -2,6 +2,7 @@ package com.corefiling.zally.rule.resources
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
+import com.corefiling.zally.rule.collections.ifNotEmptyLet
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
@@ -16,17 +17,14 @@ class SlashesNotDoubled(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwagg
     override val description = "Resources pattern separated by single slashes, not //"
 
     @Check
-    fun validate(swagger: Swagger): Violation? {
-
-        val failures = mutableListOf<String>()
-
-        swagger.paths?.forEach { pattern, _ ->
-            if (pattern.contains("//")) {
-                failures.add(pattern)
-            }
-        }
-
-        return if (failures.isEmpty()) null else
-            Violation(this, title, description, violationType, failures)
-    }
+    fun validate(swagger: Swagger): Violation? =
+            swagger.paths.orEmpty()
+                    .map { (pattern, _) ->
+                        if (pattern.contains("//")) {
+                            pattern
+                        } else {
+                            null
+                        }
+                    }
+                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
 }

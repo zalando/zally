@@ -21,18 +21,15 @@ class PaginatedCollectionsSupportPageNumberQueryParameter(@Autowired ruleSet: Co
             "with type:integer, format:int32, minimum:1 so that clients can easily iterate over the collection."
 
     @Check
-    fun validate(swagger: Swagger): Violation? = swagger.collections()
-                .map { (pattern, path) ->
-                    when {
-                        (hasPageNumberQueryParam(path.get)) -> null
-                        else -> "paths $pattern GET parameters: does not include a valid pageNumber query parameter"
+    fun validate(swagger: Swagger): Violation? =
+            swagger.collections()
+                    .map { (pattern, path) ->
+                        when {
+                            (hasPageNumberQueryParam(path.get)) -> null
+                            else -> "paths $pattern GET parameters: does not include a valid pageNumber query parameter"
+                        }
                     }
-                }
-                .filterNotNull()
-                .takeIf(List<String>::isNotEmpty)
-                ?.let { it: List<String> ->
-                    Violation(this, title, description, violationType, it)
-                }
+                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
 
     private fun hasPageNumberQueryParam(op: Operation?): Boolean =
             op?.parameters?.find { isPageNumberQueryParam(it) } != null

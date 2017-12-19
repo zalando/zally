@@ -18,19 +18,17 @@ class CollectionsReturnTotalItemsHeader(@Autowired ruleSet: CoreFilingRuleSet) :
             "with type:integer and format:int32 so that clients can easily access the total"
 
     @Check
-    fun validate(swagger: Swagger): Violation? = swagger.collections()
-            .flatMap { (pattern, path) ->
-                path.get?.responses.orEmpty()
-                        .filterKeys { Integer.parseInt(it) in 200..299 }
-                        .filterValues { !hasTotalItemsHeader(it) }
-                        .map { (code, _) ->
-                            "paths $pattern GET responses $code headers: does not include an int32 format integer Total-Items header"
-                        }
-            }
-            .takeIf(List<String>::isNotEmpty)
-            ?.let { it: List<String> ->
-                Violation(this, title, description, violationType, it)
-            }
+    fun validate(swagger: Swagger): Violation? =
+            swagger.collections()
+                    .flatMap { (pattern, path) ->
+                        path.get?.responses.orEmpty()
+                                .filterKeys { Integer.parseInt(it) in 200..299 }
+                                .filterValues { !hasTotalItemsHeader(it) }
+                                .map { (code, _) ->
+                                    "paths $pattern GET responses $code headers: does not include an int32 format integer Total-Items header"
+                                }
+                    }
+                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
 
     private fun hasTotalItemsHeader(response: Response?): Boolean {
         val header = response?.headers?.get("Total-Items") ?: return false

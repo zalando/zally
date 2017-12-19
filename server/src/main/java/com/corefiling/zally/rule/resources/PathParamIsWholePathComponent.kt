@@ -2,6 +2,7 @@ package com.corefiling.zally.rule.resources
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
+import com.corefiling.zally.rule.collections.ifNotEmptyLet
 import com.corefiling.zally.rule.collections.pathParamRegex
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
@@ -17,24 +18,14 @@ class PathParamIsWholePathComponent(@Autowired ruleSet: CoreFilingRuleSet) : Cor
     override val description = "Path parameters occupy an entire path component between slashes, never a partial component"
 
     @Check
-    fun validate(swagger: Swagger): Violation? {
-
-        val failures = mutableListOf<String>()
-
-        swagger.paths?.forEach { pattern, _ ->
-
-            val components = pattern.split('/')
-            val failure = components
-                .filter { pathParamRegex.find(it) != null }
-                .map { pathParamRegex.replaceFirst(it, "XXXXX") }
-                .any { it != "XXXXX" }
-
-            if (failure) {
-                failures.add(pattern)
-            }
-        }
-
-        return if (failures.isEmpty()) null else
-            Violation(this, title, description, violationType, failures)
-    }
+    fun validate(swagger: Swagger): Violation? =
+            swagger.paths.orEmpty()
+                    .map { (pattern, _) ->
+                        pattern
+                                .split('/')
+                                .filter { pathParamRegex.find(it) != null }
+                                .filter { pathParamRegex.replaceFirst(it, "XXXXX") != "XXXXX" }
+                                .ifNotEmptyLet { "$pattern contains partial component path parameters: ${it.joinToString()}" }
+                    }
+                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
 }

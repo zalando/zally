@@ -73,3 +73,8 @@ fun detectCollectionByPaginationQueryParameters(swagger: Swagger, path: Path): B
 
     return false
 }
+
+inline fun <I : Any, O> Iterable<I?>.ifNotEmptyLet(block: (List<I>) -> O): O? {
+    val nonNull = this.filterNotNull()
+    return if (nonNull.isEmpty()) null else block(nonNull)
+}

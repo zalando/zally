@@ -2,6 +2,7 @@ package com.corefiling.zally.rule.naming
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
+import com.corefiling.zally.rule.collections.ifNotEmptyLet
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
@@ -18,11 +19,13 @@ class MatchingSummaryAndOperationIdNames(@Autowired ruleSet: CoreFilingRuleSet) 
 
     @Check
     fun validate(swagger: Swagger): Violation? =
-            swagger.paths.orEmpty().flatMap { (pattern, path) ->
-                path.operationMap.orEmpty().map { (method, op) ->
-                    validate("$pattern $method", op)
-                }.filterNotNull()
-            }.takeIf { it.isNotEmpty() }?.let { Violation(this, title, description, violationType, it) }
+            swagger.paths.orEmpty()
+                    .flatMap { (pattern, path) ->
+                        path.operationMap.orEmpty().map { (method, op) ->
+                            validate("$pattern $method", op)
+                        }.filterNotNull()
+                    }
+                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
 
     fun validate(location: String, op: Operation): String? {
         return when {
