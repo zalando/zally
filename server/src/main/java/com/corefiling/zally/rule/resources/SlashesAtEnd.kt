@@ -2,6 +2,7 @@ package com.corefiling.zally.rule.resources
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
+import com.corefiling.zally.rule.collections.ifNotEmptyLet
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
@@ -16,17 +17,14 @@ class SlashesAtEnd(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRul
     override val description = "Resources should respond the same whether a trailing slash is specified or not"
 
     @Check
-    fun validate(swagger: Swagger): Violation? {
-
-        val failures = mutableListOf<String>()
-
-        swagger.paths?.forEach { pattern, _ ->
-            if (pattern.endsWith("/")) {
-                failures.add(pattern)
-            }
-        }
-
-        return if (failures.isEmpty()) null else
-            Violation(this, title, description, violationType, failures)
-    }
+    fun validate(swagger: Swagger): Violation? =
+            swagger.paths.orEmpty()
+                    .map { (pattern, _) ->
+                        if (pattern.endsWith("/")) {
+                            pattern
+                        } else {
+                            null
+                        }
+                    }
+                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
 }

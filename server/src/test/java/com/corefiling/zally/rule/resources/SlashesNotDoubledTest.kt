@@ -18,27 +18,27 @@ class SlashesNotDoubledTest {
     @Test
     fun withSingleSlashesReturnsNull() {
         val yaml = """
-swagger: '2.0'
-info:
-  title: API Title
-  version: 1.0.0
-paths:
-  '/some/path':
-"""
+            swagger: '2.0'
+            info:
+              title: API Title
+              version: 1.0.0
+            paths:
+              '/some/path':
+            """
         Assertions.assertThat(cut.validate(SwaggerParser().parse(yaml))).isNull()
     }
 
     @Test
     fun withDoubleSlashesReturnsResource() {
         val yaml = """
-swagger: '2.0'
-info:
-  title: API Title
-  version: 1.0.0
-paths:
-  '/some//path':
-    get:
-"""
+            swagger: '2.0'
+            info:
+              title: API Title
+              version: 1.0.0
+            paths:
+              '/some//path':
+                get:
+            """
         Assertions.assertThat(cut.validate(SwaggerParser().parse(yaml))!!.paths)
                 .hasSameElementsAs(listOf("/some//path"))
     }
