@@ -1,4 +1,4 @@
-package com.corefiling.zally.rule.resources
+package com.corefiling.zally.rule.naming
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
 import io.swagger.models.Swagger

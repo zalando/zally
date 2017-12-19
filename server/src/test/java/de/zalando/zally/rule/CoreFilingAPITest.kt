@@ -140,7 +140,9 @@ class CoreFilingAPITest {
     fun `beacon-link-service`() {
         val results = validate("fullbeam", "beacon-link-service-api",
                 // ignoring rules that historically failed for this service
-                policy)
+                policy.withMoreIgnores(listOf(
+                        "MatchingSummaryAndOperationIdNames"
+                )))
 
         assertThat(results).isEmpty()
     }
@@ -149,6 +151,7 @@ class CoreFilingAPITest {
     fun `discrepancies-service`() {
         val results = validate("fullbeam", "discrepancies-service-api",
                 policy.withMoreIgnores(listOf(
+                        "MatchingSummaryAndOperationIdNames",
                         "PostResponding200ConsideredSuspicious",
                         "151" // NotSpecifyStandardErrorCodesRule
                 )))
@@ -162,6 +165,7 @@ class CoreFilingAPITest {
                 // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "CollectionsReturnTotalItemsHeader",
+                        "MatchingSummaryAndOperationIdNames",
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
@@ -182,6 +186,7 @@ class CoreFilingAPITest {
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
+                        "MatchingSummaryAndOperationIdNames",
                         "SlashesAtEnd",
                         "146", // LimitNumberOfResourcesRule
                         "150", // UseSpecificHttpStatusCodes
@@ -200,6 +205,7 @@ class CoreFilingAPITest {
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
+                        "MatchingSummaryAndOperationIdNames",
                         "SlashesAtEnd",
                         "151" // NotSpecifyStandardErrorCodesRule
                 )))
@@ -212,6 +218,7 @@ class CoreFilingAPITest {
         val results = validate("labs", "digit-frequency-analysis-service",
                 // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
+                        "MatchingSummaryAndOperationIdNames",
                         "151" // NotSpecifyStandardErrorCodesRule
                 )))
 
@@ -224,6 +231,7 @@ class CoreFilingAPITest {
                 // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "CollectionsReturnTotalItemsHeader",
+                        "MatchingSummaryAndOperationIdNames",
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
@@ -235,8 +243,8 @@ class CoreFilingAPITest {
         assertThat(results).isEmpty()
     }
 
-    private fun validate(group: String, project: String, policy: RulesPolicy): List<Violation> {
-        val uri = URI.create("https://gitlab.int.corefiling.com/" + group + "/" + project + "/raw/develop/src/swagger.yaml")
+    private fun validate(group: String, project: String, policy: RulesPolicy, branch: String = "develop"): List<Violation> {
+        val uri = URI.create("https://gitlab.int.corefiling.com/" + group + "/" + project + "/raw/" + branch + "/src/swagger.yaml")
         println(uri)
 
         val text = uri.toURL().readText()
