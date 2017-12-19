@@ -5,13 +5,9 @@ import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
-import de.zalando.zally.util.PatternUtil.isCamelCase
-import io.swagger.models.HttpMethod
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.BodyParameter
 import io.swagger.models.parameters.Parameter
-import io.swagger.models.parameters.PathParameter
-import io.swagger.models.parameters.QueryParameter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

@@ -5,13 +5,10 @@ import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
-import de.zalando.zally.util.PatternUtil.isCamelCase
 import io.swagger.models.HttpMethod
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.BodyParameter
 import io.swagger.models.parameters.Parameter
-import io.swagger.models.parameters.PathParameter
-import io.swagger.models.parameters.QueryParameter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -24,7 +21,7 @@ class PutOperationsRequireBodyParameter(@Autowired ruleSet: CoreFilingRuleSet) :
     @Check
     fun validate(swagger: Swagger): Violation? =
             swagger.paths.orEmpty().flatMap { (pattern, path) ->
-                path.operationMap.orEmpty().filterKeys { it==HttpMethod.PUT }.map { (method, op) ->
+                path.operationMap.orEmpty().filterKeys { it == HttpMethod.PUT }.map { (method, op) ->
                     val body = op.parameters.orEmpty().filter { it is BodyParameter }.firstOrNull()
                     validate("$pattern $method body parameter", body)
                 }
@@ -32,7 +29,7 @@ class PutOperationsRequireBodyParameter(@Autowired ruleSet: CoreFilingRuleSet) :
 
     fun validate(location: String, parameter: Parameter?): String? {
         return when {
-            parameter==null -> "$location is missing!"
+            parameter == null -> "$location is missing!"
             !parameter.required -> "$location '${parameter.name}' is optional!"
             else -> null
         }

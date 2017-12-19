@@ -20,15 +20,15 @@ class PostResponding200ConsideredSuspicious(@Autowired ruleSet: CoreFilingRuleSe
     @Check
     fun validate(swagger: Swagger): Violation? =
             swagger.paths.orEmpty().flatMap { (pattern, path) ->
-                path.operationMap.orEmpty().filterKeys { it==HttpMethod.POST }.flatMap { (method, op) ->
-                    op.responses.orEmpty().filterKeys { it=="200" }.map { (status, response) ->
+                path.operationMap.orEmpty().filterKeys { it == HttpMethod.POST }.flatMap { (method, op) ->
+                    op.responses.orEmpty().filterKeys { it == "200" }.map { (status, response) ->
                         validate("$pattern $method response 200 OK", detectCollection(swagger, pattern, path))
                     }
                 }
             }.filterNotNull().takeIf { it.isNotEmpty() }?.let { Violation(this, title, description, violationType, it) }
 
     fun validate(location: String, collection: Boolean): String? {
-        return when(collection) {
+        return when (collection) {
             true -> "$location probably should be a 201 Created"
             else -> "$location probably should be a 202 Accepted"
         }

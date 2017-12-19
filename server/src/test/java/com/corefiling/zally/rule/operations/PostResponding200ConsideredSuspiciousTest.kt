@@ -68,7 +68,6 @@ class PostResponding200ConsideredSuspiciousTest {
                 .hasSameElementsAs(listOf("/things POST response 200 OK probably should be a 201 Created"))
     }
 
-
     @Test
     fun withPost202OnResourceReturnsNull() {
         val yaml = """
@@ -105,5 +104,4 @@ class PostResponding200ConsideredSuspiciousTest {
         Assertions.assertThat(cut.validate(SwaggerParser().parse(yaml))!!.paths)
                 .hasSameElementsAs(listOf("/do-some-action POST response 200 OK probably should be a 202 Accepted"))
     }
-
 }
