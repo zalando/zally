@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/logrusorgru/aurora"
-	"github.com/zalando-incubator/zally/cli/zally/domain"
+	"github.com/zalando/zally/cli/zally/domain"
 )
 
 // ResultPrinter helps to print results to the CLI
