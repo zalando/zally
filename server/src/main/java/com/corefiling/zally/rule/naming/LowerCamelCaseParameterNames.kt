@@ -1,4 +1,4 @@
-package com.corefiling.zally.rule.resources
+package com.corefiling.zally.rule.naming
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
@@ -23,9 +23,7 @@ class LowerCamelCaseParameterNames(@Autowired ruleSet: CoreFilingRuleSet) : Core
     fun validate(swagger: Swagger): Violation? =
             swagger.paths.orEmpty().flatMap { (pattern, path) ->
                 path.operationMap.orEmpty().flatMap { (method, op) ->
-                    op.parameters.orEmpty()
-                            .map { validate(it, "$pattern $method ${it.`in`} parameter ${it.name}") }
-                            .filterNotNull()
+                    op.parameters.orEmpty().mapNotNull { validate(it, "$pattern $method ${it.`in`} parameter ${it.name}") }
                 }
             }.takeIf { it.isNotEmpty() }?.let { Violation(this, title, description, violationType, it) }
 
