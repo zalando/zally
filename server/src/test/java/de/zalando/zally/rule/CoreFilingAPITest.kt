@@ -152,6 +152,7 @@ class CoreFilingAPITest {
         val results = validate("fullbeam", "discrepancies-service-api",
                 policy.withMoreIgnores(listOf(
                         "MatchingSummaryAndOperationIdNames",
+                        "PostResponding200ConsideredSuspicious",
                         "151" // NotSpecifyStandardErrorCodesRule
                 )))
 
@@ -164,10 +165,11 @@ class CoreFilingAPITest {
                 // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "CollectionsReturnTotalItemsHeader",
+                        "MatchingSummaryAndOperationIdNames",
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
-                        "MatchingSummaryAndOperationIdNames",
+                        "PostResponding200ConsideredSuspicious",
                         "150", // UseSpecificHttpStatusCodes
                         "151"  // NotSpecifyStandardErrorCodesRule
                 )))
