@@ -26,14 +26,11 @@ class PathParamProceededByPlural(@Autowired ruleSet: CoreFilingRuleSet) : CoreFi
                                 .mapIndexed { index, component ->
                                     if (isPathParam(component)) {
                                         val previous = pattern.split('/')[index - 1]
-                                        if (isBlank(previous)) {
-                                            "paths $pattern: $component parameter has no proceeding component"
-                                        } else if (isPathParam(previous)) {
-                                            "paths $pattern: $component parameter has proceeding parameter $previous rather than a non-parameter"
-                                        } else if (!isPlural(previous)) {
-                                            "paths $pattern: $component parameter has proceeding component '$previous' which appears to be singular"
-                                        } else {
-                                            null
+                                        when {
+                                            isBlank(previous) -> "paths $pattern: $component parameter has no proceeding component"
+                                            isPathParam(previous) -> "paths $pattern: $component parameter has proceeding parameter $previous rather than a non-parameter"
+                                            !isPlural(previous) -> "paths $pattern: $component parameter has proceeding component '$previous' which appears to be singular"
+                                            else -> null
                                         }
                                     } else {
                                         null
