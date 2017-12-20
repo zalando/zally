@@ -3,6 +3,7 @@ package com.corefiling.zally.rule.operations
 import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import com.corefiling.zally.rule.collections.detectCollection
+import com.corefiling.zally.rule.collections.ifNotEmptyLet
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
@@ -19,13 +20,15 @@ class PostResponding200ConsideredSuspicious(@Autowired ruleSet: CoreFilingRuleSe
 
     @Check
     fun validate(swagger: Swagger): Violation? =
-            swagger.paths.orEmpty().flatMap { (pattern, path) ->
-                path.operationMap.orEmpty().filterKeys { it == HttpMethod.POST }.flatMap { (method, op) ->
-                    op.responses.orEmpty().filterKeys { it == "200" }.map { (status, response) ->
-                        validate("$pattern $method response 200 OK", detectCollection(swagger, pattern, path))
+            swagger.paths.orEmpty()
+                    .flatMap { (pattern, path) ->
+                        path.operationMap.orEmpty().filterKeys { it == HttpMethod.POST }.flatMap { (method, op) ->
+                            op.responses.orEmpty().filterKeys { it == "200" }.map { (_, _) ->
+                                validate("$pattern $method response 200 OK", detectCollection(swagger, pattern, path))
+                            }
+                        }
                     }
-                }
-            }.filterNotNull().takeIf { it.isNotEmpty() }?.let { Violation(this, title, description, violationType, it) }
+                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
 
     fun validate(location: String, collection: Boolean): String? {
         return when (collection) {

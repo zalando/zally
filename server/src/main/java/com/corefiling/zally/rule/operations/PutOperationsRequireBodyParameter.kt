@@ -2,6 +2,7 @@ package com.corefiling.zally.rule.operations
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.CoreFilingSwaggerRule
+import com.corefiling.zally.rule.collections.ifNotEmptyLet
 import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
@@ -20,12 +21,16 @@ class PutOperationsRequireBodyParameter(@Autowired ruleSet: CoreFilingRuleSet) :
 
     @Check
     fun validate(swagger: Swagger): Violation? =
-            swagger.paths.orEmpty().flatMap { (pattern, path) ->
-                path.operationMap.orEmpty().filterKeys { it == HttpMethod.PUT }.map { (method, op) ->
-                    val body = op.parameters.orEmpty().filter { it is BodyParameter }.firstOrNull()
-                    validate("$pattern $method body parameter", body)
-                }
-            }.filterNotNull().takeIf { it.isNotEmpty() }?.let { Violation(this, title, description, violationType, it) }
+            swagger.paths.orEmpty()
+                    .flatMap { (pattern, path) ->
+                        path.operationMap.orEmpty()
+                                .filterKeys { it == HttpMethod.PUT }
+                                .map { (method, op) ->
+                                    val body = op.parameters.orEmpty().firstOrNull { it is BodyParameter }
+                                    validate("$pattern $method body parameter", body)
+                                }
+                    }
+                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
 
     fun validate(location: String, parameter: Parameter?): String? {
         return when {
