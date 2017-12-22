@@ -34,7 +34,7 @@ script:
   - while ! echo "GET / HTTP/1.0\n" | nc localhost 8080; do sleep 1; done
 
   # Test and build CLI
-  - export ZALLY_GO_PATH="$GOPATH/src/github.com/zalando-incubator/zally"
+  - export ZALLY_GO_PATH="$GOPATH/src/github.com/zalando/zally"
   - mkdir -p $ZALLY_GO_PATH
   - cp -R . $ZALLY_GO_PATH
   - cd $ZALLY_GO_PATH/cli/zally
