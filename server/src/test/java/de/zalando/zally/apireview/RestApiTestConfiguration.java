@@ -1,20 +1,18 @@
 package de.zalando.zally.apireview;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import de.zalando.zally.rule.api.Severity;
+import de.zalando.zally.TestRuleSet;
 import de.zalando.zally.rule.AbstractRule;
 import de.zalando.zally.rule.ApiValidator;
 import de.zalando.zally.rule.CompositeRulesValidator;
 import de.zalando.zally.rule.JsonRulesValidator;
 import de.zalando.zally.rule.SwaggerRulesValidator;
-import de.zalando.zally.rule.api.Violation;
 import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.api.Rule;
-import de.zalando.zally.rule.api.RuleSet;
+import de.zalando.zally.rule.api.Severity;
+import de.zalando.zally.rule.api.Violation;
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule;
-import de.zalando.zally.rule.zalando.ZalandoRuleSet;
 import io.swagger.models.Swagger;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,18 +33,20 @@ public class RestApiTestConfiguration {
     @Primary
     @Profile("test")
     public ApiValidator validator() {
+        final TestRuleSet ruleSet = new TestRuleSet();
         final List<Rule> rules = Arrays.asList(
-            new CheckApiNameIsPresentRule("Product Service"),
-            new AlwaysGiveAHintRule()
+            new CheckApiNameIsPresentRule(ruleSet),
+            new AlwaysGiveAHintRule(ruleSet),
+            new CheckApiNameIsPresentJsonRule(ruleSet)
         );
         return new CompositeRulesValidator(
                 new SwaggerRulesValidator(rules, invalidApiRule),
-                new JsonRulesValidator(Arrays.asList(new CheckApiNameIsPresentJsonRule(new ZalandoRuleSet())), invalidApiRule));
+                new JsonRulesValidator(rules, invalidApiRule));
     }
 
     public static class CheckApiNameIsPresentJsonRule extends AbstractRule {
 
-        public CheckApiNameIsPresentJsonRule(@NotNull RuleSet ruleSet) {
+        public CheckApiNameIsPresentJsonRule(TestRuleSet ruleSet) {
             super(ruleSet);
         }
 
@@ -68,7 +68,7 @@ public class RestApiTestConfiguration {
 
         @Override
         public String getId() {
-            return "166";
+            return "T" + getClass().getSimpleName();
         }
 
         @Override
@@ -79,16 +79,13 @@ public class RestApiTestConfiguration {
 
     public static class CheckApiNameIsPresentRule extends AbstractRule {
 
-        private final String apiName;
-
-        CheckApiNameIsPresentRule(String apiName) {
-            super(new ZalandoRuleSet());
-            this.apiName = apiName;
+        public CheckApiNameIsPresentRule(TestRuleSet ruleSet) {
+            super(ruleSet);
         }
 
         @Check(severity = Severity.MUST)
         public Violation validate(Swagger swagger) {
-            if (swagger != null && swagger.getInfo().getTitle().contains(apiName)) {
+            if (swagger != null && swagger.getInfo().getTitle().contains("Product Service")) {
                 return new Violation("dummy", Collections.emptyList());
             } else {
                 return null;
@@ -102,7 +99,7 @@ public class RestApiTestConfiguration {
 
         @Override
         public String getId() {
-            return "999";
+            return "T" + getClass().getSimpleName();
         }
 
         @Override
@@ -113,8 +110,8 @@ public class RestApiTestConfiguration {
     }
 
     public static class AlwaysGiveAHintRule extends AbstractRule {
-        public AlwaysGiveAHintRule() {
-            super(new ZalandoRuleSet());
+        public AlwaysGiveAHintRule(TestRuleSet ruleSet) {
+            super(ruleSet);
         }
 
         @Check(severity = Severity.HINT)
@@ -129,7 +126,7 @@ public class RestApiTestConfiguration {
 
         @Override
         public String getId() {
-            return "H999";
+            return "T" + getClass().getSimpleName();
         }
 
         @Override
