@@ -1,10 +1,10 @@
-[![dependencies Status](https://david-dm.org/zalando-incubator/zally-web-ui/status.svg)](https://david-dm.org/zalando-incubator/zally-web-ui)
-[![codecov](https://codecov.io/gh/zalando-incubator/zally-web-ui/branch/master/graph/badge.svg)](https://codecov.io/gh/zalando-incubator/zally-web-ui)
+[![dependencies Status](https://david-dm.org/zalando/zally-web-ui/status.svg)](https://david-dm.org/zalando/zally-web-ui)
+[![codecov](https://codecov.io/gh/zalando/zally-web-ui/branch/master/graph/badge.svg)](https://codecov.io/gh/zalando/zally-web-ui)
 
 Zally WEB-UI
 ============
 
-The project provides a simple web user interface client for [Zally Rest API](https://github.com/zalando-incubator/zally), a tool to lint your api specs.
+The project provides a simple web user interface client for [Zally Rest API](https://github.com/zalando/zally), a tool to lint your api specs.
 
 It's implemented as an [express](https://expressjs.com/) app/middleware and a Single Page Application based on [React](https://facebook.github.io/react/). 
 

@@ -6,7 +6,7 @@
 
 1. Clone Zally repository
     ```bash
-    git clone git@github.com:zalando-incubator/zally.git zally
+    git clone git@github.com:zalando/zally.git zally
     ```
 
 2. Switch to `github-integration` folder:
