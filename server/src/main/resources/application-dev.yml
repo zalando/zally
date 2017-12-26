@@ -28,5 +28,5 @@ management.port: 8080
 zally:
   ignoreRules: S010, H001
   cli:
-    releasesPage: https://github.com/zalando-incubator/zally/releases
+    releasesPage: https://github.com/zalando/zally/releases
     deprecatedCliAgents: unirest-java/1.3.11,Zally-CLI/1.0
