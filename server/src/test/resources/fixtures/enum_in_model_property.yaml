@@ -23,7 +23,7 @@ info:
 
 externalDocs:
   description: API Infrastructure Solution Documentation
-  url: https://github.com/zalando-incubator/api-discovery
+  url: https://github.com/zalando/api-discovery
 
 basePath: /
 produces:
