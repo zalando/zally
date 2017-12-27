@@ -13,7 +13,7 @@ requesting violations check at a given Zally server.
 1. Clone the repository:
 
     ```bash
-    git clone git@github.com:zalando-incubator/zally.git $GOPATH/github.com/zalando/zally
+    git clone git@github.com:zalando/zally.git $GOPATH/github.com/zalando/zally
     ``` 
 1. Get dependencies:
 

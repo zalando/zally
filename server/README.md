@@ -7,7 +7,7 @@ an API check.
 
 1. Clone Zally repository
     ```bash
-    git clone git@github.com:zalando-incubator/zally.git zally
+    git clone git@github.com:zalando/zally.git zally
     ```
 
 2. Switch to `server` folder:
@@ -62,7 +62,7 @@ tool to issue an HTTP request, see below for details.
 
         ```json
         {
-          "api_definition_url": "https://raw.githubusercontent.com/zalando-incubator/zally/master/server/src/test/resources/fixtures/api_spp.json"
+          "api_definition_url": "https://raw.githubusercontent.com/zalando/zally/master/server/src/test/resources/fixtures/api_spp.json"
         }
         ```
 
