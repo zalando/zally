@@ -92,7 +92,7 @@ func TestIntegrationWithLocalJsonFile(t *testing.T) {
 
 func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 	t.Run("integrationWithRemoteYamlFile", func(t *testing.T) {
-		out, e := RunAppAndCaptureOutput([]string{"", "lint", "https://raw.githubusercontent.com/zalando-incubator/zally/e542a2d6e8f7f37f4adf2242343e453961537a08/server/src/test/resources/api_spa.yaml"})
+		out, e := RunAppAndCaptureOutput([]string{"", "lint", "https://raw.githubusercontent.com/zalando/zally/e542a2d6e8f7f37f4adf2242343e453961537a08/server/src/test/resources/api_spa.yaml"})
 
 		assert.Contains(t, out, "MUST violations: 7")
 		assert.Contains(t, out, "SHOULD violations: 2")
@@ -106,7 +106,7 @@ func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 
 func TestIntegrationWithRemoteJsonFile(t *testing.T) {
 	t.Run("integrationWithRemoteJsonFile", func(t *testing.T) {
-		out, e := RunAppAndCaptureOutput([]string{"", "lint", "https://raw.githubusercontent.com/zalando-incubator/zally/e542a2d6e8f7f37f4adf2242343e453961537a08/server/src/test/resources/api_spp.json"})
+		out, e := RunAppAndCaptureOutput([]string{"", "lint", "https://raw.githubusercontent.com/zalando/zally/e542a2d6e8f7f37f4adf2242343e453961537a08/server/src/test/resources/api_spp.json"})
 
 		assert.Contains(t, out, "MUST violations: 2")
 		assert.Contains(t, out, "SHOULD violations: 3")

@@ -13,26 +13,26 @@ requesting violations check at a given Zally server.
 1. Clone the repository:
 
     ```bash
-    git clone git@github.com:zalando-incubator/zally.git $GOPATH/github.com/zalando-incubator/zally
+    git clone git@github.com:zalando-incubator/zally.git $GOPATH/github.com/zalando/zally
     ``` 
 1. Get dependencies:
 
     ```bash
-    cd $GOPATH/github.com/zalando-incubator/zally/cli/zally
+    cd $GOPATH/github.com/zalando/zally/cli/zally
     go get -t -v
     ```
 
 1. Run tests:
 
     ```bash
-    cd $GOPATH/github.com/zalando-incubator/zally/cli/zally
+    cd $GOPATH/github.com/zalando/zally/cli/zally
     go test -v ./...
     ```
 
 1. Build the binary:
 
     ```bash
-    cd $GOPATH/github.com/zalando-incubator/zally/cli/zally
+    cd $GOPATH/github.com/zalando/zally/cli/zally
     go build
     ```
 
