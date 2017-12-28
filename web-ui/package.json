@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zalando-incubator/zally.git"
+    "url": "git+https://github.com/zalando/zally.git"
   },
   "lint-staged": {
     "linters": {
@@ -38,9 +38,9 @@
   "keywords": ["API", "Linter", "Zally"],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/zalando-incubator/zally/issues"
+    "url": "https://github.com/zalando/zally/issues"
   },
-  "homepage": "https://github.com/zalando-incubator/zally/web-ui#readme",
+  "homepage": "https://github.com/zalando/zally/web-ui#readme",
   "dependencies": {
     "aurelia-fetch-client": "1.1.3",
     "compression": "1.7.1",
