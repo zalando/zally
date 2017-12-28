@@ -1,5 +1,5 @@
 {
-  "x-zally-ignore": ["166", "999"],
+  "x-zally-ignore": ["TestCheckApiNameIsPresentJsonRule", "TestCheckApiNameIsPresentRule"],
 
   "swagger": "2.0",
   "info": {

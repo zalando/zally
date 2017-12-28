@@ -101,7 +101,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
     @Test
     public void shouldIgnoreRulesWithApiParameter() throws IOException {
         ApiDefinitionRequest request = readApiDefinition("fixtures/api_spp.json");
-        request.setIgnoreRules(Arrays.asList("166", "999"));
+        request.setIgnoreRules(Arrays.asList("TestCheckApiNameIsPresentJsonRule", "TestCheckApiNameIsPresentRule"));
         ApiDefinitionResponse response = sendApiDefinition(request);
 
         List<ViolationDTO> violations = response.getViolations();

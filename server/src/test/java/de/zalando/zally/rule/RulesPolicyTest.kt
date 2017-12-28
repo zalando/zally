@@ -8,11 +8,14 @@ import io.swagger.models.Swagger
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.springframework.stereotype.Component
 
 class RulesPolicyTest {
+
+    @Component
     class TestRule(val result: Violation?) : AbstractRule(ZalandoRuleSet()) {
         override val title = "Test Rule"
-        override val id = "999"
+        override val id = javaClass.simpleName
         override val severity = Severity.MUST
 
         @Check(severity = Severity.MUST)
@@ -21,13 +24,13 @@ class RulesPolicyTest {
 
     @Test
     fun shouldAcceptRuleIfNotFiltered() {
-        val policy = RulesPolicy(arrayOf("166", "136"))
+        val policy = RulesPolicy(arrayOf("TestCheckApiNameIsPresentJsonRule", "136"))
         assertTrue(policy.accepts(TestRule(null)))
     }
 
     @Test
     fun shouldNotAcceptRuleIfFiltered() {
-        val policy = RulesPolicy(arrayOf("166", "999"))
+        val policy = RulesPolicy(arrayOf("TestCheckApiNameIsPresentJsonRule", "TestRule"))
         assertFalse(policy.accepts(TestRule(null)))
     }
 
@@ -36,7 +39,7 @@ class RulesPolicyTest {
         val original = RulesPolicy(emptyArray())
         assertTrue(original.accepts(TestRule(null)))
 
-        val extended = original.withMoreIgnores(listOf("166", "999"))
+        val extended = original.withMoreIgnores(listOf("TestCheckApiNameIsPresentJsonRule", "TestRule"))
         assertFalse(extended.accepts(TestRule(null)))
 
         // original is unmodified
