@@ -44,6 +44,7 @@ public class RestApiTestConfiguration {
                 new JsonRulesValidator(rules, invalidApiRule));
     }
 
+    /** Rule used for testing */
     @Component
     public static class TestCheckApiNameIsPresentJsonRule extends AbstractRule {
 
@@ -78,6 +79,7 @@ public class RestApiTestConfiguration {
         }
     }
 
+    /** Rule used for testing */
     @Component
     public static class TestCheckApiNameIsPresentRule extends AbstractRule {
 
@@ -110,6 +112,7 @@ public class RestApiTestConfiguration {
         }
     }
 
+    /** Rule used for testing */
     @Component
     public static class TestAlwaysGiveAHintRule extends AbstractRule {
         public TestAlwaysGiveAHintRule() {

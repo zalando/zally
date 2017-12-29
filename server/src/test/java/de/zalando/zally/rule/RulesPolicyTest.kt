@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component
 
 class RulesPolicyTest {
 
+    /** TestRule used for testing RulesPolicy */
     @Component
     class TestRule(val result: Violation?) : AbstractRule(ZalandoRuleSet()) {
         override val title = "Test Rule"
