@@ -12,7 +12,7 @@ import java.util.Map;
 import static de.zalando.zally.util.ResourceUtil.readApiDefinition;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestPropertySource(properties = "zally.ignoreRules=H999")
+@TestPropertySource(properties = "zally.ignoreRules=TestAlwaysGiveAHintRule")
 public class RestApiIgnoreRulesTest extends RestApiBaseTest {
 
     @Test

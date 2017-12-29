@@ -1,25 +1,24 @@
 package de.zalando.zally.apireview;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.AbstractRule;
 import de.zalando.zally.rule.ApiValidator;
 import de.zalando.zally.rule.CompositeRulesValidator;
 import de.zalando.zally.rule.JsonRulesValidator;
 import de.zalando.zally.rule.SwaggerRulesValidator;
-import de.zalando.zally.rule.api.Violation;
+import de.zalando.zally.rule.TestRuleSet;
 import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.api.Rule;
-import de.zalando.zally.rule.api.RuleSet;
+import de.zalando.zally.rule.api.Severity;
+import de.zalando.zally.rule.api.Violation;
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule;
-import de.zalando.zally.rule.zalando.ZalandoRuleSet;
 import io.swagger.models.Swagger;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,18 +35,21 @@ public class RestApiTestConfiguration {
     @Profile("test")
     public ApiValidator validator() {
         final List<Rule> rules = Arrays.asList(
-            new CheckApiNameIsPresentRule("Product Service"),
-            new AlwaysGiveAHintRule()
+            new TestCheckApiNameIsPresentJsonRule(),
+            new TestCheckApiNameIsPresentRule(),
+            new TestAlwaysGiveAHintRule()
         );
         return new CompositeRulesValidator(
                 new SwaggerRulesValidator(rules, invalidApiRule),
-                new JsonRulesValidator(Arrays.asList(new CheckApiNameIsPresentJsonRule(new ZalandoRuleSet())), invalidApiRule));
+                new JsonRulesValidator(rules, invalidApiRule));
     }
 
-    public static class CheckApiNameIsPresentJsonRule extends AbstractRule {
+    /** Rule used for testing */
+    @Component
+    public static class TestCheckApiNameIsPresentJsonRule extends AbstractRule {
 
-        public CheckApiNameIsPresentJsonRule(@NotNull RuleSet ruleSet) {
-            super(ruleSet);
+        public TestCheckApiNameIsPresentJsonRule() {
+            super(new TestRuleSet());
         }
 
         @Check(severity = Severity.MUST)
@@ -68,7 +70,7 @@ public class RestApiTestConfiguration {
 
         @Override
         public String getId() {
-            return "166";
+            return getClass().getSimpleName();
         }
 
         @Override
@@ -77,18 +79,17 @@ public class RestApiTestConfiguration {
         }
     }
 
-    public static class CheckApiNameIsPresentRule extends AbstractRule {
+    /** Rule used for testing */
+    @Component
+    public static class TestCheckApiNameIsPresentRule extends AbstractRule {
 
-        private final String apiName;
-
-        CheckApiNameIsPresentRule(String apiName) {
-            super(new ZalandoRuleSet());
-            this.apiName = apiName;
+        TestCheckApiNameIsPresentRule() {
+            super(new TestRuleSet());
         }
 
         @Check(severity = Severity.MUST)
         public Violation validate(Swagger swagger) {
-            if (swagger != null && swagger.getInfo().getTitle().contains(apiName)) {
+            if (swagger != null && swagger.getInfo().getTitle().contains("Product Service")) {
                 return new Violation("dummy", Collections.emptyList());
             } else {
                 return null;
@@ -102,19 +103,20 @@ public class RestApiTestConfiguration {
 
         @Override
         public String getId() {
-            return "999";
+            return getClass().getSimpleName();
         }
 
         @Override
         public Severity getSeverity() {
             return Severity.MUST;
         }
-
     }
 
-    public static class AlwaysGiveAHintRule extends AbstractRule {
-        public AlwaysGiveAHintRule() {
-            super(new ZalandoRuleSet());
+    /** Rule used for testing */
+    @Component
+    public static class TestAlwaysGiveAHintRule extends AbstractRule {
+        public TestAlwaysGiveAHintRule() {
+            super(new TestRuleSet());
         }
 
         @Check(severity = Severity.HINT)
@@ -129,13 +131,12 @@ public class RestApiTestConfiguration {
 
         @Override
         public String getId() {
-            return "H999";
+            return getClass().getSimpleName();
         }
 
         @Override
         public Severity getSeverity() {
             return Severity.HINT;
         }
-
     }
 }
