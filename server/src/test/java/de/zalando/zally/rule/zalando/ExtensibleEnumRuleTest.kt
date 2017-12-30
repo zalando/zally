@@ -8,7 +8,7 @@ import org.junit.Test
 
 class ExtensibleEnumRuleTest {
 
-    val rule = ExtensibleEnumRule(ZalandoRuleSet())
+    val rule = ExtensibleEnumRule()
 
     @Test
     fun returnsNoViolationIfEmptySwagger() {

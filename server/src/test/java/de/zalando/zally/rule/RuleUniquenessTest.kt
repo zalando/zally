@@ -18,7 +18,7 @@ class RuleUniquenessTest {
     @Test
     fun rulesShouldBeUnique() {
         val duplicatedCodes = rules.rules
-                .groupBy { it.instance.id }
+                .groupBy { it.rule.id }
                 .filterValues { it.size > 1 }
                 .keys
 

@@ -9,7 +9,7 @@ import org.junit.Test
 
 class HyphenateHttpHeadersRuleTest {
 
-    private val rule = HyphenateHttpHeadersRule(ZallyRuleSet(), testConfig)
+    private val rule = HyphenateHttpHeadersRule(testConfig)
 
     @Test
     fun simplePositiveCase() {

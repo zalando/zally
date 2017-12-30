@@ -12,7 +12,7 @@ import org.junit.Test
 
 class SecureWithOAuth2RuleTest {
 
-    private val rule = SecureWithOAuth2Rule(ZalandoRuleSet())
+    private val rule = SecureWithOAuth2Rule()
 
     private val checkSecurityDefinitionsExpectedOauthViolation = Violation(
             "No OAuth2 security definitions found",

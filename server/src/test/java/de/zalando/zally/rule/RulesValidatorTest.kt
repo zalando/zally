@@ -10,19 +10,20 @@ import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.mockito.Mockito
 import org.mockito.Mockito.mock
-import org.springframework.stereotype.Component
+import kotlin.reflect.full.createInstance
 
 class RulesValidatorTest {
 
-    val swaggerContent = javaClass.classLoader.getResource("fixtures/api_spp.json").readText(Charsets.UTF_8)
+    private val swaggerContent = javaClass.classLoader.getResource("fixtures/api_spp.json").readText(Charsets.UTF_8)
 
-    @Component
-    class TestFirstRule : AbstractRule(TestRuleSet()) {
-        override val title = "First Rule"
-        override val id = javaClass.simpleName
-        override val severity = Severity.SHOULD
+    @Rule(
+            ruleSet = TestRuleSet::class,
+            id = "TestFirstRule",
+            severity = Severity.SHOULD,
+            title = "First Rule"
+    )
+    class TestFirstRule : AbstractRule() {
 
         @Check(severity = Severity.SHOULD)
         fun validate(swagger: Swagger): List<Violation> = listOf(
@@ -30,22 +31,26 @@ class RulesValidatorTest {
                 Violation("dummy2", listOf()))
     }
 
-    @Component
-    class TestSecondRule : AbstractRule(TestRuleSet()) {
-        override val title = "Second Rule"
-        override val id = javaClass.simpleName
-        override val severity = Severity.MUST
+    @Rule(
+            ruleSet = TestRuleSet::class,
+            id = "TestSecondRule",
+            severity = Severity.MUST,
+            title = "Second Rule"
+    )
+    class TestSecondRule : AbstractRule() {
 
         @Check(severity = Severity.MUST)
         fun validate(swagger: Swagger): Violation? =
                 Violation("dummy3", listOf("a"))
     }
 
-    @Component
-    class TestBadRule : AbstractRule(TestRuleSet()) {
-        override val title = "Third Rule"
-        override val id = javaClass.simpleName
-        override val severity = Severity.MUST
+    @Rule(
+            ruleSet = TestRuleSet::class,
+            id = "TestBadRule",
+            severity = Severity.MUST,
+            title = "Third Rule"
+    )
+    class TestBadRule : AbstractRule() {
 
         @Check(severity = Severity.MUST)
         fun invalid(swagger: Swagger): String = "Hello World!"
@@ -58,7 +63,7 @@ class RulesValidatorTest {
 
     @Test
     fun shouldReturnEmptyViolationsListWithoutRules() {
-        val rules = emptyList<Rule>()
+        val rules = emptyList<Any>()
         val validator = SwaggerRulesValidator(rulesManager(rules), invalidApiSchemaRule)
         val results = validator.validate(swaggerContent, RulesPolicy(emptyArray()))
         assertThat(results)
@@ -102,19 +107,6 @@ class RulesValidatorTest {
     }
 
     @Test
-    fun shouldReturnInvalidApiSchemaRuleForBadSwagger() {
-        val resultRule = mock(InvalidApiSchemaRule::class.java)
-        Mockito.`when`(resultRule.title).thenReturn("InvalidApiSchemaRule Title")
-        Mockito.`when`(resultRule.description).thenReturn("desc")
-
-        val rules = emptyList<Rule>()
-        val validator = SwaggerRulesValidator(rulesManager(rules), resultRule)
-        val valResult = validator.validate("Invalid swagger content !@##", RulesPolicy(emptyArray()))
-        assertThat(valResult).hasSize(1)
-        assertThat(valResult[0].title).isEqualTo(resultRule.title)
-    }
-
-    @Test
     fun checkReturnsStringThrowsException() {
         val rules = listOf(TestBadRule())
         assertThatThrownBy {
@@ -123,7 +115,13 @@ class RulesValidatorTest {
         }.hasMessage("Unsupported return type for a @Check method!: class java.lang.String")
     }
 
-    private fun rulesManager(rules: List<Rule>): RulesManager {
-        return RulesManager(rules.map { instance -> RuleDetails(instance.ruleSet, instance) })
+    private fun rulesManager(rules: List<Any>): RulesManager {
+        return RulesManager(
+                rules.mapNotNull { instance ->
+                    val rule = instance::class.java.getAnnotation(Rule::class.java)
+                    val ruleSet = rule?.ruleSet?.createInstance()
+                    ruleSet?.let { RuleDetails(ruleSet, rule, instance) }
+                }
+        )
     }
 }

@@ -7,7 +7,7 @@ import org.junit.Test
 
 class AvoidLinkHeadersRuleTest {
 
-    private val rule = AvoidLinkHeadersRule(ZalandoRuleSet(), testConfig)
+    private val rule = AvoidLinkHeadersRule(testConfig)
 
     @Test
     fun positiveCaseSpp() {

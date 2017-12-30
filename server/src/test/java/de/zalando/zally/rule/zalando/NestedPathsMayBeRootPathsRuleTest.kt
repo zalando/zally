@@ -6,7 +6,7 @@ import org.junit.Test
 
 class NestedPathsMayBeRootPathsRuleTest {
 
-    private val rule = NestedPathsMayBeRootPathsRule(ZalandoRuleSet())
+    private val rule = NestedPathsMayBeRootPathsRule()
 
     @Test
     fun avoidLinkHeadersValidJson() {

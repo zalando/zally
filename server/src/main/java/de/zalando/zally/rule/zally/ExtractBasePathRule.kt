@@ -4,17 +4,18 @@ import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class ExtractBasePathRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(ruleSet) {
+@Rule(
+        ruleSet = ZallyRuleSet::class,
+        id = "H001",
+        severity = Severity.HINT,
+        title = "Base path can be extracted"
+)
+class ExtractBasePathRule : AbstractRule() {
 
-    override val title = "Base path can be extracted"
-    override val id = "H001"
-    override val severity = Severity.HINT
-    private val DESC_PATTERN = "All paths start with prefix '%s'. This prefix could be part of base path."
+    private val description = "All paths start with prefix '%s'. This prefix could be part of base path."
 
     @Check(severity = Severity.HINT)
     fun validate(swagger: Swagger): Violation? {
@@ -24,7 +25,7 @@ class ExtractBasePathRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(ruleS
         }
         val commonPrefix = paths.reduce { s1, s2 -> findCommonPrefix(s1, s2) }
         return if (commonPrefix.isNotEmpty())
-            Violation(DESC_PATTERN.format(commonPrefix), emptyList())
+            Violation(description.format(commonPrefix), emptyList())
         else null
     }
 

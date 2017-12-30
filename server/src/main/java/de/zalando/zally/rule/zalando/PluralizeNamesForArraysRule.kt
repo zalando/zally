@@ -4,17 +4,18 @@ import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.WordUtil.isPlural
 import de.zalando.zally.util.getAllJsonObjects
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class PluralizeNamesForArraysRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
-    override val title = "Array names should be pluralized"
-    override val id = "120"
-    override val severity = Severity.SHOULD
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "120",
+        severity = Severity.SHOULD,
+        title = "Array names should be pluralized"
+)
+class PluralizeNamesForArraysRule : AbstractRule() {
 
     @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {

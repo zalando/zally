@@ -10,7 +10,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class CommonFieldTypesRuleTest {
-    private val rule = CommonFieldTypesRule(ZalandoRuleSet(), testConfig)
+    private val rule = CommonFieldTypesRule(testConfig)
 
     object PropertyWithNullType : AbstractProperty() {
         override fun getType(): String? {

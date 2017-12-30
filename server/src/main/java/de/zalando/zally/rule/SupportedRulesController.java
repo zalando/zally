@@ -3,7 +3,6 @@ package de.zalando.zally.rule;
 import de.zalando.zally.dto.RuleDTO;
 import de.zalando.zally.dto.RulesListDTO;
 import de.zalando.zally.dto.SeverityBinder;
-import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.rule.api.Severity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
@@ -46,8 +45,8 @@ public class SupportedRulesController {
         List<RuleDTO> filteredRules = rules
             .getRules()
             .stream()
-            .filter(details -> filterByIsActive(details.getInstance(), isActiveFilter))
-            .filter(details -> filterByType(details.getInstance(), typeFilter))
+            .filter(details -> filterByIsActive(details, isActiveFilter))
+            .filter(details -> filterByType(details, typeFilter))
             .map(this::toDto)
             .sorted(comparing(RuleDTO::getType)
                 .thenComparing(RuleDTO::getCode)
@@ -57,22 +56,22 @@ public class SupportedRulesController {
         return new RulesListDTO(filteredRules);
     }
 
-    private boolean filterByIsActive(Rule rule, Boolean isActiveFilter) {
-        boolean isActive = rulesPolicy.accepts(rule);
+    private boolean filterByIsActive(RuleDetails details, Boolean isActiveFilter) {
+        boolean isActive = rulesPolicy.accepts(details.getRule());
         return isActiveFilter == null || isActive == isActiveFilter;
     }
 
-    private boolean filterByType(Rule rule, Severity typeFilter) {
-        return typeFilter == null || typeFilter.equals(rule.getSeverity());
+    private boolean filterByType(RuleDetails details, Severity typeFilter) {
+        return typeFilter == null || typeFilter.equals(details.getRule().severity());
     }
 
     private RuleDTO toDto(RuleDetails details) {
         return new RuleDTO(
-                details.getInstance().getTitle(),
-                details.getInstance().getSeverity(),
-                details.getRuleSet().url(details.getInstance()).toString(),
-                details.getInstance().getId(),
-                rulesPolicy.accepts(details.getInstance())
+                details.getRule().title(),
+                details.getRule().severity(),
+                details.getRuleSet().url(details.getRule()).toString(),
+                details.getRule().id(),
+                rulesPolicy.accepts(details.getRule())
         );
     }
 }

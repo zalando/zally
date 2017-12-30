@@ -8,7 +8,7 @@ import org.junit.Test
 
 class NoProtocolInHostRuleTest {
 
-    private val rule = NoProtocolInHostRule(ZallyRuleSet())
+    private val rule = NoProtocolInHostRule()
 
     val expectedViolation = rule.let {
         Violation("", emptyList())

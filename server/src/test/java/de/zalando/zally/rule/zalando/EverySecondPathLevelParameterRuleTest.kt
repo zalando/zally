@@ -7,7 +7,7 @@ import org.junit.Test
 
 class EverySecondPathLevelParameterRuleTest {
 
-    private val rule = EverySecondPathLevelParameterRule(ZalandoRuleSet())
+    private val rule = EverySecondPathLevelParameterRule()
 
     @Test
     fun positiveCase() {

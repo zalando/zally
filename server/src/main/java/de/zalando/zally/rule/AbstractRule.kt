@@ -1,11 +1,6 @@
 package de.zalando.zally.rule
 
-import de.zalando.zally.rule.api.Rule
-import de.zalando.zally.rule.api.RuleSet
-
-abstract class AbstractRule(ruleSet: RuleSet) : Rule {
-
-    override val ruleSet = ruleSet
+abstract class AbstractRule {
 
     val name: String = javaClass.simpleName
 
@@ -20,5 +15,5 @@ abstract class AbstractRule(ruleSet: RuleSet) : Rule {
 
     override fun hashCode(): Int = name.hashCode()
 
-    override fun toString(): String = "$id-$name"
+    override fun toString(): String = name
 }

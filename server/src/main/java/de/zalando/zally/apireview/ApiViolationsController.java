@@ -99,10 +99,10 @@ public class ApiViolationsController {
 
     private ViolationDTO toDto(Result violation) {
         return new ViolationDTO(
-            violation.getTitle(),
+            violation.getRule().title(),
             violation.getDescription(),
             violation.getViolationType(),
-            violation.getRule().getRuleSet().url(violation.getRule()).toString(),
+            violation.getRuleSet().url(violation.getRule()).toString(),
             violation.getPaths()
         );
     }

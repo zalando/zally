@@ -5,15 +5,17 @@ import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class LimitNumberOfResourcesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
-    override val title = "Limit number of Resources"
-    override val id = "146"
-    override val severity = Severity.SHOULD
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "146",
+        severity = Severity.SHOULD,
+        title = "Limit number of Resources"
+)
+class LimitNumberOfResourcesRule(@Autowired rulesConfig: Config) : AbstractRule() {
     private val pathCountLimit = rulesConfig.getConfig(name).getInt("paths_count_limit")
 
     @Check(severity = Severity.SHOULD)

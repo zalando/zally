@@ -7,7 +7,7 @@ import org.junit.Test
 
 class AvoidTrailingSlashesRuleTest {
 
-    private val rule = AvoidTrailingSlashesRule(ZalandoRuleSet())
+    private val rule = AvoidTrailingSlashesRule()
 
     @Test
     fun emptySwagger() {

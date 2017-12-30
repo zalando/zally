@@ -5,17 +5,19 @@ import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.getAllJsonObjects
 import io.swagger.models.Swagger
 import io.swagger.models.properties.Property
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class CommonFieldTypesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
-    override val title = "Use common field names"
-    override val id = "174"
-    override val severity = Severity.MUST
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "174",
+        severity = Severity.MUST,
+        title = "Use common field names"
+)
+class CommonFieldTypesRule(@Autowired rulesConfig: Config) : AbstractRule() {
 
     @Suppress("UNCHECKED_CAST")
     private val commonFields = rulesConfig.getConfig("$name.common_types").entrySet()
