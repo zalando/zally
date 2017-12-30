@@ -23,11 +23,11 @@ import static java.util.stream.Collectors.toList;
 @RestController
 public class SupportedRulesController {
 
-    private final List<Rule> rules;
+    private final RulesManager rules;
     private final RulesPolicy rulesPolicy;
 
     @Autowired
-    public SupportedRulesController(List<Rule> rules, RulesPolicy rulesPolicy) {
+    public SupportedRulesController(RulesManager rules, RulesPolicy rulesPolicy) {
         this.rules = rules;
         this.rulesPolicy = rulesPolicy;
     }
@@ -44,9 +44,10 @@ public class SupportedRulesController {
         @RequestParam(value = "is_active", required = false) Boolean isActiveFilter) {
 
         List<RuleDTO> filteredRules = rules
+            .getRules()
             .stream()
-            .filter(r -> filterByIsActive(r, isActiveFilter))
-            .filter(r -> filterByType(r, typeFilter))
+            .filter(details -> filterByIsActive(details.getInstance(), isActiveFilter))
+            .filter(details -> filterByType(details.getInstance(), typeFilter))
             .map(this::toDto)
             .sorted(comparing(RuleDTO::getType)
                 .thenComparing(RuleDTO::getCode)
@@ -65,13 +66,13 @@ public class SupportedRulesController {
         return typeFilter == null || typeFilter.equals(rule.getSeverity());
     }
 
-    private RuleDTO toDto(Rule rule) {
+    private RuleDTO toDto(RuleDetails details) {
         return new RuleDTO(
-                rule.getTitle(),
-                rule.getSeverity(),
-                rule.getRuleSet().url(rule).toString(),
-                rule.getId(),
-                rulesPolicy.accepts(rule)
+                details.getInstance().getTitle(),
+                details.getInstance().getSeverity(),
+                details.getRuleSet().url(details.getInstance()).toString(),
+                details.getInstance().getId(),
+                rulesPolicy.accepts(details.getInstance())
         );
     }
 }

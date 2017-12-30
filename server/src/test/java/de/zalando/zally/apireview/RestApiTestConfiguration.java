@@ -2,10 +2,8 @@ package de.zalando.zally.apireview;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import de.zalando.zally.rule.AbstractRule;
-import de.zalando.zally.rule.ApiValidator;
-import de.zalando.zally.rule.CompositeRulesValidator;
-import de.zalando.zally.rule.JsonRulesValidator;
-import de.zalando.zally.rule.SwaggerRulesValidator;
+import de.zalando.zally.rule.RuleDetails;
+import de.zalando.zally.rule.RulesManager;
 import de.zalando.zally.rule.TestRuleSet;
 import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.api.Rule;
@@ -24,6 +22,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 @Configuration
 public class RestApiTestConfiguration {
 
@@ -33,15 +33,17 @@ public class RestApiTestConfiguration {
     @Bean
     @Primary
     @Profile("test")
-    public ApiValidator validator() {
+    public RulesManager rulesManager() {
         final List<Rule> rules = Arrays.asList(
             new TestCheckApiNameIsPresentJsonRule(),
             new TestCheckApiNameIsPresentRule(),
             new TestAlwaysGiveAHintRule()
         );
-        return new CompositeRulesValidator(
-                new SwaggerRulesValidator(rules, invalidApiRule),
-                new JsonRulesValidator(rules, invalidApiRule));
+        final List<RuleDetails> details = rules
+                .stream()
+                .map(instance -> new RuleDetails(instance.getRuleSet(), instance))
+                .collect(toList());
+        return new RulesManager(details);
     }
 
     /** Rule used for testing */

@@ -3,7 +3,6 @@ package de.zalando.zally.rule;
 import de.zalando.zally.apireview.RestApiBaseTest;
 import de.zalando.zally.dto.RuleDTO;
 import de.zalando.zally.rule.api.Severity;
-import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.util.ErrorResponse;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +17,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@TestPropertySource(properties = "zally.ignoreRules=166,145")
+@TestPropertySource(properties = "zally.ignoreRules=TestCheckApiNameIsPresentJsonRule,TestCheckApiNameIsPresentRule")
 public class RestSupportedRulesTest extends RestApiBaseTest {
 
-    private static final List<String> IGNORED_RULES = Arrays.asList("166", "145");
+    private static final List<String> IGNORED_RULES = Arrays.asList("TestCheckApiNameIsPresentJsonRule", "TestCheckApiNameIsPresentRule");
 
     @Autowired
-    private List<Rule> implementedRules;
+    private RulesManager implementedRules;
 
     @Test
     public void testRulesCount() {

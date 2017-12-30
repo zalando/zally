@@ -7,7 +7,7 @@ import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 
-abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private val invalidApiRule: InvalidApiSchemaRule) : ApiValidator where RuleT : Rule {
+abstract class RulesValidator<RootT>(val rules: RulesManager, private val invalidApiRule: InvalidApiSchemaRule) : ApiValidator {
 
     private val log = LoggerFactory.getLogger(RulesValidator::class.java)
 
@@ -24,7 +24,7 @@ abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private 
         val contentPolicy = requestPolicy.withMoreIgnores(moreIgnores)
 
         return rules
-                .filter(contentPolicy::accepts)
+                .rules(contentPolicy)
                 .flatMap(validator(root))
                 .sortedBy(Result::violationType)
     }
@@ -33,12 +33,12 @@ abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private 
 
     abstract fun ignores(root: RootT): List<String>
 
-    private fun validator(root: Any): (RuleT) -> Iterable<Result> {
-        return { rule: RuleT ->
-            log.debug("validating ${rule.javaClass.simpleName} rule")
-            rule::class.java.methods
+    private fun validator(root: Any): (RuleDetails) -> Iterable<Result> {
+        return { details: RuleDetails ->
+            log.debug("validating ${details.instance.javaClass.simpleName} rule")
+            details.instance::class.java.methods
                     .filter { isCheckMethod(it, root) }
-                    .flatMap { invoke(it, rule, root) }
+                    .flatMap { invoke(it, details.instance, root) }
         }
     }
 
@@ -47,7 +47,7 @@ abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private 
                     it.parameters.size == 1 &&
                     it.parameters[0].type.isAssignableFrom(root::class.java)
 
-    private fun invoke(method: Method, rule: RuleT, root: Any): Iterable<Result> {
+    private fun invoke(method: Method, rule: Rule, root: Any): Iterable<Result> {
         log.debug("validating ${method.name} of ${rule.javaClass.simpleName} rule")
         val check = method.getAnnotation(Check::class.java)
         val result = method.invoke(rule, root)
