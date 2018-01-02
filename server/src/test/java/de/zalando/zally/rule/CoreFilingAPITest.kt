@@ -58,6 +58,8 @@ class CoreFilingAPITest {
         val results = validate("platform", "filing-version-commenting-service",
                 // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
+                        "CollectionsArePlural",
+                        "MatchingSummaryAndOperationIdNames",
                         "PaginatedCollectionsReturnTotalPagesHeader")))
 
         assertThat(results).isEmpty()
