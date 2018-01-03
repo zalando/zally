@@ -14,19 +14,26 @@ requesting violations check at a given Zally server.
 
     ```bash
     git clone git@github.com:zalando/zally.git $GOPATH/github.com/zalando/zally
-    ``` 
+    ```
+
+1. Install [golang/dep](https://github.com/golang/dep):
+
+    ```bash
+    go get -u github.com/golang/dep/cmd/dep
+    ```
+
 1. Get dependencies:
 
     ```bash
     cd $GOPATH/github.com/zalando/zally/cli/zally
-    go get -t -v
+    dep ensure
     ```
 
 1. Run tests:
 
     ```bash
     cd $GOPATH/github.com/zalando/zally/cli/zally
-    go test -v ./...
+    ./test.sh
     ```
 
 1. Build the binary:
