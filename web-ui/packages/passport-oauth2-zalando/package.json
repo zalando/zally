@@ -1,0 +1,26 @@
+{
+  "name": "@pz/passport-oauth2-zalando",
+  "description":
+    "Provides passport strategy, that implements Zalando authentication flow",
+  "version": "2.0.1",
+  "author": "Team Pizza",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "private": true,
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "babel lib --out-dir dist",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": ">= 7.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "dependencies": {
+    "passport-oauth2": "^1.4.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.0.0",
+    "babel-preset-env": "1.6.1"
+  }
+}

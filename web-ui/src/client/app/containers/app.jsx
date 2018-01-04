@@ -70,7 +70,7 @@ export function App(props) {
         >
           Github Project
         </a>{' '}
-        - Copyright ZALANDO SE 2016
+        - Copyright ZALANDO SE {new Date().getUTCFullYear()}
       </footer>
     </div>
   );

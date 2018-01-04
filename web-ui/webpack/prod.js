@@ -24,7 +24,7 @@ module.exports = merge(common, {
       // In `server` mode analyzer will start HTTP server to show bundle report.
       // In `static` mode single HTML file with bundle report will be generated.
       // In `disabled` mode you can use this plugin to just generate Webpack Stats JSON file by setting `generateStatsFile` to `true`.
-      analyzerMode: 'static',
+      analyzerMode: 'disabled',
       // Path to bundle report file that will be generated in `static` mode.
       // Relative to bundles output directory.
       reportFilename: '../../../../target/report.html',

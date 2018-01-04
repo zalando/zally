@@ -2,6 +2,7 @@
 
 const request = require('request');
 const path = require('path');
+const logger = require('../../server/logger');
 
 module.exports = function({ publicPath, protocol, host, port }) {
   /* eslint-disable no-console */
@@ -9,11 +10,11 @@ module.exports = function({ publicPath, protocol, host, port }) {
     const segment = path.join(publicPath, req.url);
     const url = `${protocol}://${host}:${port}${segment}`;
     const proxyReq = request(url);
-    console.log(`proxying request to webpack dev server: ${url}`);
+    logger.debug(`proxying request to webpack dev server: ${url}`);
 
     proxyReq.on('response', response => {
       if (response.statusCode >= 400) {
-        console.log(
+        logger.warn(
           `webpack dev server could not handle ${url}, call "next" middleware`
         );
         next();

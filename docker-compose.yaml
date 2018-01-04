@@ -8,6 +8,8 @@ services:
     - server:server.local
     ports:
     - "8080:3000"
+    environment:
+    - OAUTH_ENABLED=false
   server:
     build: ./server
     depends_on:
