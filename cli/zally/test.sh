@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-GO_PACKAGES=$(go list ./...)
+GO_PACKAGES=$(go list ./... | grep -v vendor)
 RUN_TESTS="go test -coverprofile=cover.out -covermode=atomic -v"
 
 if [ "$1" == "integration" ]; then
