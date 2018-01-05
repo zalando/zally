@@ -3,13 +3,13 @@ package de.zalando.zally.apireview;
 import de.zalando.zally.dto.ApiDefinitionRequest;
 import de.zalando.zally.dto.ApiDefinitionResponse;
 import de.zalando.zally.dto.ViolationDTO;
-import de.zalando.zally.dto.ViolationType;
+import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.dto.ViolationsCounter;
 import de.zalando.zally.exception.MissingApiDefinitionException;
 import de.zalando.zally.exception.UnaccessibleResourceUrlException;
 import de.zalando.zally.rule.ApiValidator;
+import de.zalando.zally.rule.Result;
 import de.zalando.zally.rule.RulesPolicy;
-import de.zalando.zally.rule.Violation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -62,7 +62,7 @@ public class ApiViolationsController {
 
         RulesPolicy requestPolicy = retrieveRulesPolicy(request);
 
-        List<Violation> violations = rulesValidator.validate(apiDefinition, requestPolicy);
+        List<Result> violations = rulesValidator.validate(apiDefinition, requestPolicy);
         apiReviewRepository.save(new ApiReview(request, apiDefinition, violations));
 
         ApiDefinitionResponse response = buildApiDefinitionResponse(violations, userAgent);
@@ -89,7 +89,7 @@ public class ApiViolationsController {
         }
     }
 
-    private ApiDefinitionResponse buildApiDefinitionResponse(List<Violation> violations, String userAgent) {
+    private ApiDefinitionResponse buildApiDefinitionResponse(List<Result> violations, String userAgent) {
         ApiDefinitionResponse response = new ApiDefinitionResponse();
         response.setMessage(serverMessageService.serverMessage(userAgent));
         response.setViolations(violations.stream().map(this::toDto).collect(toList()));
@@ -97,19 +97,19 @@ public class ApiViolationsController {
         return response;
     }
 
-    private ViolationDTO toDto(Violation violation) {
+    private ViolationDTO toDto(Result violation) {
         return new ViolationDTO(
-            violation.getTitle(),
+            violation.getRule().title(),
             violation.getDescription(),
             violation.getViolationType(),
-            violation.getRule().getRuleSet().url(violation.getRule()).toString(),
+            violation.getRuleSet().url(violation.getRule()).toString(),
             violation.getPaths()
         );
     }
 
-    private Map<String, Integer> buildViolationsCount(List<Violation> violations) {
+    private Map<String, Integer> buildViolationsCount(List<Result> violations) {
         ViolationsCounter counter = new ViolationsCounter(violations);
-        return Arrays.stream(ViolationType.values()).collect(toMap(
+        return Arrays.stream(Severity.values()).collect(toMap(
             violationType -> violationType.toString().toLowerCase(),
             counter::getCounter
         ));

@@ -10,7 +10,7 @@ class SuccessResponseAsJsonObjectRuleTest {
     private val invalidSwagger = getFixture("successResponseAsJsonObjectInvalid.json")
     private val npeSwagger = getFixture("sample_swagger_api.yaml")
 
-    private val rule = SuccessResponseAsJsonObjectRule(ZalandoRuleSet())
+    private val rule = SuccessResponseAsJsonObjectRule()
 
     @Test
     fun positiveCase() {

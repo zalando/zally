@@ -1,7 +1,7 @@
 package de.zalando.zally.apireview;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.zalando.zally.dto.ViolationType;
+import de.zalando.zally.rule.api.Severity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,7 +30,7 @@ public class RuleViolation implements Serializable {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private ViolationType type;
+    private Severity type;
 
     @Column(nullable = false)
     private int occurrence;
@@ -42,7 +42,7 @@ public class RuleViolation implements Serializable {
         super();
     }
 
-    public RuleViolation(ApiReview apiReview, String name, ViolationType type, int occurrence) {
+    public RuleViolation(ApiReview apiReview, String name, Severity type, int occurrence) {
         this.apiReview = apiReview;
         this.name = name;
         this.type = type;
@@ -73,11 +73,11 @@ public class RuleViolation implements Serializable {
         this.name = name;
     }
 
-    public ViolationType getType() {
+    public Severity getType() {
         return type;
     }
 
-    public void setType(ViolationType type) {
+    public void setType(Severity type) {
         this.type = type;
     }
 

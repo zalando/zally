@@ -1,25 +1,27 @@
 package com.corefiling.zally.rule.operations
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
-import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import com.corefiling.zally.rule.collections.ifNotEmptyLet
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.HttpMethod
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.BodyParameter
 import io.swagger.models.parameters.Parameter
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class PutOperationsRequireBodyParameter(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
-    override val title = "PUT Operations Require Body Parameter"
-    override val violationType = ViolationType.MUST
-    override val description = "Put operations are meaningless without a body parameter"
+@Rule(
+        ruleSet = CoreFilingRuleSet::class,
+        id = "PutOperationsRequireBodyParameter",
+        severity = Severity.MUST,
+        title = "PUT Operations Require Body Parameter"
+)
+class PutOperationsRequireBodyParameter : AbstractRule() {
+    val description = "Put operations are meaningless without a body parameter"
 
-    @Check
+    @Check(Severity.MUST)
     fun validate(swagger: Swagger): Violation? =
             swagger.paths.orEmpty()
                     .flatMap { (pattern, path) ->
@@ -30,7 +32,7 @@ class PutOperationsRequireBodyParameter(@Autowired ruleSet: CoreFilingRuleSet) :
                                     validate("$pattern $method body parameter", body)
                                 }
                     }
-                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
+                    .ifNotEmptyLet { Violation(description, it) }
 
     fun validate(location: String, parameter: Parameter?): String? {
         return when {

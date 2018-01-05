@@ -1,9 +1,10 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType.SHOULD
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Operation
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
@@ -20,24 +21,24 @@ import io.swagger.models.properties.LongProperty
 import io.swagger.models.properties.PasswordProperty
 import io.swagger.models.properties.Property
 import io.swagger.models.properties.StringProperty
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
-    override val title = "Prefer Compatible Extensions"
-    override val violationType = SHOULD
-    override val id = "107"
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "107",
+        severity = Severity.SHOULD,
+        title = "Prefer Compatible Extensions"
+)
+class ExtensibleEnumRule : AbstractRule() {
 
-    @Check
+    @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val properties = enumProperties(swagger)
         val parameters = enumParameters(swagger)
 
         val enumNames = (properties.keys + parameters.keys).distinct()
         val enumPaths = (properties.values + parameters.values).distinct()
-        return if (enumNames.isNotEmpty()) Violation(this, title,
-                "Properties/Parameters $enumNames are not extensible enums", violationType, enumPaths)
+        return if (enumNames.isNotEmpty()) Violation(
+                "Properties/Parameters $enumNames are not extensible enums", enumPaths)
         else null
     }
 

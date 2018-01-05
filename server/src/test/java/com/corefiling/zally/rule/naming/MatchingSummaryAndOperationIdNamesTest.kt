@@ -1,6 +1,5 @@
 package com.corefiling.zally.rule.naming
 
-import com.corefiling.zally.rule.CoreFilingRuleSet
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import org.assertj.core.api.Assertions
@@ -8,7 +7,7 @@ import org.junit.Test
 
 class MatchingSummaryAndOperationIdNamesTest {
 
-    val cut = MatchingSummaryAndOperationIdNames(CoreFilingRuleSet())
+    val cut = MatchingSummaryAndOperationIdNames()
 
     @Test
     fun withEmptyReturnsNull() {

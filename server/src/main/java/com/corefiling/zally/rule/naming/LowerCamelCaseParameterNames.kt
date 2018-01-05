@@ -1,26 +1,28 @@
 package com.corefiling.zally.rule.naming
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
-import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import com.corefiling.zally.rule.collections.ifNotEmptyLet
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isCamelCase
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
 import io.swagger.models.parameters.PathParameter
 import io.swagger.models.parameters.QueryParameter
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class LowerCamelCaseParameterNames(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
-    override val title = "Lower Camel Case Parameter Names"
-    override val violationType = ViolationType.SHOULD
-    override val description = "Query and path parameters should be named in lowerCamelCase style"
+@Rule(
+        ruleSet = CoreFilingRuleSet::class,
+        id = "LowerCamelCaseParameterNames",
+        severity = Severity.SHOULD,
+        title = "Lower Camel Case Parameter Names"
+)
+class LowerCamelCaseParameterNames : AbstractRule() {
+    val description = "Query and path parameters should be named in lowerCamelCase style"
 
-    @Check
+    @Check(Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? =
             swagger.paths.orEmpty()
                     .flatMap { (pattern, path) ->
@@ -28,7 +30,7 @@ class LowerCamelCaseParameterNames(@Autowired ruleSet: CoreFilingRuleSet) : Core
                             op.parameters.orEmpty().mapNotNull { validate(it, "$pattern $method ${it.`in`} parameter ${it.name}") }
                         }
                     }
-                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
+                    .ifNotEmptyLet { Violation(description, it) }
 
     fun validate(parameter: Parameter, location: String): String? {
         val name = parameter.name

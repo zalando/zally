@@ -5,9 +5,7 @@ describe('oauth-firewall', () => {
 
   beforeEach(() => {
     jest.resetModules();
-    global.window = {
-      env: {},
-    };
+    window.env = {};
     mockMe = jest.fn();
     mockCreateAnonymousUser = jest.fn();
 
@@ -23,11 +21,11 @@ describe('oauth-firewall', () => {
   });
 
   afterEach(() => {
-    delete global.window;
+    delete window.env;
   });
 
   test('resolve immediately with a resolved promise if oauth is disabled', () => {
-    global.window.env.OAUTH_ENABLED = false;
+    window.env.OAUTH_ENABLED = false;
     return firewall().then(({ user }) => {
       expect(mockMe).not.toHaveBeenCalled();
       expect(mockCreateAnonymousUser).toHaveBeenCalled();
@@ -36,7 +34,7 @@ describe('oauth-firewall', () => {
   });
 
   test('resolve with error and anonymous user if "me" rejects', () => {
-    global.window.env.OAUTH_ENABLED = true;
+    window.env.OAUTH_ENABLED = true;
     const mockError = new Error('test "me" reject');
 
     mockMe.mockReturnValueOnce(Promise.reject(mockError));
@@ -50,7 +48,7 @@ describe('oauth-firewall', () => {
   });
 
   test('resolve with authenticated user', () => {
-    global.window.env.OAUTH_ENABLED = true;
+    window.env.OAUTH_ENABLED = true;
     const mockMeResponseBody = {
       username: 'foo',
       authenticated: true,

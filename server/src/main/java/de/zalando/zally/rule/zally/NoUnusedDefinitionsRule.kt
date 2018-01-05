@@ -1,9 +1,10 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import io.swagger.models.ArrayModel
 import io.swagger.models.ComposedModel
 import io.swagger.models.Model
@@ -18,16 +19,16 @@ import io.swagger.models.properties.MapProperty
 import io.swagger.models.properties.ObjectProperty
 import io.swagger.models.properties.Property
 import io.swagger.models.properties.RefProperty
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class NoUnusedDefinitionsRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(ruleSet) {
-    override val title = "Do not leave unused definitions"
-    override val violationType = ViolationType.SHOULD
-    override val id = "S005"
+@Rule(
+        ruleSet = ZallyRuleSet::class,
+        id = "S005",
+        severity = Severity.SHOULD,
+        title = "Do not leave unused definitions"
+)
+class NoUnusedDefinitionsRule : AbstractRule() {
 
-    @Check
+    @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val paramsInPaths = swagger.paths.orEmpty().values.flatMap { path ->
             path.operations.orEmpty().flatMap { operation ->
@@ -51,7 +52,7 @@ class NoUnusedDefinitionsRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(r
         val paths = unusedParams + unusedDefs
 
         return if (paths.isNotEmpty()) {
-            Violation(this, title, "Found ${paths.size} unused definitions", violationType, paths)
+            Violation("Found ${paths.size} unused definitions", paths)
         } else null
     }
 

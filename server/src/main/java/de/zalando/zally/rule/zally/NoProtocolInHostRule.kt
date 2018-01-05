@@ -1,25 +1,26 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class NoProtocolInHostRule(@Autowired ruleSet: ZallyRuleSet) : AbstractRule(ruleSet) {
-    override val title = "Host should not contain protocol"
-    override val violationType = ViolationType.MUST
-    override val id = "M008"
+@Rule(
+        ruleSet = ZallyRuleSet::class,
+        id = "M008",
+        severity = Severity.MUST,
+        title = "Host should not contain protocol"
+)
+class NoProtocolInHostRule : AbstractRule() {
     private val desc = "Information about protocol should be placed in schema. Current host value '%s' violates this rule"
 
-    @Check
+    @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {
         val host = swagger.host.orEmpty()
         return if ("://" in host)
-            Violation(this, title, desc.format(host), violationType, emptyList())
+            Violation(desc.format(host), emptyList())
         else null
     }
 }

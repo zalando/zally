@@ -1,17 +1,17 @@
 package de.zalando.zally.rule.zally
 
 import de.zalando.zally.getFixture
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class NoProtocolInHostRuleTest {
 
-    private val rule = NoProtocolInHostRule(ZallyRuleSet())
+    private val rule = NoProtocolInHostRule()
 
     val expectedViolation = rule.let {
-        Violation(it, it.title, "", it.violationType, emptyList())
+        Violation("", emptyList())
     }
 
     @Test

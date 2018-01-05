@@ -37,7 +37,7 @@ class CoreFilingAPITest {
                         "171"  // FormatForNumbersRule
                 )))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
     @Test
@@ -50,7 +50,7 @@ class CoreFilingAPITest {
                         "150"  // UseSpecificHttpStatusCodes
                 )))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
     @Test
@@ -62,7 +62,7 @@ class CoreFilingAPITest {
                         "MatchingSummaryAndOperationIdNames",
                         "PaginatedCollectionsReturnTotalPagesHeader")))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
     @Test
@@ -79,7 +79,7 @@ class CoreFilingAPITest {
                         "151"  // NotSpecifyStandardErrorCodesRule
                 )))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
     @Test
@@ -97,7 +97,7 @@ class CoreFilingAPITest {
                         "151"  // NotSpecifyStandardErrorCodesRule
                 )))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
     @Test
@@ -117,7 +117,7 @@ class CoreFilingAPITest {
                         "151"  // NotSpecifyStandardErrorCodesRule
                 )))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
     @Test
@@ -135,7 +135,7 @@ class CoreFilingAPITest {
                         "171"  // FormatForNumbersRule
                 )))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
     @Test
@@ -146,7 +146,7 @@ class CoreFilingAPITest {
                         "MatchingSummaryAndOperationIdNames"
                 )))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
     @Test
@@ -158,7 +158,7 @@ class CoreFilingAPITest {
                         "151" // NotSpecifyStandardErrorCodesRule
                 )))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
     @Test
@@ -176,7 +176,7 @@ class CoreFilingAPITest {
                         "151"  // NotSpecifyStandardErrorCodesRule
                 )))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
     @Test
@@ -195,7 +195,7 @@ class CoreFilingAPITest {
                         "151"  // NotSpecifyStandardErrorCodesRule
         )))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
     @Test
@@ -212,7 +212,7 @@ class CoreFilingAPITest {
                         "151" // NotSpecifyStandardErrorCodesRule
                 )))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
     @Test
@@ -224,7 +224,7 @@ class CoreFilingAPITest {
                         "151" // NotSpecifyStandardErrorCodesRule
                 )))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
     @Test
@@ -242,14 +242,18 @@ class CoreFilingAPITest {
                         "171"  // FormatForNumbersRule
                 )))
 
-        assertThat(results).isEmpty()
+        assertEmptyResults(results)
     }
 
-    private fun validate(group: String, project: String, policy: RulesPolicy, branch: String = "develop"): List<Violation> {
+    private fun validate(group: String, project: String, policy: RulesPolicy, branch: String = "develop"): List<Result> {
         val uri = URI.create("https://gitlab.int.corefiling.com/" + group + "/" + project + "/raw/" + branch + "/src/swagger.yaml")
         println(uri)
 
         val text = uri.toURL().readText()
-        return validator.validate(text, policy)
+        return validator.validate(text, policy.withMoreIgnores(listOf("TestAlwaysGiveAHintRule")))
+    }
+
+    private fun assertEmptyResults(results: List<Result>) {
+        assertThat(results.map { r -> r.rule.id }).isEmpty()
     }
 }

@@ -11,7 +11,7 @@ class SnakeCaseForQueryParamsRuleTest {
     private val invalidSwaggerWIthInternalRef = getFixture("snakeCaseForQueryParamsInvalidInternalRef.json")
     private val invalidSwaggerWithExternalRef = getFixture("snakeCaseForQueryParamsInvalidExternalRef.json")
 
-    private val rule = SnakeCaseForQueryParamsRule(ZalandoRuleSet())
+    private val rule = SnakeCaseForQueryParamsRule()
 
     @Test
     fun shouldFindNoViolations() {

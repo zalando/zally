@@ -34,7 +34,7 @@ export const RestService = {
     });
   },
 
-  getSupportedRules(params) {
+  getSupportedRules() {
     const options = {
       method: 'GET',
       headers: {

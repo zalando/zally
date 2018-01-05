@@ -8,7 +8,7 @@ import org.junit.Test
 
 class SnakeCaseInPropNameRuleTest {
 
-    private val rule = SnakeCaseInPropNameRule(ZalandoRuleSet(), testConfig)
+    private val rule = SnakeCaseInPropNameRule(testConfig)
 
     @Test
     fun emptySwagger() {

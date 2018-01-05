@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { NavLink, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { RulesTab } from '../components/rules.jsx';
 
 export class Rules extends Component {

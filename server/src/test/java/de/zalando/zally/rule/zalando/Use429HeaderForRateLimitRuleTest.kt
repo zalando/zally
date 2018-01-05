@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class Use429HeaderForRateLimitRuleTest {
-    private val rule = Use429HeaderForRateLimitRule(ZalandoRuleSet())
+    private val rule = Use429HeaderForRateLimitRule()
 
     @Test
     fun positiveCase() {

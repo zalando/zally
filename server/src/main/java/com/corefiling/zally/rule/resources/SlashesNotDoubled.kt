@@ -1,22 +1,24 @@
 package com.corefiling.zally.rule.resources
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
-import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import com.corefiling.zally.rule.collections.ifNotEmptyLet
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class SlashesNotDoubled(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
-    override val title = "Resources Separated by Single /"
-    override val violationType = ViolationType.MUST
-    override val description = "Resources pattern separated by single slashes, not //"
+@Rule(
+        ruleSet = CoreFilingRuleSet::class,
+        id = "SlashesNotDoubled",
+        severity = Severity.SHOULD,
+        title = "Resources Separated by Single /"
+)
+class SlashesNotDoubled : AbstractRule() {
+    val description = "Resources pattern separated by single slashes, not //"
 
-    @Check
+    @Check(Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? =
             swagger.paths.orEmpty()
                     .map { (pattern, _) ->
@@ -26,5 +28,5 @@ class SlashesNotDoubled(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwagg
                             null
                         }
                     }
-                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
+                    .ifNotEmptyLet { Violation(description, it) }
 }

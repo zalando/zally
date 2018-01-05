@@ -2,12 +2,15 @@ sudo: required
 
 language: java
 
+env:
+  - CLI_VERSION="1.1.0"
+
 jdk:
     - oraclejdk8
 
 install:
   # Clone Zally
-  - git clone https://github.com/zalando-incubator/zally.git
+  - git clone https://github.com/zalando/zally.git
 
   # Build a local Zally server
   - cd zally/server
@@ -19,15 +22,11 @@ install:
   - cd ..
 
   # Wait until Spring Boot will start
-  - sleep 10
+  - while ! echo "GET / HTTP/1.0\n" | nc localhost 8080; do sleep 1; done
 
-  # Build Zally CLI
-  - cd cli
-  - gradle zallyJar
-  - cp build/libs/zally.jar bin/
-  - cd ..
+  # Download latest Zally CLI
+  - curl -L https://github.com/zalando/zally/releases/download/${CLI_VERSION}/zally_${CLI_VERSION}_linux_64bit.tar.gz | tar zxv
 
 script:
   # Validate swagger/zally-test.json file from original repository
-  - cd cli
-  - bin/zally ../../swagger/zally-test.json
+  - ./zally ../swagger/zally-test.json

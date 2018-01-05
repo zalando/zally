@@ -1,38 +1,38 @@
 package de.zalando.zally.rule.zalando
 
 import com.google.common.collect.Sets
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.dto.ViolationType.MUST
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Operation
 import io.swagger.models.Scheme
 import io.swagger.models.Swagger
 import io.swagger.models.auth.OAuth2Definition
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
-    override val title = "Secure Endpoints with OAuth 2.0"
-    override val violationType = MUST
-    override val id = "104"
-    private val DESC = "Every endpoint must be secured by OAuth2 properly"
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "104",
+        severity = Severity.MUST,
+        title = "Secure Endpoints with OAuth 2.0"
+)
+class SecureWithOAuth2Rule : AbstractRule() {
+    private val description = "Every endpoint must be secured by OAuth2 properly"
 
-    @Check
+    @Check(severity = Severity.MUST)
     fun checkSecurityDefinitions(swagger: Swagger): Violation? {
         val hasOAuth = swagger.securityDefinitions.orEmpty().values.any { it.type?.toLowerCase() == "oauth2" }
         val containsHttpScheme = swagger.schemes.orEmpty().contains(Scheme.HTTP)
         return if (!hasOAuth)
-            Violation(this, title, "No OAuth2 security definitions found", violationType, emptyList())
+            Violation("No OAuth2 security definitions found", emptyList())
         else if (containsHttpScheme)
-            Violation(this, title, "OAuth2 should be only used together with https", violationType, emptyList())
+            Violation("OAuth2 should be only used together with https", emptyList())
         else
             null
     }
 
-    @Check
+    @Check(severity = Severity.SHOULD)
     fun checkPasswordFlow(swagger: Swagger): Violation? {
         val definitionsWithoutPasswordFlow = swagger
             .securityDefinitions
@@ -42,11 +42,11 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
             .filter { (it as OAuth2Definition).flow != "application" }
 
         return if (definitionsWithoutPasswordFlow.any())
-            Violation(this, "Set flow to 'application' when using OAuth2", "OAuth2 security definitions should use application flow", ViolationType.SHOULD, emptyList())
+            Violation("OAuth2 security definitions should use application flow", emptyList())
         else null
     }
 
-    @Check
+    @Check(severity = Severity.MUST)
     fun checkUsedScopes(swagger: Swagger): Violation? {
         val definedScopes = getDefinedScopes(swagger)
         val hasTopLevelScope = hasTopLevelScope(swagger, definedScopes)
@@ -66,7 +66,7 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
             }.filterNotNull()
         }
         return if (!paths.isEmpty()) {
-            Violation(this, title, DESC, violationType, paths)
+            Violation(description, paths)
         } else null
     }
 

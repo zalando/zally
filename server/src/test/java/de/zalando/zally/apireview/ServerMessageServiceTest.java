@@ -10,7 +10,7 @@ public class ServerMessageServiceTest {
 
     private final ServerMessageService serverMessageService = new ServerMessageService(
         Arrays.asList("unirest-java/1.3.11", "Zally-CLI/1.0"),
-        "https://github.com/zalando-incubator/zally/releases");
+        "https://github.com/zalando/zally/releases");
 
     @Test
     public void shouldReturnEmptyStringIfUserAgentIsUpToDate() throws Exception {
@@ -23,7 +23,7 @@ public class ServerMessageServiceTest {
     public void shouldReturnDeprecationMessageIfUserAgentIsDeprecated() throws Exception {
         String message = serverMessageService.serverMessage("Zally-CLI/1.0");
 
-        assertThat(message).isEqualTo("Please update your CLI: https://github.com/zalando-incubator/zally/releases");
+        assertThat(message).isEqualTo("Please update your CLI: https://github.com/zalando/zally/releases");
     }
 
     @Test

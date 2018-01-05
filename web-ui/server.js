@@ -11,7 +11,7 @@ const webpackDevServerProxy = require('./src/server/dev/webpack-dev-server-proxy
  */
 if (process.env.NODE_ENV === 'development') {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-  webpackDevServerProxy(app, require('./webpack.config'));
+  webpackDevServerProxy(app, require('./webpack/dev'));
 }
 
 app.use(zally);

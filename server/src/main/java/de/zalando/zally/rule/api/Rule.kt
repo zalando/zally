@@ -1,22 +1,21 @@
 package de.zalando.zally.rule.api
 
-import de.zalando.zally.dto.ViolationType
+import org.springframework.stereotype.Component
+import kotlin.reflect.KClass
 
 /**
  * An abstract entity representing an external guideline
  * which can be automatically checked.
  */
-interface Rule {
-
-    /** The RuleSet this rule belongs to */
-    val ruleSet: RuleSet
-
-    /** The identifier for this rule */
-    val id: String
-
-    /** A title for this rule */
-    val title: String
-
-    /** The severity of violations which break this rule */
-    val violationType: ViolationType
-}
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.CLASS)
+@Component
+annotation class Rule(
+        /** The RuleSet this rule belongs to  */
+        val ruleSet: KClass<out RuleSet>,
+        /** The identifier for this rule  */
+        val id: String,
+        /** The stated severity for this rule  */
+        val severity: Severity,
+        /** A title for this rule  */
+        val title: String)

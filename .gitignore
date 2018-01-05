@@ -4,6 +4,7 @@
 bin/
 build/
 .DS_Store
+package-lock.json
 scm-source.json
 out/
 **/classes/
@@ -15,3 +16,4 @@ out/
 target
 
 cli/zally/coverage.txt
+web-ui/src/client/public/assets/bundle.js*

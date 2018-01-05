@@ -1,4 +1,3 @@
-import 'jsdom-global/register';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { StaticRouter } from 'react-router-dom';
@@ -17,12 +16,12 @@ jest.mock('../rules.jsx', () => ({
 describe('ViolationsTab container component', () => {
   test('should renders tabs', () => {
     const component = shallow(<ViolationsTab authenticated />);
-    expect(component.find('.dc-tab').length).toEqual(1);
+    expect(component.find('.dc-tab')).toHaveLength(1);
   });
   test('should redirect', () => {
     const component = shallow(<ViolationsTab authenticated={false} />);
-    expect(component.find('.dc-tab').length).toEqual(0);
-    expect(component.find('Redirect').length).toEqual(1);
+    expect(component.find('.dc-tab')).toHaveLength(0);
+    expect(component.find('Redirect')).toHaveLength(1);
   });
   test('render the URL tab on /', () => {
     const component = mount(
@@ -30,9 +29,9 @@ describe('ViolationsTab container component', () => {
         <ViolationsTab authenticated />
       </StaticRouter>
     );
-    expect(component.find('URL').length).toEqual(1);
-    expect(component.find('Editor').length).toEqual(0);
-    expect(component.find('Rules').length).toEqual(0);
+    expect(component.find('URL')).toHaveLength(1);
+    expect(component.find('Editor')).toHaveLength(0);
+    expect(component.find('Rules')).toHaveLength(0);
   });
   test('render the Editor tab on /editor', () => {
     const component = mount(
@@ -40,9 +39,9 @@ describe('ViolationsTab container component', () => {
         <ViolationsTab authenticated />
       </StaticRouter>
     );
-    expect(component.find('URL').length).toEqual(0);
-    expect(component.find('Editor').length).toEqual(1);
-    expect(component.find('Rules').length).toEqual(0);
+    expect(component.find('URL')).toHaveLength(0);
+    expect(component.find('Editor')).toHaveLength(1);
+    expect(component.find('Rules')).toHaveLength(0);
   });
   test('render the Rules tab on /rules', () => {
     const component = mount(
@@ -50,8 +49,8 @@ describe('ViolationsTab container component', () => {
         <ViolationsTab authenticated />
       </StaticRouter>
     );
-    expect(component.find('URL').length).toEqual(0);
-    expect(component.find('Editor').length).toEqual(0);
-    expect(component.find('Rules').length).toEqual(1);
+    expect(component.find('URL')).toHaveLength(0);
+    expect(component.find('Editor')).toHaveLength(0);
+    expect(component.find('Rules')).toHaveLength(1);
   });
 });

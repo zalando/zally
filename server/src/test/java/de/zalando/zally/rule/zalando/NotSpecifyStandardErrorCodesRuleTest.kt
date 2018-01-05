@@ -15,7 +15,7 @@ class NotSpecifyStandardErrorCodesRuleTest {
 
     private val allOperations = listOf("get", "post", "put", "patch", "delete", "head", "options")
 
-    private val rule = NotSpecifyStandardErrorCodesRule(ZalandoRuleSet(), testConfig)
+    private val rule = NotSpecifyStandardErrorCodesRule(testConfig)
 
     @Test
     fun shouldPassIfErrorCodeNotStandard() {

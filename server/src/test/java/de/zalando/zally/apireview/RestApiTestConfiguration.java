@@ -1,20 +1,14 @@
 package de.zalando.zally.apireview;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import de.zalando.zally.dto.ViolationType;
 import de.zalando.zally.rule.AbstractRule;
-import de.zalando.zally.rule.ApiValidator;
-import de.zalando.zally.rule.CompositeRulesValidator;
-import de.zalando.zally.rule.JsonRulesValidator;
-import de.zalando.zally.rule.SwaggerRulesValidator;
-import de.zalando.zally.rule.Violation;
+import de.zalando.zally.rule.TestRuleSet;
 import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.api.Rule;
-import de.zalando.zally.rule.api.RuleSet;
+import de.zalando.zally.rule.api.Severity;
+import de.zalando.zally.rule.api.Violation;
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule;
-import de.zalando.zally.rule.zalando.ZalandoRuleSet;
 import io.swagger.models.Swagger;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,8 +16,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @Configuration
 public class RestApiTestConfiguration {
@@ -34,111 +28,66 @@ public class RestApiTestConfiguration {
     @Bean
     @Primary
     @Profile("test")
-    public ApiValidator validator() {
-        final List<Rule> rules = Arrays.asList(
-            new CheckApiNameIsPresentRule("Product Service"),
-            new AlwaysGiveAHintRule()
+    public Collection<Object> rules() {
+        return Arrays.asList(
+                new TestCheckApiNameIsPresentJsonRule(),
+                new TestCheckApiNameIsPresentRule(),
+                new TestAlwaysGiveAHintRule()
         );
-        return new CompositeRulesValidator(
-                new SwaggerRulesValidator(rules, invalidApiRule),
-                new JsonRulesValidator(Arrays.asList(new CheckApiNameIsPresentJsonRule(new ZalandoRuleSet())), invalidApiRule));
     }
 
-    public static class CheckApiNameIsPresentJsonRule extends AbstractRule {
+    /** Rule used for testing */
+    @Rule(
+            ruleSet = TestRuleSet.class,
+            id = "TestCheckApiNameIsPresentJsonRule",
+            severity = Severity.MUST,
+            title = "schema"
+    )
+    public static class TestCheckApiNameIsPresentJsonRule extends AbstractRule {
 
-        public CheckApiNameIsPresentJsonRule(@NotNull RuleSet ruleSet) {
-            super(ruleSet);
-        }
-
-        @Check
+        @Check(severity = Severity.MUST)
         public Iterable<Violation> validate(final JsonNode swagger) {
             JsonNode title = swagger.path("info").path("title");
             if (!title.isMissingNode() && title.textValue().contains("Product Service")) {
                 return Arrays.asList(
-                        new Violation(this, getTitle(), "schema incorrect", getViolationType(), Collections.emptyList()));
+                        new Violation("schema incorrect", Collections.emptyList()));
             } else {
                 return Collections.emptyList();
             }
         }
-
-        @Override
-        public String getTitle() {
-            return "schema";
-        }
-
-        @Override
-        public ViolationType getViolationType() {
-            return ViolationType.MUST;
-        }
-
-        @Override
-        public String getId() {
-            return "166";
-        }
-
     }
 
-    public static class CheckApiNameIsPresentRule extends AbstractRule {
+    /** Rule used for testing */
+    @Rule(
+            ruleSet = TestRuleSet.class,
+            id = "TestCheckApiNameIsPresentRule",
+            severity = Severity.MUST,
+            title = "Test Rule"
+    )
+    public static class TestCheckApiNameIsPresentRule extends AbstractRule {
 
-        private final String apiName;
-
-        CheckApiNameIsPresentRule(String apiName) {
-            super(new ZalandoRuleSet());
-            this.apiName = apiName;
-        }
-
-        @Check
+        @Check(severity = Severity.MUST)
         public Violation validate(Swagger swagger) {
-            if (swagger != null && swagger.getInfo().getTitle().contains(apiName)) {
-                return new Violation(new CheckApiNameIsPresentRule(null), "dummy1", "dummy", ViolationType.MUST, Collections.emptyList());
+            if (swagger != null && swagger.getInfo().getTitle().contains("Product Service")) {
+                return new Violation("dummy", Collections.emptyList());
             } else {
                 return null;
             }
         }
-
-        @Override
-        public ViolationType getViolationType() {
-            return ViolationType.MUST;
-        }
-
-        @Override
-        public String getTitle() {
-            return "Test Rule";
-        }
-
-        @Override
-        public String getId() {
-            return "999";
-        }
-
     }
 
-    public static class AlwaysGiveAHintRule extends AbstractRule {
-        public AlwaysGiveAHintRule() {
-            super(new ZalandoRuleSet());
-        }
+    /** Rule used for testing */
+    @Rule(
+            ruleSet = TestRuleSet.class,
+            id = "TestAlwaysGiveAHintRule",
+            severity = Severity.HINT,
+            title = "Test Hint Rule"
+    )
+    public static class TestAlwaysGiveAHintRule extends AbstractRule {
 
-        @Check
+        @Check(severity = Severity.HINT)
         public Violation validate(Swagger swagger) {
-            return new Violation(
-                new AlwaysGiveAHintRule(),
-                "dummy2", "dummy", ViolationType.HINT, Collections.emptyList());
+            return new Violation("dummy", Collections.emptyList());
         }
-
-        @Override
-        public ViolationType getViolationType() {
-            return ViolationType.MUST;
-        }
-
-        @Override
-        public String getTitle() {
-            return "Test Hint Rule";
-        }
-
-        @Override
-        public String getId() {
-            return "H999";
-        }
-
     }
 }

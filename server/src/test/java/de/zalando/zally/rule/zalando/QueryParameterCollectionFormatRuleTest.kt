@@ -1,6 +1,5 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
 import io.swagger.models.Operation
 import io.swagger.models.Path
 import io.swagger.models.Swagger
@@ -10,7 +9,7 @@ import org.junit.Test
 
 class QueryParameterCollectionFormatRuleTest {
 
-    private val rule = QueryParameterCollectionFormatRule(ZalandoRuleSet())
+    private val rule = QueryParameterCollectionFormatRule()
 
     @Test
     fun negativeCaseCollectionFormatNotSupported() {
@@ -19,9 +18,8 @@ class QueryParameterCollectionFormatRuleTest {
         }
 
         val result = rule.validate(swagger)!!
-        assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
-        assertThat(result.rule.id).isEqualTo("154")
         assertThat(result.description).isEqualTo("CollectionFormat should be one of: [csv, multi]")
+        assertThat(result.paths).isEqualTo(listOf("parameters test"))
     }
 
     @Test
@@ -32,9 +30,8 @@ class QueryParameterCollectionFormatRuleTest {
         }
 
         val result = rule.validate(swagger)!!
-        assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
-        assertThat(result.rule.id).isEqualTo("154")
         assertThat(result.description).isEqualTo("CollectionFormat should be one of: [csv, multi]")
+        assertThat(result.paths).isEqualTo(listOf("/apis test"))
     }
 
     @Test
@@ -44,9 +41,8 @@ class QueryParameterCollectionFormatRuleTest {
         }
 
         val result = rule.validate(swagger)!!
-        assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
-        assertThat(result.rule.id).isEqualTo("154")
         assertThat(result.description).isEqualTo("CollectionFormat should be one of: [csv, multi]")
+        assertThat(result.paths).isEqualTo(listOf("parameters test"))
     }
 
     @Test
@@ -57,9 +53,8 @@ class QueryParameterCollectionFormatRuleTest {
         }
 
         val result = rule.validate(swagger)!!
-        assertThat(result.violationType).isEqualTo(ViolationType.SHOULD)
-        assertThat(result.rule.id).isEqualTo("154")
         assertThat(result.description).isEqualTo("CollectionFormat should be one of: [csv, multi]")
+        assertThat(result.paths).isEqualTo(listOf("/apis test"))
     }
 
     @Test

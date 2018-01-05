@@ -7,14 +7,14 @@ describe('Msg component', () => {
     const component = shallow(<Msg />);
     const closeButton = component.find('.dc-msg__close');
 
-    expect(closeButton.length).toEqual(0);
+    expect(closeButton).toHaveLength(0);
   });
 
   test('with default props should use "info" type', () => {
     const component = shallow(<Msg />);
     const container = component.find('.dc-msg--info');
 
-    expect(container.length).toEqual(1);
+    expect(container).toHaveLength(1);
   });
 
   test('should show title and text', () => {
@@ -31,8 +31,8 @@ describe('Msg component', () => {
     const defaultContainer = component.find('.dc-msg--info');
     const container = component.find('.dc-msg--alert');
 
-    expect(defaultContainer.length).toEqual(0);
-    expect(container.length).toEqual(1);
+    expect(defaultContainer).toHaveLength(0);
+    expect(container).toHaveLength(1);
   });
 
   test('should invoke callback when close button is clicked', () => {
@@ -46,6 +46,6 @@ describe('Msg component', () => {
   test('should hide close button', () => {
     const component = shallow(<Msg />);
 
-    expect(component.find('.dc-msg__close').length).toEqual(0);
+    expect(component.find('.dc-msg__close')).toHaveLength(0);
   });
 });

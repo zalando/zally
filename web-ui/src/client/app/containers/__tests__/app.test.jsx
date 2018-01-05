@@ -1,4 +1,3 @@
-import 'jsdom-global/register';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { StaticRouter } from 'react-router-dom';
@@ -18,7 +17,7 @@ describe('App component', () => {
       env: { OAUTH_ENABLED: true },
     };
     const component = shallow(<App {...props} />);
-    expect(component.find('UserInfo').length).toEqual(1);
+    expect(component.find('UserInfo')).toHaveLength(1);
   });
 
   test('should hide UserInfo child component', () => {
@@ -27,7 +26,7 @@ describe('App component', () => {
       env: {},
     };
     const component = shallow(<App {...props} />);
-    expect(component.find('UserInfo').length).toEqual(0);
+    expect(component.find('UserInfo')).toHaveLength(0);
   });
 
   test('should render Login route', () => {
@@ -40,8 +39,8 @@ describe('App component', () => {
         <App {...props} />
       </StaticRouter>
     );
-    expect(component.find('Login').length).toEqual(1);
-    expect(component.find('ViolationsTab').length).toEqual(0);
+    expect(component.find('Login')).toHaveLength(1);
+    expect(component.find('ViolationsTab')).toHaveLength(0);
   });
 
   test('should render the ViolationsTab', () => {
@@ -54,7 +53,7 @@ describe('App component', () => {
         <App {...props} />
       </StaticRouter>
     );
-    expect(component.find('Login').length).toEqual(0);
-    expect(component.find('ViolationsTab').length).toEqual(1);
+    expect(component.find('Login')).toHaveLength(0);
+    expect(component.find('ViolationsTab')).toHaveLength(1);
   });
 });

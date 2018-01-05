@@ -1,4 +1,3 @@
-import 'jsdom-global/register';
 import React from 'react';
 import { Rules } from '../rules.jsx';
 import { shallow } from 'enzyme';
@@ -18,7 +17,7 @@ describe('Rules container component', () => {
   });
 
   test('should redirect with no filter', () => {
-    expect(component.find('Redirect').length).toEqual(1);
+    expect(component.find('Redirect')).toHaveLength(1);
   });
 
   test('should not redirect with a filter', () => {
@@ -29,12 +28,12 @@ describe('Rules container component', () => {
       })
     );
     component.setProps({ location: { search: '?is_active=true' } });
-    expect(component.find('Redirect').length).toEqual(0);
+    expect(component.find('Redirect')).toHaveLength(0);
   });
 
   test('should redirect with a bad query', () => {
     component.setProps({ location: { search: '?badquery=false' } });
-    expect(component.find('Redirect').length).toEqual(1);
+    expect(component.find('Redirect')).toHaveLength(1);
   });
 
   test('should not fetch rules with no filter', () => {

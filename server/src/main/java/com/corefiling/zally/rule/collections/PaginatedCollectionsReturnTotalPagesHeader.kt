@@ -1,23 +1,25 @@
 package com.corefiling.zally.rule.collections
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
-import com.corefiling.zally.rule.CoreFilingSwaggerRule
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Response
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class PaginatedCollectionsReturnTotalPagesHeader(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
-    override val title = "Paginated Resources Return Total-Pages Header"
-    override val violationType = ViolationType.SHOULD
-    override val description = "Paginated resources return the Total-Pages header " +
+@Rule(
+        ruleSet = CoreFilingRuleSet::class,
+        id = "PaginatedCollectionsReturnTotalPagesHeader",
+        severity = Severity.SHOULD,
+        title = "Paginated Resources Return Total-Pages Header"
+)
+class PaginatedCollectionsReturnTotalPagesHeader : AbstractRule() {
+    val description = "Paginated resources return the Total-Pages header " +
             "with type:integer and format:int32 so that clients can easily iterate over the collection."
 
-    @Check
+    @Check(Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? =
             swagger.collections()
                     .flatMap { (pattern, path) ->
@@ -28,7 +30,7 @@ class PaginatedCollectionsReturnTotalPagesHeader(@Autowired ruleSet: CoreFilingR
                                     "paths $pattern GET responses $code headers: does not include an int32 format integer Total-Pages header"
                                 }
                     }
-                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
+                    .ifNotEmptyLet { Violation(description, it) }
 
     private fun hasTotalPagesHeader(response: Response?): Boolean {
         val header = response?.headers?.get("Total-Pages") ?: return false

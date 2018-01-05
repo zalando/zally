@@ -1,4 +1,3 @@
-import 'jsdom-global/register';
 import React from 'react';
 import { mount } from 'enzyme';
 import FluidContainer, { WindowResizeListener } from '../fluid-container.jsx';
@@ -59,18 +58,18 @@ describe('WindowResizeListener', () => {
 
   test('should add a listener at mounting', () => {
     const spy = jest.fn();
-    expect(WindowResizeListener._listeners.length).toBe(0);
+    expect(WindowResizeListener._listeners).toHaveLength(0);
     mount(<WindowResizeListener onResize={spy} />);
     expect(spy).not.toHaveBeenCalled();
-    expect(WindowResizeListener._listeners.length).toBe(1);
+    expect(WindowResizeListener._listeners).toHaveLength(1);
   });
   test('should remove the listener at unmounting', () => {
     const spy = jest.fn();
     const component = mount(<WindowResizeListener onResize={spy} />);
     expect(spy).not.toHaveBeenCalled();
-    expect(WindowResizeListener._listeners.length).toBe(1);
+    expect(WindowResizeListener._listeners).toHaveLength(1);
     component.unmount();
-    expect(WindowResizeListener._listeners.length).toBe(0);
+    expect(WindowResizeListener._listeners).toHaveLength(0);
   });
   test('should switch the listener', () => {
     const spy = jest.fn();

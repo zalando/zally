@@ -1,9 +1,10 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import io.swagger.models.ComposedModel
 import io.swagger.models.HttpMethod
 import io.swagger.models.Model
@@ -13,19 +14,19 @@ import io.swagger.models.Response
 import io.swagger.models.Swagger
 import io.swagger.models.properties.ObjectProperty
 import io.swagger.models.properties.RefProperty
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
-    override val title = "Use Problem JSON"
-    override val violationType = ViolationType.MUST
-    override val id = "176"
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "176",
+        severity = Severity.MUST,
+        title = "Use Problem JSON"
+)
+class UseProblemJsonRule : AbstractRule() {
     private val description = "Operations Should Return Problem JSON When Any Problem Occurs During Processing " +
         "Whether Caused by Client Or Server"
     private val requiredFields = setOf("title", "status")
 
-    @Check
+    @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().flatMap { pathEntry ->
             pathEntry.value.operationMap.orEmpty().filter { it.key.shouldContainPayload() }.flatMap { opEntry ->
@@ -38,7 +39,7 @@ class UseProblemJsonRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(rule
             }
         }
 
-        return if (paths.isNotEmpty()) Violation(this, title, description, violationType, paths) else null
+        return if (paths.isNotEmpty()) Violation(description, paths) else null
     }
 
     private fun isValidProblemJson(swagger: Swagger, response: Response, operation: Operation) =

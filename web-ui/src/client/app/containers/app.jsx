@@ -86,7 +86,7 @@ export function App(props) {
       <footer>
         <a
           className="dc-link"
-          href="https://github.com/zalando-incubator/zally"
+          href="https://github.com/zalando/zally"
           target="_blank"
         >
           Github Project

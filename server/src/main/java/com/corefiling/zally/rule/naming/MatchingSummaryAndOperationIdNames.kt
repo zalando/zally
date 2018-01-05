@@ -1,23 +1,25 @@
 package com.corefiling.zally.rule.naming
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
-import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import com.corefiling.zally.rule.collections.ifNotEmptyLet
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Operation
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class MatchingSummaryAndOperationIdNames(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
-    override val title = "Matching Summary and OperationId"
-    override val violationType = ViolationType.SHOULD
-    override val description = "OperationId should be the lowerCamelCase version of the summary"
+@Rule(
+        ruleSet = CoreFilingRuleSet::class,
+        id = "MatchingSummaryAndOperationIdNames",
+        severity = Severity.SHOULD,
+        title = "Path Parameters Are Proceeded by Plurals"
+)
+class MatchingSummaryAndOperationIdNames : AbstractRule() {
+    val description = "OperationId should be the lowerCamelCase version of the summary"
 
-    @Check
+    @Check(Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? =
             swagger.paths.orEmpty()
                     .flatMap { (pattern, path) ->
@@ -25,7 +27,7 @@ class MatchingSummaryAndOperationIdNames(@Autowired ruleSet: CoreFilingRuleSet) 
                             validate("$pattern $method", op)
                         }.filterNotNull()
                     }
-                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
+                    .ifNotEmptyLet { Violation(description, it) }
 
     fun validate(location: String, op: Operation): String? {
         return when {

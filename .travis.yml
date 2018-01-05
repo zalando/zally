@@ -6,10 +6,17 @@ language: java
 jdk:
   - oraclejdk8
 
+env:
+  DEP_VERSION="0.3.2"
+
 before_install:
   - eval "$(GIMME_GO_VERSION=1.8.3 gimme)"
   - sudo apt-get install jq
   - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
+
+  # Install golang/dep (https://github.com/golang/dep/blob/master/docs/FAQ.md#how-do-i-use-dep-in-ci)  
+  - curl -L -s https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 -o $GOPATH/bin/dep
+  - chmod +x $GOPATH/bin/dep
 
 install: true
 
@@ -34,11 +41,11 @@ script:
   - while ! echo "GET / HTTP/1.0\n" | nc localhost 8080; do sleep 1; done
 
   # Test and build CLI
-  - export ZALLY_GO_PATH="$GOPATH/src/github.com/zalando-incubator/zally"
+  - export ZALLY_GO_PATH="$GOPATH/src/github.com/zalando/zally"
   - mkdir -p $ZALLY_GO_PATH
   - cp -R . $ZALLY_GO_PATH
   - cd $ZALLY_GO_PATH/cli/zally
-  - go get -v -t -tags=integration
+  - dep ensure
   - ./test.sh integration
   - go build
   - cd $TRAVIS_BUILD_DIR

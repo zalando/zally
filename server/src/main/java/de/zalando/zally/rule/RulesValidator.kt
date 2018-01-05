@@ -1,12 +1,10 @@
 package de.zalando.zally.rule
 
-import de.zalando.zally.rule.api.Check
-import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
 import org.slf4j.LoggerFactory
-import java.lang.reflect.Method
 
-abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private val invalidApiRule: InvalidApiSchemaRule) : ApiValidator where RuleT : Rule {
+abstract class RulesValidator<RootT>(val rules: RulesManager, private val invalidApiRule: InvalidApiSchemaRule) : ApiValidator {
 
     private val log = LoggerFactory.getLogger(RulesValidator::class.java)
 
@@ -14,7 +12,7 @@ abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private 
 
     val zallyIgnoreExtension = "x-zally-ignore"
 
-    final override fun validate(content: String, requestPolicy: RulesPolicy): List<Violation> {
+    final override fun validate(content: String, requestPolicy: RulesPolicy): List<Result> {
         val root = parse(content) ?: return listOf(invalidApiRule.getGeneralViolation())
 
         val moreIgnores = ignores(root)
@@ -23,39 +21,31 @@ abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private 
         val contentPolicy = requestPolicy.withMoreIgnores(moreIgnores)
 
         return rules
-                .filter(contentPolicy::accepts)
-                .flatMap(validator(root))
-                .sortedBy(Violation::violationType)
+                .checks(contentPolicy)
+                .filter { details -> isCheckMethod(details, root) }
+                .flatMap { details -> invoke(details, root) }
+                .sortedBy(Result::violationType)
     }
 
     abstract fun parse(content: String): RootT?
 
     abstract fun ignores(root: RootT): List<String>
 
-    private fun validator(root: Any): (RuleT) -> Iterable<Violation> {
-        return { rule: RuleT ->
-            log.debug("validating ${rule.javaClass.simpleName} rule")
-            rule::class.java.methods
-                    .filter { isCheckMethod(it, root) }
-                    .flatMap { invoke(it, rule, root) }
-        }
-    }
+    private fun isCheckMethod(details: CheckDetails, root: Any) =
+                details.method.parameters.size == 1 &&
+                details.method.parameters[0].type.isAssignableFrom(root::class.java)
 
-    private fun isCheckMethod(it: Method, root: Any) =
-            it.isAnnotationPresent(Check::class.java) &&
-                    it.parameters.size == 1 &&
-                    it.parameters[0].type.isAssignableFrom(root::class.java)
-
-    private fun invoke(check: Method, rule: RuleT, root: Any): Iterable<Violation> {
-        log.debug("validating ${check.name} of ${rule.javaClass.simpleName} rule")
-        val result = check.invoke(rule, root)
+    private fun invoke(details: CheckDetails, root: Any): Iterable<Result> {
+        log.debug("validating ${details.method.name} of ${details.instance.javaClass.simpleName} rule")
+        val result = details.method.invoke(details.instance, root)
         val violations = when (result) {
             null -> emptyList()
             is Violation -> listOf(result)
             is Iterable<*> -> result as Iterable<Violation>
-            else -> throw Exception("Unsupported return type for a @Check check!: ${result::class.java}")
+            else -> throw Exception("Unsupported return type for a @Check method!: ${result::class.java}")
         }
         log.debug("${violations.count()} violations identified")
         return violations
+                .map { Result(details.ruleSet, details.rule, it.description, details.check.severity, it.paths) }
     }
 }

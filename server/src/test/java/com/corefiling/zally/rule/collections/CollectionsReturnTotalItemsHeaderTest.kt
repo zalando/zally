@@ -1,6 +1,5 @@
 package com.corefiling.zally.rule.collections
 
-import com.corefiling.zally.rule.CoreFilingRuleSet
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import org.assertj.core.api.Assertions
@@ -8,7 +7,7 @@ import org.junit.Test
 
 class CollectionsReturnTotalItemsHeaderTest {
 
-    val cut = CollectionsReturnTotalItemsHeader(CoreFilingRuleSet())
+    val cut = CollectionsReturnTotalItemsHeader()
 
     @Test
     fun withEmptyReturnsNull() {
