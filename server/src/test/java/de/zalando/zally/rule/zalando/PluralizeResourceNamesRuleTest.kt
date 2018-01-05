@@ -7,7 +7,7 @@ import org.junit.Test
 
 class PluralizeResourceNamesRuleTest {
 
-    private val rule = PluralizeResourceNamesRule(ZalandoRuleSet(), testConfig)
+    private val rule = PluralizeResourceNamesRule(testConfig)
 
     @Test
     fun positiveCase() {

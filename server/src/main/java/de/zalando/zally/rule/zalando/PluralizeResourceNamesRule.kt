@@ -5,18 +5,20 @@ import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.PatternUtil
 import de.zalando.zally.util.WordUtil.isPlural
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class PluralizeResourceNamesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
-    override val title = "Pluralize Resource Names"
-    override val id = "134"
-    override val severity = Severity.MUST
-    private val DESC_PATTERN = "Resources %s are singular (but we are not sure)"
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "134",
+        severity = Severity.MUST,
+        title = "Pluralize Resource Names"
+)
+class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) : AbstractRule() {
+    private val description = "Resources %s are singular (but we are not sure)"
     private val allowedPrefixes = rulesConfig.getConfig(name).getStringList("whitelist_prefixes")
 
     @Check(severity = Severity.MUST)
@@ -32,7 +34,7 @@ class PluralizeResourceNamesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired 
         return if (res != null && res.isNotEmpty()) {
             val desc = res.map { "'${it.first}'" }.toSet().joinToString(", ")
             val paths = res.map { it.second }
-            Violation(String.format(DESC_PATTERN, desc), paths)
+            Violation(String.format(description, desc), paths)
         } else null
     }
 }

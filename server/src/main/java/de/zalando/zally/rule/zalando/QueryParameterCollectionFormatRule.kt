@@ -4,18 +4,20 @@ import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
 import io.swagger.models.parameters.QueryParameter
-import org.springframework.beans.factory.annotation.Autowired
 
-class QueryParameterCollectionFormatRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
-
-    override val title = "Explicitly define the Collection Format of Query Parameters"
-    override val id = "154"
-    override val severity = Severity.SHOULD
-    val formatsAllowed = listOf("csv", "multi")
-    val violationDescription = "CollectionFormat should be one of: $formatsAllowed"
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "154",
+        severity = Severity.SHOULD,
+        title = "Explicitly define the Collection Format of Query Parameters"
+)
+class QueryParameterCollectionFormatRule : AbstractRule() {
+    private val formatsAllowed = listOf("csv", "multi")
+    private val violationDescription = "CollectionFormat should be one of: $formatsAllowed"
 
     @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {

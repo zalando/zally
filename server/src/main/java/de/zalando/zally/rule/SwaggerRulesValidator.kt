@@ -1,6 +1,5 @@
 package de.zalando.zally.rule
 
-import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
@@ -12,8 +11,8 @@ import org.springframework.stereotype.Component
  * on set of rules. It will sort the output by path.
  */
 @Component
-class SwaggerRulesValidator(@Autowired rules: List<Rule>,
-                            @Autowired invalidApiRule: InvalidApiSchemaRule) : RulesValidator<Rule, Swagger>(rules, invalidApiRule) {
+class SwaggerRulesValidator(@Autowired rules: RulesManager,
+                            @Autowired invalidApiRule: InvalidApiSchemaRule) : RulesValidator<Swagger>(rules, invalidApiRule) {
 
     override fun parse(content: String): Swagger? {
         return try {

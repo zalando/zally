@@ -2,6 +2,7 @@ package de.zalando.zally.dto;
 
 import de.zalando.zally.rule.Result;
 import de.zalando.zally.rule.api.Severity;
+import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.rule.zalando.AvoidTrailingSlashesRule;
 import de.zalando.zally.rule.zalando.ZalandoRuleSet;
 import org.junit.Test;
@@ -97,12 +98,10 @@ public class ViolationsCounterTest {
     }
 
     private Result generateViolation(Severity violationType) {
-        return new Result(
-            new AvoidTrailingSlashesRule(new ZalandoRuleSet()),
-            "Test Name",
-            "Test Description",
-            violationType,
-                new ArrayList<>()
-        );
+        return new Result(new ZalandoRuleSet(),
+                AvoidTrailingSlashesRule.class.getAnnotation(Rule.class),
+                "Test Description",
+                violationType,
+                new ArrayList<>());
     }
 }

@@ -2,13 +2,12 @@ package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.api.RuleSet
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Response
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
 
-abstract class HttpHeadersRule(ruleSet: RuleSet, rulesConfig: Config) : AbstractRule(ruleSet) {
+abstract class HttpHeadersRule(rulesConfig: Config) : AbstractRule() {
 
     private val headersWhitelist = rulesConfig.getStringList(HttpHeadersRule::class.simpleName + ".whitelist").toSet()
 

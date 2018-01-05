@@ -5,19 +5,20 @@ import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Operation
 import io.swagger.models.Scheme
 import io.swagger.models.Swagger
 import io.swagger.models.auth.OAuth2Definition
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
-    override val title = "Secure Endpoints with OAuth 2.0"
-    override val id = "104"
-    override val severity = Severity.MUST
-    private val DESC = "Every endpoint must be secured by OAuth2 properly"
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "104",
+        severity = Severity.MUST,
+        title = "Secure Endpoints with OAuth 2.0"
+)
+class SecureWithOAuth2Rule : AbstractRule() {
+    private val description = "Every endpoint must be secured by OAuth2 properly"
 
     @Check(severity = Severity.MUST)
     fun checkSecurityDefinitions(swagger: Swagger): Violation? {
@@ -65,7 +66,7 @@ class SecureWithOAuth2Rule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ru
             }.filterNotNull()
         }
         return if (!paths.isEmpty()) {
-            Violation(DESC, paths)
+            Violation(description, paths)
         } else null
     }
 

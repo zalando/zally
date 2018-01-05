@@ -13,7 +13,7 @@ class KebabCaseInPathSegmentsRuleTest {
     private val wrongTestPath1 = "/shipment_order/{shipment_order_id}"
     private val wrongTestPath2 = "/partner-order/{partner_order_id}/partner-order1/{partner_order_id}"
 
-    private val rule = KebabCaseInPathSegmentsRule(ZalandoRuleSet())
+    private val rule = KebabCaseInPathSegmentsRule()
 
     @Test
     fun emptySwagger() {

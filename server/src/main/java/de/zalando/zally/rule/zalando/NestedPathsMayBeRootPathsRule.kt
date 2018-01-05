@@ -4,17 +4,18 @@ import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.PatternUtil.isPathVariable
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class NestedPathsMayBeRootPathsRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
-    override val title = "Consider Using (Non-) Nested URLs"
-    override val id = "145"
-    override val severity = Severity.MAY
-    private val DESCRIPTION = "Nested paths / URLs may be top-level resource"
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "145",
+        severity = Severity.MAY,
+        title = "Consider Using (Non-) Nested URLs"
+)
+class NestedPathsMayBeRootPathsRule : AbstractRule() {
+    private val description = "Nested paths / URLs may be top-level resource"
 
     @Check(severity = Severity.MAY)
     fun validate(swagger: Swagger): Violation? {
@@ -23,6 +24,6 @@ class NestedPathsMayBeRootPathsRule(@Autowired ruleSet: ZalandoRuleSet) : Abstra
             // we are only interested in paths that have sub-resource followed by a param: /path1/{param1}/path2/{param2}
             pathSegments.size > 4 && isPathVariable(pathSegments.last())
         }
-        return if (paths.isNotEmpty()) Violation(DESCRIPTION, paths) else null
+        return if (paths.isNotEmpty()) Violation(description, paths) else null
     }
 }

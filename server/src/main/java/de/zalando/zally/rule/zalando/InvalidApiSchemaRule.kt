@@ -11,23 +11,25 @@ import de.zalando.zally.rule.Result
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 import java.io.IOException
 import java.net.URL
 
-@Component
-open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "101",
+        severity = Severity.MUST,
+        title = "OpenAPI 2.0 schema"
+)
+open class InvalidApiSchemaRule(@Autowired rulesConfig: Config) : AbstractRule() {
 
     private val log = LoggerFactory.getLogger(InvalidApiSchemaRule::class.java)
 
-    override val title = "OpenAPI 2.0 schema"
-    override val id = "101"
-    override val severity = Severity.MUST
     open val description = "Given file is not OpenAPI 2.0 compliant."
 
-    val jsonSchemaValidator: JsonSchemaValidator
+    private val jsonSchemaValidator: JsonSchemaValidator
 
     init {
         jsonSchemaValidator = getSchemaValidator(rulesConfig.getConfig(name))
@@ -69,5 +71,5 @@ open class InvalidApiSchemaRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired r
     }
 
     fun getGeneralViolation(): Result =
-            Result(this, title, description, Severity.MUST, emptyList())
+            Result(ZalandoRuleSet(), this.javaClass.getAnnotation(Rule::class.java), description, Severity.MUST, emptyList())
 }

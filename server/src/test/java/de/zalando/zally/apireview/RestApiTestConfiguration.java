@@ -2,10 +2,6 @@ package de.zalando.zally.apireview;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import de.zalando.zally.rule.AbstractRule;
-import de.zalando.zally.rule.ApiValidator;
-import de.zalando.zally.rule.CompositeRulesValidator;
-import de.zalando.zally.rule.JsonRulesValidator;
-import de.zalando.zally.rule.SwaggerRulesValidator;
 import de.zalando.zally.rule.TestRuleSet;
 import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.api.Rule;
@@ -18,11 +14,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @Configuration
 public class RestApiTestConfiguration {
@@ -33,24 +28,22 @@ public class RestApiTestConfiguration {
     @Bean
     @Primary
     @Profile("test")
-    public ApiValidator validator() {
-        final List<Rule> rules = Arrays.asList(
-            new TestCheckApiNameIsPresentJsonRule(),
-            new TestCheckApiNameIsPresentRule(),
-            new TestAlwaysGiveAHintRule()
+    public Collection<Object> rules() {
+        return Arrays.asList(
+                new TestCheckApiNameIsPresentJsonRule(),
+                new TestCheckApiNameIsPresentRule(),
+                new TestAlwaysGiveAHintRule()
         );
-        return new CompositeRulesValidator(
-                new SwaggerRulesValidator(rules, invalidApiRule),
-                new JsonRulesValidator(rules, invalidApiRule));
     }
 
     /** Rule used for testing */
-    @Component
+    @Rule(
+            ruleSet = TestRuleSet.class,
+            id = "TestCheckApiNameIsPresentJsonRule",
+            severity = Severity.MUST,
+            title = "schema"
+    )
     public static class TestCheckApiNameIsPresentJsonRule extends AbstractRule {
-
-        public TestCheckApiNameIsPresentJsonRule() {
-            super(new TestRuleSet());
-        }
 
         @Check(severity = Severity.MUST)
         public Iterable<Violation> validate(final JsonNode swagger) {
@@ -62,30 +55,16 @@ public class RestApiTestConfiguration {
                 return Collections.emptyList();
             }
         }
-
-        @Override
-        public String getTitle() {
-            return "schema";
-        }
-
-        @Override
-        public String getId() {
-            return getClass().getSimpleName();
-        }
-
-        @Override
-        public Severity getSeverity() {
-            return Severity.MUST;
-        }
     }
 
     /** Rule used for testing */
-    @Component
+    @Rule(
+            ruleSet = TestRuleSet.class,
+            id = "TestCheckApiNameIsPresentRule",
+            severity = Severity.MUST,
+            title = "Test Rule"
+    )
     public static class TestCheckApiNameIsPresentRule extends AbstractRule {
-
-        TestCheckApiNameIsPresentRule() {
-            super(new TestRuleSet());
-        }
 
         @Check(severity = Severity.MUST)
         public Violation validate(Swagger swagger) {
@@ -95,48 +74,20 @@ public class RestApiTestConfiguration {
                 return null;
             }
         }
-
-        @Override
-        public String getTitle() {
-            return "Test Rule";
-        }
-
-        @Override
-        public String getId() {
-            return getClass().getSimpleName();
-        }
-
-        @Override
-        public Severity getSeverity() {
-            return Severity.MUST;
-        }
     }
 
     /** Rule used for testing */
-    @Component
+    @Rule(
+            ruleSet = TestRuleSet.class,
+            id = "TestAlwaysGiveAHintRule",
+            severity = Severity.HINT,
+            title = "Test Hint Rule"
+    )
     public static class TestAlwaysGiveAHintRule extends AbstractRule {
-        public TestAlwaysGiveAHintRule() {
-            super(new TestRuleSet());
-        }
 
         @Check(severity = Severity.HINT)
         public Violation validate(Swagger swagger) {
             return new Violation("dummy", Collections.emptyList());
-        }
-
-        @Override
-        public String getTitle() {
-            return "Test Hint Rule";
-        }
-
-        @Override
-        public String getId() {
-            return getClass().getSimpleName();
-        }
-
-        @Override
-        public Severity getSeverity() {
-            return Severity.HINT;
         }
     }
 }

@@ -10,7 +10,7 @@ import org.junit.Test
 class ExtractBasePathRuleTest {
     val DESC_PATTERN = "All paths start with prefix '%s'. This prefix could be part of base path."
 
-    private val rule = ExtractBasePathRule(ZallyRuleSet())
+    private val rule = ExtractBasePathRule()
 
     @Test
     fun validateEmptyPath() {

@@ -7,7 +7,7 @@ import org.junit.Test
 
 class LimitNumberOfResourcesRuleTest {
 
-    private val rule = LimitNumberOfResourcesRule(ZalandoRuleSet(), testConfig)
+    private val rule = LimitNumberOfResourcesRule(testConfig)
 
     @Test
     fun positiveCase() {

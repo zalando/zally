@@ -4,17 +4,18 @@ import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class KebabCaseInPathSegmentsRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "129",
+        severity = Severity.MUST,
+        title = "Lowercase words with hyphens"
+)
+class KebabCaseInPathSegmentsRule : AbstractRule() {
 
-    override val title = "Lowercase words with hyphens"
-    override val id = "129"
-    override val severity = Severity.MUST
     private val description = "Use lowercase separate words with hyphens for path segments"
 
     @Check(severity = Severity.MUST)

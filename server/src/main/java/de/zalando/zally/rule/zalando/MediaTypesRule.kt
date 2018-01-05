@@ -4,18 +4,19 @@ import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class MediaTypesRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "172",
+        severity = Severity.SHOULD,
+        title = "Prefer standard media type names"
+)
+class MediaTypesRule : AbstractRule() {
 
-    override val title = "Prefer standard media type names"
-    override val id = "172"
-    override val severity = Severity.SHOULD
     private val DESCRIPTION = "Custom media types should only be used for versioning"
 
     @Check(severity = Severity.SHOULD)

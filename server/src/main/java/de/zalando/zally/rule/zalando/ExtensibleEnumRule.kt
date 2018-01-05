@@ -4,6 +4,7 @@ import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Operation
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
@@ -20,14 +21,14 @@ import io.swagger.models.properties.LongProperty
 import io.swagger.models.properties.PasswordProperty
 import io.swagger.models.properties.Property
 import io.swagger.models.properties.StringProperty
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class ExtensibleEnumRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
-    override val title = "Prefer Compatible Extensions"
-    override val id = "107"
-    override val severity = Severity.SHOULD
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "107",
+        severity = Severity.SHOULD,
+        title = "Prefer Compatible Extensions"
+)
+class ExtensibleEnumRule : AbstractRule() {
 
     @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {

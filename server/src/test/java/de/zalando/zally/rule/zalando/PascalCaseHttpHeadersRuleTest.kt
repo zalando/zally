@@ -9,7 +9,7 @@ import org.junit.Test
 
 class PascalCaseHttpHeadersRuleTest {
 
-    private val rule = PascalCaseHttpHeadersRule(ZalandoRuleSet(), testConfig)
+    private val rule = PascalCaseHttpHeadersRule(testConfig)
 
     @Test
     fun simplePositiveCase() {

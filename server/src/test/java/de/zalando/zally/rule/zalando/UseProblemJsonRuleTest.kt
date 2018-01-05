@@ -6,7 +6,7 @@ import org.junit.Test
 
 class UseProblemJsonRuleTest {
 
-    private val rule = UseProblemJsonRule(ZalandoRuleSet())
+    private val rule = UseProblemJsonRule()
 
     @Test
     fun shouldReturnNoViolationsWhenErrorsReferencingToProblemJson() {

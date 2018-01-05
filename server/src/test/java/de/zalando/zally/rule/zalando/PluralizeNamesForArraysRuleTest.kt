@@ -6,7 +6,7 @@ import org.junit.Test
 
 class PluralizeNamesForArraysRuleTest {
 
-    private val rule = PluralizeNamesForArraysRule(ZalandoRuleSet())
+    private val rule = PluralizeNamesForArraysRule()
 
     @Test
     fun positiveCase() {

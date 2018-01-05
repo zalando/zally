@@ -4,21 +4,21 @@ import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import io.swagger.models.ComposedModel
 import io.swagger.models.ModelImpl
 import io.swagger.models.Swagger
 import io.swagger.models.properties.Property
 import io.swagger.models.properties.RefProperty
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class SuccessResponseAsJsonObjectRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
-
-    override val title = "Response As JSON Object"
-    override val id = "110"
-    override val severity = Severity.MUST
-    private val DESCRIPTION = "Always Return JSON Objects As Top-Level Data Structures To Support Extensibility"
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "110",
+        severity = Severity.MUST,
+        title = "Response As JSON Object"
+)
+class SuccessResponseAsJsonObjectRule : AbstractRule() {
+    private val description = "Always Return JSON Objects As Top-Level Data Structures To Support Extensibility"
 
     @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {
@@ -37,7 +37,7 @@ class SuccessResponseAsJsonObjectRule(@Autowired ruleSet: ZalandoRuleSet) : Abst
             }
         }
 
-        return if (paths.isNotEmpty()) Violation(DESCRIPTION, paths) else null
+        return if (paths.isNotEmpty()) Violation(description, paths) else null
     }
 
     private fun Property?.isRefToObject(swagger: Swagger) =

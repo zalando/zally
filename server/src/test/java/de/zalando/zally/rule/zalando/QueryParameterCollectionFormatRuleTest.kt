@@ -9,7 +9,7 @@ import org.junit.Test
 
 class QueryParameterCollectionFormatRuleTest {
 
-    private val rule = QueryParameterCollectionFormatRule(ZalandoRuleSet())
+    private val rule = QueryParameterCollectionFormatRule()
 
     @Test
     fun negativeCaseCollectionFormatNotSupported() {

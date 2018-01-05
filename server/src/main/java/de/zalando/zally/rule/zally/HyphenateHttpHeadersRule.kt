@@ -4,17 +4,19 @@ import com.typesafe.config.Config
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.zalando.HttpHeadersRule
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class HyphenateHttpHeadersRule(@Autowired ruleSet: ZallyRuleSet, @Autowired rulesConfig: Config) : HttpHeadersRule(ruleSet, rulesConfig) {
-    override val title = "Use Hyphenated HTTP Headers"
-    override val id = "131"
-    override val severity = Severity.MUST
+@Rule(
+        ruleSet = ZallyRuleSet::class,
+        id = "131",
+        severity = Severity.MUST,
+        title = "Use Hyphenated HTTP Headers"
+)
+class HyphenateHttpHeadersRule(@Autowired rulesConfig: Config) : HttpHeadersRule(rulesConfig) {
 
     @Check(severity = Severity.MUST)
     override fun validate(swagger: Swagger): Violation? {

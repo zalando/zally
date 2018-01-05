@@ -8,7 +8,7 @@ import org.junit.Test
 class LimitNumberOfSubresourcesRuleTest {
     val ruleConfig = testConfig
 
-    private val rule = LimitNumberOfSubresourcesRule(ZalandoRuleSet(), ruleConfig)
+    private val rule = LimitNumberOfSubresourcesRule(ruleConfig)
 
     @Test
     fun positiveCase() {

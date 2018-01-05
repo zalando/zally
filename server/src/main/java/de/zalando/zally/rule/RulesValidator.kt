@@ -1,13 +1,10 @@
 package de.zalando.zally.rule
 
-import de.zalando.zally.rule.api.Check
-import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
 import org.slf4j.LoggerFactory
-import java.lang.reflect.Method
 
-abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private val invalidApiRule: InvalidApiSchemaRule) : ApiValidator where RuleT : Rule {
+abstract class RulesValidator<RootT>(val rules: RulesManager, private val invalidApiRule: InvalidApiSchemaRule) : ApiValidator {
 
     private val log = LoggerFactory.getLogger(RulesValidator::class.java)
 
@@ -24,8 +21,9 @@ abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private 
         val contentPolicy = requestPolicy.withMoreIgnores(moreIgnores)
 
         return rules
-                .filter(contentPolicy::accepts)
-                .flatMap(validator(root))
+                .checks(contentPolicy)
+                .filter { details -> isCheckMethod(details, root) }
+                .flatMap { details -> invoke(details, root) }
                 .sortedBy(Result::violationType)
     }
 
@@ -33,24 +31,13 @@ abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private 
 
     abstract fun ignores(root: RootT): List<String>
 
-    private fun validator(root: Any): (RuleT) -> Iterable<Result> {
-        return { rule: RuleT ->
-            log.debug("validating ${rule.javaClass.simpleName} rule")
-            rule::class.java.methods
-                    .filter { isCheckMethod(it, root) }
-                    .flatMap { invoke(it, rule, root) }
-        }
-    }
+    private fun isCheckMethod(details: CheckDetails, root: Any) =
+                details.method.parameters.size == 1 &&
+                details.method.parameters[0].type.isAssignableFrom(root::class.java)
 
-    private fun isCheckMethod(it: Method, root: Any) =
-            it.isAnnotationPresent(Check::class.java) &&
-                    it.parameters.size == 1 &&
-                    it.parameters[0].type.isAssignableFrom(root::class.java)
-
-    private fun invoke(method: Method, rule: RuleT, root: Any): Iterable<Result> {
-        log.debug("validating ${method.name} of ${rule.javaClass.simpleName} rule")
-        val check = method.getAnnotation(Check::class.java)
-        val result = method.invoke(rule, root)
+    private fun invoke(details: CheckDetails, root: Any): Iterable<Result> {
+        log.debug("validating ${details.method.name} of ${details.instance.javaClass.simpleName} rule")
+        val result = details.method.invoke(details.instance, root)
         val violations = when (result) {
             null -> emptyList()
             is Violation -> listOf(result)
@@ -59,6 +46,6 @@ abstract class RulesValidator<out RuleT, RootT>(val rules: List<RuleT>, private 
         }
         log.debug("${violations.count()} violations identified")
         return violations
-                .map { Result(rule, rule.title, it.description, check.severity, it.paths) }
+                .map { Result(details.ruleSet, details.rule, it.description, details.check.severity, it.paths) }
     }
 }

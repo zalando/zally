@@ -1,6 +1,5 @@
 package de.zalando.zally.rule
 
-import de.zalando.zally.rule.api.Rule
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,12 +13,12 @@ import org.springframework.test.context.junit4.SpringRunner
 @ActiveProfiles("test")
 class RuleUniquenessTest {
     @Autowired
-    lateinit var rules: List<Rule>
+    lateinit var rules: RulesManager
 
     @Test
     fun rulesShouldBeUnique() {
-        val duplicatedCodes = rules
-                .groupBy { it.id }
+        val duplicatedCodes = rules.rules
+                .groupBy { it.rule.id }
                 .filterValues { it.size > 1 }
                 .keys
 

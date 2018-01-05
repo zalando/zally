@@ -7,7 +7,7 @@ import org.junit.Test
 
 class NoVersionInUriRuleTest {
 
-    private val rule = NoVersionInUriRule(ZalandoRuleSet())
+    private val rule = NoVersionInUriRule()
 
     val expectedViolation = Violation(
             "basePath attribute contains version number",

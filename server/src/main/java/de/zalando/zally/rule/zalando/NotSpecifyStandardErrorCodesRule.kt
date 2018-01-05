@@ -5,15 +5,17 @@ import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class NotSpecifyStandardErrorCodesRule(@Autowired ruleSet: ZalandoRuleSet, @Autowired rulesConfig: Config) : AbstractRule(ruleSet) {
-    override val title = "Not Specify Standard Error Codes"
-    override val id = "151"
-    override val severity = Severity.HINT
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "151",
+        severity = Severity.HINT,
+        title = "Not Specify Standard Error Codes"
+)
+class NotSpecifyStandardErrorCodesRule(@Autowired rulesConfig: Config) : AbstractRule() {
     private val description = "Not Specify Standard Error Status Codes Like 400, 404, 503 " +
             "Unless They Have Another Meaning Or Special Implementation/Contract Detail"
 
