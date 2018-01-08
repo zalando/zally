@@ -30,7 +30,6 @@ class CoreFilingAPITest {
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "SlashesAtEnd",
-                        "132", // PascalCaseHttpHeadersRule
                         "146", // LimitNumberOfResourcesRule
                         "150", // UseSpecificHttpStatusCodes
                         "151", // NotSpecifyStandardErrorCodesRule
@@ -45,9 +44,7 @@ class CoreFilingAPITest {
         val results = validate("platform", "commenting-service",
                 // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
-                        "PaginatedCollectionsReturnTotalPagesHeader",
-                        "132", // PascalCaseHttpHeadersRule
-                        "150"  // UseSpecificHttpStatusCodes
+                        "150" // UseSpecificHttpStatusCodes
                 )))
 
         assertEmptyResults(results)
