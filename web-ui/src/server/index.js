@@ -6,6 +6,7 @@ const _ = require('lodash');
 const path = require('path');
 const ASSETS_DIR = path.resolve(__dirname, '../client/public/assets');
 const VIEW_DIR = path.resolve(__dirname, './views');
+const logger = require('./logger');
 
 const DEFAULT_OPTIONS = {
   windowEnv: {
@@ -16,7 +17,7 @@ const DEFAULT_OPTIONS = {
   env: {
     HEAD_TITLE: 'Zally API Linter WEB UI',
   },
-  logger: console,
+  logger,
   handlers: {
     assets: () => express.static(ASSETS_DIR),
     windowEnv: require('./handlers/window-env'),

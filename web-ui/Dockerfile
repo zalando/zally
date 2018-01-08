@@ -4,12 +4,13 @@ MAINTAINER "http://zalando.github.io/"
 
 COPY package.json ./
 COPY yarn.lock ./
-
-RUN npm install -g yarn
-RUN yarn --production
-
+COPY packages ./packages
 COPY src ./src
 COPY server.js ./
+
+RUN npm install -g yarn
+RUN cd packages/passport-oauth2-zalando && yarn install && yarn build
+RUN yarn install --production
 
 EXPOSE 3000
 

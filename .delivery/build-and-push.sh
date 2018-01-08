@@ -50,8 +50,8 @@ fi
 if [ "$web_ui_changed" = true ]; then
   echo "Building and pushing Zally Web UI Dummy"
   cd ${REPO_ROOT}/web-ui
-  docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/zally-web-ui-dummy:${CDP_BUILD_VERSION}" .
-  docker push "${DOCKER_HOST}/${DOCKER_TEAM}/zally-web-ui-dummy:${CDP_BUILD_VERSION}"
+  docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/zally-web-ui-alpha:${CDP_BUILD_VERSION}" .
+  docker push "${DOCKER_HOST}/${DOCKER_TEAM}/zally-web-ui-alpha:${CDP_BUILD_VERSION}"
   echo "Zally Web UI has been built and pushed"
 fi
 

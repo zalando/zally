@@ -22,19 +22,14 @@ It's implemented as an [express](https://expressjs.com/) app/middleware and a Si
 - [Requirements](#requirements)
 - [Install](#install)
 - [Usage](#usage)
-  - [Basic](#basic)
   - [Mount to an existing application](#mount-to-an-existing-application)
-  - [Configuration options](#configuration-options)
+  - [Configuration](#configuration)
     - [Options](#options)
-  - [Add Authentication](#add-authentication)
-      - [POST /auth/me](#post-authme)
-      - [GET /auth/login](#get-authlogin)
-      - [GET /auth/logout](#get-authlogout)
-      - [POST /auth/refresh-token *(optional)*](#post-authrefresh-token-optional)
 - [Development](#development)
   - [Install, build and run in development mode](#install-build-and-run-in-development-mode)
   - [Run in production mode](#run-in-production-mode)
   - [Build optimized client javascript bundle](#build-optimized-client-javascript-bundle)
+- [Release it](#release-it)
 - [Contributing](#contributing)
   - [Contact](#contact)
   - [License](#license)
@@ -57,16 +52,6 @@ yarn add zally-web-ui
 
 ## Usage
 
-### Basic
-
-```js
-const app = require('zally-web-ui')();
-
-app.listen(3000, () => {
-  console.log('zally-web-ui running at http://localhost:3000');
-});
-```
-
 ### Mount to an existing application
 
 ```js
@@ -79,7 +64,7 @@ app.listen(3000, () => {
 });
 ```
 
-### Configuration options
+### Configuration
 
 When instantiating the app you can pass an `options` object to customize the behavior. 
 
@@ -91,44 +76,35 @@ const zally = require('zally-web-ui')(options);
 #### Options
 
 * **windowEnv**: the windowEnv `object` contains all the values exposed to the client on `window.env` 
-* **windowEnv.OAUTH_ENABLED** (default: `false`): enable OAuth or just Auth support on the client side (an http call will be fired on `/auth/me` endpoint to get the current logged in user, if any)  
-* **windowEnv.ZALLY_API_URL** (default: `http://localhost:8080`): URL pointing to Zally REST API
-* **windowEnv.DEBUG** (default: `true`): logs debugging message on the client side
 * **logger** (default: `console`): custom logger
 * **handlers**: the handlers `object` contains all route handlers used by zally-web-ui
 * **handlers.assets**: handler that serve static assets
 * **handlers.windowEnv**: handler that serve `/env.js` javascript file used to expose `windowEnv` values to the client on `window.env`
 * **handlers.index**: handler that serve the single page application entrypoint on the wild card `*` to allow HTML5 History API working as expected
 
+* **PORT**: HTTP(S) Server port
+* **LOG_LEVEL**: Logging level (error|warn|info|verbose|debug|silly)
+* **SESSION_SECRET**: Secret used to encrypt the session cookie
+* **PUBLIC_URL**: The public URL to reach the web-ui (take in mind that if OAuth is enabled `<PUBLIC_URL>/auth/callback` will be used as the route handling the OAuth authorize response, also known as `redirect_uri`)
 
-### Add Authentication
+* **ZALLY_API_URL** (default: `http://localhost:8080`): URL pointing to Zally REST API
 
-To add authentication the express server serving zally-web-ui **MUST** implement some REST API JSON endpoints and set `windowEnv.OAUTH_ENABLED` to `true`.
+* **OAUTH_ENABLED** (default: `false`): enable OAuth or just Auth support on the client side (an http call will be fired on `/auth/me` endpoint to get the current logged in user, if any)
+* **OAUTH_CLIENT_ID**: OAuth client id assigned to your app
+* **OAUTH_CLIENT_SECRET**: OAuth client secret assigned to your app
+* **OAUTH_TOKENINFO_URL**: The url used to validate the access token and retrieve token informations
+* **OAUTH_REFRESH_TOKEN_URL**: The url used to refresh the access token
+* **OAUTH_ACCESS_TOKEN_URL**: The url used to get an access token from an authorization code
+* **OAUTH_SCOPES**: Comma separated list of scopes that the user should grant to the app
+* **OAUTH_USERNAME_PROPERTY**: Property that can be found in the /tokeninfo response representing the username of the connected user (eg. `uid` or `user.uid` if nested)
 
-##### POST /auth/me
-  
-Should respond back with `200` http status code and a json response containing the current connected user in this format:
+* **CREDENTIALS_LOADER** : Which credentials loader the app should use to read OAUTH_CLIENT_ID and OAUTH_CLIENT_SECRET. The default is called `simple` (just get `OAUTH_CLIENT_ID` and `OAUTH_CLIENT_SECRET` from env variables),
+  or it can be set to `kubernetes` to read rotating credentials from the file system.
+* **CREDENTIALS_CLIENT_ID_PATH**: file system absolute path to client id file (when `CREDENTIALS_LOADER=kubernetes`)
+* **CREDENTIALS_CLIENT_SECRET_PATH** :file system absolute path to client secret file (when `CREDENTIALS_LOADER=kubernetes`)
 
-```json
-{
-  "username": "John Doe",
-  "authenticated": true
-}
-```
-  
-Or with `401` http status code if the user is not connected
-  
-##### GET /auth/login
-   
-To show a login or redirect to an external login (if for example you are using some OAuth Provider)
-   
-##### GET /auth/logout
-   
-To logout the user (for example clearing the session, etc.)
-   
-##### POST /auth/refresh-token *(optional)*
-  
-Optionally implement this endpoint to refresh an expired token (if for example you are using some OAuth Provider that support this feature)
+* **DEBUG**: debug flag (eg. on the client side log debug messages to console)
+
 
 ## Development
 
