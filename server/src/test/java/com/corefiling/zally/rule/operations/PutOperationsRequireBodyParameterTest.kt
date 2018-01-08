@@ -1,6 +1,5 @@
 package com.corefiling.zally.rule.operations
 
-import com.corefiling.zally.rule.CoreFilingRuleSet
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import org.assertj.core.api.Assertions
@@ -8,7 +7,7 @@ import org.junit.Test
 
 class PutOperationsRequireBodyParameterTest {
 
-    val cut = PutOperationsRequireBodyParameter(CoreFilingRuleSet())
+    val cut = PutOperationsRequireBodyParameter()
 
     @Test
     fun withEmptyReturnsNull() {

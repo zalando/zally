@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/zalando-incubator/zally.svg?branch=master)](https://travis-ci.org/zalando-incubator/zally)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/05a7515011504c06b1cb35ede27ac7d4)](https://www.codacy.com/app/zally/zally?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zalando-incubator/zally&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/05a7515011504c06b1cb35ede27ac7d4)](https://www.codacy.com/app/zally/zally?utm_source=github.com&utm_medium=referral&utm_content=zalando-incubator/zally&utm_campaign=Badge_Coverage)
+[![Build Status](https://travis-ci.org/zalando/zally.svg?branch=master)](https://travis-ci.org/zalando/zally)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/05a7515011504c06b1cb35ede27ac7d4)](https://www.codacy.com/app/zally/zally?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zalando/zally&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/05a7515011504c06b1cb35ede27ac7d4)](https://www.codacy.com/app/zally/zally?utm_source=github.com&utm_medium=referral&utm_content=zalando/zally&utm_campaign=Badge_Coverage)
 
 <img src="logo.png" width="200" height="200" />
 
@@ -28,7 +28,7 @@ More about Zally:
 - Golang 1.7+: for CLI
 - Node.js 7.6+: for web UI
 
-Find additional details [here](https://github.com/zalando-incubator/zally/pull/65#issuecomment-269474831). With Spring 5, we consider using Kotlin also directly on the API side.
+Find additional details [here](https://github.com/zalando/zally/pull/65#issuecomment-269474831). With Spring 5, we consider using Kotlin also directly on the API side.
 
 ### Installation and Usage
 
@@ -59,10 +59,10 @@ More details about how to register[Webhooks](https://developer.github.com/webhoo
 
 ### Contributing
 
-Zally welcomes contributions from the open source community. To get started, take a look at our [contributing guidelines](CONTRIBUTING). Then check our [Project Board](https://github.com/zalando-incubator/zally/projects/1) and [Issues Tracker](https://github.com/zalando-incubator/zally/issues) for ideas. 
+Zally welcomes contributions from the open source community. To get started, take a look at our [contributing guidelines](CONTRIBUTING). Then check our [Project Board](https://github.com/zalando/zally/projects/1) and [Issues Tracker](https://github.com/zalando/zally/issues) for ideas. 
 
 #### Roadmap
-For Zally [version 1.2](https://github.com/zalando-incubator/zally/milestone/3), we're focusing on:
+For Zally [version 1.2](https://github.com/zalando/zally/milestone/3), we're focusing on:
 - generating new rules
 - a new quickstart script
 - better integration testing approaches

@@ -1,22 +1,24 @@
 package com.corefiling.zally.rule.resources
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
-import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import com.corefiling.zally.rule.collections.ifNotEmptyLet
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class SlashesAtStart(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
-    override val title = "Resources Start with /"
-    override val violationType = ViolationType.MUST
-    override val description = "Resources pattern starts with a /"
+@Rule(
+        ruleSet = CoreFilingRuleSet::class,
+        id = "SlashesAtStart",
+        severity = Severity.MUST,
+        title = "Resources Start with /"
+)
+class SlashesAtStart : AbstractRule() {
+    val description = "Resources pattern starts with a /"
 
-    @Check
+    @Check(Severity.MUST)
     fun validate(swagger: Swagger): Violation? =
             swagger.paths.orEmpty()
                     .map { (pattern, _) ->
@@ -26,5 +28,5 @@ class SlashesAtStart(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerR
                             pattern
                         }
                     }
-                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
+                    .ifNotEmptyLet { Violation(description, it) }
 }

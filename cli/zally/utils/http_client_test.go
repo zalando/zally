@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/zalando-incubator/zally/cli/zally/tests"
+	"github.com/zalando/zally/cli/zally/tests"
 )
 
 func TestListRules(t *testing.T) {

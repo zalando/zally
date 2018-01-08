@@ -2,8 +2,7 @@ package de.zalando.zally.rule;
 
 import de.zalando.zally.apireview.RestApiBaseTest;
 import de.zalando.zally.dto.RuleDTO;
-import de.zalando.zally.dto.ViolationType;
-import de.zalando.zally.rule.api.Rule;
+import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.util.ErrorResponse;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,20 +11,19 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@TestPropertySource(properties = {"zally.ignoreRules=166,145","zally.ignoreRulePackages=com.example.rules"})
+@TestPropertySource(properties = "zally.ignoreRules=TestCheckApiNameIsPresentJsonRule,TestCheckApiNameIsPresentRule")
 public class RestSupportedRulesTest extends RestApiBaseTest {
 
-    private static final List<String> IGNORED_RULES = Arrays.asList("166", "145");
+    private static final List<String> IGNORED_RULES = Arrays.asList("TestCheckApiNameIsPresentJsonRule", "TestCheckApiNameIsPresentRule");
 
     @Autowired
-    private List<Rule> implementedRules;
+    private RulesManager implementedRules;
 
     @Test
     public void testRulesCount() {
@@ -36,8 +34,8 @@ public class RestSupportedRulesTest extends RestApiBaseTest {
     public void testRulesOrdered() {
         final List<RuleDTO> rules = getSupportedRules();
         for(int i=1;i<rules.size();++i) {
-            final ViolationType prev = rules.get(i - 1).getType();
-            final ViolationType next = rules.get(i).getType();
+            final Severity prev = rules.get(i - 1).getType();
+            final Severity next = rules.get(i).getType();
             assertTrue("Item #" + i + " is out of order:\n" +
                     rules.stream().map(Object::toString).collect(joining("\n")),
                     prev.compareTo(next)<=0);
@@ -57,16 +55,20 @@ public class RestSupportedRulesTest extends RestApiBaseTest {
     @Test
     public void testIsActiveFlag() {
         for (RuleDTO rule : getSupportedRules()) {
-            assertThat(rule.getActive()).isEqualTo(!IGNORED_RULES.contains(rule.getCode()));
+            assertThat(rule.getActive()).as(rule.getCode()).isEqualTo(!IGNORED_RULES.contains(rule.getCode()));
         }
     }
 
     @Test
     public void testFilterByType() {
-        for (ViolationType ruleType : ViolationType.values()) {
-            assertFilteredByRuleType(ruleType.toString());
-            assertFilteredByRuleType(ruleType.toString().toLowerCase());
-        }
+
+        int count = 0;
+        count += getSupportedRules("MuST", null).size();
+        count += getSupportedRules("ShOuLd", null).size();
+        count += getSupportedRules("MaY", null).size();
+        count += getSupportedRules("HiNt", null).size();
+
+        assertThat(count).isEqualTo(implementedRules.size());
     }
 
     @Test
@@ -92,17 +94,4 @@ public class RestSupportedRulesTest extends RestApiBaseTest {
         assertThat(rules.size()).isEqualTo(IGNORED_RULES.size());
     }
 
-    private void assertFilteredByRuleType(String ruleType) throws AssertionError {
-        List<RuleDTO> rules = getSupportedRules(ruleType, null);
-        List<Rule> expectedRules = getRulesByType(ViolationType.valueOf(ruleType.toUpperCase()));
-
-        assertThat(rules.size()).isEqualTo(expectedRules.size());
-    }
-
-    private List<Rule> getRulesByType(ViolationType violationType) {
-        return implementedRules
-            .stream()
-            .filter(r -> r.getViolationType() == violationType)
-            .collect(Collectors.toList());
-    }
 }

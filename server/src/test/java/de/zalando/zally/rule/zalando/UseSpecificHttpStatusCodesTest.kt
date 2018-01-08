@@ -6,7 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class UseSpecificHttpStatusCodesTest {
-    private val codes = UseSpecificHttpStatusCodes(ZalandoRuleSet(), testConfig)
+    private val codes = UseSpecificHttpStatusCodes(testConfig)
 
     @Test
     fun shouldPassIfOperationsAreAllowed() {

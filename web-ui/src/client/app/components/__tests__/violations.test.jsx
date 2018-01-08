@@ -13,7 +13,7 @@ describe('ViolationRuleLink component', () => {
     const component = shallow(<ViolationRuleLink ruleLink="foo" />);
     const link = component.find('a');
 
-    expect(link.length).toEqual(1);
+    expect(link).toHaveLength(1);
     expect(link.text()).toEqual('foo');
   });
 });
@@ -24,7 +24,7 @@ describe('ViolationPaths component', () => {
     const component = shallow(<ViolationPaths paths={paths} />);
     const li = component.find('li');
 
-    expect(li.length).toEqual(2);
+    expect(li).toHaveLength(2);
   });
 });
 
@@ -32,14 +32,14 @@ describe('Violations component', () => {
   test('should return list of violation', () => {
     const violations = [{}, {}];
     const component = shallow(<Violations violations={violations} />);
-    expect(component.find('h3').length).toEqual(1);
-    expect(component.find('Violation').length).toEqual(violations.length);
+    expect(component.find('h3')).toHaveLength(1);
+    expect(component.find('Violation')).toHaveLength(violations.length);
   });
 
   test('should render empty list of violation', () => {
     const component = shallow(<Violations violations={[]} />);
-    expect(component.find('Violation').length).toEqual(0);
-    expect(component.find('h3').length).toEqual(0);
+    expect(component.find('Violation')).toHaveLength(0);
+    expect(component.find('h3')).toHaveLength(0);
   });
 });
 
@@ -72,10 +72,10 @@ describe('Violation component', () => {
     const ViolationPaths = IfViolationPaths.dive().find('ViolationPaths');
 
     expect(component.find('p').text()).toEqual('Found 1 unused definitions');
-    expect(component.find('RuleType').length).toEqual(1);
-    expect(ViolationRuleLink.length).toEqual(1);
+    expect(component.find('RuleType')).toHaveLength(1);
+    expect(ViolationRuleLink).toHaveLength(1);
     expect(ViolationRuleLink.prop('ruleLink')).toEqual('link');
-    expect(ViolationPaths.length).toEqual(1);
+    expect(ViolationPaths).toHaveLength(1);
     expect(ViolationPaths.prop('paths')).toEqual(violation.paths);
   });
 });
@@ -98,8 +98,8 @@ describe('ViolationsResult component', () => {
         component
           .find('If[dataTestId="if-loading"]')
           .dive()
-          .find('.dc-spinner--small').length
-      ).toEqual(1);
+          .find('.dc-spinner--small')
+      ).toHaveLength(1);
     });
   });
 
@@ -120,7 +120,7 @@ describe('ViolationsResult component', () => {
       const IfSuccess = component.find(IfSuccessSelector);
       const Msg = IfSuccess.dive().find('Msg');
 
-      expect(Msg.length).toEqual(1);
+      expect(Msg).toHaveLength(1);
       expect(Msg.prop('type')).toEqual('success');
       expect(Msg.prop('title')).toEqual('Good Job!');
       expect(Msg.prop('text')).toEqual(
@@ -146,7 +146,7 @@ describe('ViolationsResult component', () => {
       const IfError = component.find(IfErrorSelector);
       const Msg = IfError.dive().find('Msg');
 
-      expect(Msg.length).toEqual(1);
+      expect(Msg).toHaveLength(1);
       expect(Msg.prop('type')).toEqual('error');
       expect(Msg.prop('title')).toEqual('ERROR');
       expect(Msg.prop('text')).toEqual('Server Error');
@@ -172,7 +172,7 @@ describe('ViolationsResult component', () => {
       const IfViolations = component.find(IfViolationsSelector);
       const Violations = IfViolations.dive().find('Violations');
 
-      expect(Violations.length).toEqual(1);
+      expect(Violations).toHaveLength(1);
       expect(Violations.prop('violations')).toEqual(violations);
       expect(Violations.prop('violationsCount')).toEqual(2);
     });

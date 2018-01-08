@@ -16,9 +16,9 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli"
-	"github.com/zalando-incubator/zally/cli/zally/domain"
-	"github.com/zalando-incubator/zally/cli/zally/tests"
-	"github.com/zalando-incubator/zally/cli/zally/utils"
+	"github.com/zalando/zally/cli/zally/domain"
+	"github.com/zalando/zally/cli/zally/tests"
+	"github.com/zalando/zally/cli/zally/utils"
 )
 
 var app = cli.NewApp()

@@ -1,23 +1,25 @@
 package com.corefiling.zally.rule.collections
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
-import com.corefiling.zally.rule.CoreFilingSwaggerRule
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Response
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class CollectionsReturnTotalItemsHeader(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
-    override val title = "Collection Resources Return Total-Items Header"
-    override val violationType = ViolationType.SHOULD
-    override val description = "Collection resources return the Total-Items header " +
+@Rule(
+        ruleSet = CoreFilingRuleSet::class,
+        id = "CollectionsReturnTotalItemsHeader",
+        severity = Severity.SHOULD,
+        title = "Collection Resources Return Total-Items Header"
+)
+class CollectionsReturnTotalItemsHeader : AbstractRule() {
+    val description = "Collection resources return the Total-Items header " +
             "with type:integer and format:int32 so that clients can easily access the total"
 
-    @Check
+    @Check(Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? =
             swagger.collections()
                     .flatMap { (pattern, path) ->
@@ -28,7 +30,7 @@ class CollectionsReturnTotalItemsHeader(@Autowired ruleSet: CoreFilingRuleSet) :
                                     "paths $pattern GET responses $code headers: does not include an int32 format integer Total-Items header"
                                 }
                     }
-                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
+                    .ifNotEmptyLet { Violation(description, it) }
 
     private fun hasTotalItemsHeader(response: Response?): Boolean {
         val header = response?.headers?.get("Total-Items") ?: return false

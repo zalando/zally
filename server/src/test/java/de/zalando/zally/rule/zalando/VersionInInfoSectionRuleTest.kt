@@ -14,7 +14,7 @@ class VersionInInfoSectionRuleTest {
             }
         }
 
-    private val rule = VersionInInfoSectionRule(ZalandoRuleSet())
+    private val rule = VersionInInfoSectionRule()
 
     @Test
     fun emptySwagger() {

@@ -8,7 +8,7 @@ describe('RuleType component', () => {
       const component = shallow(<RuleType type="MUST" />);
       const status = component.find('.dc-status--error');
 
-      expect(status.length).toEqual(1);
+      expect(status).toHaveLength(1);
     });
   });
 
@@ -17,7 +17,7 @@ describe('RuleType component', () => {
       const component = shallow(<RuleType type="SHOULD" />);
       const status = component.find('.dc-status--new');
 
-      expect(status.length).toEqual(1);
+      expect(status).toHaveLength(1);
     });
   });
 
@@ -26,7 +26,7 @@ describe('RuleType component', () => {
       const component = shallow(<RuleType type="" />);
       const status = component.find('.dc-status--inactive');
 
-      expect(status.length).toEqual(1);
+      expect(status).toHaveLength(1);
     });
   });
 });
@@ -35,9 +35,9 @@ describe('RuleLink component', () => {
   test('should return a rule link', () => {
     const component = shallow(<RuleLink url="foo" />);
     const link = component.find('a');
-    expect(link.length).toEqual(1);
+    expect(link).toHaveLength(1);
     expect(link.text()).toEqual('foo');
-    expect(link.node.props.href).toEqual('foo');
+    expect(link.getElement(0).props.href).toEqual('foo');
   });
 });
 
@@ -45,14 +45,14 @@ describe('RuleTab component', () => {
   test('should render a list of rules', () => {
     const rules = [{}, {}, {}];
     const component = shallow(<RulesTab rules={rules} />);
-    expect(component.find('Msg').length).toEqual(0);
-    expect(component.find('Rule').length).toEqual(rules.length);
+    expect(component.find('Msg')).toHaveLength(0);
+    expect(component.find('Rule')).toHaveLength(rules.length);
   });
 
   test('should render the error', () => {
     const errorText = 'error text';
     const component = shallow(<RulesTab rules={[]} error={errorText} />);
-    expect(component.find('Msg').length).toEqual(1);
+    expect(component.find('Msg')).toHaveLength(1);
     expect(component.find('Msg').props().text).toEqual(errorText);
   });
 });
@@ -71,10 +71,10 @@ describe('Rule component', () => {
     const component = shallow(<Rule rule={rule} />);
     const RuleLink = component.find('RuleLink');
 
-    expect(component.find('RuleType').length).toEqual(1);
-    expect(RuleLink.length).toEqual(1);
+    expect(component.find('RuleType')).toHaveLength(1);
+    expect(RuleLink).toHaveLength(1);
     expect(RuleLink.prop('url')).toEqual('someurl');
-    expect(component.find('RuleType').length).toEqual(1);
+    expect(component.find('RuleType')).toHaveLength(1);
   });
 
   test('should render a rule without url', () => {
@@ -89,8 +89,8 @@ describe('Rule component', () => {
     const component = shallow(<Rule rule={rule} />);
     const RuleLink = component.find('RuleLink');
 
-    expect(component.find('RuleType').length).toEqual(1);
-    expect(RuleLink.length).toEqual(0);
-    expect(component.find('RuleType').length).toEqual(1);
+    expect(component.find('RuleType')).toHaveLength(1);
+    expect(RuleLink).toHaveLength(0);
+    expect(component.find('RuleType')).toHaveLength(1);
   });
 });

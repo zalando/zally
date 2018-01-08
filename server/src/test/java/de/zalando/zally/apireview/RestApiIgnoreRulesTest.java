@@ -12,7 +12,7 @@ import java.util.Map;
 import static de.zalando.zally.util.ResourceUtil.readApiDefinition;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestPropertySource(properties = "zally.ignoreRules=H999")
+@TestPropertySource(properties = "zally.ignoreRules=TestAlwaysGiveAHintRule")
 public class RestApiIgnoreRulesTest extends RestApiBaseTest {
 
     @Test
@@ -21,7 +21,7 @@ public class RestApiIgnoreRulesTest extends RestApiBaseTest {
 
         List<ViolationDTO> violations = response.getViolations();
         assertThat(violations).hasSize(2);
-        assertThat(violations.get(0).getTitle()).isEqualTo("dummy1");
+        assertThat(violations.get(0).getTitle()).isEqualTo("Test Rule");
         assertThat(violations.get(1).getTitle()).isEqualTo("schema");
 
         Map<String, Integer> count = response.getViolationsCount();

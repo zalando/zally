@@ -1,6 +1,5 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.getFixture
 import de.zalando.zally.swaggerWithPaths
 import org.assertj.core.api.Assertions.assertThat
@@ -8,7 +7,7 @@ import org.junit.Test
 
 class EverySecondPathLevelParameterRuleTest {
 
-    private val rule = EverySecondPathLevelParameterRule(ZalandoRuleSet())
+    private val rule = EverySecondPathLevelParameterRule()
 
     @Test
     fun positiveCase() {
@@ -29,7 +28,6 @@ class EverySecondPathLevelParameterRuleTest {
             "/{merchant_id}",
             "/{parcel_id}/info/{update-group}")
         val result = rule.validate(swagger)!!
-        assertThat(result.violationType).isEqualTo(ViolationType.MUST)
         assertThat(result.paths).hasSameElementsAs(listOf(
             "/api/some/{param-1}/path/",
             "/another/{param-0}/{param-1}",

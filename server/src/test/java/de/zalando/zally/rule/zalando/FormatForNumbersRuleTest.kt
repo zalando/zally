@@ -7,7 +7,7 @@ import org.junit.Test
 
 class FormatForNumbersRuleTest {
 
-    private val rule = FormatForNumbersRule(ZalandoRuleSet(), testConfig)
+    private val rule = FormatForNumbersRule(testConfig)
 
     @Test
     fun positiveCase() {

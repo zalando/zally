@@ -3,7 +3,7 @@ package domain
 import (
 	"testing"
 
-	"github.com/zalando-incubator/zally/cli/zally/tests"
+	"github.com/zalando/zally/cli/zally/tests"
 )
 
 func TestRules(t *testing.T) {

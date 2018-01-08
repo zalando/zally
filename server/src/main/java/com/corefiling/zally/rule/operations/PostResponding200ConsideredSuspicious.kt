@@ -1,24 +1,26 @@
 package com.corefiling.zally.rule.operations
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
-import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import com.corefiling.zally.rule.collections.detectCollection
 import com.corefiling.zally.rule.collections.ifNotEmptyLet
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.HttpMethod
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class PostResponding200ConsideredSuspicious(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
-    override val title = "POST Responding 200 Considered Suspicious"
-    override val violationType = ViolationType.SHOULD
-    override val description = "POST operations should be used to create resources or initiate an asynchronous action, 200 response suggests a synchronous return"
+@Rule(
+        ruleSet = CoreFilingRuleSet::class,
+        id = "PostResponding200ConsideredSuspicious",
+        severity = Severity.SHOULD,
+        title = "POST Responding 200 Considered Suspicious"
+)
+class PostResponding200ConsideredSuspicious : AbstractRule() {
+    val description = "POST operations should be used to create resources or initiate an asynchronous action, 200 response suggests a synchronous return"
 
-    @Check
+    @Check(Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? =
             swagger.paths.orEmpty()
                     .flatMap { (pattern, path) ->
@@ -28,7 +30,7 @@ class PostResponding200ConsideredSuspicious(@Autowired ruleSet: CoreFilingRuleSe
                             }
                         }
                     }
-                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
+                    .ifNotEmptyLet { Violation(description, it) }
 
     fun validate(location: String, collection: Boolean): String? {
         return when (collection) {

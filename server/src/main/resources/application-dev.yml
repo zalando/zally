@@ -27,7 +27,6 @@ management.port: 8080
 
 zally:
   scanPackages: com.corefiling.zally
-  apiGuidelinesBaseUrl: "https://wiki.int.corefiling.com/platform/APIGuidelines"
   cli:
-    releasesPage: https://github.com/zalando-incubator/zally/releases
+    releasesPage: https://github.com/zalando/zally/releases
     deprecatedCliAgents: unirest-java/1.3.11,Zally-CLI/1.0

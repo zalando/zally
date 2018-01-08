@@ -8,8 +8,7 @@ import org.junit.Test
 
 class InvalidApiSchemaRuleTest {
 
-    private val ruleSet = ZalandoRuleSet()
-    private val rule = InvalidApiSchemaRule(ruleSet, testConfig)
+    private val rule = InvalidApiSchemaRule(testConfig)
 
     @Test
     fun shouldNotFailOnCorrectYaml() {
@@ -69,7 +68,7 @@ class InvalidApiSchemaRuleTest {
         """)
 
         val swaggerJson = getResourceJson("common_fields_invalid.yaml")
-        val validations = InvalidApiSchemaRule(ruleSet, config).validate(swaggerJson)
+        val validations = InvalidApiSchemaRule(config).validate(swaggerJson)
         assertThat(validations).hasSize(1)
         assertThat(validations[0].description).isEqualTo("""object has missing required properties (["paths"])""")
     }
@@ -83,7 +82,7 @@ class InvalidApiSchemaRuleTest {
         """)
 
         val swaggerJson = getResourceJson("common_fields_invalid.yaml")
-        val validations = InvalidApiSchemaRule(ruleSet, config).validate(swaggerJson)
+        val validations = InvalidApiSchemaRule(config).validate(swaggerJson)
         assertThat(validations).hasSize(1)
         assertThat(validations[0].description).isEqualTo("""object has missing required properties (["paths"])""")
     }

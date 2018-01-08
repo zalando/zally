@@ -1,24 +1,26 @@
 package com.corefiling.zally.rule.operations
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
-import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import com.corefiling.zally.rule.collections.ifNotEmptyLet
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.BodyParameter
 import io.swagger.models.parameters.Parameter
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class AtMostOneBodyParameter(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
-    override val title = "At Most One Body Parameter"
-    override val violationType = ViolationType.MUST
-    override val description = "No more than one body parameter can be associated with an operation"
+@Rule(
+        ruleSet = CoreFilingRuleSet::class,
+        id = "AtMostOneBodyParameter",
+        severity = Severity.MUST,
+        title = "At Most One Body Parameter"
+)
+class AtMostOneBodyParameter : AbstractRule() {
+    val description = "No more than one body parameter can be associated with an operation"
 
-    @Check
+    @Check(Severity.MUST)
     fun validate(swagger: Swagger): Violation? =
             swagger.paths.orEmpty()
                     .flatMap { (pattern, path) ->
@@ -27,7 +29,7 @@ class AtMostOneBodyParameter(@Autowired ruleSet: CoreFilingRuleSet) : CoreFiling
                             validate("$pattern $method", bodies)
                         }
                     }
-                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
+                    .ifNotEmptyLet { Violation(description, it) }
 
     fun validate(location: String, parameters: List<Parameter>): String? {
         return when {

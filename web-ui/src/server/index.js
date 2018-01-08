@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const compression = require('compression');
 const _ = require('lodash');
 const path = require('path');
 const ASSETS_DIR = path.resolve(__dirname, '../client/public/assets');
@@ -26,6 +27,7 @@ const DEFAULT_OPTIONS = {
 module.exports = (options = {}) => {
   const app = express();
   const _options = _.merge({}, DEFAULT_OPTIONS, options);
+  app.use(compression());
 
   app.on('mount', function(/* parent*/) {
     _options.logger.info(`zally-web-ui mounted on "${app.mountpath}"`);

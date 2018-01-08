@@ -1,23 +1,25 @@
 package com.corefiling.zally.rule.resources
 
 import com.corefiling.zally.rule.CoreFilingRuleSet
-import com.corefiling.zally.rule.CoreFilingSwaggerRule
 import com.corefiling.zally.rule.collections.ifNotEmptyLet
 import com.corefiling.zally.rule.collections.pathParamRegex
-import de.zalando.zally.dto.ViolationType
-import de.zalando.zally.rule.Violation
+import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class PathParamIsWholePathComponent(@Autowired ruleSet: CoreFilingRuleSet) : CoreFilingSwaggerRule(ruleSet) {
-    override val title = "Path Parameters Are Entire Path Components"
-    override val violationType = ViolationType.MUST
-    override val description = "Path parameters occupy an entire path component between slashes, never a partial component"
+@Rule(
+        ruleSet = CoreFilingRuleSet::class,
+        id = "PathParamIsWholePathComponent",
+        severity = Severity.MUST,
+        title = "Path Parameters Are Entire Path Components"
+)
+class PathParamIsWholePathComponent : AbstractRule() {
+    val description = "Path parameters occupy an entire path component between slashes, never a partial component"
 
-    @Check
+    @Check(Severity.MUST)
     fun validate(swagger: Swagger): Violation? =
             swagger.paths.orEmpty()
                     .map { (pattern, _) ->
@@ -27,5 +29,5 @@ class PathParamIsWholePathComponent(@Autowired ruleSet: CoreFilingRuleSet) : Cor
                                 .filter { pathParamRegex.replaceFirst(it, "XXXXX") != "XXXXX" }
                                 .ifNotEmptyLet { "$pattern contains partial component path parameters: ${it.joinToString()}" }
                     }
-                    .ifNotEmptyLet { Violation(this, title, description, violationType, it) }
+                    .ifNotEmptyLet { Violation(description, it) }
 }

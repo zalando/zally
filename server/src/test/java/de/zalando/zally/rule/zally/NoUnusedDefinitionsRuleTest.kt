@@ -6,7 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class NoUnusedDefinitionsRuleTest {
-    private val rule = NoUnusedDefinitionsRule(ZallyRuleSet())
+    private val rule = NoUnusedDefinitionsRule()
 
     @Test
     fun positiveCase() {

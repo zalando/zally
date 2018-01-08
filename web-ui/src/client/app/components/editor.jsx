@@ -59,7 +59,7 @@ export function EditorInputForm({
   );
 }
 
-const jsonRegex = /^[ \r\n\t]*[{\[]/;
+const jsonRegex = /^[ \r\n\t]*[{[]/;
 
 export function Editor({ annotations, value, onChange }) {
   const mode = jsonRegex.test(value) ? 'json' : 'yaml';

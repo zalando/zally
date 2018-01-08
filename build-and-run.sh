@@ -15,7 +15,7 @@ GITHUB_INTEGRATION_DIR=${SCRIPT_DIR}/github_integration
 cd ${SERVER_DIR} && ./gradlew clean build
 
 # Build web ui
-cd ${WEB_UI_DIR} && npm install && npm build
+cd ${WEB_UI_DIR} && yarn && yarn build
 
 if [ "$@" == "--bark" ]; then
 

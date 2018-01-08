@@ -1,22 +1,23 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.dto.ViolationType
 import de.zalando.zally.rule.AbstractRule
-import de.zalando.zally.rule.Violation
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.WordUtil.isPlural
 import de.zalando.zally.util.getAllJsonObjects
 import io.swagger.models.Swagger
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 
-@Component
-class PluralizeNamesForArraysRule(@Autowired ruleSet: ZalandoRuleSet) : AbstractRule(ruleSet) {
-    override val title = "Array names should be pluralized"
-    override val violationType = ViolationType.SHOULD
-    override val id = "120"
+@Rule(
+        ruleSet = ZalandoRuleSet::class,
+        id = "120",
+        severity = Severity.SHOULD,
+        title = "Array names should be pluralized"
+)
+class PluralizeNamesForArraysRule : AbstractRule() {
 
-    @Check
+    @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val res = swagger.getAllJsonObjects().map { (def, path) ->
             val badProps = def.entries.filter { "array" == it.value.type && !isPlural(it.key) }
@@ -28,7 +29,7 @@ class PluralizeNamesForArraysRule(@Autowired ruleSet: ZalandoRuleSet) : Abstract
 
         return if (res.isNotEmpty()) {
             val (desc, paths) = res.unzip()
-            Violation(this, title, desc.joinToString("\n"), violationType, paths)
+            Violation(desc.joinToString("\n"), paths)
         } else null
     }
 }

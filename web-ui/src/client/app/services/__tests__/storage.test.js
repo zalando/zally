@@ -10,13 +10,7 @@ describe('Storage', () => {
       getItem: jest.fn(),
       setItem: jest.fn(),
     };
-    global.window = {
-      localStorage: mockLocalStorage,
-    };
-  });
-
-  afterEach(() => {
-    delete global.window;
+    window.localStorage = mockLocalStorage;
   });
 
   test('getItem retrieve an item from local storage with prefixed key', () => {

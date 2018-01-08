@@ -7,8 +7,8 @@ import (
 	"bytes"
 
 	"github.com/logrusorgru/aurora"
-	"github.com/zalando-incubator/zally/cli/zally/domain"
-	"github.com/zalando-incubator/zally/cli/zally/tests"
+	"github.com/zalando/zally/cli/zally/domain"
+	"github.com/zalando/zally/cli/zally/tests"
 )
 
 func TestNewResultPrinter(t *testing.T) {
