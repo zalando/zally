@@ -8,12 +8,12 @@ requesting violations check at a given Zally server.
 
 1. Follow [Go installation instructions](https://golang.org/doc/install)
 
-1. Make sure that `$GOPATH` and `$GOROOT` variables are set
+1. Make sure that `$GOPATH` variable is set (and `$GOROOT` if necessary)
 
 1. Clone the repository:
 
     ```bash
-    git clone git@github.com:zalando/zally.git $GOPATH/github.com/zalando/zally
+    git clone git@github.com:zalando/zally.git $GOPATH/src/github.com/zalando/zally
     ```
 
 1. Install [golang/dep](https://github.com/golang/dep):
@@ -25,21 +25,21 @@ requesting violations check at a given Zally server.
 1. Get dependencies:
 
     ```bash
-    cd $GOPATH/github.com/zalando/zally/cli/zally
+    cd $GOPATH/src/github.com/zalando/zally/cli/zally
     dep ensure
     ```
 
 1. Run tests:
 
     ```bash
-    cd $GOPATH/github.com/zalando/zally/cli/zally
+    cd $GOPATH/src/github.com/zalando/zally/cli/zally
     ./test.sh
     ```
 
 1. Build the binary:
 
     ```bash
-    cd $GOPATH/github.com/zalando/zally/cli/zally
+    cd $GOPATH/src/github.com/zalando/zally/cli/zally
     go build
     ```
 
