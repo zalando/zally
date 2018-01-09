@@ -1,10 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
 import io.swagger.models.parameters.QueryParameter
@@ -15,7 +14,7 @@ import io.swagger.models.parameters.QueryParameter
         severity = Severity.SHOULD,
         title = "Explicitly define the Collection Format of Query Parameters"
 )
-class QueryParameterCollectionFormatRule : AbstractRule() {
+class QueryParameterCollectionFormatRule {
     private val formatsAllowed = listOf("csv", "multi")
     private val violationDescription = "CollectionFormat should be one of: $formatsAllowed"
 

@@ -1,11 +1,10 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.getAllJsonObjects
 import io.swagger.models.Swagger
 import io.swagger.models.properties.Property
@@ -17,10 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired
         severity = Severity.MUST,
         title = "Use common field names"
 )
-class CommonFieldTypesRule(@Autowired rulesConfig: Config) : AbstractRule() {
+class CommonFieldTypesRule(@Autowired rulesConfig: Config) {
 
     @Suppress("UNCHECKED_CAST")
-    private val commonFields = rulesConfig.getConfig("$name.common_types").entrySet()
+    private val commonFields = rulesConfig.getConfig("${javaClass.simpleName}.common_types").entrySet()
         .map { (key, config) -> key to config.unwrapped() as List<String?> }.toMap()
 
     fun checkField(name: String, property: Property): String? =

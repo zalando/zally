@@ -1,6 +1,5 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
@@ -26,7 +25,7 @@ import io.swagger.models.properties.RefProperty
         severity = Severity.SHOULD,
         title = "Do not leave unused definitions"
 )
-class NoUnusedDefinitionsRule : AbstractRule() {
+class NoUnusedDefinitionsRule {
 
     @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {

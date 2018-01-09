@@ -1,7 +1,6 @@
 package de.zalando.zally.apireview;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import de.zalando.zally.rule.AbstractRule;
 import de.zalando.zally.rule.TestRuleSet;
 import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.api.Rule;
@@ -43,7 +42,7 @@ public class RestApiTestConfiguration {
             severity = Severity.MUST,
             title = "schema"
     )
-    public static class TestCheckApiNameIsPresentJsonRule extends AbstractRule {
+    public static class TestCheckApiNameIsPresentJsonRule {
 
         @Check(severity = Severity.MUST)
         public Iterable<Violation> validate(final JsonNode swagger) {
@@ -64,7 +63,7 @@ public class RestApiTestConfiguration {
             severity = Severity.MUST,
             title = "Test Rule"
     )
-    public static class TestCheckApiNameIsPresentRule extends AbstractRule {
+    public static class TestCheckApiNameIsPresentRule {
 
         @Check(severity = Severity.MUST)
         public Violation validate(Swagger swagger) {
@@ -83,7 +82,7 @@ public class RestApiTestConfiguration {
             severity = Severity.HINT,
             title = "Test Hint Rule"
     )
-    public static class TestAlwaysGiveAHintRule extends AbstractRule {
+    public static class TestAlwaysGiveAHintRule {
 
         @Check(severity = Severity.HINT)
         public Violation validate(Swagger swagger) {

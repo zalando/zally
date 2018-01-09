@@ -1,6 +1,5 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
@@ -28,7 +27,7 @@ import io.swagger.models.properties.StringProperty
         severity = Severity.SHOULD,
         title = "Prefer Compatible Extensions"
 )
-class ExtensibleEnumRule : AbstractRule() {
+class ExtensibleEnumRule {
 
     @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
