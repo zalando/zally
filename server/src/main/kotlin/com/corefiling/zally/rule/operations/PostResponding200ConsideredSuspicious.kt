@@ -1,8 +1,8 @@
 package com.corefiling.zally.rule.operations
 
+import com.corefiling.pdds.zally.extensions.validateOperation
 import com.corefiling.zally.rule.CoreFilingRuleSet
 import com.corefiling.zally.rule.collections.detectCollection
-import com.corefiling.zally.rule.collections.ifNotEmptyLet
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
@@ -22,20 +22,12 @@ class PostResponding200ConsideredSuspicious : AbstractRule() {
 
     @Check(Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? =
-            swagger.paths.orEmpty()
-                    .flatMap { (pattern, path) ->
-                        path.operationMap.orEmpty().filterKeys { it == HttpMethod.POST }.flatMap { (method, op) ->
-                            op.responses.orEmpty().filterKeys { it == "200" }.map { (_, _) ->
-                                validate("$pattern $method response 200 OK", detectCollection(swagger, pattern, path))
-                            }
-                        }
-                    }
-                    .ifNotEmptyLet { Violation(description, it) }
-
-    fun validate(location: String, collection: Boolean): String? {
-        return when (collection) {
-            true -> "$location probably should be a 201 Created"
-            else -> "$location probably should be a 202 Accepted"
-        }
-    }
+            swagger.validateOperation(description) { pattern, path, method, op ->
+                when {
+                    method != HttpMethod.POST -> null
+                    op.responses["200"] == null -> null
+                    detectCollection(swagger, pattern, path) -> "response 200 OK probably should be a 201 Created"
+                    else -> "response 200 OK probably should be a 202 Accepted"
+                }
+            }
 }
