@@ -11,7 +11,7 @@ Just make sure that an issue describing the bug or feature does not already exis
 ## Pull Requests
 Follow these steps to contribute your work to Zally:
 
-1. [Open an issue](https://github.com/zalando/zally/issues) describing the problem or proposed feature. Ask maitainers (in the issue thread) to assign the issue to you so we know who is working on what.
+1. [Open an issue](https://github.com/zalando/zally/issues) describing the problem or proposed feature. Ask maintainers (in the issue thread) to assign the issue to you so we know who is working on what.
 1. Fork this repo and create a branch for your work.
 1. Push changes to your branch.
 1. Test your changes.
