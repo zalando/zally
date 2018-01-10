@@ -1,6 +1,6 @@
 package com.corefiling.pdds.zally.extensions
 
-import com.corefiling.zally.rule.collections.ifNotEmptyLet
+import com.corefiling.pdds.zally.rule.collections.ifNotEmptyLet
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.HttpMethod
 import io.swagger.models.Operation
