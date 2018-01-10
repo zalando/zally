@@ -31,7 +31,7 @@ twintip:
 rules-config-path: "rules-config.conf"
 
 zally:
-  scanPackages: com.corefiling.zally
+  scanPackages: com.corefiling.pdds.zally.rule
   ignoreRules: S005, 101, 104, 107, 110, 116, 118, 130, 134, 136, 143, 145, 172, 174, 176
   apiGuidelinesBaseUrl: "https://wiki.int.corefiling.com/platform/APIGuidelines"
   cli:
