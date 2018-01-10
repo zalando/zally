@@ -1,10 +1,9 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Swagger
 
 @Rule(
@@ -13,7 +12,7 @@ import io.swagger.models.Swagger
         severity = Severity.HINT,
         title = "Base path can be extracted"
 )
-class ExtractBasePathRule : AbstractRule() {
+class ExtractBasePathRule {
 
     private val description = "All paths start with prefix '%s'. This prefix could be part of base path."
 

@@ -4,14 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.io.Resources
 import com.typesafe.config.Config
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.rule.Result
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import java.io.IOException
@@ -23,7 +22,7 @@ import java.net.URL
         severity = Severity.MUST,
         title = "OpenAPI 2.0 schema"
 )
-open class InvalidApiSchemaRule(@Autowired rulesConfig: Config) : AbstractRule() {
+open class InvalidApiSchemaRule(@Autowired rulesConfig: Config) {
 
     private val log = LoggerFactory.getLogger(InvalidApiSchemaRule::class.java)
 
@@ -32,7 +31,7 @@ open class InvalidApiSchemaRule(@Autowired rulesConfig: Config) : AbstractRule()
     private val jsonSchemaValidator: JsonSchemaValidator
 
     init {
-        jsonSchemaValidator = getSchemaValidator(rulesConfig.getConfig(name))
+        jsonSchemaValidator = getSchemaValidator(rulesConfig.getConfig(javaClass.simpleName))
     }
 
     private fun getSchemaValidator(ruleConfig: Config): JsonSchemaValidator {

@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
 import com.google.common.collect.Sets
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
@@ -17,7 +16,7 @@ import io.swagger.models.auth.OAuth2Definition
         severity = Severity.MUST,
         title = "Secure Endpoints with OAuth 2.0"
 )
-class SecureWithOAuth2Rule : AbstractRule() {
+class SecureWithOAuth2Rule {
     private val description = "Every endpoint must be secured by OAuth2 properly"
 
     @Check(severity = Severity.MUST)

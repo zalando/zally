@@ -23,7 +23,7 @@ class RulesValidatorTest {
             severity = Severity.SHOULD,
             title = "First Rule"
     )
-    class TestFirstRule : AbstractRule() {
+    class TestFirstRule {
 
         @Check(severity = Severity.SHOULD)
         fun validate(swagger: Swagger): List<Violation> = listOf(
@@ -37,7 +37,7 @@ class RulesValidatorTest {
             severity = Severity.MUST,
             title = "Second Rule"
     )
-    class TestSecondRule : AbstractRule() {
+    class TestSecondRule {
 
         @Check(severity = Severity.MUST)
         fun validate(swagger: Swagger): Violation? =
@@ -50,7 +50,7 @@ class RulesValidatorTest {
             severity = Severity.MUST,
             title = "Third Rule"
     )
-    class TestBadRule : AbstractRule() {
+    class TestBadRule {
 
         @Check(severity = Severity.MUST)
         fun invalid(swagger: Swagger): String = "Hello World!"
