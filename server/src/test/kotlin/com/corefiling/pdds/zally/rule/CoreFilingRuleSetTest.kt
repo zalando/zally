@@ -1,6 +1,6 @@
-package com.corefiling.zally.rule
+package com.corefiling.pdds.zally.rule
 
-import com.corefiling.zally.rule.resources.SlashesAtEnd
+import com.corefiling.pdds.zally.rule.resources.SlashesAtEnd
 import de.zalando.zally.rule.api.Rule
 import org.junit.Assert.assertEquals
 import org.junit.Test
