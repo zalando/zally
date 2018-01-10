@@ -1,7 +1,7 @@
 package com.corefiling.zally.rule.operations
 
+import com.corefiling.pdds.zally.extensions.validateOperation
 import com.corefiling.zally.rule.CoreFilingRuleSet
-import com.corefiling.zally.rule.collections.ifNotEmptyLet
 import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
@@ -22,19 +22,11 @@ class AtMostOneBodyParameter : AbstractRule() {
 
     @Check(Severity.MUST)
     fun validate(swagger: Swagger): Violation? =
-            swagger.paths.orEmpty()
-                    .flatMap { (pattern, path) ->
-                        path.operationMap.orEmpty().map { (method, op) ->
-                            val bodies = op.parameters.orEmpty().filter { it is BodyParameter }
-                            validate("$pattern $method", bodies)
-                        }
-                    }
-                    .ifNotEmptyLet { Violation(description, it) }
-
-    fun validate(location: String, parameters: List<Parameter>): String? {
-        return when {
-            parameters.size > 1 -> "$location has multiple body parameters ${parameters.map(Parameter::getName)}"
-            else -> null
-        }
-    }
+            swagger.validateOperation(description) { _, _, _, op ->
+                val bodies = op.parameters.orEmpty().filter { it is BodyParameter }
+                when {
+                    bodies.size > 1 -> "has multiple body parameters ${bodies.map(Parameter::getName)}"
+                    else -> null
+                }
+            }
 }
