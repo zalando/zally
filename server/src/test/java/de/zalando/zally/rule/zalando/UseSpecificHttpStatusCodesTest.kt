@@ -18,7 +18,7 @@ class UseSpecificHttpStatusCodesTest {
                 "get" to listOf("304") + allowedToAll,
                 "post" to listOf("201", "202", "207", "303") + allowedToAll,
                 "put" to listOf("201", "202", "204", "303", "409", "412", "415", "423") + allowedToAll,
-                "patch" to listOf("202", "303", "409", "412", "415", "423") + allowedToAll,
+                "patch" to listOf("202", "204", "303", "409", "412", "415", "423") + allowedToAll,
                 "delete" to listOf("202", "204", "303", "409", "412", "415", "423") + allowedToAll
         )
 
@@ -38,7 +38,7 @@ class UseSpecificHttpStatusCodesTest {
                 "get" to listOf("201", "202", "204", "207", "303", "409", "412", "415", "423") + notAllowedAll,
                 "post" to listOf("204", "304", "409", "412", "415", "423") + notAllowedAll,
                 "put" to listOf("304") + notAllowedAll,
-                "patch" to listOf("201", "204", "304") + notAllowedAll,
+                "patch" to listOf("201", "304") + notAllowedAll,
                 "delete" to listOf("201", "304") + notAllowedAll
         )
         val swagger = swaggerWithOperations(operations)
