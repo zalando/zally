@@ -23,7 +23,6 @@ public class WordUtilTest {
         assertTrue(isPlural("domains"));
         assertTrue(isPlural("addresses"));
         assertTrue(isPlural("bank-accounts"));
-
     }
 
     @Test
@@ -48,5 +47,6 @@ public class WordUtilTest {
     @Test
     public void specialCasePluralized() {
         assertTrue(isPlural("vat")); //whitelisted
+        assertTrue(isPlural("content")); //whitelisted
     }
 }
