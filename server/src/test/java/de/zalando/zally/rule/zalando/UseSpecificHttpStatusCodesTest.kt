@@ -11,7 +11,7 @@ class UseSpecificHttpStatusCodesTest {
     @Test
     fun shouldPassIfOperationsAreAllowed() {
         val allowedToAll = listOf(
-                "200", "301", "400", "401", "403", "404", "405", "406", "408", "410", "428", "429",
+                "200", "301", "307", "400", "401", "403", "404", "405", "406", "408", "410", "428", "429",
                 "500", "501", "503"
         )
         val operations = mapOf(
@@ -30,7 +30,7 @@ class UseSpecificHttpStatusCodesTest {
     @Test
     fun shouldNotPassIfOperationsAreNotAllowed() {
         val notAllowedAll = listOf(
-                "203", "205", "206", "208", "226", "302", "305", "306", "307", "308", "402", "407", "411",
+                "203", "205", "206", "208", "226", "302", "305", "306", "308", "402", "407", "411",
                 "413", "414", "416", "417", "418", "421", "422", "424", "426", "431", "451", "502", "504",
                 "505", "506", "507", "508", "510", "511"
         )
