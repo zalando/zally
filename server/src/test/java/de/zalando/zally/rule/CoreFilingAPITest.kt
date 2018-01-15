@@ -55,9 +55,7 @@ class CoreFilingAPITest {
     fun `commenting-service`() {
         val results = validate("platform", "commenting-service",
                 // ignoring rules that historically failed for this service
-                policy.withMoreIgnores(listOf(
-                        "150" // UseSpecificHttpStatusCodes
-                )))
+                policy.withMoreIgnores(emptyList()))
 
         assertEmptyResults(results)
     }
@@ -121,7 +119,6 @@ class CoreFilingAPITest {
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
                         "SlashesAtEnd",
                         "120", // PluralizeNamesForArraysRule
-                        "146", // LimitNumberOfResourcesRule
                         "150", // UseSpecificHttpStatusCodes
                         "151"  // NotSpecifyStandardErrorCodesRule
                 )))
@@ -211,7 +208,6 @@ class CoreFilingAPITest {
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
                         "MatchingSummaryAndOperationIdNames",
                         "SlashesAtEnd",
-                        "146", // LimitNumberOfResourcesRule
                         "150", // UseSpecificHttpStatusCodes
                         "151"  // NotSpecifyStandardErrorCodesRule
         )))
