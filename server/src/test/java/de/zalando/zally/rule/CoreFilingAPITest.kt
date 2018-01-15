@@ -21,6 +21,18 @@ class CoreFilingAPITest {
     lateinit var validator: CompositeRulesValidator
 
     @Test
+    fun `bundle-service`() {
+        val results = validate("platform", "bundle-service",
+                // ignoring rules that historically failed for this service
+                policy.withMoreIgnores(listOf(
+                        "146", // LimitNumberOfResourcesRule
+                        "150" // UseSpecificHttpStatusCodes
+        )))
+
+        assertEmptyResults(results)
+    }
+
+    @Test
     fun `document-service`() {
         val results = validate("platform", "document-service",
                 // ignoring rules that historically failed for this service
@@ -177,6 +189,18 @@ class CoreFilingAPITest {
     }
 
     @Test
+    fun `taxonomy-modelling-service`() {
+        val results = validate("tms", "taxonomy-modelling-service",
+                // ignoring rules that historically failed for this service
+                policy.withMoreIgnores(listOf(
+                        "MatchingSummaryAndOperationIdNames",
+                        "150" // UseSpecificHttpStatusCodes
+        )))
+
+        assertEmptyResults(results)
+    }
+
+    @Test
     fun `table-diff-service`() {
         val results = validate("labs", "table-diff-service",
                 // ignoring rules that historically failed for this service
@@ -246,7 +270,9 @@ class CoreFilingAPITest {
         val uri = URI.create("https://gitlab.int.corefiling.com/" + group + "/" + project + "/raw/" + branch + "/src/swagger.yaml")
         println(uri)
 
-        val text = uri.toURL().readText()
+
+        val toURL = uri.toURL()
+        val text = toURL.readText()
         return validator.validate(text, policy.withMoreIgnores(listOf("TestAlwaysGiveAHintRule")))
     }
 
