@@ -263,13 +263,10 @@ class CoreFilingAPITest {
     }
 
     private fun validate(group: String, project: String, policy: RulesPolicy, branch: String = "develop"): List<Result> {
-        val uri = URI.create("https://gitlab.int.corefiling.com/" + group + "/" + project + "/raw/" + branch + "/src/swagger.yaml")
+        val uri = URI.create("https://gitlab.int.corefiling.com/$group/$project/raw/$branch/src/swagger.yaml")
         println(uri)
 
-
-        val toURL = uri.toURL()
-        val text = toURL.readText()
-        return validator.validate(text, policy.withMoreIgnores(listOf("TestAlwaysGiveAHintRule")))
+        return validator.validate(uri.toURL().readText(), policy.withMoreIgnores(listOf("TestAlwaysGiveAHintRule")))
     }
 
     private fun assertEmptyResults(results: List<Result>) {
