@@ -1,10 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import io.swagger.models.ComposedModel
 import io.swagger.models.HttpMethod
 import io.swagger.models.Model
@@ -21,7 +20,7 @@ import io.swagger.models.properties.RefProperty
         severity = Severity.MUST,
         title = "Use Problem JSON"
 )
-class UseProblemJsonRule : AbstractRule() {
+class UseProblemJsonRule {
     private val description = "Operations Should Return Problem JSON When Any Problem Occurs During Processing " +
         "Whether Caused by Client Or Server"
     private val requiredFields = setOf("title", "status")

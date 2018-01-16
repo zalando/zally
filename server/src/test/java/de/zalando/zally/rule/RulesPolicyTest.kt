@@ -1,9 +1,9 @@
 package de.zalando.zally.rule
 
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Swagger
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -18,7 +18,7 @@ class RulesPolicyTest {
             severity = Severity.MUST,
             title = "Test Rule"
     )
-    class TestRule(val result: Violation?) : AbstractRule() {
+    class TestRule(val result: Violation?) {
 
         @Check(severity = Severity.MUST)
         fun validate(swagger: Swagger): Violation? = result
