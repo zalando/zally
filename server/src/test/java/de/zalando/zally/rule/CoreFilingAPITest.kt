@@ -53,9 +53,7 @@ class CoreFilingAPITest {
 
     @Test
     fun `commenting-service`() {
-        val results = validate("platform", "commenting-service",
-                // ignoring rules that historically failed for this service
-                policy.withMoreIgnores(emptyList()))
+        val results = validate("platform", "commenting-service", policy)
 
         assertEmptyResults(results)
     }
