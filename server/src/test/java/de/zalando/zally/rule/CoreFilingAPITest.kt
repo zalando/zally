@@ -21,6 +21,18 @@ class CoreFilingAPITest {
     lateinit var validator: CompositeRulesValidator
 
     @Test
+    fun `bundle-service`() {
+        val results = validate("platform", "bundle-service",
+                // ignoring rules that historically failed for this service
+                policy.withMoreIgnores(listOf(
+                        "146", // LimitNumberOfResourcesRule
+                        "150" // UseSpecificHttpStatusCodes
+        )))
+
+        assertEmptyResults(results)
+    }
+
+    @Test
     fun `document-service`() {
         val results = validate("platform", "document-service",
                 // ignoring rules that historically failed for this service
@@ -41,11 +53,7 @@ class CoreFilingAPITest {
 
     @Test
     fun `commenting-service`() {
-        val results = validate("platform", "commenting-service",
-                // ignoring rules that historically failed for this service
-                policy.withMoreIgnores(listOf(
-                        "150" // UseSpecificHttpStatusCodes
-                )))
+        val results = validate("platform", "commenting-service", policy)
 
         assertEmptyResults(results)
     }
@@ -109,7 +117,6 @@ class CoreFilingAPITest {
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
                         "SlashesAtEnd",
                         "120", // PluralizeNamesForArraysRule
-                        "146", // LimitNumberOfResourcesRule
                         "150", // UseSpecificHttpStatusCodes
                         "151"  // NotSpecifyStandardErrorCodesRule
                 )))
@@ -177,6 +184,18 @@ class CoreFilingAPITest {
     }
 
     @Test
+    fun `taxonomy-modelling-service`() {
+        val results = validate("tms", "taxonomy-modelling-service",
+                // ignoring rules that historically failed for this service
+                policy.withMoreIgnores(listOf(
+                        "MatchingSummaryAndOperationIdNames",
+                        "150" // UseSpecificHttpStatusCodes
+        )))
+
+        assertEmptyResults(results)
+    }
+
+    @Test
     fun `table-diff-service`() {
         val results = validate("labs", "table-diff-service",
                 // ignoring rules that historically failed for this service
@@ -187,7 +206,6 @@ class CoreFilingAPITest {
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
                         "MatchingSummaryAndOperationIdNames",
                         "SlashesAtEnd",
-                        "146", // LimitNumberOfResourcesRule
                         "150", // UseSpecificHttpStatusCodes
                         "151"  // NotSpecifyStandardErrorCodesRule
         )))
@@ -243,11 +261,10 @@ class CoreFilingAPITest {
     }
 
     private fun validate(group: String, project: String, policy: RulesPolicy, branch: String = "develop"): List<Result> {
-        val uri = URI.create("https://gitlab.int.corefiling.com/" + group + "/" + project + "/raw/" + branch + "/src/swagger.yaml")
+        val uri = URI.create("https://gitlab.int.corefiling.com/$group/$project/raw/$branch/src/swagger.yaml")
         println(uri)
 
-        val text = uri.toURL().readText()
-        return validator.validate(text, policy.withMoreIgnores(listOf("TestAlwaysGiveAHintRule")))
+        return validator.validate(uri.toURL().readText(), policy.withMoreIgnores(listOf("TestAlwaysGiveAHintRule")))
     }
 
     private fun assertEmptyResults(results: List<Result>) {
