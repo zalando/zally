@@ -52,7 +52,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile("io.swagger:swagger-parser:1.0.28")
+    compile("io.swagger:swagger-parser:1.0.34")
     compile("com.github.java-json-tools:json-schema-validator:2.2.8")
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-undertow")
