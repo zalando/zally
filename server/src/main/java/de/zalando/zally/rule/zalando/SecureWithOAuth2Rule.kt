@@ -23,12 +23,13 @@ class SecureWithOAuth2Rule {
     fun checkSecurityDefinitions(swagger: Swagger): Violation? {
         val hasOAuth = swagger.securityDefinitions.orEmpty().values.any { it.type?.toLowerCase() == "oauth2" }
         val containsHttpScheme = swagger.schemes.orEmpty().contains(Scheme.HTTP)
-        return if (!hasOAuth)
+        return if (!hasOAuth) {
             Violation("No OAuth2 security definitions found", emptyList())
-        else if (containsHttpScheme)
+        } else if (containsHttpScheme) {
             Violation("OAuth2 should be only used together with https", emptyList())
-        else
+        } else {
             null
+        }
     }
 
     @Check(severity = Severity.SHOULD)
