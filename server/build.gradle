@@ -61,7 +61,7 @@ dependencies {
         exclude group: "org.hibernate", module: "hibernate-entitymanager"
     }
     compile('org.flywaydb:flyway-core:4.1.2')
-    compile('org.hsqldb:hsqldb:2.3.3')
+    compile('org.hsqldb:hsqldb:2.4.0')
     compile('org.postgresql:postgresql:42.1.1')
     compile('org.hibernate:hibernate-core:5.2.9.Final')
     compile('org.jadira.usertype:usertype.core:6.0.1.GA') {
