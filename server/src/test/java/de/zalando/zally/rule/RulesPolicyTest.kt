@@ -20,6 +20,7 @@ class RulesPolicyTest {
     )
     class TestRule(val result: Violation?) {
 
+        @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
         fun validate(swagger: Swagger): Violation? = result
     }

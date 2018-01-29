@@ -25,6 +25,7 @@ class RulesValidatorTest {
     )
     class TestFirstRule {
 
+        @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.SHOULD)
         fun validate(swagger: Swagger): List<Violation> = listOf(
                 Violation("dummy1", listOf("x", "y", "z")),
@@ -39,6 +40,7 @@ class RulesValidatorTest {
     )
     class TestSecondRule {
 
+        @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
         fun validate(swagger: Swagger): Violation? =
                 Violation("dummy3", listOf("a"))
@@ -52,9 +54,11 @@ class RulesValidatorTest {
     )
     class TestBadRule {
 
+        @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
         fun invalid(swagger: Swagger): String = "Hello World!"
 
+        @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
         fun invalidParams(swagger: Swagger, json: JsonNode): Violation? = null
     }
