@@ -37,10 +37,12 @@ class CoreFilingAPITest {
         val results = validate("platform", "document-service",
                 // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
+                        "CollectionsArePlural",
                         "CollectionsReturnTotalItemsHeader",
                         "PaginatedCollectionsReturnTotalPagesHeader",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
+                        "PathParamProceededByPlural",
                         "SlashesAtEnd",
                         "146", // LimitNumberOfResourcesRule
                         "150", // UseSpecificHttpStatusCodes
@@ -189,6 +191,7 @@ class CoreFilingAPITest {
                 // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "MatchingSummaryAndOperationIdNames",
+                        "146", // LimitNumberOfResourcesRule
                         "150" // UseSpecificHttpStatusCodes
         )))
 
