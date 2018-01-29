@@ -57,7 +57,7 @@ build web-ui:
     - yarn install --frozen-lockfile --non-interactive
     - yarn run build
   cache:
-    key: "$CI_COMMIT_REF_SLUG/node"
+    key: "$CI_COMMIT_REF_SLUG"
     paths:
       - web-ui/node_modules
   artifacts:
