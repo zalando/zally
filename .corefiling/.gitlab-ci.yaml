@@ -87,6 +87,7 @@ build cli:
     paths:
       - cli/Dockerfile
       - cli/zally/zally
+      - cli/zally/cflzally.sh
 
 ##
 # Docker
@@ -111,12 +112,16 @@ build cli:
     - image="artifacts.int.corefiling.com:5000/$CI_PROJECT_PATH/$component:$tag"
     - echo "$tag" > "../$component.imageTag"
     - echo "Building $image"
-    - docker build -t "$image" .
+    - docker build $BUILD_ARGS -t "$image" .
     - docker push "$image"
 
 docker server: *docker
 docker web-ui: *docker
-docker cli: *docker
+docker cli: 
+  <<: *docker
+  variables:
+    GIT_STRATEGY: none
+    BUILD_ARGS: --build-arg ZALLY_GITLAB_TOKEN=$GITLAB_TOKEN
 
 ##
 # Deploy
