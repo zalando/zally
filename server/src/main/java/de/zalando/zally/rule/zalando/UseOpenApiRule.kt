@@ -20,11 +20,11 @@ import java.net.URL
         ruleSet = ZalandoRuleSet::class,
         id = "101",
         severity = Severity.MUST,
-        title = "OpenAPI 2.0 schema"
+        title = "Provide API Specification using OpenAPI"
 )
-open class InvalidApiSchemaRule(@Autowired rulesConfig: Config) {
+open class UseOpenApiRule(@Autowired rulesConfig: Config) {
 
-    private val log = LoggerFactory.getLogger(InvalidApiSchemaRule::class.java)
+    private val log = LoggerFactory.getLogger(UseOpenApiRule::class.java)
 
     open val description = "Given file is not OpenAPI 2.0 compliant."
 

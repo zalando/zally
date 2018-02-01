@@ -6,7 +6,7 @@ import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.api.Violation;
-import de.zalando.zally.rule.zalando.InvalidApiSchemaRule;
+import de.zalando.zally.rule.zalando.UseOpenApiRule;
 import io.swagger.models.Swagger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +22,7 @@ import java.util.Collections;
 public class RestApiTestConfiguration {
 
     @Autowired
-    private InvalidApiSchemaRule invalidApiRule;
+    private UseOpenApiRule invalidApiRule;
 
     @Bean
     @Primary
