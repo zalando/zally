@@ -86,4 +86,12 @@ class UseOpenApiRuleTest {
         assertThat(validations).hasSize(1)
         assertThat(validations[0].description).isEqualTo("""object has missing required properties (["paths"])""")
     }
+
+    @Test
+    fun shouldCheckApiTitle() {
+        val swagger = getResourceJson("no_title.yaml")
+        val violations = rule.validate(swagger)
+        assertThat(violations).hasSize(1)
+        assertThat(violations[0].description).isEqualTo("object has missing required properties ([\"title\"])")
+    }
 }
