@@ -23,13 +23,17 @@ public class JadlerUtil {
     }
 
     public static String stubResource(String resourceName, String responseBody, String contentType) {
+        return stubResource(resourceName, responseBody, OK.value(), contentType);
+    }
+
+    public static String stubResource(String resourceName, String responseBody, int status, String contentType) {
         String url = String.format("http://localhost:%d/%s", port(), resourceName);
 
         onRequest()
             .havingMethodEqualTo(GET.name())
             .havingPathEqualTo("/" + resourceName)
             .respond()
-            .withStatus(OK.value())
+            .withStatus(status)
             .withHeader(CONTENT_TYPE, contentType)
             .withBody(responseBody);
 

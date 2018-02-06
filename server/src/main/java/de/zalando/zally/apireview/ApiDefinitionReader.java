@@ -13,11 +13,8 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.stream.Stream;
 
-import static java.lang.String.format;
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.parseMediaTypes;
 
@@ -29,6 +26,7 @@ public class ApiDefinitionReader {
 
     // a whitelist of mime-types to accept when expecting JSON or YAML
     private static final List<MediaType> MEDIA_TYPE_WHITELIST = parseMediaTypes(asList(
+        // standard YAML mime-type plus variants
         "application/yaml",
         "application/x-yaml",
         "application/vnd.yaml",
@@ -36,12 +34,14 @@ public class ApiDefinitionReader {
         "text/x-yaml",
         "text/vnd.yaml",
 
+        // standard JSON mime-type plus variants
         "application/json",
         "application/javascript",
         "text/javascript",
         "text/x-javascript",
         "text/x-json",
 
+        // github.com raw content pages issue text/plain content type for YAML
         "text/plain"
     ));
 
