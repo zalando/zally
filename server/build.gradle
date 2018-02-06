@@ -8,7 +8,7 @@ def versions = [
 
 buildscript {
 
-    ext.kotlin_version = '1.2.0'
+    ext.kotlin_version = '1.2.21'
 
     repositories {
         mavenCentral()
@@ -18,7 +18,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
         classpath('com.github.ben-manes:gradle-versions-plugin:0.15.0')
@@ -52,7 +52,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile("io.swagger:swagger-parser:1.0.28")
+    compile("io.swagger:swagger-parser:1.0.34")
     compile("com.github.java-json-tools:json-schema-validator:2.2.8")
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-undertow")
@@ -61,7 +61,7 @@ dependencies {
         exclude group: "org.hibernate", module: "hibernate-entitymanager"
     }
     compile('org.flywaydb:flyway-core:4.1.2')
-    compile('org.hsqldb:hsqldb:2.3.3')
+    compile('org.hsqldb:hsqldb:2.4.0')
     compile('org.postgresql:postgresql:42.1.1')
     compile('org.hibernate:hibernate-core:5.2.9.Final')
     compile('org.jadira.usertype:usertype.core:6.0.1.GA') {
@@ -71,10 +71,10 @@ dependencies {
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jdk8")
     compile("com.fasterxml.jackson.module:jackson-module-kotlin")
-    compile("org.zalando.stups:stups-spring-oauth2-server:1.0.19")
-    compile("org.zalando:problem-spring-web:0.22.0")
+    compile("org.zalando.stups:stups-spring-oauth2-server:1.0.20")
+    compile("org.zalando:problem-spring-web:0.22.1")
     compile("org.zalando:twintip-spring-web:1.1.0")
-    compile("org.zalando.zmon:zmon-actuator:0.9.7")
+    compile("org.zalando.zmon:zmon-actuator:0.9.8")
     compile("io.dropwizard.metrics:metrics-core:3.2.2")
     compile("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
     compile("com.typesafe:config:1.3.2")
@@ -86,7 +86,7 @@ dependencies {
     testCompile("org.assertj:assertj-core:3.7.0")
     testCompile('com.jayway.jsonpath:json-path-assert')
 
-    ktlint("com.github.shyiko:ktlint:0.14.0")
+    ktlint("com.github.shyiko:ktlint:0.15.0")
 }
 
 jacoco {
