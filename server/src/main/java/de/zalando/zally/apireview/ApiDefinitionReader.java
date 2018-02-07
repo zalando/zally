@@ -4,6 +4,9 @@ import de.zalando.zally.dto.ApiDefinitionRequest;
 import de.zalando.zally.exception.MissingApiDefinitionException;
 import de.zalando.zally.exception.UnaccessibleResourceUrlException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE;
 import static org.springframework.http.MediaType.parseMediaTypes;
 
 @Component
@@ -64,23 +67,23 @@ public class ApiDefinitionReader {
 
     private String readFromUrl(String url) throws UnaccessibleResourceUrlException {
         try {
-            final ResponseEntity<String> response = client.getForEntity(removeSpecialCharactersSuffix(url), String.class);
+            final HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(MEDIA_TYPE_WHITELIST);
 
-            final HttpStatus status = response.getStatusCode();
-            if (!status.is2xxSuccessful()) {
-                throw new UnaccessibleResourceUrlException("Unexpected response " + status.value() + " " + status.getReasonPhrase(), BAD_REQUEST);
-            }
+            final HttpEntity<String> entity = new HttpEntity<>(null, headers);
+
+            final ResponseEntity<String> response = client.exchange(removeSpecialCharactersSuffix(url), HttpMethod.GET, entity, String.class);
 
             final MediaType contentType = response.getHeaders().getContentType();
             if (MEDIA_TYPE_WHITELIST.stream().noneMatch(contentType::isCompatibleWith)) {
-                throw new UnaccessibleResourceUrlException("Unexpected content type in response: " + contentType, BAD_REQUEST);
+                throw new UnaccessibleResourceUrlException("Unexpected content type while retrieving api definition url: " + contentType, UNSUPPORTED_MEDIA_TYPE);
             }
 
             return response.getBody();
         } catch (HttpClientErrorException exception) {
-            throw new UnaccessibleResourceUrlException(exception.getMessage(), exception.getStatusCode());
+            throw new UnaccessibleResourceUrlException(exception.getMessage() + " while retrieving api definition url", exception.getStatusCode());
         } catch (ResourceAccessException exception) {
-            throw new UnaccessibleResourceUrlException("Unknown host: " + exception.getCause().getMessage(), HttpStatus.NOT_FOUND);
+            throw new UnaccessibleResourceUrlException("Unknown host while retrieving api definition url: " + exception.getCause().getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 

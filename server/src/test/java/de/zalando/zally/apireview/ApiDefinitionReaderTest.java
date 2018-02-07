@@ -74,8 +74,7 @@ public class ApiDefinitionReaderTest {
 
     @Test(expected = UnaccessibleResourceUrlException.class)
     public void shouldErrorBadRequestWhenDefinitionFromUrlUnsuccessful() {
-        final int status = HttpStatus.UNAUTHORIZED.value();
-        String url = JadlerUtil.stubResource("test.json", "", status, APPLICATION_JSON_VALUE);
+        String url = JadlerUtil.stubResource("test.json", "", HttpStatus.UNAUTHORIZED.value(), APPLICATION_JSON_VALUE);
 
         reader.read(ApiDefinitionRequest.Factory.fromUrl(url));
     }
