@@ -135,11 +135,13 @@ func TestIntegrationWithZallyApiDefinition(t *testing.T) {
 	t.Run("integrationWithZallyApiDefinition", func(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/main/resources/api/zally-api.yaml"})
 
-		assert.Contains(t, out, "[33mSHOULD[0m [33mUse Specific HTTP Status Codes[0m")
+		assert.Contains(t, out, "[33mSHOULD[0m [33mUse Specific HTTP Status Codes[0m")
+		assert.Contains(t, out, "[36mHINT[0m [36mNot Specify Standard Error Codes[0m")
+
 		assert.Contains(t, out, "MUST violations: 0")
 		assert.Contains(t, out, "SHOULD violations: 1")
 		assert.Contains(t, out, "MAY violations: 0")
-		assert.Contains(t, out, "HINT violations: 0")
+		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.Nil(t, e)
 	})
@@ -149,7 +151,7 @@ func TestIntegrationDisplayRulesList(t *testing.T) {
 	t.Run("integrationDisplayRulesList", func(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "rules"})
 
-		assert.Contains(t, out, "[31m166[0m [31mMUST[0m: Avoid Link in Header Rule")
+		assert.Contains(t, out, "[31m166[0m [31mMUST[0m: Avoid Link in Header Rule")
 		assert.Contains(t, out, "https://zalando.github.io/restful-api-guidelines/#166")
 
 		assert.Nil(t, e)

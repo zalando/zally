@@ -179,7 +179,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
         );
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(NOT_FOUND);
-        assertThat(responseEntity.getBody().getDetail()).isEqualTo("Unknown host: remote-localhost");
+        assertThat(responseEntity.getBody().getDetail()).isEqualTo("Unknown host while retrieving api definition url: remote-localhost");
     }
 
     @Test
@@ -190,7 +190,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
         );
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(NOT_FOUND);
-        assertThat(responseEntity.getBody().getDetail()).isEqualTo("404 Not Found");
+        assertThat(responseEntity.getBody().getDetail()).isEqualTo("404 Not Found while retrieving api definition url");
     }
 
     @Test
