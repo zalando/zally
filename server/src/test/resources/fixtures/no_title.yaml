@@ -1,0 +1,14 @@
+swagger: "2.0"
+info:
+  description: Test Description
+  version: "1.0.0"
+  contact:
+    name: John Smith
+    email: smith@example.com
+paths:
+  /articles:
+    get:
+      summary: returns list of articles
+      responses:
+        200:
+          description: Success

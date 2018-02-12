@@ -20,11 +20,11 @@ import java.net.URL
         ruleSet = ZalandoRuleSet::class,
         id = "101",
         severity = Severity.MUST,
-        title = "OpenAPI 2.0 schema"
+        title = "Provide API Specification using OpenAPI"
 )
-open class InvalidApiSchemaRule(@Autowired rulesConfig: Config) {
+open class UseOpenApiRule(@Autowired rulesConfig: Config) {
 
-    private val log = LoggerFactory.getLogger(InvalidApiSchemaRule::class.java)
+    private val log = LoggerFactory.getLogger(UseOpenApiRule::class.java)
 
     open val description = "Given file is not OpenAPI 2.0 compliant."
 
@@ -32,6 +32,15 @@ open class InvalidApiSchemaRule(@Autowired rulesConfig: Config) {
 
     init {
         jsonSchemaValidator = getSchemaValidator(rulesConfig.getConfig(javaClass.simpleName))
+    }
+
+    @Check(severity = Severity.MUST)
+    fun validate(swagger: JsonNode): List<Violation> {
+        return jsonSchemaValidator.validate(swagger).let { validationResult ->
+            validationResult.messages.map { message ->
+                Violation(message.message, listOf(message.path))
+            }
+        }
     }
 
     private fun getSchemaValidator(ruleConfig: Config): JsonSchemaValidator {
@@ -58,15 +67,6 @@ open class InvalidApiSchemaRule(@Autowired rulesConfig: Config) {
         val schemaUrl = Resources.getResource("schemas/swagger-schema.json")
         val schema = ObjectTreeReader().readJson(schemaUrl)
         return JsonSchemaValidator(schema, schemaRedirects = mapOf(referencedOnlineSchema to localResource))
-    }
-
-    @Check(severity = Severity.MUST)
-    fun validate(swagger: JsonNode): List<Violation> {
-        return jsonSchemaValidator.validate(swagger).let { validationResult ->
-            validationResult.messages.map { message ->
-                Violation(message.message, listOf(message.path))
-            }
-        }
     }
 
     fun getGeneralViolation(): Result =

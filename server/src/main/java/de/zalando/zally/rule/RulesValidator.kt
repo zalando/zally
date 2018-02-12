@@ -1,10 +1,10 @@
 package de.zalando.zally.rule
 
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
+import de.zalando.zally.rule.zalando.UseOpenApiRule
 import org.slf4j.LoggerFactory
 
-abstract class RulesValidator<RootT>(val rules: RulesManager, private val invalidApiRule: InvalidApiSchemaRule) : ApiValidator {
+abstract class RulesValidator<RootT>(val rules: RulesManager, private val useOpenApiRule: UseOpenApiRule) : ApiValidator {
 
     private val log = LoggerFactory.getLogger(RulesValidator::class.java)
 
@@ -13,7 +13,7 @@ abstract class RulesValidator<RootT>(val rules: RulesManager, private val invali
     val zallyIgnoreExtension = "x-zally-ignore"
 
     final override fun validate(content: String, requestPolicy: RulesPolicy): List<Result> {
-        val root = parse(content) ?: return listOf(invalidApiRule.getGeneralViolation())
+        val root = parse(content) ?: return listOf(useOpenApiRule.getGeneralViolation())
 
         val moreIgnores = ignores(root)
         log.debug("ignoring $moreIgnores from document as well as ${requestPolicy.ignoreRules}")

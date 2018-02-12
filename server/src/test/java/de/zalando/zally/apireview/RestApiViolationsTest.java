@@ -143,7 +143,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
         );
 
         assertThat(response.getViolations()).hasSize(1);
-        assertThat(response.getViolations().get(0).getTitle()).isEqualTo("OpenAPI 2.0 schema");
+        assertThat(response.getViolations().get(0).getTitle()).isEqualTo("Provide API Specification using OpenAPI");
     }
 
     @Test

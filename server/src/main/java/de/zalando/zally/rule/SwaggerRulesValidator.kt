@@ -1,6 +1,6 @@
 package de.zalando.zally.rule
 
-import de.zalando.zally.rule.zalando.InvalidApiSchemaRule
+import de.zalando.zally.rule.zalando.UseOpenApiRule
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class SwaggerRulesValidator(@Autowired rules: RulesManager,
-                            @Autowired invalidApiRule: InvalidApiSchemaRule) : RulesValidator<Swagger>(rules, invalidApiRule) {
+                            @Autowired useOpenApiRule: UseOpenApiRule) : RulesValidator<Swagger>(rules, useOpenApiRule) {
 
     override fun parse(content: String): Swagger? {
         return try {
