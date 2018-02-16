@@ -123,7 +123,7 @@ func TestIntegrationWithNoMustViolations(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/no_must_violations.yaml"})
 
 		assert.Contains(t, out, "MUST violations: 0")
-		assert.Contains(t, out, "SHOULD violations: 3")
+		assert.Contains(t, out, "SHOULD violations: 2")
 		assert.Contains(t, out, "MAY violations: 1")
 		assert.Contains(t, out, "HINT violations: 0")
 
