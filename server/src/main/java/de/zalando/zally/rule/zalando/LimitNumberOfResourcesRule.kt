@@ -28,11 +28,11 @@ class LimitNumberOfResourcesRule(@Autowired rulesConfig: Config) {
         } else null
     }
 
-    fun resourceTypes(paths: Collection<String>): List<String> {
+    internal fun resourceTypes(paths: Collection<String>): List<String> {
         return paths.map(this::resourceType).distinct()
     }
 
-    fun resourceType(path: String): String {
+    internal fun resourceType(path: String): String {
         val components = path
                 .split(Regex("/+"))
                 .filter(String::isNotEmpty)
