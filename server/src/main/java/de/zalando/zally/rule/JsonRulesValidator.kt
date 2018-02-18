@@ -1,13 +1,11 @@
 package de.zalando.zally.rule
 
 import com.fasterxml.jackson.databind.JsonNode
-import de.zalando.zally.rule.zalando.UseOpenApiRule
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class JsonRulesValidator(@Autowired rules: RulesManager,
-                         @Autowired useOpenApiRule: UseOpenApiRule) : RulesValidator<JsonNode>(rules, useOpenApiRule) {
+class JsonRulesValidator(@Autowired rules: RulesManager) : RulesValidator<JsonNode>(rules) {
 
     private val reader = ObjectTreeReader()
 
