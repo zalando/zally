@@ -31,7 +31,8 @@ public class RestApiTestConfiguration {
         return Arrays.asList(
                 new TestCheckApiNameIsPresentJsonRule(),
                 new TestCheckApiNameIsPresentRule(),
-                new TestAlwaysGiveAHintRule()
+                new TestAlwaysGiveAHintRule(),
+                invalidApiRule
         );
     }
 
