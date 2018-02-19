@@ -5,7 +5,7 @@ import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Rule
-import de.zalando.zally.rule.zalando.HttpHeadersRule
+import de.zalando.zally.rule.HttpHeadersRule
 import de.zalando.zally.util.PatternUtil
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
