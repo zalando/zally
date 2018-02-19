@@ -1,6 +1,5 @@
 package de.zalando.zally.rule
 
-import de.zalando.zally.rule.zalando.UseOpenApiRule
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,8 +10,7 @@ import org.springframework.stereotype.Component
  * on set of rules. It will sort the output by path.
  */
 @Component
-class SwaggerRulesValidator(@Autowired rules: RulesManager,
-                            @Autowired useOpenApiRule: UseOpenApiRule) : RulesValidator<Swagger>(rules, useOpenApiRule) {
+class SwaggerRulesValidator(@Autowired rules: RulesManager) : RulesValidator<Swagger>(rules) {
 
     override fun parse(content: String): Swagger? {
         return try {

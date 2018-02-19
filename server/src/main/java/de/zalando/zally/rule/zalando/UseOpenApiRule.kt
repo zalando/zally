@@ -6,7 +6,6 @@ import com.google.common.io.Resources
 import com.typesafe.config.Config
 import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.rule.ObjectTreeReader
-import de.zalando.zally.rule.Result
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -68,7 +67,4 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
         val schema = ObjectTreeReader().readJson(schemaUrl)
         return JsonSchemaValidator(schema, schemaRedirects = mapOf(referencedOnlineSchema to localResource))
     }
-
-    fun getGeneralViolation(): Result =
-            Result(ZalandoRuleSet(), this.javaClass.getAnnotation(Rule::class.java), description, Severity.MUST, emptyList())
 }
