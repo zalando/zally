@@ -1,5 +1,6 @@
 package de.zalando.zally.apireview;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class ApiViolationsControllerTest {
     private MockMvc mvc;
 
     @Test
+    @Ignore("Test requires UseOpenApiRule which we disable for lack of yaml anchor/reference support")
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     public void violationsResponseReferencesFullGuidelinesUrl() throws Exception {
         mvc.perform(

@@ -13,6 +13,7 @@ import de.zalando.zally.util.ResourceUtil;
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.LocalManagementPort;
@@ -137,6 +138,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
     }
 
     @Test
+    @Ignore("Test requires UseOpenApiRule which we disable for lack of yaml anchor/reference support")
     public void shouldRespondWithViolationWhenApiDefinitionFieldIsNotValidSwaggerDefinition() throws IOException {
         ApiDefinitionResponse response = sendApiDefinition(
                 ApiDefinitionRequest.Factory.fromJson("\"no swagger definition\"")
