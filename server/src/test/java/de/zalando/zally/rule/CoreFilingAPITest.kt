@@ -27,6 +27,7 @@ class CoreFilingAPITest {
                 policy.withMoreIgnores(listOf(
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
+                        "101", // UseOpenApiRule
                         "146", // LimitNumberOfResourcesRule
                         "150" // UseSpecificHttpStatusCodes
         )))
@@ -46,6 +47,7 @@ class CoreFilingAPITest {
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PathParamProceededByPlural",
                         "SlashesAtEnd",
+                        "101", // UseOpenApiRule
                         "146", // LimitNumberOfResourcesRule
                         "150", // UseSpecificHttpStatusCodes
                         "151", // NotSpecifyStandardErrorCodesRule
@@ -57,7 +59,11 @@ class CoreFilingAPITest {
 
     @Test
     fun `commenting-service`() {
-        val results = validate("platform", "commenting-service", policy)
+        val results = validate("platform", "commenting-service",
+                // ignoring rules that historically failed for this service
+                policy.withMoreIgnores(listOf(
+                        "101" // UseOpenApiRule
+                )))
 
         assertEmptyResults(results)
     }
@@ -138,6 +144,7 @@ class CoreFilingAPITest {
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
                         "SlashesAtEnd",
+                        "101", // UseOpenApiRule
                         "150", // UseSpecificHttpStatusCodes
                         "151", // NotSpecifyStandardErrorCodesRule
                         "171"  // FormatForNumbersRule
@@ -193,6 +200,7 @@ class CoreFilingAPITest {
                 // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "MatchingSummaryAndOperationIdNames",
+                        "101", // UseOpenApiRule
                         "146", // LimitNumberOfResourcesRule
                         "150", // UseSpecificHttpStatusCodes
                         "151"  // NotSpecifyStandardErrorCodesRule
