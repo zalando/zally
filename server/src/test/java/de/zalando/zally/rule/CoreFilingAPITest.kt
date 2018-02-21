@@ -25,6 +25,8 @@ class CoreFilingAPITest {
         val results = validate("platform", "bundle-service",
                 // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
+                        "PaginatedCollectionsSupportPageNumberQueryParameter",
+                        "PaginatedCollectionsSupportPageSizeQueryParameter",
                         "146", // LimitNumberOfResourcesRule
                         "150" // UseSpecificHttpStatusCodes
         )))
@@ -192,7 +194,8 @@ class CoreFilingAPITest {
                 policy.withMoreIgnores(listOf(
                         "MatchingSummaryAndOperationIdNames",
                         "146", // LimitNumberOfResourcesRule
-                        "150" // UseSpecificHttpStatusCodes
+                        "150", // UseSpecificHttpStatusCodes
+                        "151"  // NotSpecifyStandardErrorCodesRule
         )))
 
         assertEmptyResults(results)
