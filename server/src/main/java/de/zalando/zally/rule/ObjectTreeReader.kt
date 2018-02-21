@@ -13,10 +13,11 @@ class ObjectTreeReader {
     private val yamlMapper = ObjectMapper(YAMLFactory())
 
     fun read(content: String): JsonNode =
-            if (isYaml(content))
+            if (isYaml(content)) {
                 readYaml(content)
-            else
+            } else {
                 readJson(content)
+            }
 
     fun readJson(content: String): JsonNode =
             jsonMapper.readTree(content)

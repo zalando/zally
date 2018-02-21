@@ -4,14 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.io.Resources
 import com.typesafe.config.Config
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.rule.ObjectTreeReader
-import de.zalando.zally.rule.Result
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import java.io.IOException
@@ -21,18 +19,27 @@ import java.net.URL
         ruleSet = ZalandoRuleSet::class,
         id = "101",
         severity = Severity.MUST,
-        title = "OpenAPI 2.0 schema"
+        title = "Provide API Specification using OpenAPI"
 )
-open class InvalidApiSchemaRule(@Autowired rulesConfig: Config) : AbstractRule() {
+open class UseOpenApiRule(@Autowired rulesConfig: Config) {
 
-    private val log = LoggerFactory.getLogger(InvalidApiSchemaRule::class.java)
+    private val log = LoggerFactory.getLogger(UseOpenApiRule::class.java)
 
     open val description = "Given file is not OpenAPI 2.0 compliant."
 
     private val jsonSchemaValidator: JsonSchemaValidator
 
     init {
-        jsonSchemaValidator = getSchemaValidator(rulesConfig.getConfig(name))
+        jsonSchemaValidator = getSchemaValidator(rulesConfig.getConfig(javaClass.simpleName))
+    }
+
+    @Check(severity = Severity.MUST)
+    fun validate(swagger: JsonNode): List<Violation> {
+        return jsonSchemaValidator.validate(swagger).let { validationResult ->
+            validationResult.messages.map { message ->
+                Violation(message.message, listOf(message.path))
+            }
+        }
     }
 
     private fun getSchemaValidator(ruleConfig: Config): JsonSchemaValidator {
@@ -60,16 +67,4 @@ open class InvalidApiSchemaRule(@Autowired rulesConfig: Config) : AbstractRule()
         val schema = ObjectTreeReader().readJson(schemaUrl)
         return JsonSchemaValidator(schema, schemaRedirects = mapOf(referencedOnlineSchema to localResource))
     }
-
-    @Check(severity = Severity.MUST)
-    fun validate(swagger: JsonNode): List<Violation> {
-        return jsonSchemaValidator.validate(swagger).let { validationResult ->
-            validationResult.messages.map { message ->
-                Violation(message.message, listOf(message.path))
-            }
-        }
-    }
-
-    fun getGeneralViolation(): Result =
-            Result(ZalandoRuleSet(), this.javaClass.getAnnotation(Rule::class.java), description, Severity.MUST, emptyList())
 }

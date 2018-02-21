@@ -25,7 +25,9 @@ class CoreFilingAPITest {
         val results = validate("platform", "bundle-service",
                 // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
-                        "146", // LimitNumberOfResourcesRule
+                        "PaginatedCollectionsSupportPageNumberQueryParameter",
+                        "PaginatedCollectionsSupportPageSizeQueryParameter",
+                        "101", // UseOpenApiRule
                         "150" // UseSpecificHttpStatusCodes
         )))
 
@@ -44,6 +46,7 @@ class CoreFilingAPITest {
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PathParamProceededByPlural",
                         "SlashesAtEnd",
+                        "101", // UseOpenApiRule
                         "146", // LimitNumberOfResourcesRule
                         "150", // UseSpecificHttpStatusCodes
                         "151", // NotSpecifyStandardErrorCodesRule
@@ -55,7 +58,11 @@ class CoreFilingAPITest {
 
     @Test
     fun `commenting-service`() {
-        val results = validate("platform", "commenting-service", policy)
+        val results = validate("platform", "commenting-service",
+                // ignoring rules that historically failed for this service
+                policy.withMoreIgnores(listOf(
+                        "101" // UseOpenApiRule
+                )))
 
         assertEmptyResults(results)
     }
@@ -136,6 +143,7 @@ class CoreFilingAPITest {
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
                         "SlashesAtEnd",
+                        "101", // UseOpenApiRule
                         "150", // UseSpecificHttpStatusCodes
                         "151", // NotSpecifyStandardErrorCodesRule
                         "171"  // FormatForNumbersRule
@@ -191,8 +199,9 @@ class CoreFilingAPITest {
                 // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
                         "MatchingSummaryAndOperationIdNames",
-                        "146", // LimitNumberOfResourcesRule
-                        "150" // UseSpecificHttpStatusCodes
+                        "101", // UseOpenApiRule
+                        "150", // UseSpecificHttpStatusCodes
+                        "151"  // NotSpecifyStandardErrorCodesRule
         )))
 
         assertEmptyResults(results)
@@ -271,6 +280,16 @@ class CoreFilingAPITest {
     }
 
     private fun assertEmptyResults(results: List<Result>) {
+
+        println()
+        for (result in results) {
+            println("${result.violationType} ${result.rule.title} (${result.rule.id})")
+            println("  ${result.description}")
+            for (path in result.paths) {
+                println("  $path")
+            }
+        }
+
         assertThat(results.map { r -> r.rule.id }).isEmpty()
     }
 }

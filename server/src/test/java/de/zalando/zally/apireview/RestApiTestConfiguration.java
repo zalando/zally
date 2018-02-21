@@ -1,13 +1,12 @@
 package de.zalando.zally.apireview;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import de.zalando.zally.rule.AbstractRule;
 import de.zalando.zally.rule.TestRuleSet;
 import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.api.Violation;
-import de.zalando.zally.rule.zalando.InvalidApiSchemaRule;
+import de.zalando.zally.rule.zalando.UseOpenApiRule;
 import io.swagger.models.Swagger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +22,7 @@ import java.util.Collections;
 public class RestApiTestConfiguration {
 
     @Autowired
-    private InvalidApiSchemaRule invalidApiRule;
+    private UseOpenApiRule invalidApiRule;
 
     @Bean
     @Primary
@@ -32,7 +31,8 @@ public class RestApiTestConfiguration {
         return Arrays.asList(
                 new TestCheckApiNameIsPresentJsonRule(),
                 new TestCheckApiNameIsPresentRule(),
-                new TestAlwaysGiveAHintRule()
+                new TestAlwaysGiveAHintRule(),
+                invalidApiRule
         );
     }
 
@@ -43,7 +43,7 @@ public class RestApiTestConfiguration {
             severity = Severity.MUST,
             title = "schema"
     )
-    public static class TestCheckApiNameIsPresentJsonRule extends AbstractRule {
+    public static class TestCheckApiNameIsPresentJsonRule {
 
         @Check(severity = Severity.MUST)
         public Iterable<Violation> validate(final JsonNode swagger) {
@@ -64,7 +64,7 @@ public class RestApiTestConfiguration {
             severity = Severity.MUST,
             title = "Test Rule"
     )
-    public static class TestCheckApiNameIsPresentRule extends AbstractRule {
+    public static class TestCheckApiNameIsPresentRule {
 
         @Check(severity = Severity.MUST)
         public Violation validate(Swagger swagger) {
@@ -83,7 +83,7 @@ public class RestApiTestConfiguration {
             severity = Severity.HINT,
             title = "Test Hint Rule"
     )
-    public static class TestAlwaysGiveAHintRule extends AbstractRule {
+    public static class TestAlwaysGiveAHintRule {
 
         @Check(severity = Severity.HINT)
         public Violation validate(Swagger swagger) {

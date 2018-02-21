@@ -1,10 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.PatternUtil.isPathVariable
 import io.swagger.models.Swagger
 
@@ -14,7 +13,7 @@ import io.swagger.models.Swagger
         severity = Severity.MUST,
         title = "Every Second Path Level To Be Parameter"
 )
-class EverySecondPathLevelParameterRule : AbstractRule() {
+class EverySecondPathLevelParameterRule {
     private val description = "Every second path level must be a path parameter"
 
     @Check(severity = Severity.MUST)

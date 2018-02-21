@@ -1,7 +1,6 @@
 package com.corefiling.pdds.zally.rule.collections
 
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -15,7 +14,7 @@ import io.swagger.models.Swagger
         severity = Severity.SHOULD,
         title = "Collection Resources Return Total-Items Header"
 )
-class CollectionsReturnTotalItemsHeader : AbstractRule() {
+class CollectionsReturnTotalItemsHeader {
     val description = "Collection resources return the Total-Items header " +
             "with type:integer and format:int32 so that clients can easily access the total"
 

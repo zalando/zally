@@ -1,11 +1,10 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.PatternUtil
 import de.zalando.zally.util.WordUtil.isPlural
 import io.swagger.models.Swagger
@@ -17,9 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired
         severity = Severity.MUST,
         title = "Pluralize Resource Names"
 )
-class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) : AbstractRule() {
+class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) {
     private val description = "Resources %s are singular (but we are not sure)"
-    private val allowedPrefixes = rulesConfig.getConfig(name).getStringList("whitelist_prefixes")
+    private val allowedPrefixes = rulesConfig.getConfig(javaClass.simpleName).getStringList("whitelist_prefixes")
 
     @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {

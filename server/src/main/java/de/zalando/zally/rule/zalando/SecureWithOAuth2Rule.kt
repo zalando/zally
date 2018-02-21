@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
 import com.google.common.collect.Sets
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
@@ -17,19 +16,20 @@ import io.swagger.models.auth.OAuth2Definition
         severity = Severity.MUST,
         title = "Secure Endpoints with OAuth 2.0"
 )
-class SecureWithOAuth2Rule : AbstractRule() {
+class SecureWithOAuth2Rule {
     private val description = "Every endpoint must be secured by OAuth2 properly"
 
     @Check(severity = Severity.MUST)
     fun checkSecurityDefinitions(swagger: Swagger): Violation? {
         val hasOAuth = swagger.securityDefinitions.orEmpty().values.any { it.type?.toLowerCase() == "oauth2" }
         val containsHttpScheme = swagger.schemes.orEmpty().contains(Scheme.HTTP)
-        return if (!hasOAuth)
+        return if (!hasOAuth) {
             Violation("No OAuth2 security definitions found", emptyList())
-        else if (containsHttpScheme)
+        } else if (containsHttpScheme) {
             Violation("OAuth2 should be only used together with https", emptyList())
-        else
+        } else {
             null
+        }
     }
 
     @Check(severity = Severity.SHOULD)

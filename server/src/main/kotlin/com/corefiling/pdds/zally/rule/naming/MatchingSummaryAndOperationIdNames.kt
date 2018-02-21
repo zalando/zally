@@ -2,7 +2,6 @@ package com.corefiling.pdds.zally.rule.naming
 
 import com.corefiling.pdds.zally.extensions.validateOperation
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -15,7 +14,7 @@ import io.swagger.models.Swagger
         severity = Severity.SHOULD,
         title = "Path Parameters Are Proceeded by Plurals"
 )
-class MatchingSummaryAndOperationIdNames : AbstractRule() {
+class MatchingSummaryAndOperationIdNames {
     val description = "OperationId should be the lowerCamelCase version of the summary"
 
     @Check(Severity.SHOULD)

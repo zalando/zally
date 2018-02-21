@@ -1,11 +1,10 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -15,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired
         severity = Severity.HINT,
         title = "Not Specify Standard Error Codes"
 )
-class NotSpecifyStandardErrorCodesRule(@Autowired rulesConfig: Config) : AbstractRule() {
+class NotSpecifyStandardErrorCodesRule(@Autowired rulesConfig: Config) {
     private val description = "Not Specify Standard Error Status Codes Like 400, 404, 503 " +
             "Unless They Have Another Meaning Or Special Implementation/Contract Detail"
 
-    private val standardErrorStatusCodes = rulesConfig.getConfig(name)
+    private val standardErrorStatusCodes = rulesConfig.getConfig(javaClass.simpleName)
             .getIntList("standard_error_codes").toSet()
 
     @Check(severity = Severity.HINT)

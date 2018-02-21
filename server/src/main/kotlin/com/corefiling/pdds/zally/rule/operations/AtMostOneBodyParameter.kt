@@ -2,7 +2,6 @@ package com.corefiling.pdds.zally.rule.operations
 
 import com.corefiling.pdds.zally.extensions.validateOperation
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -17,7 +16,7 @@ import io.swagger.models.parameters.Parameter
         severity = Severity.MUST,
         title = "At Most One Body Parameter"
 )
-class AtMostOneBodyParameter : AbstractRule() {
+class AtMostOneBodyParameter {
     val description = "No more than one body parameter can be associated with an operation"
 
     @Check(Severity.MUST)

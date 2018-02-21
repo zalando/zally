@@ -13,6 +13,7 @@ import de.zalando.zally.util.ResourceUtil;
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.LocalManagementPort;
@@ -137,13 +138,14 @@ public class RestApiViolationsTest extends RestApiBaseTest {
     }
 
     @Test
+    @Ignore("Test requires UseOpenApiRule which we disable for lack of yaml anchor/reference support")
     public void shouldRespondWithViolationWhenApiDefinitionFieldIsNotValidSwaggerDefinition() throws IOException {
         ApiDefinitionResponse response = sendApiDefinition(
                 ApiDefinitionRequest.Factory.fromJson("\"no swagger definition\"")
         );
 
         assertThat(response.getViolations()).hasSize(1);
-        assertThat(response.getViolations().get(0).getTitle()).isEqualTo("OpenAPI 2.0 schema");
+        assertThat(response.getViolations().get(0).getTitle()).isEqualTo("Provide API Specification using OpenAPI");
     }
 
     @Test
@@ -179,7 +181,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
         );
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(NOT_FOUND);
-        assertThat(responseEntity.getBody().getDetail()).isEqualTo("Unknown host: remote-localhost");
+        assertThat(responseEntity.getBody().getDetail()).isEqualTo("Unknown host while retrieving api definition url: remote-localhost");
     }
 
     @Test
@@ -190,7 +192,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
         );
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(NOT_FOUND);
-        assertThat(responseEntity.getBody().getDetail()).isEqualTo("404 Not Found");
+        assertThat(responseEntity.getBody().getDetail()).isEqualTo("404 Not Found while retrieving api definition url");
     }
 
     @Test

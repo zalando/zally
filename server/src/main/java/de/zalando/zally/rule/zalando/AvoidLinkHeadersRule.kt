@@ -1,6 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
+import de.zalando.zally.rule.HttpHeadersRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation

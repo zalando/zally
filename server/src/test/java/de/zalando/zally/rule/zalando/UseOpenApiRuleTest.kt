@@ -6,9 +6,9 @@ import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-class InvalidApiSchemaRuleTest {
+class UseOpenApiRuleTest {
 
-    private val rule = InvalidApiSchemaRule(testConfig)
+    private val rule = UseOpenApiRule(testConfig)
 
     @Test
     fun shouldNotFailOnCorrectYaml() {
@@ -62,13 +62,13 @@ class InvalidApiSchemaRuleTest {
     @Test
     fun shouldLoadSchemaFromResourceIfUrlNotSpecified() {
         val config = ConfigFactory.parseString("""
-        InvalidApiSchemaRule {
+        UseOpenApiRule {
              // swagger_schema_url not defined
         }
         """)
 
         val swaggerJson = getResourceJson("common_fields_invalid.yaml")
-        val validations = InvalidApiSchemaRule(config).validate(swaggerJson)
+        val validations = UseOpenApiRule(config).validate(swaggerJson)
         assertThat(validations).hasSize(1)
         assertThat(validations[0].description).isEqualTo("""object has missing required properties (["paths"])""")
     }
@@ -76,14 +76,22 @@ class InvalidApiSchemaRuleTest {
     @Test
     fun shouldLoadSchemaFromResourceIfLoadFromUrlFailed() {
         val config = ConfigFactory.parseString("""
-        InvalidApiSchemaRule {
+        UseOpenApiRule {
              swagger_schema_url: "http://localhost/random_url.html"
         }
         """)
 
         val swaggerJson = getResourceJson("common_fields_invalid.yaml")
-        val validations = InvalidApiSchemaRule(config).validate(swaggerJson)
+        val validations = UseOpenApiRule(config).validate(swaggerJson)
         assertThat(validations).hasSize(1)
         assertThat(validations[0].description).isEqualTo("""object has missing required properties (["paths"])""")
+    }
+
+    @Test
+    fun shouldCheckApiTitle() {
+        val swagger = getResourceJson("no_title.yaml")
+        val violations = rule.validate(swagger)
+        assertThat(violations).hasSize(1)
+        assertThat(violations[0].description).isEqualTo("object has missing required properties ([\"title\"])")
     }
 }

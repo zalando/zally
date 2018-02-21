@@ -5,7 +5,7 @@ import de.zalando.zally.rule.Result;
 import de.zalando.zally.rule.TestRuleSet;
 import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.api.Rule;
-import de.zalando.zally.rule.zalando.InvalidApiSchemaRule;
+import de.zalando.zally.rule.zalando.UseOpenApiRule;
 import de.zalando.zally.util.ResourceUtil;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -54,6 +54,6 @@ public class ApiReviewTest {
 
     @NotNull
     private Result result(Severity severity, List<String> paths) {
-        return new Result(new TestRuleSet(), InvalidApiSchemaRule.class.getAnnotation(Rule.class), "", severity, paths);
+        return new Result(new TestRuleSet(), UseOpenApiRule.class.getAnnotation(Rule.class), "", severity, paths);
     }
 }

@@ -2,7 +2,6 @@ package com.corefiling.pdds.zally.rule.naming
 
 import com.corefiling.pdds.zally.extensions.validateParameter
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -18,7 +17,7 @@ import io.swagger.models.parameters.QueryParameter
         severity = Severity.SHOULD,
         title = "Lower Camel Case Parameter Names"
 )
-class LowerCamelCaseParameterNames : AbstractRule() {
+class LowerCamelCaseParameterNames {
     val description = "Query and path parameters should be named in lowerCamelCase style"
 
     @Check(Severity.SHOULD)

@@ -1,11 +1,10 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.PatternUtil
 import de.zalando.zally.util.getAllJsonObjects
 import io.swagger.models.Swagger
@@ -17,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
         severity = Severity.MUST,
         title = "snake_case property names"
 )
-class SnakeCaseInPropNameRule(@Autowired rulesConfig: Config) : AbstractRule() {
+class SnakeCaseInPropNameRule(@Autowired rulesConfig: Config) {
     private val description = "Property names must be snake_case: "
 
     private val whitelist = rulesConfig.getStringList(SnakeCaseInPropNameRule::class.simpleName + ".whitelist").toSet()
