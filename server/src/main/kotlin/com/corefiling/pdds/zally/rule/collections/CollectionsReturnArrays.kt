@@ -1,7 +1,6 @@
 package com.corefiling.pdds.zally.rule.collections
 
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -20,7 +19,7 @@ import io.swagger.parser.ResolverCache
         severity = Severity.MUST,
         title = "Collection Resources Return Arrays"
 )
-class CollectionsReturnArrays : AbstractRule() {
+class CollectionsReturnArrays {
     val description = "Collection resources return arrays so that they can be acted upon easily"
 
     @Check(Severity.MUST)

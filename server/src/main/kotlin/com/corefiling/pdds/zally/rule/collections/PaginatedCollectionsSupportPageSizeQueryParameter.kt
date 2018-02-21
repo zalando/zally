@@ -1,7 +1,6 @@
 package com.corefiling.pdds.zally.rule.collections
 
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -18,7 +17,7 @@ import java.math.BigDecimal
         severity = Severity.SHOULD,
         title = "Paginated Resources Support 'pageSize' Query Parameter"
 )
-class PaginatedCollectionsSupportPageSizeQueryParameter : AbstractRule() {
+class PaginatedCollectionsSupportPageSizeQueryParameter {
     val description = "Paginated resources support a 'pageSize' query parameter " +
             "with type:integer, format:int32, minimum:1 so that clients can easily iterate over the collection."
 

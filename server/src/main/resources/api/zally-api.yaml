@@ -3,7 +3,7 @@ swagger: '2.0'
 info:
  title: Zally
  description: Zalando's API Linter
- version: "1.1.1"
+ version: "1.2.0"
  contact:
    name: Team API Management
    email: team-api-management@zalando.de
@@ -79,8 +79,15 @@ paths:
       description: |
         The API Violations endpoint validates given Swagger Specification
         against the rules defined in *Zalando* RESTful API Guidelines
-        (http://zalando.github.io/restful-api-guidelines/). The response
-        includes the list of violations grouped by the API Guidelines rules.
+        (http://zalando.github.io/restful-api-guidelines/).
+
+        A successful response includes the list of violations grouped by
+        the API Guidelines rules.
+
+        If an api definition is supplied via url then any non-successful
+        responses from that will be passed on. For example you may be
+        using Zally without authentication but supply a password
+        protected url and still get a `401 Unauthorized` response.
       parameters:
         - $ref: '#/parameters/Authorization'
         - $ref: '#/parameters/LintingRequest'
@@ -95,6 +102,10 @@ paths:
             $ref: '#/definitions/LintingResponse'
         400:
           description: Input file not parsable
+          schema:
+            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+        415:
+          description: API definition url responded with content-type which clearly isn't JSON or YAML.
           schema:
             $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
         default:

@@ -2,7 +2,6 @@ package com.corefiling.pdds.zally.rule.resources
 
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
 import com.corefiling.pdds.zally.rule.collections.ifNotEmptyLet
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -15,7 +14,7 @@ import io.swagger.models.Swagger
         severity = Severity.SHOULD,
         title = "Resources Separated by Single /"
 )
-class SlashesNotDoubled : AbstractRule() {
+class SlashesNotDoubled {
     val description = "Resources pattern separated by single slashes, not //"
 
     @Check(Severity.SHOULD)

@@ -3,7 +3,6 @@ package com.corefiling.pdds.zally.rule.operations
 import com.corefiling.pdds.zally.extensions.validateOperation
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
 import com.corefiling.pdds.zally.rule.collections.detectCollection
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -17,7 +16,7 @@ import io.swagger.models.Swagger
         severity = Severity.SHOULD,
         title = "POST Responding 200 Considered Suspicious"
 )
-class PostResponding200ConsideredSuspicious : AbstractRule() {
+class PostResponding200ConsideredSuspicious {
     val description = "POST operations should be used to create resources or initiate an asynchronous action, 200 response suggests a synchronous return"
 
     @Check(Severity.SHOULD)

@@ -1,10 +1,9 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import io.swagger.models.Swagger
 
 @Rule(
@@ -13,7 +12,7 @@ import io.swagger.models.Swagger
         severity = Severity.MUST,
         title = "Host should not contain protocol"
 )
-class NoProtocolInHostRule : AbstractRule() {
+class NoProtocolInHostRule {
     private val desc = "Information about protocol should be placed in schema. Current host value '%s' violates this rule"
 
     @Check(severity = Severity.MUST)

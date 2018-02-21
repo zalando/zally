@@ -1,10 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import io.swagger.models.ComposedModel
 import io.swagger.models.ModelImpl
 import io.swagger.models.Swagger
@@ -17,7 +16,7 @@ import io.swagger.models.properties.RefProperty
         severity = Severity.MUST,
         title = "Response As JSON Object"
 )
-class SuccessResponseAsJsonObjectRule : AbstractRule() {
+class SuccessResponseAsJsonObjectRule {
     private val description = "Always Return JSON Objects As Top-Level Data Structures To Support Extensibility"
 
     @Check(severity = Severity.MUST)

@@ -1,10 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.WordUtil.isPlural
 import de.zalando.zally.util.getAllJsonObjects
 import io.swagger.models.Swagger
@@ -15,7 +14,7 @@ import io.swagger.models.Swagger
         severity = Severity.SHOULD,
         title = "Array names should be pluralized"
 )
-class PluralizeNamesForArraysRule : AbstractRule() {
+class PluralizeNamesForArraysRule {
 
     @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {

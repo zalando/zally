@@ -3,7 +3,6 @@ package com.corefiling.pdds.zally.rule.resources
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
 import com.corefiling.pdds.zally.rule.collections.ifNotEmptyLet
 import com.corefiling.pdds.zally.rule.collections.pathParamRegex
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -16,7 +15,7 @@ import io.swagger.models.Swagger
         severity = Severity.MUST,
         title = "Path Parameters Are Entire Path Components"
 )
-class PathParamIsWholePathComponent : AbstractRule() {
+class PathParamIsWholePathComponent {
     val description = "Path parameters occupy an entire path component between slashes, never a partial component"
 
     @Check(Severity.MUST)

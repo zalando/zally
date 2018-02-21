@@ -1,7 +1,6 @@
 package com.corefiling.pdds.zally.rule.collections
 
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -15,7 +14,7 @@ import io.swagger.models.Swagger
         severity = Severity.SHOULD,
         title = "Collection Resources Are Plural"
 )
-class CollectionsArePlural : AbstractRule() {
+class CollectionsArePlural {
     val description = "Collection resources are plural to indicate that they multiple child resources will be available"
 
     @Check(Severity.SHOULD)

@@ -2,7 +2,6 @@ package com.corefiling.pdds.zally.rule.operations
 
 import com.corefiling.pdds.zally.extensions.validateOperation
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -17,7 +16,7 @@ import io.swagger.models.parameters.BodyParameter
         severity = Severity.MUST,
         title = "PUT Operations Require Body Parameter"
 )
-class PutOperationsRequireBodyParameter : AbstractRule() {
+class PutOperationsRequireBodyParameter {
     val description = "Put operations are meaningless without a body parameter"
 
     @Check(Severity.MUST)

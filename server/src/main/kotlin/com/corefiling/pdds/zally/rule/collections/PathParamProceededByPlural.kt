@@ -2,7 +2,6 @@ package com.corefiling.pdds.zally.rule.collections
 
 import com.corefiling.pdds.zally.extensions.validatePath
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -17,7 +16,7 @@ import org.apache.commons.lang3.StringUtils.isBlank
         severity = Severity.SHOULD,
         title = "Path Parameters Are Proceeded by Plurals"
 )
-class PathParamProceededByPlural : AbstractRule() {
+class PathParamProceededByPlural {
     val description = "A plural component proceeds any path parameter component in resource paths"
 
     @Check(Severity.SHOULD)

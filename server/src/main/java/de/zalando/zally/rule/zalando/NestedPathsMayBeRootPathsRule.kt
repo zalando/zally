@@ -1,10 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.AbstractRule
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.PatternUtil.isPathVariable
 import io.swagger.models.Swagger
 
@@ -14,7 +13,7 @@ import io.swagger.models.Swagger
         severity = Severity.MAY,
         title = "Consider Using (Non-) Nested URLs"
 )
-class NestedPathsMayBeRootPathsRule : AbstractRule() {
+class NestedPathsMayBeRootPathsRule {
     private val description = "Nested paths / URLs may be top-level resource"
 
     @Check(severity = Severity.MAY)
