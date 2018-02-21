@@ -28,7 +28,6 @@ class CoreFilingAPITest {
                         "PaginatedCollectionsSupportPageNumberQueryParameter",
                         "PaginatedCollectionsSupportPageSizeQueryParameter",
                         "101", // UseOpenApiRule
-                        "146", // LimitNumberOfResourcesRule
                         "150" // UseSpecificHttpStatusCodes
         )))
 
@@ -201,7 +200,6 @@ class CoreFilingAPITest {
                 policy.withMoreIgnores(listOf(
                         "MatchingSummaryAndOperationIdNames",
                         "101", // UseOpenApiRule
-                        "146", // LimitNumberOfResourcesRule
                         "150", // UseSpecificHttpStatusCodes
                         "151"  // NotSpecifyStandardErrorCodesRule
         )))
@@ -282,6 +280,16 @@ class CoreFilingAPITest {
     }
 
     private fun assertEmptyResults(results: List<Result>) {
+
+        println()
+        for (result in results) {
+            println("${result.violationType} ${result.rule.title} (${result.rule.id})")
+            println("  ${result.description}")
+            for (path in result.paths) {
+                println("  $path")
+            }
+        }
+
         assertThat(results.map { r -> r.rule.id }).isEmpty()
     }
 }
