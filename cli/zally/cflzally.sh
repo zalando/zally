@@ -14,19 +14,29 @@ if /usr/bin/jq --exit-status ".violations | length > 0" /tmp/zally.json; then
         "$JSONTOMARKDOWN" \
         /tmp/zally.json > /tmp/zally.md
     /bin/sed -e s/^/\ \ /g /tmp/zally.md
-else
-    /bin/echo -e "\U0001F44D" > /tmp/zally.md
-fi
 
-echo "Commenting on gitlab commit..."
-/usr/bin/curl \
-    --silent \
-    --request POST \
-    --header "PRIVATE-TOKEN: ${ZALLY_GITLAB_TOKEN}" \
-    --form "note=</tmp/zally.md" \
-    --form "path=$PATH" \
-    --form "line=1" \
-    --form "line_type=new" \
-    ${CI_PROJECT_URL}/../../api/v4/projects/${CI_PROJECT_ID}/repository/commits/${CI_BUILD_REF}/comments
+    echo "Commenting violations on gitlab commit..."
+    /usr/bin/curl \
+        --silent \
+        --request POST \
+        --header "PRIVATE-TOKEN: ${ZALLY_GITLAB_TOKEN}" \
+        --form "note=</tmp/zally.md" \
+        --form "path=$PATH" \
+        --form "line=1" \
+        --form "line_type=new" \
+        ${CI_PROJECT_URL}/../../api/v4/projects/${CI_PROJECT_ID}/repository/commits/${CI_BUILD_REF}/comments
+    
+else
+    echo "Commenting success on gitlab commit..."
+    /usr/bin/curl \
+        --silent \
+        --request POST \
+        --header "PRIVATE-TOKEN: ${ZALLY_GITLAB_TOKEN}" \
+        --data "note=%F0%9F%91%8D" \
+        --data "path=$PATH" \
+        --data "line=1" \
+        --data "line_type=new" \
+        ${CI_PROJECT_URL}/../../api/v4/projects/${CI_PROJECT_ID}/repository/commits/${CI_BUILD_REF}/comments
+fi
 
 exit $RESULT
