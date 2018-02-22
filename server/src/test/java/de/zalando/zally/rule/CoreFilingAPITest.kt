@@ -200,6 +200,7 @@ class CoreFilingAPITest {
                 policy.withMoreIgnores(listOf(
                         "MatchingSummaryAndOperationIdNames",
                         "101", // UseOpenApiRule
+                        "146", // LimitNumberOfResourcesRule
                         "150", // UseSpecificHttpStatusCodes
                         "151"  // NotSpecifyStandardErrorCodesRule
         )))
