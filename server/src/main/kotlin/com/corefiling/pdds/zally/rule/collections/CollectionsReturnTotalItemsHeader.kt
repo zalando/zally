@@ -1,10 +1,12 @@
 package com.corefiling.pdds.zally.rule.collections
 
+import com.corefiling.pdds.zally.extensions.validateResponse
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import io.swagger.models.HttpMethod
 import io.swagger.models.Response
 import io.swagger.models.Swagger
 
@@ -20,16 +22,13 @@ class CollectionsReturnTotalItemsHeader {
 
     @Check(Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? =
-            swagger.collections()
-                    .flatMap { (pattern, path) ->
-                        path.get?.responses.orEmpty()
-                                .filterKeys { Integer.parseInt(it) in 200..299 }
-                                .filterValues { !hasTotalItemsHeader(it) }
-                                .map { (code, _) ->
-                                    "paths $pattern GET responses $code headers: does not include an int32 format integer Total-Items header"
-                                }
-                    }
-                    .ifNotEmptyLet { Violation(description, it) }
+            swagger.validateResponse(description) { pattern, path, method, _, status, response ->
+                "headers: does not include an int32 format integer Total-Items header"
+                        .onlyIf(method == HttpMethod.GET
+                                && swagger.isCollection(pattern, path)
+                                && Integer.parseInt(status) in 200..299
+                                && !hasTotalItemsHeader(response))
+            }
 
     private fun hasTotalItemsHeader(response: Response?): Boolean {
         val header = response?.headers?.get("Total-Items") ?: return false

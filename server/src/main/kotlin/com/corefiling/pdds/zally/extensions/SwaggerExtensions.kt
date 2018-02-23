@@ -5,6 +5,7 @@ import de.zalando.zally.rule.api.Violation
 import io.swagger.models.HttpMethod
 import io.swagger.models.Operation
 import io.swagger.models.Path
+import io.swagger.models.Response
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
 
@@ -36,6 +37,14 @@ private fun validateParameter(description: String, swagger: Swagger, toMessages:
                     }
         }
 
+private fun validateResponse(description: String, swagger: Swagger, toMessages: (pattern: String, path: Path, method: HttpMethod, operation: Operation, status: String, response: Response) -> List<String>) =
+        validateOperation(description, swagger) { pattern, path, method, operation ->
+            operation.responses
+                    .flatMap { (status, response) ->
+                        toMessages(pattern, path, method, operation, status, response).map { "response $status $it" }
+                    }
+        }
+
 private fun String?.normalizeLocations() = this?.let { listOf(it) }.orEmpty()
 
 fun Swagger.validatePath(description: String, getViolationMessage: (pattern: String, path: Path) -> String?) =
@@ -51,4 +60,9 @@ fun Swagger.validateOperation(description: String, getViolationMessage: (pattern
 fun Swagger.validateParameter(description: String, getViolationMessage: (pattern: String, path: Path, method: HttpMethod, operation: Operation, parameter: Parameter) -> String?) =
         validateParameter(description, this) { pattern, path, method, operation, parameter ->
             getViolationMessage(pattern, path, method, operation, parameter).normalizeLocations()
+        }
+
+fun Swagger.validateResponse(description: String, getViolationMessage: (pattern: String, path: Path, method: HttpMethod, operation: Operation, status: String, response: Response) -> String?) =
+        validateResponse(description, this) { pattern, path, method, operation, status, response->
+            getViolationMessage(pattern, path, method, operation, status, response).normalizeLocations()
         }
