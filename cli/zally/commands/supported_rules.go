@@ -34,11 +34,13 @@ func listRules(c *cli.Context) error {
 	ruleType := strings.ToLower(c.String("type"))
 	err := validateType(ruleType)
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 
 	rules, err := fetchRules(requestBuilder, ruleType)
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 

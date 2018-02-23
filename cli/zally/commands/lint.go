@@ -25,6 +25,12 @@ var LintCommand = cli.Command{
 	Usage:     "Lint given `FILE` with API definition",
 	Action:    lint,
 	ArgsUsage: "FILE",
+	Flags: []cli.Flag{
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Print output in JSON format",
+		},
+	},
 }
 
 func lint(c *cli.Context) error {
@@ -34,12 +40,14 @@ func lint(c *cli.Context) error {
 	}
 
 	path := c.Args().First()
+	jsonFormat := c.Bool("json")
+
 	requestBuilder := utils.NewRequestBuilder(c.GlobalString("linter-service"), c.GlobalString("token"), c.App)
 
-	return lintFile(path, requestBuilder)
+	return lintFile(path, requestBuilder, jsonFormat)
 }
 
-func lintFile(path string, requestBuilder *utils.RequestBuilder) error {
+func lintFile(path string, requestBuilder *utils.RequestBuilder, jsonFormat bool) error {
 	data, err := readFile(path)
 	if err != nil {
 		return err
@@ -56,10 +64,20 @@ func lintFile(path string, requestBuilder *utils.RequestBuilder) error {
 	}
 
 	var buffer bytes.Buffer
-	resultPrinter := utils.NewResultPrinter(&buffer)
-	resultPrinter.PrintViolations(violations)
+	if jsonFormat {
+		marshalled, _ := json.Marshal(violations)
+		buffer.Write(marshalled)
+	} else {
+		resultPrinter := utils.NewResultPrinter(&buffer)
+		resultPrinter.PrintViolations(violations)
+
+	}
 
 	fmt.Print(buffer.String())
+
+	if err != nil && !jsonFormat {
+		fmt.Println(err)
+	}
 
 	return err
 }
