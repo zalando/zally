@@ -1,7 +1,6 @@
 package com.corefiling.pdds.zally.rule.collections
 
 import com.corefiling.pdds.zally.extensions.validateOperation
-import com.corefiling.pdds.zally.extensions.validatePath
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule

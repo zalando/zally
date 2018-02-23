@@ -63,6 +63,6 @@ fun Swagger.validateParameter(description: String, getViolationMessage: (pattern
         }
 
 fun Swagger.validateResponse(description: String, getViolationMessage: (pattern: String, path: Path, method: HttpMethod, operation: Operation, status: String, response: Response) -> String?) =
-        validateResponse(description, this) { pattern, path, method, operation, status, response->
+        validateResponse(description, this) { pattern, path, method, operation, status, response ->
             getViolationMessage(pattern, path, method, operation, status, response).normalizeLocations()
         }
