@@ -1,11 +1,13 @@
 package com.corefiling.pdds.zally.rule.collections
 
+import com.corefiling.pdds.zally.extensions.validateResponse
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.ArrayModel
+import io.swagger.models.HttpMethod
 import io.swagger.models.Model
 import io.swagger.models.Response
 import io.swagger.models.Swagger
@@ -24,16 +26,13 @@ class CollectionsReturnArrays {
 
     @Check(Severity.MUST)
     fun validate(swagger: Swagger): Violation? =
-            swagger.collections()
-                    .flatMap { (pattern, path) ->
-                        path.get?.responses.orEmpty()
-                                .filterKeys { Integer.parseInt(it) in 200..299 }
-                                .filterValues { !isArrayResponse(it, swagger) }
-                                .map { (code, response) ->
-                                    "paths $pattern GET responses $code schema type: expected array but found ${response?.schema?.type}"
-                                }
-                    }
-                    .ifNotEmptyLet { Violation(description, it) }
+            swagger.validateResponse(description) { pattern, path, method, _, status, response ->
+                "schema type: expected array but found ${response?.schema?.type}"
+                        .onlyIf(method == HttpMethod.GET
+                                && swagger.isCollection(pattern, path)
+                                && Integer.parseInt(status) in 200..299
+                                && !isArrayResponse(response, swagger))
+            }
 
     private fun isArrayResponse(response: Response, swagger: Swagger): Boolean {
         val schema = response.schema ?: return false

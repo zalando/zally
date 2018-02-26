@@ -1,10 +1,12 @@
 package com.corefiling.pdds.zally.rule.collections
 
+import com.corefiling.pdds.zally.extensions.validateOperation
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import io.swagger.models.HttpMethod
 import io.swagger.models.Operation
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.Parameter
@@ -23,14 +25,12 @@ class PaginatedCollectionsSupportPageSizeQueryParameter {
 
     @Check(Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? =
-            swagger.collections()
-                    .map { (pattern, path) ->
-                        when {
-                            hasPageSizeQueryParam(path.get) -> null
-                            else -> "paths $pattern GET parameters: does not include a valid pageSize query parameter"
-                        }
-                    }
-                    .ifNotEmptyLet { Violation(description, it) }
+            swagger.validateOperation(description) { pattern, path, method, _ ->
+                "parameters: does not include a valid pageSize query parameter"
+                        .onlyIf(method == HttpMethod.GET
+                                && swagger.isCollection(pattern, path)
+                                && !hasPageSizeQueryParam(path.get))
+            }
 
     private fun hasPageSizeQueryParam(op: Operation?): Boolean =
             op?.parameters?.find { isPageSizeQueryParam(it) } != null

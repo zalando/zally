@@ -2,7 +2,7 @@ package com.corefiling.pdds.zally.rule.operations
 
 import com.corefiling.pdds.zally.extensions.validateOperation
 import com.corefiling.pdds.zally.rule.CoreFilingRuleSet
-import com.corefiling.pdds.zally.rule.collections.detectCollection
+import com.corefiling.pdds.zally.rule.collections.isCollection
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -25,7 +25,7 @@ class PostResponding200ConsideredSuspicious {
                 when {
                     method != HttpMethod.POST -> null
                     op.responses["200"] == null -> null
-                    detectCollection(swagger, pattern, path) -> "response 200 OK probably should be a 201 Created"
+                    swagger.isCollection(pattern, path) -> "response 200 OK probably should be a 201 Created"
                     else -> "response 200 OK probably should be a 202 Accepted"
                 }
             }

@@ -115,6 +115,13 @@ class CoreFilingAPITest {
     }
 
     @Test
+    fun `organisation-service`() {
+        val results = validate("platform", "organisation-service", policy)
+
+        assertEmptyResults(results)
+    }
+
+    @Test
     fun `table-rendering-service`() {
         val results = validate("platform", "table-rendering-service",
                 // ignoring rules that historically failed for this service
@@ -198,7 +205,11 @@ class CoreFilingAPITest {
         val results = validate("tms", "taxonomy-modelling-service",
                 // ignoring rules that historically failed for this service
                 policy.withMoreIgnores(listOf(
+                        "CollectionsReturnTotalItemsHeader",
                         "MatchingSummaryAndOperationIdNames",
+                        "PaginatedCollectionsReturnTotalPagesHeader",
+                        "PaginatedCollectionsSupportPageNumberQueryParameter",
+                        "PaginatedCollectionsSupportPageSizeQueryParameter",
                         "101", // UseOpenApiRule
                         "146", // LimitNumberOfResourcesRule
                         "150", // UseSpecificHttpStatusCodes

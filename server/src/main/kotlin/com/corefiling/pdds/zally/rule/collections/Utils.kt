@@ -18,14 +18,14 @@ fun Swagger.collections(): Map<String, Path> = collectionPaths(this)
 
 fun collectionPaths(swagger: Swagger?): Map<String, Path> {
     return swagger?.paths.orEmpty().filter {
-        entry: Entry<String, Path> -> detectCollection(swagger!!, entry.key, entry.value)
+        entry: Entry<String, Path> -> swagger!!.isCollection(entry.key, entry.value)
     }
 }
 
-fun detectCollection(swagger: Swagger, pattern: String, path: Path): Boolean {
-    return detectCollectionByGetResponseReturningArray(swagger, path) ||
-            detectCollectionByParameterizedSubresources(swagger, pattern) ||
-            detectCollectionByPaginationQueryParameters(swagger, path)
+fun Swagger.isCollection(pattern: String, path: Path): Boolean {
+    return detectCollectionByGetResponseReturningArray(this, path) ||
+            detectCollectionByParameterizedSubresources(this, pattern) ||
+            detectCollectionByPaginationQueryParameters(this, path)
 }
 
 fun detectCollectionByGetResponseReturningArray(swagger: Swagger, path: Path): Boolean {
@@ -77,4 +77,8 @@ fun detectCollectionByPaginationQueryParameters(swagger: Swagger, path: Path): B
 inline fun <I : Any, O> Iterable<I?>.ifNotEmptyLet(block: (List<I>) -> O): O? {
     val nonNull = this.filterNotNull()
     return if (nonNull.isEmpty()) null else block(nonNull)
+}
+
+fun String.onlyIf(condition: Boolean): String? {
+    return if (condition) this else null
 }
