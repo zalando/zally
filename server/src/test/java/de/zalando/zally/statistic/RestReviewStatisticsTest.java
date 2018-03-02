@@ -137,7 +137,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
             currentDate = currentDate.plusDays(1L);
         }
 
-        apiReviewRepository.save(reviews);
+        apiReviewRepository.saveAll(reviews);
         return reviews;
     }
 
