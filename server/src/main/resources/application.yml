@@ -24,7 +24,7 @@ security:
   basic:
     enabled: false
 
-management.port: ${MANAGEMENT_PORT}
+management.server.port: ${MANAGEMENT_PORT}
 
 twintip:
   mapping: /api
