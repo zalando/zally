@@ -20,10 +20,6 @@ endpoints:
     enabled: true
     sensitive: false
 
-security:
-  basic:
-    enabled: false
-
 management.server.port: ${MANAGEMENT_PORT}
 
 twintip:
