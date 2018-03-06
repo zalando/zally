@@ -1,6 +1,6 @@
 package de.zalando.zally.rule
 
-import org.junit.Assert.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,16 +12,27 @@ import org.springframework.test.context.junit4.SpringRunner
 @SpringBootTest
 @ActiveProfiles("test")
 class RuleUniquenessTest {
+
     @Autowired
     lateinit var rules: RulesManager
 
     @Test
-    fun rulesShouldBeUnique() {
+    fun ruleIdsShouldBeUnique() {
         val duplicatedCodes = rules.rules
                 .groupBy { it.rule.id }
                 .filterValues { it.size > 1 }
-                .keys
 
-        assertEquals("Duplicated rules found: " + duplicatedCodes, 0, duplicatedCodes.count())
+        assertThat(duplicatedCodes)
+                .hasToString("{}")
+    }
+
+    @Test
+    fun ruleTitlesShouldBeUnique() {
+        val duplicatedCodes = rules.rules
+                .groupBy { it.rule.title }
+                .filterValues { it.size > 1 }
+
+        assertThat(duplicatedCodes)
+                .hasToString("{}")
     }
 }
