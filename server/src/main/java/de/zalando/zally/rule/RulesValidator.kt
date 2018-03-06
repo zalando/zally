@@ -31,12 +31,30 @@ abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
     abstract fun ignores(root: RootT): List<String>
 
     private fun isCheckMethod(details: CheckDetails, root: Any) =
-                details.method.parameters.size == 1 &&
-                details.method.parameters[0].type.isAssignableFrom(root::class.java)
+        when (details.method.parameters.size) {
+            1 -> isRootParameterNeeded(details, root)
+            2 -> isRootParameterNeeded(details, root) && isSwaggerIgnoreExtensionParameterNeeded(details)
+            else -> false
+        }
 
-    private fun invoke(details: CheckDetails, root: Any): Iterable<Result> {
+    private fun isRootParameterNeeded(details: CheckDetails, root: Any) =
+        details.method.parameters.size > 0 &&
+        details.method.parameters[0].type.isAssignableFrom(root::class.java)
+
+    private fun isSwaggerIgnoreExtensionParameterNeeded(details: CheckDetails) =
+        details.method.parameters.size > 1 &&
+        details.method.parameters[1].type.isAssignableFrom(SwaggerIgnoreExtension::class.java)
+
+    private fun invoke(details: CheckDetails, root: RootT): Iterable<Result> {
         log.debug("validating ${details.method.name} of ${details.instance.javaClass.simpleName} rule")
-        val result = details.method.invoke(details.instance, root)
+
+        val result =
+            if (isSwaggerIgnoreExtensionParameterNeeded(details)) {
+                details.method.invoke(details.instance, root, SwaggerIgnoreExtension(details.rule.id))
+            } else {
+                details.method.invoke(details.instance, root)
+            }
+
         val violations = when (result) {
             null -> emptyList()
             is Violation -> listOf(result)
