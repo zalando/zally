@@ -3,15 +3,14 @@ package de.zalando.zally.apireview;
 import de.zalando.zally.dto.ApiDefinitionRequest;
 import de.zalando.zally.dto.ApiDefinitionResponse;
 import de.zalando.zally.dto.ViolationDTO;
-import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.dto.ViolationsCounter;
 import de.zalando.zally.exception.MissingApiDefinitionException;
 import de.zalando.zally.exception.UnaccessibleResourceUrlException;
 import de.zalando.zally.rule.ApiValidator;
 import de.zalando.zally.rule.Result;
 import de.zalando.zally.rule.RulesPolicy;
+import de.zalando.zally.rule.api.Severity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,32 +30,34 @@ import static java.util.stream.Collectors.toMap;
 public class ApiViolationsController {
 
     private final ApiValidator rulesValidator;
-    private final DropwizardMetricServices metricServices;
     private final ApiDefinitionReader apiDefinitionReader;
     private final ApiReviewRepository apiReviewRepository;
     private final ServerMessageService serverMessageService;
     private final RulesPolicy configPolicy;
+//    private final Counter apiReviewsRequested;
+//    private final Counter apiReviewsProcessed;
 
     @Autowired
     public ApiViolationsController(ApiValidator rulesValidator,
-                                   DropwizardMetricServices metricServices,
                                    ApiDefinitionReader apiDefinitionReader,
                                    ApiReviewRepository apiReviewRepository,
                                    ServerMessageService serverMessageService,
                                    RulesPolicy configPolicy) {
         this.rulesValidator = rulesValidator;
-        this.metricServices = metricServices;
         this.apiDefinitionReader = apiDefinitionReader;
         this.apiReviewRepository = apiReviewRepository;
         this.serverMessageService = serverMessageService;
         this.configPolicy = configPolicy;
+        // TODO: Use new Micrometer metrics here
+//        this.apiReviewsRequested = metricRegistry.counter(name("meter", "api-reviews", "requested"));
+//        this.apiReviewsProcessed = metricRegistry.counter(name("meter", "api-reviews", "processed"));
     }
 
     @ResponseBody
     @PostMapping("/api-violations")
     public ApiDefinitionResponse validate(@RequestBody ApiDefinitionRequest request,
                                           @RequestHeader(value = "User-Agent", required = false) String userAgent) {
-        metricServices.increment("meter.api-reviews.requested");
+//        apiReviewsRequested.inc();
 
         String apiDefinition = retrieveApiDefinition(request);
 
@@ -66,16 +67,16 @@ public class ApiViolationsController {
         apiReviewRepository.save(new ApiReview(request, apiDefinition, violations));
 
         ApiDefinitionResponse response = buildApiDefinitionResponse(violations, userAgent);
-        metricServices.increment("meter.api-reviews.processed");
+//        apiReviewsProcessed.inc();
+
         return response;
     }
 
     private RulesPolicy retrieveRulesPolicy(ApiDefinitionRequest request) {
         final List<String> requestRules = request.getIgnoreRules();
-        if (requestRules==null) {
+        if (requestRules == null) {
             return configPolicy;
-        }
-        else {
+        } else {
             return configPolicy.withMoreIgnores(requestRules);
         }
     }
@@ -99,19 +100,19 @@ public class ApiViolationsController {
 
     private ViolationDTO toDto(Result violation) {
         return new ViolationDTO(
-            violation.getRule().title(),
-            violation.getDescription(),
-            violation.getViolationType(),
-            violation.getRuleSet().url(violation.getRule()).toString(),
-            violation.getPaths()
+                violation.getRule().title(),
+                violation.getDescription(),
+                violation.getViolationType(),
+                violation.getRuleSet().url(violation.getRule()).toString(),
+                violation.getPaths()
         );
     }
 
     private Map<String, Integer> buildViolationsCount(List<Result> violations) {
         ViolationsCounter counter = new ViolationsCounter(violations);
         return Arrays.stream(Severity.values()).collect(toMap(
-            violationType -> violationType.toString().toLowerCase(),
-            counter::getCounter
+                violationType -> violationType.toString().toLowerCase(),
+                counter::getCounter
         ));
     }
 }

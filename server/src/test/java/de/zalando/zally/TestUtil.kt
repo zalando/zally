@@ -14,7 +14,6 @@ import io.swagger.models.parameters.HeaderParameter
 import io.swagger.models.properties.StringProperty
 import io.swagger.parser.SwaggerParser
 import io.swagger.parser.util.ClasspathHelper
-import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices
 
 val testConfig: Config by lazy {
     ConfigFactory.load("rules-config.conf")
@@ -22,10 +21,6 @@ val testConfig: Config by lazy {
 
 val testMetricRegistry: MetricRegistry by lazy {
     MetricRegistry()
-}
-
-val testMetricServices: DropwizardMetricServices by lazy {
-    DropwizardMetricServices(testMetricRegistry)
 }
 
 fun getFixture(fileName: String): Swagger = SwaggerParser().read("fixtures/$fileName")
