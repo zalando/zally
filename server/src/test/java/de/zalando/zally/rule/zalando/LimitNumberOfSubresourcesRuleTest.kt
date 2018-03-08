@@ -21,8 +21,8 @@ class LimitNumberOfSubresourcesRuleTest {
     @Test
     fun negativeCase() {
         val swagger = getFixture("limitNumberOfSubresourcesInvalid.json")
-        val result = rule.validate(swagger, ignore)!!
-        assertThat(result.paths).hasSameElementsAs(
+        val result = rule.validate(swagger, ignore)
+        assertThat(result?.paths).hasSameElementsAs(
             listOf("/items/{some_id}/item_level_1/{level1_id}/item-level-2/{level2_id}/item-level-3/{level3_id}/item-level-4")
         )
     }
