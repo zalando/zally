@@ -14,9 +14,9 @@
     "lint": "eslint src --ext .jsx --ext .js",
     "lint:fix": "eslint src --ext .jsx --ext .js --fix",
     "lint:report":
-      "npm run lint -- -f checkstyle --output-file target/checkstyle.xml",
+      "yarn run lint -- -f checkstyle --output-file target/checkstyle.xml",
     "jest": "NODE_ENV=test jest --coverage",
-    "test": "npm run lint:report && npm run jest",
+    "test": "yarn run lint:report && yarn run jest",
     "test:watch": "NODE_ENV=test jest --watch",
     "codecov": "codecov -F webui -f target/coverage/lcov.info",
     "precommit": "lint-staged"
