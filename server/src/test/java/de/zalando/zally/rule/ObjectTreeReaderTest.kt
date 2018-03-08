@@ -3,10 +3,12 @@ package de.zalando.zally.rule
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
+/** Tests for ObjectTreeReader utility */
 class ObjectTreeReaderTest {
 
     private val cut = ObjectTreeReader()
 
+    /** Tests that basic JSON is supported */
     @Test
     fun readSupportsJson() {
         val contents = """
@@ -15,16 +17,17 @@ class ObjectTreeReaderTest {
               "info": {
                 "title": "Things API",
                 "description": "Description of things",
-                "version": "1.0.0"
+                "version": "1.0.1"
               }
             }
             """.trimIndent()
 
         val node = cut.read(contents)
 
-        assertThat(node).hasToString("{\"swagger\":\"2.0\",\"info\":{\"title\":\"Things API\",\"description\":\"Description of things\",\"version\":\"1.0.0\"}}")
+        assertThat(node).hasToString("{\"swagger\":\"2.0\",\"info\":{\"title\":\"Things API\",\"description\":\"Description of things\",\"version\":\"1.0.1\"}}")
     }
 
+    /** Tests that basic YAML is supported */
     @Test
     fun readSupportsYaml() {
         val contents = """
@@ -32,14 +35,15 @@ class ObjectTreeReaderTest {
             info:
               title: Things API
               description: Description of things
-              version: 1.0.0
+              version: 1.0.2
             """.trimIndent()
 
         val node = cut.read(contents)
 
-        assertThat(node).hasToString("{\"swagger\":\"2.0\",\"info\":{\"title\":\"Things API\",\"description\":\"Description of things\",\"version\":\"1.0.0\"}}")
+        assertThat(node).hasToString("{\"swagger\":\"2.0\",\"info\":{\"title\":\"Things API\",\"description\":\"Description of things\",\"version\":\"1.0.2\"}}")
     }
 
+    /** Tests that advanced YAML is supported */
     @Test
     fun readSupportsYamlAnchorsAndReferences() {
 
