@@ -57,9 +57,10 @@ script:
   - cd web-ui
   - node --version
   - npm --version
-  - npm install -q
-  - npm test
-  - npm run build
+  - yarn --version
+  - yarn install -q
+  - yarn test
+  - yarn build
   - cd $TRAVIS_BUILD_DIR
 
 after_success:
