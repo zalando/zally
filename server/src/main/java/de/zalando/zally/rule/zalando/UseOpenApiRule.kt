@@ -64,7 +64,7 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
         val localResource = Resources.getResource("schemas/json-schema.json").toString()
 
         val schemaUrl = Resources.getResource("schemas/swagger-schema.json")
-        val schema = ObjectTreeReader().readJson(schemaUrl)
+        val schema = ObjectTreeReader().read(schemaUrl)
         return JsonSchemaValidator(schema, schemaRedirects = mapOf(referencedOnlineSchema to localResource))
     }
 }
