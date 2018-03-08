@@ -10,6 +10,7 @@ import de.zalando.zally.rule.ApiValidator;
 import de.zalando.zally.rule.Result;
 import de.zalando.zally.rule.RulesPolicy;
 import de.zalando.zally.rule.api.Severity;
+import io.micrometer.core.instrument.Metrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.LongAdder;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -34,8 +36,8 @@ public class ApiViolationsController {
     private final ApiReviewRepository apiReviewRepository;
     private final ServerMessageService serverMessageService;
     private final RulesPolicy configPolicy;
-//    private final Counter apiReviewsRequested;
-//    private final Counter apiReviewsProcessed;
+    private final LongAdder apiReviewsRequested;
+    private final LongAdder apiReviewsProcessed;
 
     @Autowired
     public ApiViolationsController(ApiValidator rulesValidator,
@@ -43,21 +45,21 @@ public class ApiViolationsController {
                                    ApiReviewRepository apiReviewRepository,
                                    ServerMessageService serverMessageService,
                                    RulesPolicy configPolicy) {
+
         this.rulesValidator = rulesValidator;
         this.apiDefinitionReader = apiDefinitionReader;
         this.apiReviewRepository = apiReviewRepository;
         this.serverMessageService = serverMessageService;
         this.configPolicy = configPolicy;
-        // TODO: Use new Micrometer metrics here
-//        this.apiReviewsRequested = metricRegistry.counter(name("meter", "api-reviews", "requested"));
-//        this.apiReviewsProcessed = metricRegistry.counter(name("meter", "api-reviews", "processed"));
+        this.apiReviewsRequested = Metrics.gauge("meter.api-reviews.requested", new LongAdder());
+        this.apiReviewsProcessed = Metrics.gauge("meter.api-reviews.processed", new LongAdder());
     }
 
     @ResponseBody
     @PostMapping("/api-violations")
     public ApiDefinitionResponse validate(@RequestBody ApiDefinitionRequest request,
                                           @RequestHeader(value = "User-Agent", required = false) String userAgent) {
-//        apiReviewsRequested.inc();
+        apiReviewsRequested.increment();
 
         String apiDefinition = retrieveApiDefinition(request);
 
@@ -67,7 +69,7 @@ public class ApiViolationsController {
         apiReviewRepository.save(new ApiReview(request, apiDefinition, violations));
 
         ApiDefinitionResponse response = buildApiDefinitionResponse(violations, userAgent);
-//        apiReviewsProcessed.inc();
+        apiReviewsProcessed.increment();
 
         return response;
     }

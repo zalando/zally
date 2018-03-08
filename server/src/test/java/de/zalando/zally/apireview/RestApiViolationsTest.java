@@ -79,14 +79,15 @@ public class RestApiViolationsTest extends RestApiBaseTest {
     }
 
     @Test
-    public void shouldReturnMetricsOfFoundViolations() throws IOException {
+    public void shouldReturnMetricsOfReviewsRequested() throws IOException {
         sendApiDefinition(readApiDefinition("fixtures/api_spp.json"));
+        assertMetrics("meter.api-reviews.requested");
+    }
 
-        ResponseEntity<JsonNode> metricsResponse = restTemplate.getForEntity("http://localhost:" + managementPort + "/metrics", JsonNode.class);
-        assertThat(metricsResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        JsonNode rootObject = metricsResponse.getBody();
-        assertThat(rootObject.has("meter.api-reviews.requested.fifteenMinuteRate")).isTrue();
-        assertThat(rootObject.has("meter.api-reviews.processed.fifteenMinuteRate")).isTrue();
+    @Test
+    public void shouldReturnMetricsOfReviewsProcessed() throws IOException {
+        sendApiDefinition(readApiDefinition("fixtures/api_spp.json"));
+        assertMetrics("meter.api-reviews.processed");
     }
 
     @Test
@@ -236,5 +237,19 @@ public class RestApiViolationsTest extends RestApiBaseTest {
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 
         assertThat(result.getResponse().getStatus()).isEqualTo(400);
+    }
+
+    private void assertMetrics(String name) {
+        ResponseEntity<JsonNode> metricsResponse = restTemplate.getForEntity(
+                "http://localhost:" + managementPort + "/actuator/metrics/" + name,
+                JsonNode.class);
+        assertThat(metricsResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        JsonNode rootObject = metricsResponse.getBody();
+        Double value = rootObject
+                .get("measurements")
+                .get(0)
+                .get("value")
+                .asDouble();
+        assertThat(value).isGreaterThan(0.0);
     }
 }
