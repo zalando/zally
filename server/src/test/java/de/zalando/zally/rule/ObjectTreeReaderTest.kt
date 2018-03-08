@@ -17,14 +17,27 @@ class ObjectTreeReaderTest {
               "info": {
                 "title": "Things API",
                 "description": "Description of things",
-                "version": "1.0.1"
+                "version": "1.0.0"
               }
             }
             """.trimIndent()
 
         val node = cut.read(contents)
 
-        assertThat(node).hasToString("{\"swagger\":\"2.0\",\"info\":{\"title\":\"Things API\",\"description\":\"Description of things\",\"version\":\"1.0.1\"}}")
+        assertThat(node
+                .path("swagger")
+                .textValue())
+                .hasToString("2.0")
+        assertThat(node
+                .path("info")
+                .path("title")
+                .textValue())
+                .hasToString("Things API")
+        assertThat(node
+                .path("info")
+                .path("version")
+                .textValue())
+                .hasToString("1.0.0")
     }
 
     /** Tests that basic YAML is supported */
@@ -35,12 +48,25 @@ class ObjectTreeReaderTest {
             info:
               title: Things API
               description: Description of things
-              version: 1.0.2
+              version: 1.0.0
             """.trimIndent()
 
         val node = cut.read(contents)
 
-        assertThat(node).hasToString("{\"swagger\":\"2.0\",\"info\":{\"title\":\"Things API\",\"description\":\"Description of things\",\"version\":\"1.0.2\"}}")
+        assertThat(node
+                .path("swagger")
+                .textValue())
+                .hasToString("2.0")
+        assertThat(node
+                .path("info")
+                .path("title")
+                .textValue())
+                .hasToString("Things API")
+        assertThat(node
+                .path("info")
+                .path("version")
+                .textValue())
+                .hasToString("1.0.0")
     }
 
     /** Tests that advanced YAML is supported */
@@ -68,8 +94,22 @@ class ObjectTreeReaderTest {
                 <<: *thing-editable-properties
             """.trimIndent()
 
-        val node = cut.read(contents).path("ReadThing").path("properties")
+        val node = cut.read(contents)
 
-        assertThat(node).hasToString("{\"description\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"},\"id\":{\"type\":\"string\",\"format\":\"uuid\"}}")
+        assertThat(node
+                .path("ReadThing")
+                .path("properties")
+                .path("id")
+                .path("format")
+                .textValue())
+                .hasToString("uuid")
+
+        assertThat(node
+                .path("ReadThing")
+                .path("properties")
+                .path("name")
+                .path("type")
+                .textValue())
+                .hasToString("string")
     }
 }
