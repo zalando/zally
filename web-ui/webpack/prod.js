@@ -30,7 +30,7 @@ module.exports = merge(common, {
       reportFilename: '../../../../target/report.html',
       defaultSizes: 'gzip',
       // Automatically open report in default browser
-      openAnalyzer: true,
+      openAnalyzer: false,
       // If `true`, Webpack Stats JSON file will be generated in bundles output directory
       generateStatsFile: true,
       // Name of Webpack Stats JSON file that will be generated if `generateStatsFile` is `true`.
