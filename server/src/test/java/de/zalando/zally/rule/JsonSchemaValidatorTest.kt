@@ -12,10 +12,10 @@ class JsonSchemaValidatorTest {
         val localResource = Resources.getResource("schemas/simple-referenced-schema.json").toString()
 
         val schemaUrl = Resources.getResource("schemas/simple-schema.json")
-        val json = ObjectTreeReader().readJson(schemaUrl)
+        val json = ObjectTreeReader().read(schemaUrl)
         val jsonSchemaValidator = JsonSchemaValidator(json, mapOf(onlineSchema to localResource))
 
-        val jsonToValidate = ObjectTreeReader().readJson("""
+        val jsonToValidate = ObjectTreeReader().read("""
         {
             "firstName": "MyName",
             "lastName": "MyLastName",
@@ -34,10 +34,10 @@ class JsonSchemaValidatorTest {
         val localResource = Resources.getResource("schemas/json-schema.json").toString()
 
         val schemaUrl = Resources.getResource("schemas/swagger-schema.json")
-        val json = ObjectTreeReader().readJson(schemaUrl)
+        val json = ObjectTreeReader().read(schemaUrl)
         var jsonSchemaValidator = JsonSchemaValidator(json, mapOf(onlineSchema to localResource))
 
-        val specJson = ObjectTreeReader().readYaml(Resources.getResource("fixtures/api_tinbox.yaml"))
+        val specJson = ObjectTreeReader().read(Resources.getResource("fixtures/api_tinbox.yaml"))
 
         val valResult = jsonSchemaValidator.validate(specJson)
         assertThat(valResult.isSuccess).isFalse()
