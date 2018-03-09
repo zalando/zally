@@ -8,7 +8,7 @@ def versions = [
 
 buildscript {
 
-    ext.kotlin_version = '1.2.21'
+    ext.kotlin_version = '1.2.30'
     ext.spring_boot_version = '2.0.0.RELEASE'
 
     repositories {
@@ -87,7 +87,7 @@ dependencies {
     testCompile("org.assertj:assertj-core:3.7.0")
     testCompile('com.jayway.jsonpath:json-path-assert:2.4.0')
 
-    ktlint("com.github.shyiko:ktlint:0.15.0")
+    ktlint("com.github.shyiko:ktlint:0.17.0")
 }
 
 jacoco {
