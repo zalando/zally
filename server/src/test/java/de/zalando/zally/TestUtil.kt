@@ -1,6 +1,5 @@
 package de.zalando.zally
 
-import com.codahale.metrics.MetricRegistry
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
@@ -17,10 +16,6 @@ import io.swagger.parser.util.ClasspathHelper
 
 val testConfig: Config by lazy {
     ConfigFactory.load("rules-config.conf")
-}
-
-val testMetricRegistry: MetricRegistry by lazy {
-    MetricRegistry()
 }
 
 fun getFixture(fileName: String): Swagger = SwaggerParser().read("fixtures/$fileName")
