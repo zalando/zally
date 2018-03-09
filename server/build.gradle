@@ -62,11 +62,11 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-jpa:$spring_boot_version") {
         exclude group: "org.hibernate", module: "hibernate-entitymanager"
     }
-    compile('org.flywaydb:flyway-core:4.1.2')
+    compile('org.flywaydb:flyway-core:5.0.7')
     compile('org.hsqldb:hsqldb:2.4.0')
-    compile('org.postgresql:postgresql:42.1.1')
-    compile('org.hibernate:hibernate-core:5.2.9.Final')
-    compile('org.jadira.usertype:usertype.core:6.0.1.GA') {
+    compile('org.postgresql:postgresql:42.2.1')
+    compile('org.hibernate:hibernate-core:5.3.0.CR1')
+    compile('org.jadira.usertype:usertype.core:7.0.0.CR1') {
         exclude group: "org.hibernate", module: "hibernate-entitymanager"
     }
     compile("com.fasterxml.jackson.module:jackson-module-parameter-names")
