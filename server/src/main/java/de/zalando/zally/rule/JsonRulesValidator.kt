@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+/**
+ * This validator validates a given JsonNode definition based
+ * on set of rules.
+ */
 @Component
 class JsonRulesValidator(@Autowired rules: RulesManager) : RulesValidator<JsonNode>(rules) {
 
@@ -17,12 +21,6 @@ class JsonRulesValidator(@Autowired rules: RulesManager) : RulesValidator<JsonNo
         }
     }
 
-    override fun ignores(root: JsonNode): List<String> {
-        val ignores = root.path(zallyIgnoreExtension)
-        return if (ignores.isArray) {
-            ignores.map(JsonNode::asText)
-        } else {
-            emptyList()
-        }
-    }
+    override fun context(root: JsonNode, policy: RulesPolicy, details: CheckDetails): JsonContext =
+            JsonContext(root, policy, details)
 }

@@ -9,51 +9,62 @@ abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
 
     private val reader = ObjectTreeReader()
 
-    val zallyIgnoreExtension = "x-zally-ignore"
-
     final override fun validate(content: String, requestPolicy: RulesPolicy): List<Result> {
         val root = parse(content) ?: return emptyList()
 
-        val moreIgnores = ignores(root)
-        log.debug("ignoring $moreIgnores from document as well as ${requestPolicy.ignoreRules}")
-
-        val contentPolicy = requestPolicy.withMoreIgnores(moreIgnores)
-
         return rules
-                .checks(contentPolicy)
-                .filter { details -> isCheckMethod(details, root) }
-                .flatMap { details -> invoke(details, root) }
+                .checks(requestPolicy)
+                .map { context(root, requestPolicy, it) }
+                .filter { it.accepts() }
+                .filter { isCheckMethod(it) }
+                .flatMap { invoke(it) }
                 .sortedBy(Result::violationType)
     }
 
     abstract fun parse(content: String): RootT?
 
-    abstract fun ignores(root: RootT): List<String>
+    /**
+     * Build a context for the a particular check.
+     * @param root the model root
+     * @param policy the rule policy to apply
+     * @param details references to rule metadata
+     * @return a model specific context
+     */
+    abstract fun context(root: RootT, policy: RulesPolicy, details: CheckDetails): Context<RootT>
 
-    private fun isCheckMethod(details: CheckDetails, root: Any) =
-        when (details.method.parameters.size) {
-            1 -> isRootParameterNeeded(details, root)
-            2 -> isRootParameterNeeded(details, root) && isSwaggerIgnoreExtensionParameterNeeded(details)
-            else -> false
-        }
+    /**
+     * Identifies whether a check method can be applied to the current model.
+     * @param context the model and metadata to check
+     * @return true iff the check method should be invoked
+     */
+    private fun isCheckMethod(context: Context<RootT>) =
+            isRootCheck(context) ||
+            isRootAndSwaggerIgnoreExtensionCheck(context) ||
+            isContextCheck(context)
 
-    private fun isRootParameterNeeded(details: CheckDetails, root: Any) =
-        details.method.parameters.size > 0 &&
-        details.method.parameters[0].type.isAssignableFrom(root::class.java)
+    /**
+     * Invoke the check method against the current model.
+     * @param context the model and metadata to check
+     * @return any resulting Violations transformed into Results
+     */
+    private fun invoke(context: Context<RootT>): Iterable<Result> {
+        val details = context.details
+        val root = context.root
+        val method = details.method
+        val instance = details.instance
 
-    private fun isSwaggerIgnoreExtensionParameterNeeded(details: CheckDetails) =
-        details.method.parameters.size > 1 &&
-        details.method.parameters[1].type.isAssignableFrom(SwaggerIgnoreExtension::class.java)
-
-    private fun invoke(details: CheckDetails, root: RootT): Iterable<Result> {
-        log.debug("validating ${details.method.name} of ${details.instance.javaClass.simpleName} rule")
+        log.debug("validating ${method.name} of ${instance.javaClass.simpleName} rule")
 
         val result =
-            if (isSwaggerIgnoreExtensionParameterNeeded(details)) {
-                details.method.invoke(details.instance, root, SwaggerIgnoreExtension(details.rule.id))
-            } else {
-                details.method.invoke(details.instance, root)
-            }
+                when {
+                    isRootCheck(context) ->
+                        method.invoke(instance, root)
+                    isContextCheck(context) ->
+                        method.invoke(instance, context)
+                    isRootAndSwaggerIgnoreExtensionCheck(context) ->
+                        method.invoke(instance, root, SwaggerIgnoreExtension(details.rule.id))
+                    else -> null
+                }
 
         val violations = when (result) {
             null -> emptyList()
@@ -61,8 +72,38 @@ abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
             is Iterable<*> -> result as Iterable<Violation>
             else -> throw Exception("Unsupported return type for a @Check method!: ${result::class.java}")
         }
+
         log.debug("${violations.count()} violations identified")
         return violations
                 .map { Result(details.ruleSet, details.rule, it.description, details.check.severity, it.paths) }
     }
+
+    /**
+     * Confirm whether the check method takes just a model root parameter.
+     * @param context the model and check method to confirm
+     * @return true iff the method parameters match requirements.
+     */
+    private fun isRootCheck(context: Context<RootT>) =
+            context.details.method.parameterCount == 1 &&
+                    context.details.method.parameterTypes[0].isAssignableFrom((context.root as Any)::class.java)
+
+    /**
+     * Confirm whether the check method takes just model root and
+     * SwaggerIgnoreExtension parameters.
+     * @param context the model and check method to confirm
+     * @return true iff the method parameters match requirements.
+     */
+    private fun isRootAndSwaggerIgnoreExtensionCheck(context: Context<RootT>) =
+            context.details.method.parameterCount == 2 &&
+                    context.details.method.parameterTypes[0].isAssignableFrom((context.root as Any)::class.java) &&
+                    context.details.method.parameterTypes[1].isAssignableFrom(SwaggerIgnoreExtension::class.java)
+
+    /**
+     * Confirm whether the check method takes just a context parameter.
+     * @param context the model and check method to confirm
+     * @return true iff the method parameters match requirements.
+     */
+    private fun isContextCheck(context: Context<RootT>) =
+            context.details.method.parameterCount == 1 &&
+                    context.details.method.parameterTypes[0].isAssignableFrom(context::class.java)
 }

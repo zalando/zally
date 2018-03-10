@@ -11,5 +11,7 @@ class RulesPolicy(@Value("\${zally.ignoreRules:}") val ignoreRules: Array<String
         return !ignoreRules.contains(rule.id)
     }
 
-    fun withMoreIgnores(moreIgnores: List<String>) = RulesPolicy(ignoreRules + moreIgnores)
+    fun withMoreIgnores(moreIgnores: List<String>) =
+            if (moreIgnores.isEmpty()) this
+            else RulesPolicy(ignoreRules + moreIgnores)
 }
