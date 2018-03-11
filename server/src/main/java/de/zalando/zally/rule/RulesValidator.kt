@@ -39,7 +39,6 @@ abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
      */
     private fun isCheckMethod(context: Context<RootT>) =
             isRootCheck(context) ||
-            isRootAndSwaggerIgnoreExtensionCheck(context) ||
             isContextCheck(context)
 
     /**
@@ -61,8 +60,6 @@ abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
                         method.invoke(instance, root)
                     isContextCheck(context) ->
                         method.invoke(instance, context)
-                    isRootAndSwaggerIgnoreExtensionCheck(context) ->
-                        method.invoke(instance, root, SwaggerIgnoreExtension(details.rule.id))
                     else -> null
                 }
 
@@ -86,17 +83,6 @@ abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
     private fun isRootCheck(context: Context<RootT>) =
             context.details.method.parameterCount == 1 &&
                     context.details.method.parameterTypes[0].isAssignableFrom((context.root as Any)::class.java)
-
-    /**
-     * Confirm whether the check method takes just model root and
-     * SwaggerIgnoreExtension parameters.
-     * @param context the model and check method to confirm
-     * @return true iff the method parameters match requirements.
-     */
-    private fun isRootAndSwaggerIgnoreExtensionCheck(context: Context<RootT>) =
-            context.details.method.parameterCount == 2 &&
-                    context.details.method.parameterTypes[0].isAssignableFrom((context.root as Any)::class.java) &&
-                    context.details.method.parameterTypes[1].isAssignableFrom(SwaggerIgnoreExtension::class.java)
 
     /**
      * Confirm whether the check method takes just a context parameter.
