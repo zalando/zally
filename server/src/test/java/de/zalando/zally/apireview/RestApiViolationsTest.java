@@ -1,6 +1,5 @@
 package de.zalando.zally.apireview;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
 import de.zalando.zally.configuration.WebMvcConfiguration;
 import de.zalando.zally.dto.ApiDefinitionRequest;
@@ -16,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.web.server.LocalManagementPort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
@@ -76,18 +74,6 @@ public class RestApiViolationsTest extends RestApiBaseTest {
         assertThat(count.get("should")).isEqualTo(0);
         assertThat(count.get("may")).isEqualTo(0);
         assertThat(count.get("hint")).isEqualTo(1);
-    }
-
-    @Test
-    public void shouldReturnMetricsOfReviewsRequested() throws IOException {
-        sendApiDefinition(readApiDefinition("fixtures/api_spp.json"));
-        assertMetrics("meter.api-reviews.requested");
-    }
-
-    @Test
-    public void shouldReturnMetricsOfReviewsProcessed() throws IOException {
-        sendApiDefinition(readApiDefinition("fixtures/api_spp.json"));
-        assertMetrics("meter.api-reviews.processed");
     }
 
     @Test
@@ -237,19 +223,5 @@ public class RestApiViolationsTest extends RestApiBaseTest {
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 
         assertThat(result.getResponse().getStatus()).isEqualTo(400);
-    }
-
-    private void assertMetrics(String name) {
-        ResponseEntity<JsonNode> metricsResponse = restTemplate.getForEntity(
-                "http://localhost:" + managementPort + "/actuator/metrics/" + name,
-                JsonNode.class);
-        assertThat(metricsResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        JsonNode rootObject = metricsResponse.getBody();
-        Double value = rootObject
-                .get("measurements")
-                .get(0)
-                .get("value")
-                .asDouble();
-        assertThat(value).isGreaterThan(0.0);
     }
 }

@@ -10,7 +10,6 @@ import de.zalando.zally.rule.ApiValidator;
 import de.zalando.zally.rule.Result;
 import de.zalando.zally.rule.RulesPolicy;
 import de.zalando.zally.rule.api.Severity;
-import io.micrometer.core.instrument.Metrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.LongAdder;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -36,8 +34,6 @@ public class ApiViolationsController {
     private final ApiReviewRepository apiReviewRepository;
     private final ServerMessageService serverMessageService;
     private final RulesPolicy configPolicy;
-    private final LongAdder apiReviewsRequested;
-    private final LongAdder apiReviewsProcessed;
 
     @Autowired
     public ApiViolationsController(ApiValidator rulesValidator,
@@ -51,16 +47,12 @@ public class ApiViolationsController {
         this.apiReviewRepository = apiReviewRepository;
         this.serverMessageService = serverMessageService;
         this.configPolicy = configPolicy;
-        this.apiReviewsRequested = Metrics.gauge("meter.api-reviews.requested", new LongAdder());
-        this.apiReviewsProcessed = Metrics.gauge("meter.api-reviews.processed", new LongAdder());
     }
 
     @ResponseBody
     @PostMapping("/api-violations")
     public ApiDefinitionResponse validate(@RequestBody ApiDefinitionRequest request,
                                           @RequestHeader(value = "User-Agent", required = false) String userAgent) {
-        apiReviewsRequested.increment();
-
         String apiDefinition = retrieveApiDefinition(request);
 
         RulesPolicy requestPolicy = retrieveRulesPolicy(request);
@@ -69,7 +61,6 @@ public class ApiViolationsController {
         apiReviewRepository.save(new ApiReview(request, apiDefinition, violations));
 
         ApiDefinitionResponse response = buildApiDefinitionResponse(violations, userAgent);
-        apiReviewsProcessed.increment();
 
         return response;
     }
