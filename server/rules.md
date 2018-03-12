@@ -22,6 +22,10 @@ Unused definitions cause confusion and should be avioded.
 
 If all paths start with the same prefix then it would be cleaner to extract that into the basePath rather than repeating for each path.
 
+## H002: Avoid x-zally-ignores
+
+The x-zally-ignores extension should be used sparingly for temporary exceptional circumstances. Use encourages deviation from agreed standards. For longer term solutions please discuss disabling or adjusting the rule with your team.
+
 ## 131: Use Hyphenated HTTP Headers
 
 Header names should be hyphenated rather than use underscores or other separators
