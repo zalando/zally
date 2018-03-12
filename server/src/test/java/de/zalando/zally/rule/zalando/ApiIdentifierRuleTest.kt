@@ -6,7 +6,7 @@ import io.swagger.parser.SwaggerParser
 import org.assertj.core.api.Assertions
 import org.junit.Test
 
-class APIIdentifierRuleTest {
+class ApiIdentifierRuleTest {
 
     private val rule = ApiIdentifierRule()
 
