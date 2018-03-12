@@ -23,7 +23,7 @@ class ApiAudienceRule(@Autowired rulesConfig: Config) {
     private val extensionName = "x-audience"
     private val path = "/info/$extensionName"
 
-    @Check(severity = Severity.SHOULD)
+    @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {
         val audience = swagger.info?.vendorExtensions?.get(extensionName)
 
