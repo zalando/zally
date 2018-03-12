@@ -3,7 +3,8 @@ swagger: '2.0'
 info:
  title: Zally
  description: Zalando's API Linter
- version: "1.2.0"
+ version: "1.2.1"
+ x-audience: company-internal
  contact:
    name: Team API Management
    email: team-api-management@zalando.de
