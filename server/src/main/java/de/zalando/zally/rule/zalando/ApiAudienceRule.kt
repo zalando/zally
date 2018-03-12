@@ -27,10 +27,10 @@ class ApiAudienceRule(@Autowired rulesConfig: Config) {
     fun validate(swagger: Swagger): Violation? {
         val audience = swagger.info?.vendorExtensions?.get(extensionName)
 
-        return if (audience == null || audience !is String) {
-            Violation(noApiAudienceDesc, listOf(path))
-        } else {
-            if (validAudiences.contains(audience)) null else Violation(invalidApiAudienceDesc, listOf(path))
+        return when (audience) {
+            null, !is String -> Violation(noApiAudienceDesc, listOf(path))
+            !in validAudiences -> Violation(invalidApiAudienceDesc, listOf(path))
+            else -> null
         }
     }
 }
