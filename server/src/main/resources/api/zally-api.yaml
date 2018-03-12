@@ -4,6 +4,7 @@ info:
  title: Zally
  description: Zalando's API Linter
  version: "1.2.1"
+ x-api-id: 48aa0090-25ef-11e8-b467-0ed5f89f718b
  x-audience: company-internal
  contact:
    name: Team API Management
