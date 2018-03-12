@@ -12,7 +12,7 @@ env:
 before_install:
   - eval "$(GIMME_GO_VERSION=1.8.3 gimme)"
   - sudo apt-get install jq
-  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl -s https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets[0].browser_download_url')
+  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/2.0.2/codacy-coverage-reporter-2.0.2-assembly.jar
 
   # Install golang/dep (https://github.com/golang/dep/blob/master/docs/FAQ.md#how-do-i-use-dep-in-ci)  
   - curl -L -s https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 -o $GOPATH/bin/dep
