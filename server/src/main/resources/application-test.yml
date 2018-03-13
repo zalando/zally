@@ -1,11 +1,3 @@
-endpoints:
-  enabled: false
-  health:
-    enabled: true
-  metrics:
-    enabled: true
-    sensitive: false
-
 spring:
   datasource:
     url: jdbc:hsqldb:mem:storage;sql.syntax_pgs=true
@@ -19,7 +11,7 @@ security:
   basic:
     enabled: false
 
-management.port: 0
+management.server.port: 0
 
 twintip:
   mapping: /api

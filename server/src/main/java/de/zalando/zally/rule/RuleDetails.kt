@@ -6,9 +6,9 @@ import de.zalando.zally.rule.api.Rule
 import java.lang.reflect.Method
 
 data class RuleDetails(
-        val ruleSet: RuleSet,
-        val rule: Rule,
-        val instance: Any
+    val ruleSet: RuleSet,
+    val rule: Rule,
+    val instance: Any
 ) {
     fun toCheckDetails(check: Check, method: Method): CheckDetails = CheckDetails(ruleSet, rule, instance, check, method)
 }

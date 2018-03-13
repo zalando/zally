@@ -1,6 +1,5 @@
 package de.zalando.zally.apireview;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
 import de.zalando.zally.configuration.WebMvcConfiguration;
 import de.zalando.zally.dto.ApiDefinitionRequest;
@@ -15,8 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.LocalManagementPort;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.actuate.autoconfigure.web.server.LocalManagementPort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
@@ -76,17 +74,6 @@ public class RestApiViolationsTest extends RestApiBaseTest {
         assertThat(count.get("should")).isEqualTo(0);
         assertThat(count.get("may")).isEqualTo(0);
         assertThat(count.get("hint")).isEqualTo(1);
-    }
-
-    @Test
-    public void shouldReturnMetricsOfFoundViolations() throws IOException {
-        sendApiDefinition(readApiDefinition("fixtures/api_spp.json"));
-
-        ResponseEntity<JsonNode> metricsResponse = restTemplate.getForEntity("http://localhost:" + managementPort + "/metrics", JsonNode.class);
-        assertThat(metricsResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        JsonNode rootObject = metricsResponse.getBody();
-        assertThat(rootObject.has("meter.api-reviews.requested.fifteenMinuteRate")).isTrue();
-        assertThat(rootObject.has("meter.api-reviews.processed.fifteenMinuteRate")).isTrue();
     }
 
     @Test

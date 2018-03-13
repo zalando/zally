@@ -16,13 +16,13 @@ import java.io.IOException
 class JsonSchemaValidator(val schema: JsonNode, schemaRedirects: Map<String, String> = mapOf()) {
 
     data class ValidationResult(
-            val isSuccess: Boolean,
-            val messages: List<ValidationMessage>
+        val isSuccess: Boolean,
+        val messages: List<ValidationMessage>
     )
 
     data class ValidationMessage(
-            val message: String,
-            val path: String
+        val message: String,
+        val path: String
     )
 
     private object Keywords {
