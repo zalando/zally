@@ -6,11 +6,11 @@ import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.api.Rule
 
 data class Result(
-        val ruleSet: RuleSet,
-        val rule: Rule,
-        val description: String,
-        val violationType: Severity,
-        val paths: List<String>
+    val ruleSet: RuleSet,
+    val rule: Rule,
+    val description: String,
+    val violationType: Severity,
+    val paths: List<String>
 ) {
     fun toViolation(): Violation = Violation(description, paths)
 }
