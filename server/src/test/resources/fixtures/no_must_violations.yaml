@@ -3,6 +3,7 @@ swagger: '2.0'
 info:
   title: API Repository API
   version: '1.0.0'
+  x-audience: component-internal
   description: |
     Repository API of the API Infrastructure Solution is currently used to manage APIs: Versions, Definitions, and
     Applications which implement the API. Later it could be used to manage API meta information like

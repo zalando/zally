@@ -25,10 +25,10 @@ class ApiIdentifierRule {
     fun validate(swagger: Swagger): Violation? {
         val apiId = swagger.info?.vendorExtensions?.get(extensionName)
 
-        return if (apiId == null || apiId !is String) {
-            Violation(noApiIdDesc, listOf(path))
-        } else {
-            if (apiId.matches(apiIdPattern)) null else Violation(invalidApiIdDesc, listOf(path))
+        return when {
+            apiId == null || apiId !is String -> Violation(noApiIdDesc, listOf(path))
+            !apiId.matches(apiIdPattern) -> Violation(invalidApiIdDesc, listOf(path))
+            else -> null
         }
     }
 }
