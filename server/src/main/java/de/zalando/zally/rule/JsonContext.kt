@@ -10,13 +10,6 @@ class JsonContext(root: JsonNode, policy: RulesPolicy, details: CheckDetails) :
 
     override fun accepts(): Boolean = accepts(root)
 
-    /**
-     * Confirms whether the current rule should be applied to the specified
-     * model part, given the current rules policy and any x-zally-ignores
-     * entries.
-     * @param node the model part to check
-     * @return true iff the rule should be applied.
-     */
     private fun accepts(node: JsonNode): Boolean {
         val moreIgnores = root.path(zallyIgnoreExtension)
         val localPolicy = if (moreIgnores.isArray) {

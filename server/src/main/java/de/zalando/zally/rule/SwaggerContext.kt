@@ -62,13 +62,6 @@ class SwaggerContext(root: Swagger, policy: RulesPolicy, details: CheckDetails) 
      */
     fun accepts(path: Path): Boolean = accepts(path.vendorExtensions)
 
-    /**
-     * Confirms whether the current rule should be applied to the current
-     * model part, given the current rules policy and any x-zally-ignores
-     * entries.
-     * @param vendorExtensions the vendor extensions to check for x-zally-ignores
-     * @return true iff the rule should be applied.
-     */
     private fun accepts(vendorExtensions: MutableMap<String, Any>?): Boolean {
         val moreIgnores = vendorExtensions?.get(zallyIgnoreExtension)
         val localPolicy = if (moreIgnores is Iterable<*>) {

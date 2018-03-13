@@ -32,20 +32,10 @@ abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
      */
     abstract fun context(root: RootT, policy: RulesPolicy, details: CheckDetails): Context<RootT>
 
-    /**
-     * Identifies whether a check method can be applied to the current model.
-     * @param context the model and metadata to check
-     * @return true iff the check method should be invoked
-     */
     private fun isCheckMethod(context: Context<RootT>) =
             isRootCheck(context) ||
             isContextCheck(context)
 
-    /**
-     * Invoke the check method against the current model.
-     * @param context the model and metadata to check
-     * @return any resulting Violations transformed into Results
-     */
     private fun invoke(context: Context<RootT>): Iterable<Result> {
         val details = context.details
         val root = context.root
@@ -75,20 +65,11 @@ abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
                 .map { Result(details.ruleSet, details.rule, it.description, details.check.severity, it.paths) }
     }
 
-    /**
-     * Confirm whether the check method takes just a model root parameter.
-     * @param context the model and check method to confirm
-     * @return true iff the method parameters match requirements.
-     */
+    @Suppress("UnsafeCast")
     private fun isRootCheck(context: Context<RootT>) =
             context.details.method.parameterCount == 1 &&
                     context.details.method.parameterTypes[0].isAssignableFrom((context.root as Any)::class.java)
 
-    /**
-     * Confirm whether the check method takes just a context parameter.
-     * @param context the model and check method to confirm
-     * @return true iff the method parameters match requirements.
-     */
     private fun isContextCheck(context: Context<RootT>) =
             context.details.method.parameterCount == 1 &&
                     context.details.method.parameterTypes[0].isAssignableFrom(context::class.java)

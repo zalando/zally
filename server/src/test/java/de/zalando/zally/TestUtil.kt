@@ -11,7 +11,6 @@ import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.RuleSet
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.zalando.LimitNumberOfSubresourcesRule
 import io.swagger.models.ModelImpl
 import io.swagger.models.Operation
 import io.swagger.models.Path
@@ -75,19 +74,19 @@ fun swaggerWithOperations(operations: Map<String, Iterable<String>>): Swagger =
  * @param policy the policy to apply, defaulting to an empty policy
  * @return Violation as returned by the check method.
  */
+@Suppress("UnsafeCast", "UnsafeCallOnNullableType")
 fun validateSwaggerContext(
     swagger: Swagger,
-    instance: LimitNumberOfSubresourcesRule,
+    instance: Any,
     functionReference: KFunction1<@ParameterName(name = "context") SwaggerContext, Violation?>,
     policy: RulesPolicy = RulesPolicy(emptyArray())
 ): Violation? {
-
     val rule = instance.javaClass.getAnnotation(Rule::class.java)
-    val method = functionReference.javaMethod
-    val check = method!!.getAnnotation(Check::class.java)
+    val method = functionReference.javaMethod!!
+    val check = method.getAnnotation(Check::class.java)
     val ruleSetClass = rule.ruleSet.java
     val ruleSet = ruleSetClass.newInstance() as RuleSet
-    val details = CheckDetails(ruleSet, rule, instance as Any, check, method!!)
+    val details = CheckDetails(ruleSet, rule, instance, check, method)
     val context = SwaggerContext(swagger, policy, details)
     return functionReference.invoke(context)
 }

@@ -6,6 +6,9 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 
+/**
+ * Rule highlighting that x-zally-ignores should be used sparingly
+ */
 @Rule(
         ruleSet = ZallyRuleSet::class,
         id = "H002",
@@ -13,9 +16,15 @@ import de.zalando.zally.rule.api.Violation
         title = "Avoid using x-zally-ignores extension."
 )
 class AvoidXZallyIgnoresRule {
+    private val zallyIgnoreExtension = "x-zally-ignore"
 
     private val description = "Ignoring rules should be reserved for exceptional temporary circumstances"
 
+    /**
+     * Check the model doesn't use x-zally-ignores
+     * @param root JsonNode root of the spec model
+     * @return Violation iff x-zally-ignores is in use
+     */
     @Check(severity = Severity.HINT)
     fun validate(root: JsonNode): Violation? {
         val paths = recurse(root)
@@ -28,8 +37,8 @@ class AvoidXZallyIgnoresRule {
     private fun recurse(node: JsonNode): List<String> {
         val paths = mutableListOf<String>()
         if (node.isObject) {
-            if (node.has("x-zally-ignores")) {
-                val ignores = node.get("x-zally-ignores")
+            if (node.has(zallyIgnoreExtension)) {
+                val ignores = node.get(zallyIgnoreExtension)
                 val path = when {
                     ignores.isArray -> "ignores rules " + ignores.joinToString(separator = ", ", transform = JsonNode::asText)
                     ignores.isValueNode -> "invalid ignores, expected list but found single value $ignores"
