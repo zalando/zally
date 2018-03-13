@@ -4,6 +4,7 @@ info:
   description: "All requests and responses are scoped by the supplier's auth token,\n\
     i.e. only the subset of resource collections the merchant has access to are exposed.\n"
   version: "0.1.0"
+  x-audience: external-partner
   title: "Merchant Inventory Quality - QUALA API"
   contact:
     name: "Merchant Inventory Quality (codename Glitch)"

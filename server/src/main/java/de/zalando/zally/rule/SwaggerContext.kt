@@ -17,8 +17,10 @@ class SwaggerContext(root: Swagger, policy: RulesPolicy, details: CheckDetails) 
      * @param toMessages the function to validate the model
      * @return a Violation instance iff toMessages returns some messages
      */
-    fun validatePaths(description: String,
-                      toMessages: (swagger: Swagger, pattern: String, path: Path) -> List<String>): Violation? =
+    fun validatePaths(
+        description: String,
+        toMessages: (swagger: Swagger, pattern: String, path: Path) -> List<String>
+    ): Violation? =
             validateSwagger(description) { swagger ->
                 swagger.paths
                         .filterValues { accepts(it) }
@@ -34,7 +36,10 @@ class SwaggerContext(root: Swagger, policy: RulesPolicy, details: CheckDetails) 
      * @param toMessages the function to validate the model
      * @return a Violation instance iff toMessages returns some messages
      */
-    fun validateSwagger(description: String, toMessages: (swagger: Swagger) -> List<String>): Violation? =
+    fun validateSwagger(
+        description: String,
+        toMessages: (swagger: Swagger) -> List<String>
+    ): Violation? =
             toMessages(root).takeIf { it.isNotEmpty() }?.let { Violation(description, it) }
 
     override fun accepts(): Boolean = accepts(root)

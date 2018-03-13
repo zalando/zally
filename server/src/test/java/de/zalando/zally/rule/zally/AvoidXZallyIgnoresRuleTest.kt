@@ -81,12 +81,12 @@ class AvoidXZallyIgnoresRuleTest {
         val root = reader.read("""
             swagger: 2.0
             x-zally-ignores:
-              invalid:
+              invalid: INVALID
             """.trimIndent())
 
         val violation = rule.validate(root)
 
         assertThat(violation?.paths!!)
-                .hasSameElementsAs(listOf("invalid ignores, expected list but found {\"invalid\":null}"))
+                .hasSameElementsAs(listOf("invalid ignores, expected list but found {\"invalid\":\"INVALID\"}"))
     }
 }

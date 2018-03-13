@@ -8,7 +8,8 @@ def versions = [
 
 buildscript {
 
-    ext.kotlin_version = '1.2.21'
+    ext.kotlin_version = '1.2.30'
+    ext.spring_boot_version = '2.0.0.RELEASE'
 
     repositories {
         mavenCentral()
@@ -18,11 +19,11 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
-        classpath('com.github.ben-manes:gradle-versions-plugin:0.15.0')
-        classpath('de.undercouch:gradle-download-task:3.2.0')
+        classpath('com.github.ben-manes:gradle-versions-plugin:0.17.0')
+        classpath('de.undercouch:gradle-download-task:3.4.1')
     }
 }
 
@@ -31,6 +32,7 @@ apply plugin: 'kotlin'
 apply plugin: 'kotlin-allopen'
 apply plugin: 'jacoco'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'de.undercouch.download'
 
@@ -54,39 +56,37 @@ targetCompatibility = 1.8
 dependencies {
     compile("io.swagger:swagger-parser:1.0.34")
     compile("com.github.java-json-tools:json-schema-validator:2.2.8")
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-undertow")
-    compile("org.springframework.boot:spring-boot-starter-actuator")
-    compile('org.springframework.boot:spring-boot-starter-data-jpa') {
+    compile("org.springframework.boot:spring-boot-starter-web:$spring_boot_version")
+    compile("org.springframework.boot:spring-boot-starter-undertow:$spring_boot_version")
+    compile("org.springframework.boot:spring-boot-starter-actuator:$spring_boot_version")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa:$spring_boot_version") {
         exclude group: "org.hibernate", module: "hibernate-entitymanager"
     }
-    compile('org.flywaydb:flyway-core:4.1.2')
+    compile('org.flywaydb:flyway-core:5.0.7')
     compile('org.hsqldb:hsqldb:2.4.0')
-    compile('org.postgresql:postgresql:42.1.1')
-    compile('org.hibernate:hibernate-core:5.2.9.Final')
-    compile('org.jadira.usertype:usertype.core:6.0.1.GA') {
+    compile('org.postgresql:postgresql:42.2.1')
+    compile('org.hibernate:hibernate-core:5.3.0.CR1')
+    compile('org.jadira.usertype:usertype.core:7.0.0.CR1') {
         exclude group: "org.hibernate", module: "hibernate-entitymanager"
     }
     compile("com.fasterxml.jackson.module:jackson-module-parameter-names")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jdk8")
-    compile("com.fasterxml.jackson.module:jackson-module-kotlin")
+    compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9+")
     compile("org.zalando.stups:stups-spring-oauth2-server:1.0.20")
-    compile("org.zalando:problem-spring-web:0.22.1")
+    compile("org.zalando:problem-spring-web:0.22.2")
     compile("org.zalando:twintip-spring-web:1.1.0")
-    compile("org.zalando.zmon:zmon-actuator:0.9.8")
-    compile("io.dropwizard.metrics:metrics-core:3.2.2")
     compile("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
-    compile("com.typesafe:config:1.3.2")
+    compile("com.typesafe:config:1.3.3")
 
     testCompile("net.jadler:jadler-core:1.3.0")
     testCompile("net.jadler:jadler-jdk:1.3.0")
     testCompile("net.jadler:jadler-junit:1.3.0")
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-    testCompile("org.assertj:assertj-core:3.7.0")
-    testCompile('com.jayway.jsonpath:json-path-assert')
+    testCompile("org.springframework.boot:spring-boot-starter-test:$spring_boot_version")
+    testCompile("org.assertj:assertj-core:3.9.1")
+    testCompile('com.jayway.jsonpath:json-path-assert:2.4.0')
 
-    ktlint("com.github.shyiko:ktlint:0.15.0")
+    ktlint("com.github.shyiko:ktlint:0.17.0")
 }
 
 jacoco {

@@ -4,6 +4,7 @@ info:
   description: |
     Admin APIs for adding, modifying and deleting jobs to retrieve catalog and stock updates from Partners
   version: "1.0.0"
+  x-audience: external-partner
   contact:
     name: Merchant Core - Article (codename ARTMC)
     email: team-artmc@zalando.de
