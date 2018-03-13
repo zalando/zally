@@ -16,6 +16,7 @@ management:
   endpoints:
     enabled-by-default: true
     web:
+      base-path: /
       exposure:
         include: health, metrics
   server:
