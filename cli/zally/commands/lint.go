@@ -25,12 +25,24 @@ var LintCommand = cli.Command{
 	Usage:     "Lint given `FILE` with API definition",
 	Action:    lint,
 	ArgsUsage: "FILE",
+	Flags: []cli.Flag{
+		cli.StringFlag{
+			Name:  "format",
+			Usage: "Output format `[pretty|markdown]`",
+			Value: "pretty",
+		},
+	},
 }
 
 func lint(c *cli.Context) error {
 	if !c.Args().Present() {
 		cli.ShowCommandHelp(c, c.Command.Name)
 		return fmt.Errorf("Please specify Swagger File")
+	}
+
+	if c.String("format") != "pretty" && c.String("format") != "markdown" {
+		cli.ShowCommandHelp(c, c.Command.Name)
+		return fmt.Errorf("Please use a supported output format")
 	}
 
 	path := c.Args().First()
