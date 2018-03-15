@@ -7,6 +7,7 @@ import org.junit.Test
 /**
  * Tests for AvoidXZallyIgnoreRule
  */
+@Suppress("StringLiteralDuplication")
 class AvoidXZallyIgnoreRuleTest {
 
     private val rule = AvoidXZallyIgnoreRule()
@@ -41,6 +42,7 @@ class AvoidXZallyIgnoreRuleTest {
 
     /** Validates spec with x-zally-ignore alternate syntax at root results in violation */
     @Test
+    @Suppress("UnsafeCallOnNullableType")
     fun validateSpecWithDashedIgnoresAtRoot() {
         val root = reader.read("""
             swagger: 2.0
