@@ -11,7 +11,7 @@ class SwaggerContext(root: Swagger, policy: RulesPolicy, details: CheckDetails) 
         Context<Swagger>(root, policy, details) {
 
     /**
-     * Validate paths in the model, ignoring according to x-zally-ignores,
+     * Validate paths in the model, ignoring according to x-zally-ignore,
      * and apply the supplied function to what remains.
      * @param description the description to use in any resulting Violation
      * @param validate the function to validate the model
@@ -30,7 +30,7 @@ class SwaggerContext(root: Swagger, policy: RulesPolicy, details: CheckDetails) 
             }
 
     /**
-     * Validate the root of the model, ignoring according to x-zally-ignores,
+     * Validate the root of the model, ignoring according to x-zally-ignore,
      * and apply the supplied function to what remains.
      * @param description the description to use in any resulting Violation
      * @param validate the function to validate the model
@@ -46,7 +46,7 @@ class SwaggerContext(root: Swagger, policy: RulesPolicy, details: CheckDetails) 
 
     /**
      * Confirms whether the current rule should be applied to the specified
-     * model part, given the current rules policy and any x-zally-ignores
+     * model part, given the current rules policy and any x-zally-ignore
      * entries.
      * @param root the model part to check
      * @return true iff the rule should be applied.
@@ -55,9 +55,9 @@ class SwaggerContext(root: Swagger, policy: RulesPolicy, details: CheckDetails) 
 
     /**
      * Confirms whether the current rule should be applied to the current
-     * model part, given the current rules policy and any x-zally-ignores
+     * model part, given the current rules policy and any x-zally-ignore
      * entries.
-     * @param path the vendor extensions to check for x-zally-ignores
+     * @param path the vendor extensions to check for x-zally-ignore
      * @return true iff the rule should be applied.
      */
     fun accepts(path: Path): Boolean = accepts(path.vendorExtensions)

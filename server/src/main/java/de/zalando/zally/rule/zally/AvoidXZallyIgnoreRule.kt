@@ -7,23 +7,24 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 
 /**
- * Rule highlighting that x-zally-ignores should be used sparingly
+ * Rule highlighting that x-zally-ignore should be used sparingly
  */
 @Rule(
         ruleSet = ZallyRuleSet::class,
         id = "H002",
         severity = Severity.HINT,
-        title = "Avoid using x-zally-ignores extension."
+        title = "Avoid using x-zally-ignore extension."
 )
-class AvoidXZallyIgnoresRule {
+class AvoidXZallyIgnoreRule {
+
     private val zallyIgnoreExtension = "x-zally-ignore"
 
     private val description = "Ignoring rules should be reserved for exceptional temporary circumstances"
 
     /**
-     * Check the model doesn't use x-zally-ignores
+     * Check the model doesn't use x-zally-ignore
      * @param root JsonNode root of the spec model
-     * @return Violation iff x-zally-ignores is in use
+     * @return Violation iff x-zally-ignore is in use
      */
     @Check(severity = Severity.HINT)
     fun validate(root: JsonNode): Violation? {

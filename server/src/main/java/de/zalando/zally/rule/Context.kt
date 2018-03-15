@@ -9,7 +9,7 @@ abstract class Context<out RootT>(val root: RootT, val policy: RulesPolicy, val 
 
     /**
      * Confirms whether the current rule should be applied to the current
-     * model, given the current rules policy and any x-zally-ignores entries.
+     * model, given the current rules policy and any x-zally-ignore entries.
      * @return true iff the rule should be applied.
      */
     abstract fun accepts(): Boolean

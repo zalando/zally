@@ -5,14 +5,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 /**
- * Tests for AvoidXZallyIgnoresRule
+ * Tests for AvoidXZallyIgnoreRule
  */
-class AvoidXZallyIgnoresRuleTest {
+class AvoidXZallyIgnoreRuleTest {
 
-    private val rule = AvoidXZallyIgnoresRule()
+    private val rule = AvoidXZallyIgnoreRule()
     private val reader = ObjectTreeReader()
 
-    /** Validates spec with no x-zally-ignores results in no violation */
+    /** Validates spec with no x-zally-ignore results in no violation */
     @Test
     fun validateSpecWithNoIgnores() {
         val root = reader.read("""
@@ -24,7 +24,7 @@ class AvoidXZallyIgnoresRuleTest {
         assertThat(violation).isNull()
     }
 
-    /** Validates spec with x-zally-ignores inline at root results in violation */
+    /** Validates spec with x-zally-ignore inline at root results in violation */
     @Test
     @Suppress("UnsafeCallOnNullableType")
     fun validateSpecWithInlineIgnoresAtRoot() {
@@ -39,7 +39,7 @@ class AvoidXZallyIgnoresRuleTest {
                 .hasSameElementsAs(listOf("ignores rules ONE, TWO, THREE"))
     }
 
-    /** Validates spec with x-zally-ignores alternate syntax at root results in violation */
+    /** Validates spec with x-zally-ignore alternate syntax at root results in violation */
     @Test
     fun validateSpecWithDashedIgnoresAtRoot() {
         val root = reader.read("""
@@ -56,7 +56,7 @@ class AvoidXZallyIgnoresRuleTest {
                 .hasSameElementsAs(listOf("ignores rules A, BB, CCC"))
     }
 
-    /** Validates spec with x-zally-ignores deeper within the model results in violation */
+    /** Validates spec with x-zally-ignore deeper within the model results in violation */
     @Test
     fun validateSpecWithInlineIgnoresDeeper() {
         val root = reader.read("""
@@ -71,7 +71,7 @@ class AvoidXZallyIgnoresRuleTest {
                 .hasSameElementsAs(listOf("info: ignores rules X, YY, ZZZ"))
     }
 
-    /** Validates spec with x-zally-ignores specifying value rather than list results in violation */
+    /** Validates spec with x-zally-ignore specifying value rather than list results in violation */
     @Test
     fun validateSpecWithInvalidSingleValueIgnores() {
         val root = reader.read("""
@@ -85,7 +85,7 @@ class AvoidXZallyIgnoresRuleTest {
                 .hasSameElementsAs(listOf("invalid ignores, expected list but found single value \"INVALID\""))
     }
 
-    /** Validates spec with x-zally-ignores specifying an object rather than list results in violation */
+    /** Validates spec with x-zally-ignore specifying an object rather than list results in violation */
     @Test
     fun validateSpecWithInvalidOtherIgnores() {
         val root = reader.read("""
