@@ -14,18 +14,18 @@ class SwaggerContext(root: Swagger, policy: RulesPolicy, details: CheckDetails) 
      * Validate paths in the model, ignoring according to x-zally-ignores,
      * and apply the supplied function to what remains.
      * @param description the description to use in any resulting Violation
-     * @param toMessages the function to validate the model
-     * @return a Violation instance iff toMessages returns some messages
+     * @param validate the function to validate the model
+     * @return a Violation instance iff validate returns some messages
      */
     fun validatePaths(
         description: String,
-        toMessages: (swagger: Swagger, pattern: String, path: Path) -> List<String>
+        validate: (swagger: Swagger, pattern: String, path: Path) -> List<String>
     ): Violation? =
             validateSwagger(description) { swagger ->
                 swagger.paths
                         .filterValues { accepts(it) }
                         .flatMap { (pattern, path) ->
-                            toMessages(swagger, pattern, path).map { "paths: $pattern: $it" }
+                            validate(swagger, pattern, path).map { "paths: $pattern: $it" }
                         }
             }
 
@@ -33,14 +33,14 @@ class SwaggerContext(root: Swagger, policy: RulesPolicy, details: CheckDetails) 
      * Validate the root of the model, ignoring according to x-zally-ignores,
      * and apply the supplied function to what remains.
      * @param description the description to use in any resulting Violation
-     * @param toMessages the function to validate the model
-     * @return a Violation instance iff toMessages returns some messages
+     * @param validate the function to validate the model
+     * @return a Violation instance iff validate returns some messages
      */
     fun validateSwagger(
         description: String,
-        toMessages: (swagger: Swagger) -> List<String>
+        validate: (swagger: Swagger) -> List<String>
     ): Violation? =
-            toMessages(root).takeIf { it.isNotEmpty() }?.let { Violation(description, it) }
+            validate(root).takeIf { it.isNotEmpty() }?.let { Violation(description, it) }
 
     override fun accepts(): Boolean = accepts(root)
 
