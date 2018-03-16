@@ -21,9 +21,25 @@
     "application/json"
   ],
   "produces": [
-    "application/json"
+    "application/json", "application/pdf"
   ],
   "paths": {
+    "/binary": {
+      "get": {
+        "description": "Returns some binary file",
+        "produces": [
+          "application/pdf"
+        ],
+        "responses": {
+          "200": {
+            "description": "A raw binary of a PDF file",
+            "schema" : {
+              "type" : "file"
+            }
+          }
+        }
+      }
+    },
     "/pets": {
       "post": {
         "description": "Creates a new pet in the store.  Duplicates are allowed",
@@ -90,6 +106,14 @@
     }
   },
   "definitions": {
+    "PetName": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
     "Pet": {
       "type": "object",
       "required": [
