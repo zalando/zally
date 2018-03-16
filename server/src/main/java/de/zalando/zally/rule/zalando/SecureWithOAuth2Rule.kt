@@ -47,19 +47,15 @@ class SecureWithOAuth2Rule {
     }
 
     @Check(severity = Severity.MUST)
-    fun checkUsedScopes(swagger: Swagger): Violation? {
+    fun checkUsedScopesAreDefined(swagger: Swagger): Violation? {
         val definedScopes = getDefinedScopes(swagger)
-        val hasTopLevelScope = hasTopLevelScope(swagger, definedScopes)
         val paths = swagger.paths.orEmpty().entries.flatMap { (pathKey, path) ->
             path.operationMap.orEmpty().entries.map { (method, operation) ->
                 val actualScopes = extractAppliedScopes(operation)
                 val undefinedScopes = Sets.difference(actualScopes, definedScopes)
-                val unsecured = undefinedScopes.size == actualScopes.size && !hasTopLevelScope
                 val msg = when {
                     undefinedScopes.isNotEmpty() ->
                         "undefined scopes: " + undefinedScopes.map { "'${it.second}'" }.joinToString(", ")
-                    unsecured ->
-                        "no valid OAuth2 scope"
                     else -> null
                 }
                 if (msg != null) "$pathKey $method has $msg" else null
@@ -83,11 +79,4 @@ class SecureWithOAuth2Rule {
                 scopes.map { group to it }
             }
         }.orEmpty().toSet()
-
-    private fun hasTopLevelScope(swagger: Swagger, definedScopes: Set<Pair<String, String>>): Boolean =
-        swagger.security?.any { securityRequirement ->
-            securityRequirement.requirements.entries.any { (group, scopes) ->
-                scopes.any { scope -> (group to scope) in definedScopes }
-            }
-        } ?: false
 }

@@ -39,10 +39,10 @@ securityDefinitions:
     authorizationUrl: https://example.com/oauth2/dialog
     scopes:
       uid: Unique identifier of the user accessing the service.
-      api-is.api-repository.api-definition.write: Scope allowing the user to write API definitions.
+      api-is.api-repository.write: Scope allowing the user to write API definitions.
 
 security:
-- oauth2: [uid, api-is.api-repository.api-definition.write]
+- oauth2: [uid, api-is.api-repository.write]
 
 parameters:
   ApiId:
@@ -281,7 +281,7 @@ paths:
       security:
       - oauth2:
         - uid
-        - api-is.api-repository.api-definition.write
+        - api-is.api-repository.write
       parameters:
       - $ref: "#/parameters/CrawledAPIDefinition"
       responses:
