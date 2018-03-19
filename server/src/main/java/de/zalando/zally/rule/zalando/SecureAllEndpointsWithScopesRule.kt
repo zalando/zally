@@ -39,6 +39,11 @@ class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
         }.takeIf { it.isNotEmpty() }?.let { Violation("Defined scopes should match an expected format", it) }
     }
 
+    /**
+     * Check that the supplied scope is acceptable
+     * @param scope the scope to check
+     * @return validation error message or null if the scope is valid
+     */
     fun checkDefinedScopeFormat(scope: String): String? {
         val components = scope.split('.')
         return when {

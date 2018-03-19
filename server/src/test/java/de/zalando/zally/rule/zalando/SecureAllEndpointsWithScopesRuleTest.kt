@@ -7,6 +7,10 @@ import io.swagger.parser.SwaggerParser
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
+/**
+ * Tests for SecureAllEndpointsWithScopesRule
+ */
+@Suppress("StringLiteralDuplication", "UndocumentedPublicFunction", "UnsafeCallOnNullableType", "TooManyFunctions")
 class SecureAllEndpointsWithScopesRuleTest {
 
     private val rule = SecureAllEndpointsWithScopesRule(testConfig)
