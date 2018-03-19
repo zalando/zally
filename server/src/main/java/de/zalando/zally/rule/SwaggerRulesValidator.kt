@@ -7,25 +7,19 @@ import org.springframework.stereotype.Component
 
 /**
  * This validator validates a given Swagger definition based
- * on set of rules. It will sort the output by path.
+ * on set of rules.
  */
 @Component
 class SwaggerRulesValidator(@Autowired rules: RulesManager) : RulesValidator<Swagger>(rules) {
 
     override fun parse(content: String): Swagger? {
         return try {
-            SwaggerParser().parse(content)!!
+            SwaggerParser().parse(content)
         } catch (e: Exception) {
             null
         }
     }
 
-    override fun ignores(root: Swagger): List<String> {
-        val ignores = root.vendorExtensions?.get(zallyIgnoreExtension)
-        return if (ignores is Iterable<*>) {
-            ignores.map { it.toString() }
-        } else {
-            emptyList()
-        }
-    }
+    override fun context(root: Swagger, policy: RulesPolicy, details: CheckDetails): Context<Swagger> =
+            SwaggerContext(root, policy, details)
 }

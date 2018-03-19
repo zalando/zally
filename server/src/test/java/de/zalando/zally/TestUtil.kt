@@ -3,7 +3,14 @@ package de.zalando.zally
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+import de.zalando.zally.rule.CheckDetails
 import de.zalando.zally.rule.ObjectTreeReader
+import de.zalando.zally.rule.RulesPolicy
+import de.zalando.zally.rule.SwaggerContext
+import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.RuleSet
+import de.zalando.zally.rule.api.Violation
 import io.swagger.models.ModelImpl
 import io.swagger.models.Operation
 import io.swagger.models.Path
@@ -13,6 +20,8 @@ import io.swagger.models.parameters.HeaderParameter
 import io.swagger.models.properties.StringProperty
 import io.swagger.parser.SwaggerParser
 import io.swagger.parser.util.ClasspathHelper
+import kotlin.reflect.KFunction1
+import kotlin.reflect.jvm.javaMethod
 
 val testConfig: Config by lazy {
     ConfigFactory.load("rules-config.conf")
@@ -56,3 +65,28 @@ fun swaggerWithOperations(operations: Map<String, Iterable<String>>): Swagger =
             }
             paths = mapOf("/test" to path)
         }
+
+/**
+ * Build up a SwaggerContext and invoke the check method.
+ * @param swagger the model
+ * @param instance the rule instance
+ * @param functionReference an instance reference to the check method
+ * @param policy the policy to apply, defaulting to an empty policy
+ * @return Violation as returned by the check method.
+ */
+@Suppress("UnsafeCast", "UnsafeCallOnNullableType")
+fun validateSwaggerContext(
+    swagger: Swagger,
+    instance: Any,
+    functionReference: KFunction1<@ParameterName(name = "context") SwaggerContext, Violation?>,
+    policy: RulesPolicy = RulesPolicy(emptyArray())
+): Violation? {
+    val rule = instance.javaClass.getAnnotation(Rule::class.java)
+    val method = functionReference.javaMethod!!
+    val check = method.getAnnotation(Check::class.java)
+    val ruleSetClass = rule.ruleSet.java
+    val ruleSet = ruleSetClass.newInstance() as RuleSet
+    val details = CheckDetails(ruleSet, rule, instance, check, method)
+    val context = SwaggerContext(swagger, policy, details)
+    return functionReference.invoke(context)
+}
