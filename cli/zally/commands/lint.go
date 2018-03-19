@@ -68,7 +68,8 @@ func lintFile(path string, requestBuilder *utils.RequestBuilder) error {
 	}
 
 	var buffer bytes.Buffer
-	resultPrinter := utils.NewResultPrinter(&buffer)
+	var formatter utils.PrettyViolationFormatter
+	resultPrinter := utils.NewResultPrinter(&buffer, &formatter)
 	resultPrinter.PrintViolations(violations)
 
 	fmt.Print(buffer.String())

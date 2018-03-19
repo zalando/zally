@@ -12,13 +12,15 @@ import (
 
 // ResultPrinter helps to print results to the CLI
 type ResultPrinter struct {
-	buffer io.Writer
+	buffer    io.Writer
+	formatter ViolationFormatter
 }
 
 // NewResultPrinter creates an instance of ResultPrinter
-func NewResultPrinter(buffer io.Writer) ResultPrinter {
+func NewResultPrinter(buffer io.Writer, formatter ViolationFormatter) ResultPrinter {
 	var resultPrinter ResultPrinter
 	resultPrinter.buffer = buffer
+	resultPrinter.formatter = formatter
 	return resultPrinter
 }
 
@@ -65,7 +67,7 @@ func (r *ResultPrinter) printViolations(header string, violations []domain.Viola
 	if len(violations) > 0 {
 		fmt.Fprint(r.buffer, r.formatHeader(header))
 		for _, violation := range violations {
-			fmt.Fprint(r.buffer, r.formatViolation(&violation))
+			fmt.Fprint(r.buffer, r.formatter.Format(&violation))
 		}
 	}
 }
@@ -96,24 +98,6 @@ func (r *ResultPrinter) formatHeader(header string) string {
 		return ""
 	}
 	return fmt.Sprintf("%s\n%s\n\n", header, strings.Repeat("=", len(header)))
-}
-
-func (r *ResultPrinter) formatViolation(v *domain.Violation) string {
-	var buffer bytes.Buffer
-
-	colorize := r.colorizeByTypeFunc(v.ViolationType)
-
-	fmt.Fprintf(&buffer, "%s %s\n", colorize(v.ViolationType), colorize(v.Title))
-	fmt.Fprintf(&buffer, "\t%s\n", v.Decription)
-	fmt.Fprintf(&buffer, "\t%s\n", v.RuleLink)
-
-	for _, path := range v.Paths {
-		fmt.Fprintf(&buffer, "\t\t%s\n", path)
-	}
-
-	fmt.Fprintf(&buffer, "\n")
-
-	return buffer.String()
 }
 
 func (r *ResultPrinter) formatViolationsCount(v *domain.ViolationsCount) string {

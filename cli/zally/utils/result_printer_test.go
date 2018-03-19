@@ -12,18 +12,21 @@ import (
 )
 
 func TestNewResultPrinter(t *testing.T) {
-	t.Run("accepts buffer", func(t *testing.T) {
+	t.Run("accepts buffer and result printer", func(t *testing.T) {
 		var buffer *bytes.Buffer
+		var formatter PrettyViolationFormatter
 
-		resultPrinter := NewResultPrinter(buffer)
+		resultPrinter := NewResultPrinter(buffer, &formatter)
 
 		tests.AssertEquals(t, buffer, resultPrinter.buffer)
+		tests.AssertEquals(t, &formatter, resultPrinter.formatter)
 	})
 }
 
 func TestColorizeByTypeFunc(t *testing.T) {
-	var buffer *bytes.Buffer
-	resultPrinter := NewResultPrinter(buffer)
+	var buffer bytes.Buffer
+	var formatter PrettyViolationFormatter
+	resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 	t.Run("Returns red when type is MUST", func(t *testing.T) {
 		result := resultPrinter.colorizeByTypeFunc("MUST")
@@ -54,7 +57,8 @@ func TestColorizeByTypeFunc(t *testing.T) {
 func TestPrintRule(t *testing.T) {
 	t.Run("Prints single rule", func(t *testing.T) {
 		var buffer bytes.Buffer
-		resultPrinter := NewResultPrinter(&buffer)
+		var formatter PrettyViolationFormatter
+		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		var rule domain.Rule
 		rule.Title = "Must Rule"
@@ -96,7 +100,8 @@ func TestPrintRules(t *testing.T) {
 
 	t.Run("Prints sorted rules when found", func(t *testing.T) {
 		var buffer bytes.Buffer
-		resultPrinter := NewResultPrinter(&buffer)
+		var formatter PrettyViolationFormatter
+		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		var rules domain.Rules
 		rules.Rules = []domain.Rule{mayRule, shouldRule, mustRule}
@@ -113,7 +118,8 @@ func TestPrintRules(t *testing.T) {
 
 	t.Run("Prints no rules when not found", func(t *testing.T) {
 		var buffer bytes.Buffer
-		resultPrinter := NewResultPrinter(&buffer)
+		var formatter PrettyViolationFormatter
+		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		var rules domain.Rules
 		rules.Rules = []domain.Rule{}
@@ -126,7 +132,8 @@ func TestPrintRules(t *testing.T) {
 
 func TestFormatHeader(t *testing.T) {
 	var buffer bytes.Buffer
-	resultPrinter := NewResultPrinter(&buffer)
+	var formatter PrettyViolationFormatter
+	resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 	t.Run("formatHeader adds a line", func(t *testing.T) {
 
@@ -144,7 +151,8 @@ func TestFormatHeader(t *testing.T) {
 
 func TestPrintViolations(t *testing.T) {
 	var buffer bytes.Buffer
-	resultPrinter := NewResultPrinter(&buffer)
+	var formatter PrettyViolationFormatter
+	resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 	var mustViolation domain.Violation
 	mustViolation.Title = "Must Title"
@@ -176,7 +184,7 @@ func TestPrintViolations(t *testing.T) {
 		resultPrinter.printViolations("MUST", violations.Must())
 
 		actualResult := string(buffer.Bytes())
-		expectedResult := fmt.Sprintf("MUST\n====\n\n%s", resultPrinter.formatViolation(&mustViolation))
+		expectedResult := fmt.Sprintf("MUST\n====\n\n%s", formatter.Format(&mustViolation))
 
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})
@@ -209,29 +217,9 @@ func TestPrintViolations(t *testing.T) {
 		expectedResult := fmt.Sprintf(
 			"MUST\n====\n\n%sSHOULD\n======\n\n%sSummary:\n========\n\n%s\n\n"+
 				"Server message:\n===============\n\n\x1b[32mHello world!\x1b[0m\n\n\n",
-			resultPrinter.formatViolation(&mustViolation),
-			resultPrinter.formatViolation(&shouldViolation),
+			formatter.Format(&mustViolation),
+			formatter.Format(&shouldViolation),
 			resultPrinter.formatViolationsCount(&violationsCount))
-
-		tests.AssertEquals(t, expectedResult, actualResult)
-	})
-}
-
-func TestFormatViolation(t *testing.T) {
-	var buffer bytes.Buffer
-	resultPrinter := NewResultPrinter(&buffer)
-
-	t.Run("Converts violation to string", func(t *testing.T) {
-
-		var violation domain.Violation
-		violation.Title = "Test Title"
-		violation.RuleLink = "http://example.com/violation"
-		violation.ViolationType = "MUST"
-		violation.Decription = "Test Description"
-		violation.Paths = []string{"/path/one", "/path/two"}
-
-		actualResult := resultPrinter.formatViolation(&violation)
-		expectedResult := "\x1b[31mMUST\x1b[0m \x1b[31mTest Title\x1b[0m\n\tTest Description\n\thttp://example.com/violation\n\t\t/path/one\n\t\t/path/two\n\n"
 
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})
@@ -240,7 +228,8 @@ func TestFormatViolation(t *testing.T) {
 func TestViolationsCount(t *testing.T) {
 	t.Run("ToString converts ViolationsCount to string", func(t *testing.T) {
 		var buffer bytes.Buffer
-		resultPrinter := NewResultPrinter(&buffer)
+		var formatter PrettyViolationFormatter
+		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		var count domain.ViolationsCount
 		count.Must = 1
@@ -258,7 +247,8 @@ func TestViolationsCount(t *testing.T) {
 func TestPrintServerMessage(t *testing.T) {
 	t.Run("Prints nothing when no message", func(t *testing.T) {
 		var buffer bytes.Buffer
-		resultPrinter := NewResultPrinter(&buffer)
+		var formatter PrettyViolationFormatter
+		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		resultPrinter.printServerMessage("")
 
@@ -268,7 +258,8 @@ func TestPrintServerMessage(t *testing.T) {
 
 	t.Run("Prints message when specified", func(t *testing.T) {
 		var buffer bytes.Buffer
-		resultPrinter := NewResultPrinter(&buffer)
+		var formatter PrettyViolationFormatter
+		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		resultPrinter.printServerMessage("Hello world!")
 
