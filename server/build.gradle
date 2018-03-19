@@ -3,7 +3,7 @@ configurations {
 }
 
 def versions = [
-        jacoco : '0.7.8',
+        jacoco: '0.7.8',
 ]
 
 buildscript {
@@ -54,7 +54,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile("io.swagger:swagger-parser:1.0.34")
+    compile("io.swagger.parser.v3:swagger-parser:2.0.0-rc3")
     compile("com.github.java-json-tools:json-schema-validator:2.2.8")
     compile("org.springframework.boot:spring-boot-starter-web:$spring_boot_version")
     compile("org.springframework.boot:spring-boot-starter-undertow:$spring_boot_version")
