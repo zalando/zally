@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class CompositeRulesValidator(
-        @Autowired val openApiRulesValidator: OpenApiRulesValidator,
-        @Autowired val jsonRulesValidator: JsonRulesValidator
+    @Autowired val openApiRulesValidator: OpenApiRulesValidator,
+    @Autowired val jsonRulesValidator: JsonRulesValidator
 ) : ApiValidator {
 
     override fun validate(content: String, requestPolicy: RulesPolicy): List<Result> =
