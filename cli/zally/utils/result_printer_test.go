@@ -14,7 +14,7 @@ import (
 func TestNewResultPrinter(t *testing.T) {
 	t.Run("accepts buffer and result printer", func(t *testing.T) {
 		var buffer *bytes.Buffer
-		var formatter PrettyViolationFormatter
+		var formatter PrettyFormatter
 
 		resultPrinter := NewResultPrinter(buffer, &formatter)
 
@@ -25,7 +25,7 @@ func TestNewResultPrinter(t *testing.T) {
 
 func TestColorizeByTypeFunc(t *testing.T) {
 	var buffer bytes.Buffer
-	var formatter PrettyViolationFormatter
+	var formatter PrettyFormatter
 	resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 	t.Run("Returns red when type is MUST", func(t *testing.T) {
@@ -57,7 +57,7 @@ func TestColorizeByTypeFunc(t *testing.T) {
 func TestPrintRule(t *testing.T) {
 	t.Run("Prints single rule", func(t *testing.T) {
 		var buffer bytes.Buffer
-		var formatter PrettyViolationFormatter
+		var formatter PrettyFormatter
 		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		var rule domain.Rule
@@ -100,7 +100,7 @@ func TestPrintRules(t *testing.T) {
 
 	t.Run("Prints sorted rules when found", func(t *testing.T) {
 		var buffer bytes.Buffer
-		var formatter PrettyViolationFormatter
+		var formatter PrettyFormatter
 		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		var rules domain.Rules
@@ -118,7 +118,7 @@ func TestPrintRules(t *testing.T) {
 
 	t.Run("Prints no rules when not found", func(t *testing.T) {
 		var buffer bytes.Buffer
-		var formatter PrettyViolationFormatter
+		var formatter PrettyFormatter
 		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		var rules domain.Rules
@@ -132,7 +132,7 @@ func TestPrintRules(t *testing.T) {
 
 func TestFormatHeader(t *testing.T) {
 	var buffer bytes.Buffer
-	var formatter PrettyViolationFormatter
+	var formatter PrettyFormatter
 	resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 	t.Run("formatHeader adds a line", func(t *testing.T) {
@@ -151,7 +151,7 @@ func TestFormatHeader(t *testing.T) {
 
 func TestPrintViolations(t *testing.T) {
 	var buffer bytes.Buffer
-	var formatter PrettyViolationFormatter
+	var formatter PrettyFormatter
 	resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 	var mustViolation domain.Violation
@@ -184,7 +184,7 @@ func TestPrintViolations(t *testing.T) {
 		resultPrinter.printViolations("MUST", violations.Must())
 
 		actualResult := string(buffer.Bytes())
-		expectedResult := fmt.Sprintf("MUST\n====\n\n%s", formatter.Format(&mustViolation))
+		expectedResult := fmt.Sprintf("MUST\n====\n\n%s", formatter.FormatViolation(&mustViolation))
 
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})
@@ -217,8 +217,8 @@ func TestPrintViolations(t *testing.T) {
 		expectedResult := fmt.Sprintf(
 			"MUST\n====\n\n%sSHOULD\n======\n\n%sSummary:\n========\n\n%s\n\n"+
 				"Server message:\n===============\n\n\x1b[32mHello world!\x1b[0m\n\n\n",
-			formatter.Format(&mustViolation),
-			formatter.Format(&shouldViolation),
+			formatter.FormatViolation(&mustViolation),
+			formatter.FormatViolation(&shouldViolation),
 			resultPrinter.formatViolationsCount(&violationsCount))
 
 		tests.AssertEquals(t, expectedResult, actualResult)
@@ -228,7 +228,7 @@ func TestPrintViolations(t *testing.T) {
 func TestViolationsCount(t *testing.T) {
 	t.Run("ToString converts ViolationsCount to string", func(t *testing.T) {
 		var buffer bytes.Buffer
-		var formatter PrettyViolationFormatter
+		var formatter PrettyFormatter
 		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		var count domain.ViolationsCount
@@ -247,7 +247,7 @@ func TestViolationsCount(t *testing.T) {
 func TestPrintServerMessage(t *testing.T) {
 	t.Run("Prints nothing when no message", func(t *testing.T) {
 		var buffer bytes.Buffer
-		var formatter PrettyViolationFormatter
+		var formatter PrettyFormatter
 		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		resultPrinter.printServerMessage("")
@@ -258,7 +258,7 @@ func TestPrintServerMessage(t *testing.T) {
 
 	t.Run("Prints message when specified", func(t *testing.T) {
 		var buffer bytes.Buffer
-		var formatter PrettyViolationFormatter
+		var formatter PrettyFormatter
 		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		resultPrinter.printServerMessage("Hello world!")

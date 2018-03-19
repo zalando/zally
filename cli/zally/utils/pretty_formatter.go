@@ -8,12 +8,12 @@ import (
 	"github.com/zalando/zally/cli/zally/domain"
 )
 
-// PrettyViolationFormatter is used to generate violations in pretty format
-type PrettyViolationFormatter struct {
+// PrettyFormatter is used to generate violations in pretty format
+type PrettyFormatter struct {
 }
 
-// Format generates a violation in pretty format
-func (f *PrettyViolationFormatter) Format(violation *domain.Violation) string {
+// FormatViolation generates a violation in pretty format
+func (f *PrettyFormatter) FormatViolation(violation *domain.Violation) string {
 	var buffer bytes.Buffer
 
 	colorize := f.colorizeByTypeFunc(violation.ViolationType)
@@ -31,8 +31,8 @@ func (f *PrettyViolationFormatter) Format(violation *domain.Violation) string {
 	return buffer.String()
 }
 
-// TODO: move this helper outside of PrettyViolationFormatter
-func (f *PrettyViolationFormatter) colorizeByTypeFunc(ruleType string) func(interface{}) aurora.Value {
+// TODO: move this helper outside of PrettyFormatter
+func (f *PrettyFormatter) colorizeByTypeFunc(ruleType string) func(interface{}) aurora.Value {
 	switch ruleType {
 	case "MUST":
 		return aurora.Red

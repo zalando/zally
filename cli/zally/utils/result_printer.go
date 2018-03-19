@@ -13,11 +13,11 @@ import (
 // ResultPrinter helps to print results to the CLI
 type ResultPrinter struct {
 	buffer    io.Writer
-	formatter ViolationFormatter
+	formatter Formatter
 }
 
 // NewResultPrinter creates an instance of ResultPrinter
-func NewResultPrinter(buffer io.Writer, formatter ViolationFormatter) ResultPrinter {
+func NewResultPrinter(buffer io.Writer, formatter Formatter) ResultPrinter {
 	var resultPrinter ResultPrinter
 	resultPrinter.buffer = buffer
 	resultPrinter.formatter = formatter
@@ -67,7 +67,7 @@ func (r *ResultPrinter) printViolations(header string, violations []domain.Viola
 	if len(violations) > 0 {
 		fmt.Fprint(r.buffer, r.formatHeader(header))
 		for _, violation := range violations {
-			fmt.Fprint(r.buffer, r.formatter.Format(&violation))
+			fmt.Fprint(r.buffer, r.formatter.FormatViolation(&violation))
 		}
 	}
 }

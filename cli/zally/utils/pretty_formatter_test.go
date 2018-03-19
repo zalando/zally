@@ -8,7 +8,7 @@ import (
 )
 
 func TestFormatViolationInPrettyFormat(t *testing.T) {
-	var violationFormatter PrettyViolationFormatter
+	var violationFormatter PrettyFormatter
 
 	t.Run("Converts violation to string in pretty format", func(t *testing.T) {
 
@@ -19,7 +19,7 @@ func TestFormatViolationInPrettyFormat(t *testing.T) {
 		violation.Decription = "Test Description"
 		violation.Paths = []string{"/path/one", "/path/two"}
 
-		actualResult := violationFormatter.Format(&violation)
+		actualResult := violationFormatter.FormatViolation(&violation)
 		expectedResult := "\x1b[31mMUST\x1b[0m \x1b[31mTest Title\x1b[0m\n" +
 			"\tTest Description\n" +
 			"\thttp://example.com/violation\n" +
