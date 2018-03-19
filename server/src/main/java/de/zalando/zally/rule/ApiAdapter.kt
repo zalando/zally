@@ -8,5 +8,5 @@ data class ApiAdapter(val swagger: Swagger?, val openAPI: OpenAPI) {
         return swagger != null
     }
 
-    val vendorExtensions: MutableMap<String, Any> = swagger?.vendorExtensions ?: openAPI.extensions
+    val vendorExtensions: MutableMap<String, Any>? = swagger?.vendorExtensions ?: openAPI.extensions
 }

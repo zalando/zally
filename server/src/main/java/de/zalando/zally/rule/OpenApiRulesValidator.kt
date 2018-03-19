@@ -28,7 +28,7 @@ class OpenApiRulesValidator(@Autowired rules: RulesManager) : RulesValidator<Api
     }
 
     override fun ignores(root: ApiAdapter): List<String> {
-        val ignores = root.vendorExtensions[zallyIgnoreExtension]
+        val ignores = root.vendorExtensions?.get(zallyIgnoreExtension)
         return if (ignores is Iterable<*>) {
             ignores.map { it.toString() }
         } else {
