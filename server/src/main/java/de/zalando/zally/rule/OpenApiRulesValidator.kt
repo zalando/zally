@@ -16,7 +16,9 @@ import org.springframework.stereotype.Component
 class OpenApiRulesValidator(@Autowired rules: RulesManager) : RulesValidator<ApiAdapter>(rules) {
 
     override fun parse(content: String): ApiAdapter? {
-        return OpenAPIV3Parser().read(content)?.let { ApiAdapter(null, it) } ?: convertSwaggerV2(content)
+        return OpenAPIV3Parser().readContents(content, null, ParseOptions())?.let {
+            ApiAdapter(null, it.openAPI)
+        } ?: convertSwaggerV2(content)
     }
 
     private fun convertSwaggerV2(content: String): ApiAdapter? {
