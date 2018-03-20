@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"strings"
@@ -57,8 +56,7 @@ func (r *ResultPrinter) PrintViolations(v *domain.Violations) {
 	r.printViolations("HINT", v.Hint())
 
 	if len(v.Violations) > 0 {
-		fmt.Fprint(r.buffer, r.formatHeader("Summary:"))
-		fmt.Fprint(r.buffer, r.formatViolationsCount(&v.ViolationsCount))
+		fmt.Fprint(r.buffer, r.formatter.FormatViolationsCount(&v.ViolationsCount))
 	}
 	r.printServerMessage(v.Message)
 }
@@ -98,13 +96,4 @@ func (r *ResultPrinter) formatHeader(header string) string {
 		return ""
 	}
 	return fmt.Sprintf("%s\n%s\n\n", header, strings.Repeat("=", len(header)))
-}
-
-func (r *ResultPrinter) formatViolationsCount(v *domain.ViolationsCount) string {
-	var buffer bytes.Buffer
-	fmt.Fprintf(&buffer, "MUST violations: %d\n", v.Must)
-	fmt.Fprintf(&buffer, "SHOULD violations: %d\n", v.Should)
-	fmt.Fprintf(&buffer, "MAY violations: %d\n", v.May)
-	fmt.Fprintf(&buffer, "HINT violations: %d\n", v.Hint)
-	return buffer.String()
 }

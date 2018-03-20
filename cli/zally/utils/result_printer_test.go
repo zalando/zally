@@ -215,30 +215,11 @@ func TestPrintViolations(t *testing.T) {
 
 		actualResult := string(buffer.Bytes())
 		expectedResult := fmt.Sprintf(
-			"MUST\n====\n\n%sSHOULD\n======\n\n%sSummary:\n========\n\n%s\n\n"+
+			"MUST\n====\n\n%sSHOULD\n======\n\n%s%s\n\n"+
 				"Server message:\n===============\n\n\x1b[32mHello world!\x1b[0m\n\n\n",
 			formatter.FormatViolation(&mustViolation),
 			formatter.FormatViolation(&shouldViolation),
-			resultPrinter.formatViolationsCount(&violationsCount))
-
-		tests.AssertEquals(t, expectedResult, actualResult)
-	})
-}
-
-func TestViolationsCount(t *testing.T) {
-	t.Run("ToString converts ViolationsCount to string", func(t *testing.T) {
-		var buffer bytes.Buffer
-		var formatter PrettyFormatter
-		resultPrinter := NewResultPrinter(&buffer, &formatter)
-
-		var count domain.ViolationsCount
-		count.Must = 1
-		count.Should = 2
-		count.May = 3
-		count.Hint = 4
-
-		actualResult := resultPrinter.formatViolationsCount(&count)
-		expectedResult := "MUST violations: 1\nSHOULD violations: 2\nMAY violations: 3\nHINT violations: 4\n"
+			formatter.FormatViolationsCount(&violationsCount))
 
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})
