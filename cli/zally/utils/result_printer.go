@@ -33,19 +33,8 @@ func (r *ResultPrinter) PrintRules(rules *domain.Rules) {
 
 func (r *ResultPrinter) printRules(rules []domain.Rule) {
 	for _, rule := range rules {
-		r.printRule(&rule)
+		fmt.Fprint(r.buffer, r.formatter.FormatRule(&rule))
 	}
-}
-
-func (r *ResultPrinter) printRule(rule *domain.Rule) {
-	colorize := r.colorizeByTypeFunc(rule.Type)
-	fmt.Fprintf(
-		r.buffer,
-		"%s %s: %s\n\t%s\n\n",
-		colorize(rule.Code),
-		colorize(rule.Type),
-		rule.Title,
-		rule.URL)
 }
 
 // PrintViolations creates string representation of Violation
@@ -73,21 +62,6 @@ func (r *ResultPrinter) printViolations(header string, violations []domain.Viola
 func (r *ResultPrinter) printServerMessage(message string) {
 	if message != "" {
 		fmt.Fprintf(r.buffer, "\n\n%s%s\n\n\n", r.formatHeader("Server message:"), aurora.Green(message))
-	}
-}
-
-func (r *ResultPrinter) colorizeByTypeFunc(ruleType string) func(interface{}) aurora.Value {
-	switch ruleType {
-	case "MUST":
-		return aurora.Red
-	case "SHOULD":
-		return aurora.Brown
-	case "MAY":
-		return aurora.Green
-	case "HINT":
-		return aurora.Cyan
-	default:
-		return aurora.Gray
 	}
 }
 

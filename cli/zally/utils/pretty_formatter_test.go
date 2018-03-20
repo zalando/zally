@@ -3,6 +3,7 @@ package utils
 import (
 	"testing"
 
+	"github.com/logrusorgru/aurora"
 	"github.com/zalando/zally/cli/zally/domain"
 	"github.com/zalando/zally/cli/zally/tests"
 )
@@ -49,5 +50,54 @@ func TestFormatViolationsCount(t *testing.T) {
 			"HINT violations: 4\n"
 
 		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+}
+
+func TestFormatRule(t *testing.T) {
+	t.Run("Formats single rule", func(t *testing.T) {
+		var formatter PrettyFormatter
+
+		var rule domain.Rule
+		rule.Title = "Must Rule"
+		rule.Type = "MUST"
+		rule.Code = "166"
+		rule.IsActive = true
+		rule.URL = "https://example.com/rule"
+
+		result := formatter.FormatRule(&rule)
+
+		tests.AssertEquals(
+			t,
+			"\x1b[31m166\x1b[0m \x1b[31mMUST\x1b[0m: Must Rule\n\thttps://example.com/rule\n\n",
+			result)
+	})
+}
+
+func TestColorizeByTypeFunc(t *testing.T) {
+	var formatter PrettyFormatter
+
+	t.Run("Returns red when type is MUST", func(t *testing.T) {
+		result := formatter.colorizeByTypeFunc("MUST")
+		tests.AssertEquals(t, aurora.Red("abcde"), result("abcde"))
+	})
+
+	t.Run("Returns brown when type is SHOULD", func(t *testing.T) {
+		result := formatter.colorizeByTypeFunc("SHOULD")
+		tests.AssertEquals(t, aurora.Brown("abcde"), result("abcde"))
+	})
+
+	t.Run("Returns green when type is MAY", func(t *testing.T) {
+		result := formatter.colorizeByTypeFunc("MAY")
+		tests.AssertEquals(t, aurora.Green("abcde"), result("abcde"))
+	})
+
+	t.Run("Returns cyan when type is HINT", func(t *testing.T) {
+		result := formatter.colorizeByTypeFunc("HINT")
+		tests.AssertEquals(t, aurora.Cyan("abcde"), result("abcde"))
+	})
+
+	t.Run("Returns gray by default", func(t *testing.T) {
+		result := formatter.colorizeByTypeFunc("WHATEVER")
+		tests.AssertEquals(t, aurora.Gray("abcde"), result("abcde"))
 	})
 }

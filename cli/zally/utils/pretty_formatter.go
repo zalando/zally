@@ -33,13 +33,27 @@ func (f *PrettyFormatter) FormatViolation(violation *domain.Violation) string {
 }
 
 // FormatViolationsCount generates violation counters in in pretty format
-func (f *PrettyFormatter) FormatViolationsCount(v *domain.ViolationsCount) string {
+func (f *PrettyFormatter) FormatViolationsCount(violationsCount *domain.ViolationsCount) string {
 	var buffer bytes.Buffer
 	fmt.Fprint(&buffer, f.formatHeader("Summary:"))
-	fmt.Fprintf(&buffer, "MUST violations: %d\n", v.Must)
-	fmt.Fprintf(&buffer, "SHOULD violations: %d\n", v.Should)
-	fmt.Fprintf(&buffer, "MAY violations: %d\n", v.May)
-	fmt.Fprintf(&buffer, "HINT violations: %d\n", v.Hint)
+	fmt.Fprintf(&buffer, "MUST violations: %d\n", violationsCount.Must)
+	fmt.Fprintf(&buffer, "SHOULD violations: %d\n", violationsCount.Should)
+	fmt.Fprintf(&buffer, "MAY violations: %d\n", violationsCount.May)
+	fmt.Fprintf(&buffer, "HINT violations: %d\n", violationsCount.Hint)
+	return buffer.String()
+}
+
+// FormatRule formats rule description
+func (f *PrettyFormatter) FormatRule(rule *domain.Rule) string {
+	var buffer bytes.Buffer
+	colorize := f.colorizeByTypeFunc(rule.Type)
+	fmt.Fprintf(
+		&buffer,
+		"%s %s: %s\n\t%s\n\n",
+		colorize(rule.Code),
+		colorize(rule.Type),
+		rule.Title,
+		rule.URL)
 	return buffer.String()
 }
 
