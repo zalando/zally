@@ -17,8 +17,9 @@ class OpenApiRulesValidator(@Autowired rules: RulesManager) : RulesValidator<Api
 
     override fun parse(content: String): ApiAdapter? {
         return OpenAPIV3Parser().readContents(content, null, ParseOptions())?.let {
-            ApiAdapter(null, it.openAPI)
-        } ?: convertSwaggerV2(content)
+            it.openAPI?.let { api -> ApiAdapter(null, api) } ?: convertSwaggerV2(content)
+
+        }
     }
 
     private fun convertSwaggerV2(content: String): ApiAdapter? {
