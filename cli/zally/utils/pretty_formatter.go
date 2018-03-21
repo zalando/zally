@@ -50,6 +50,14 @@ func (f *PrettyFormatter) FormatRule(rule *domain.Rule) string {
 	return buffer.String()
 }
 
+// FormatServerMessage formats server message
+func (f *PrettyFormatter) FormatServerMessage(message string) string {
+	if message != "" {
+		return fmt.Sprintf("\n\n%s%s\n\n\n", f.formatHeader("Server message:"), aurora.Green(message))
+	}
+	return ""
+}
+
 func (f *PrettyFormatter) formatHeader(header string) string {
 	if len(header) == 0 {
 		return ""
@@ -75,7 +83,6 @@ func (f *PrettyFormatter) formatViolation(violation *domain.Violation) string {
 	return buffer.String()
 }
 
-// TODO: move this helper outside of PrettyFormatter
 func (f *PrettyFormatter) colorizeByTypeFunc(ruleType string) func(interface{}) aurora.Value {
 	switch ruleType {
 	case "MUST":

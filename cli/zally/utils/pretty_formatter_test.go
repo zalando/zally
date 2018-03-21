@@ -76,6 +76,23 @@ func TestFormatRule(t *testing.T) {
 	})
 }
 
+func TestFormatServerMessage(t *testing.T) {
+	var formatter PrettyFormatter
+
+	t.Run("Formats nothing when no message", func(t *testing.T) {
+		actualResult := formatter.FormatServerMessage("")
+
+		tests.AssertEquals(t, "", actualResult)
+	})
+
+	t.Run("Formats message when specified", func(t *testing.T) {
+		actualResult := formatter.FormatServerMessage("Hello world!")
+		expectedResult := "\n\nServer message:\n===============\n\n\x1b[32mHello world!\x1b[0m\n\n\n"
+
+		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+}
+
 func TestFormatViolationInPrettyFormat(t *testing.T) {
 	var prettyFormatter PrettyFormatter
 
@@ -96,6 +113,23 @@ func TestFormatViolationInPrettyFormat(t *testing.T) {
 			"\t\t/path/two\n\n"
 
 		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+}
+
+func TestFormatHeader(t *testing.T) {
+	var formatter PrettyFormatter
+
+	t.Run("formatHeader adds a line", func(t *testing.T) {
+
+		actualResult := formatter.formatHeader("Header")
+		expectedResult := "Header\n======\n\n"
+
+		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+
+	t.Run("formatHeader returns empty string when no header", func(t *testing.T) {
+		result := formatter.formatHeader("")
+		tests.AssertEquals(t, "", result)
 	})
 }
 

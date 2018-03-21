@@ -54,12 +54,13 @@ func TestPrintRules(t *testing.T) {
 
 		resultPrinter.PrintRules(&rules)
 
-		tests.AssertEquals(
-			t,
-			"\x1b[31m166\x1b[0m \x1b[31mMUST\x1b[0m: First Rule\n\thttps://example.com/first-rule\n\n\x1b[33mS001\x1b[0m "+
-				"\x1b[33mSHOULD\x1b[0m: Second Rule\n\thttps://example.com/second-rule\n\n\x1b[32mC001\x1b[0m "+
-				"\x1b[32mMAY\x1b[0m: Third Rule\n\thttps://example.com/third-rule\n\n",
-			buffer.String())
+		expectedResult := fmt.Sprintf(
+			"%s%s%s",
+			formatter.FormatRule(&mustRule),
+			formatter.FormatRule(&shouldRule),
+			formatter.FormatRule(&mayRule))
+
+		tests.AssertEquals(t, expectedResult, buffer.String())
 	})
 
 	t.Run("Prints no rules when not found", func(t *testing.T) {
@@ -73,25 +74,6 @@ func TestPrintRules(t *testing.T) {
 		resultPrinter.PrintRules(&rules)
 
 		tests.AssertEquals(t, "", buffer.String())
-	})
-}
-
-func TestFormatHeader(t *testing.T) {
-	var buffer bytes.Buffer
-	var formatter PrettyFormatter
-	resultPrinter := NewResultPrinter(&buffer, &formatter)
-
-	t.Run("formatHeader adds a line", func(t *testing.T) {
-
-		actualResult := resultPrinter.formatHeader("Header")
-		expectedResult := "Header\n======\n\n"
-
-		tests.AssertEquals(t, expectedResult, actualResult)
-	})
-
-	t.Run("formatHeader returns empty string when no header", func(t *testing.T) {
-		result := resultPrinter.formatHeader("")
-		tests.AssertEquals(t, "", result)
 	})
 }
 
@@ -122,11 +104,6 @@ func TestPrintViolations(t *testing.T) {
 	violationsCount.May = 3
 	violationsCount.Hint = 4
 
-	var violations domain.Violations
-	violations.Violations = []domain.Violation{mustViolation, shouldViolation}
-	violations.ViolationsCount = violationsCount
-	violations.Message = "Hello world!"
-
 	t.Run("PrintViolations prints nothing if no violations", func(t *testing.T) {
 		buffer.Reset()
 
@@ -140,41 +117,23 @@ func TestPrintViolations(t *testing.T) {
 	t.Run("PrintViolations returns list of violation strings", func(t *testing.T) {
 		buffer.Reset()
 
+		serverMessage := "Hello world!"
+
+		var violations domain.Violations
+		violations.Violations = []domain.Violation{mustViolation, shouldViolation}
+		violations.ViolationsCount = violationsCount
+		violations.Message = serverMessage
+
 		resultPrinter.PrintViolations(&violations)
 
 		actualResult := string(buffer.Bytes())
 		expectedResult := fmt.Sprintf(
-			"%s%s%s\n\n"+
-				"Server message:\n===============\n\n\x1b[32mHello world!\x1b[0m\n\n\n",
+			"%s%s%s%s",
 			formatter.FormatViolations("MUST", mustViolations),
 			formatter.FormatViolations("SHOULD", shouldViolations),
-			formatter.FormatViolationsCount(&violationsCount))
+			formatter.FormatViolationsCount(&violationsCount),
+			formatter.FormatServerMessage(serverMessage))
 
-		tests.AssertEquals(t, expectedResult, actualResult)
-	})
-}
-
-func TestPrintServerMessage(t *testing.T) {
-	t.Run("Prints nothing when no message", func(t *testing.T) {
-		var buffer bytes.Buffer
-		var formatter PrettyFormatter
-		resultPrinter := NewResultPrinter(&buffer, &formatter)
-
-		resultPrinter.printServerMessage("")
-
-		actualResult := string(buffer.Bytes())
-		tests.AssertEquals(t, "", actualResult)
-	})
-
-	t.Run("Prints message when specified", func(t *testing.T) {
-		var buffer bytes.Buffer
-		var formatter PrettyFormatter
-		resultPrinter := NewResultPrinter(&buffer, &formatter)
-
-		resultPrinter.printServerMessage("Hello world!")
-
-		actualResult := string(buffer.Bytes())
-		expectedResult := "\n\nServer message:\n===============\n\n\x1b[32mHello world!\x1b[0m\n\n\n"
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})
 }
