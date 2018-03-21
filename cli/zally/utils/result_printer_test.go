@@ -106,6 +106,7 @@ func TestPrintViolations(t *testing.T) {
 	mustViolation.ViolationType = "MUST"
 	mustViolation.Decription = "Must Description"
 	mustViolation.Paths = []string{"/path/one", "/path/two"}
+	mustViolations := []domain.Violation{mustViolation}
 
 	var shouldViolation domain.Violation
 	shouldViolation.Title = "Should Title"
@@ -113,6 +114,7 @@ func TestPrintViolations(t *testing.T) {
 	shouldViolation.ViolationType = "SHOULD"
 	shouldViolation.Decription = "Should Description"
 	shouldViolation.Paths = []string{"/path/three", "/path/four"}
+	shouldViolations := []domain.Violation{shouldViolation}
 
 	var violationsCount domain.ViolationsCount
 	violationsCount.Must = 1
@@ -124,25 +126,6 @@ func TestPrintViolations(t *testing.T) {
 	violations.Violations = []domain.Violation{mustViolation, shouldViolation}
 	violations.ViolationsCount = violationsCount
 	violations.Message = "Hello world!"
-
-	t.Run("printViolations prints violations and header", func(t *testing.T) {
-		buffer.Reset()
-		resultPrinter.printViolations("MUST", violations.Must())
-
-		actualResult := string(buffer.Bytes())
-		expectedResult := fmt.Sprintf("MUST\n====\n\n%s", formatter.FormatViolation(&mustViolation))
-
-		tests.AssertEquals(t, expectedResult, actualResult)
-	})
-
-	t.Run("printViolations prints nothing when no violations", func(t *testing.T) {
-		buffer.Reset()
-		resultPrinter.printViolations("MUST", []domain.Violation{})
-
-		result := string(buffer.Bytes())
-
-		tests.AssertEquals(t, "", result)
-	})
 
 	t.Run("PrintViolations prints nothing if no violations", func(t *testing.T) {
 		buffer.Reset()
@@ -161,10 +144,10 @@ func TestPrintViolations(t *testing.T) {
 
 		actualResult := string(buffer.Bytes())
 		expectedResult := fmt.Sprintf(
-			"MUST\n====\n\n%sSHOULD\n======\n\n%s%s\n\n"+
+			"%s%s%s\n\n"+
 				"Server message:\n===============\n\n\x1b[32mHello world!\x1b[0m\n\n\n",
-			formatter.FormatViolation(&mustViolation),
-			formatter.FormatViolation(&shouldViolation),
+			formatter.FormatViolations("MUST", mustViolations),
+			formatter.FormatViolations("SHOULD", shouldViolations),
 			formatter.FormatViolationsCount(&violationsCount))
 
 		tests.AssertEquals(t, expectedResult, actualResult)

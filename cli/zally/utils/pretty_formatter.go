@@ -13,25 +13,6 @@ import (
 type PrettyFormatter struct {
 }
 
-// FormatViolation generates a violation in pretty format
-func (f *PrettyFormatter) FormatViolation(violation *domain.Violation) string {
-	var buffer bytes.Buffer
-
-	colorize := f.colorizeByTypeFunc(violation.ViolationType)
-
-	fmt.Fprintf(&buffer, "%s %s\n", colorize(violation.ViolationType), colorize(violation.Title))
-	fmt.Fprintf(&buffer, "\t%s\n", violation.Decription)
-	fmt.Fprintf(&buffer, "\t%s\n", violation.RuleLink)
-
-	for _, path := range violation.Paths {
-		fmt.Fprintf(&buffer, "\t\t%s\n", path)
-	}
-
-	fmt.Fprintf(&buffer, "\n")
-
-	return buffer.String()
-}
-
 // FormatViolationsCount generates violation counters in in pretty format
 func (f *PrettyFormatter) FormatViolationsCount(violationsCount *domain.ViolationsCount) string {
 	var buffer bytes.Buffer
@@ -40,6 +21,18 @@ func (f *PrettyFormatter) FormatViolationsCount(violationsCount *domain.Violatio
 	fmt.Fprintf(&buffer, "SHOULD violations: %d\n", violationsCount.Should)
 	fmt.Fprintf(&buffer, "MAY violations: %d\n", violationsCount.May)
 	fmt.Fprintf(&buffer, "HINT violations: %d\n", violationsCount.Hint)
+	return buffer.String()
+}
+
+// FormatViolations formats the list of the violations
+func (f *PrettyFormatter) FormatViolations(header string, violations []domain.Violation) string {
+	var buffer bytes.Buffer
+	if len(violations) > 0 {
+		fmt.Fprint(&buffer, f.formatHeader(header))
+		for _, violation := range violations {
+			fmt.Fprint(&buffer, f.formatViolation(&violation))
+		}
+	}
 	return buffer.String()
 }
 
@@ -62,6 +55,24 @@ func (f *PrettyFormatter) formatHeader(header string) string {
 		return ""
 	}
 	return fmt.Sprintf("%s\n%s\n\n", header, strings.Repeat("=", len(header)))
+}
+
+func (f *PrettyFormatter) formatViolation(violation *domain.Violation) string {
+	var buffer bytes.Buffer
+
+	colorize := f.colorizeByTypeFunc(violation.ViolationType)
+
+	fmt.Fprintf(&buffer, "%s %s\n", colorize(violation.ViolationType), colorize(violation.Title))
+	fmt.Fprintf(&buffer, "\t%s\n", violation.Decription)
+	fmt.Fprintf(&buffer, "\t%s\n", violation.RuleLink)
+
+	for _, path := range violation.Paths {
+		fmt.Fprintf(&buffer, "\t\t%s\n", path)
+	}
+
+	fmt.Fprintf(&buffer, "\n")
+
+	return buffer.String()
 }
 
 // TODO: move this helper outside of PrettyFormatter

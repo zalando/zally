@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/logrusorgru/aurora"
@@ -8,27 +9,29 @@ import (
 	"github.com/zalando/zally/cli/zally/tests"
 )
 
-func TestFormatViolationInPrettyFormat(t *testing.T) {
+func TestPrintViolationsInPrettyFormat(t *testing.T) {
 	var prettyFormatter PrettyFormatter
 
-	t.Run("Converts violation to string in pretty format", func(t *testing.T) {
+	t.Run("FormatViolations returns violations and header", func(t *testing.T) {
+		var mustViolation domain.Violation
+		mustViolation.Title = "Must Title"
+		mustViolation.RuleLink = "http://example.com/mustViolation"
+		mustViolation.ViolationType = "MUST"
+		mustViolation.Decription = "Must Description"
+		mustViolation.Paths = []string{"/path/one", "/path/two"}
+		violations := []domain.Violation{mustViolation}
 
-		var violation domain.Violation
-		violation.Title = "Test Title"
-		violation.RuleLink = "http://example.com/violation"
-		violation.ViolationType = "MUST"
-		violation.Decription = "Test Description"
-		violation.Paths = []string{"/path/one", "/path/two"}
-
-		actualResult := prettyFormatter.FormatViolation(&violation)
-		expectedResult := "\x1b[31mMUST\x1b[0m \x1b[31mTest Title\x1b[0m\n" +
-			"\tTest Description\n" +
-			"\thttp://example.com/violation\n" +
-			"\t\t/path/one\n" +
-			"\t\t/path/two\n\n"
+		actualResult := prettyFormatter.FormatViolations("MUST", violations)
+		expectedResult := fmt.Sprintf("MUST\n====\n\n%s", prettyFormatter.formatViolation(&mustViolation))
 
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})
+
+	t.Run("FormatViolations returns nothing when no violations", func(t *testing.T) {
+		result := prettyFormatter.FormatViolations("MUST", []domain.Violation{})
+		tests.AssertEquals(t, "", result)
+	})
+
 }
 
 func TestFormatViolationsCount(t *testing.T) {
@@ -70,6 +73,29 @@ func TestFormatRule(t *testing.T) {
 			t,
 			"\x1b[31m166\x1b[0m \x1b[31mMUST\x1b[0m: Must Rule\n\thttps://example.com/rule\n\n",
 			result)
+	})
+}
+
+func TestFormatViolationInPrettyFormat(t *testing.T) {
+	var prettyFormatter PrettyFormatter
+
+	t.Run("Converts violation to string in pretty format", func(t *testing.T) {
+
+		var violation domain.Violation
+		violation.Title = "Test Title"
+		violation.RuleLink = "http://example.com/violation"
+		violation.ViolationType = "MUST"
+		violation.Decription = "Test Description"
+		violation.Paths = []string{"/path/one", "/path/two"}
+
+		actualResult := prettyFormatter.formatViolation(&violation)
+		expectedResult := "\x1b[31mMUST\x1b[0m \x1b[31mTest Title\x1b[0m\n" +
+			"\tTest Description\n" +
+			"\thttp://example.com/violation\n" +
+			"\t\t/path/one\n" +
+			"\t\t/path/two\n\n"
+
+		tests.AssertEquals(t, expectedResult, actualResult)
 	})
 }
 

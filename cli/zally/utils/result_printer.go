@@ -39,24 +39,15 @@ func (r *ResultPrinter) printRules(rules []domain.Rule) {
 
 // PrintViolations creates string representation of Violation
 func (r *ResultPrinter) PrintViolations(v *domain.Violations) {
-	r.printViolations("MUST", v.Must())
-	r.printViolations("SHOULD", v.Should())
-	r.printViolations("MAY", v.May())
-	r.printViolations("HINT", v.Hint())
-
 	if len(v.Violations) > 0 {
+		fmt.Fprint(r.buffer, r.formatter.FormatViolations("MUST", v.Must()))
+		fmt.Fprint(r.buffer, r.formatter.FormatViolations("SHOULD", v.Should()))
+		fmt.Fprint(r.buffer, r.formatter.FormatViolations("MAY", v.May()))
+		fmt.Fprint(r.buffer, r.formatter.FormatViolations("HINT", v.Hint()))
+
 		fmt.Fprint(r.buffer, r.formatter.FormatViolationsCount(&v.ViolationsCount))
 	}
 	r.printServerMessage(v.Message)
-}
-
-func (r *ResultPrinter) printViolations(header string, violations []domain.Violation) {
-	if len(violations) > 0 {
-		fmt.Fprint(r.buffer, r.formatHeader(header))
-		for _, violation := range violations {
-			fmt.Fprint(r.buffer, r.formatter.FormatViolation(&violation))
-		}
-	}
 }
 
 func (r *ResultPrinter) printServerMessage(message string) {
