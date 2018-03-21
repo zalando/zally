@@ -19,16 +19,15 @@ import org.springframework.beans.factory.annotation.Autowired
 )
 class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
 
-    private val pseudoScopes = rulesConfig.getStringList("${SecureAllEndpointsWithScopesRule::class.java.simpleName}.psuedo-scopes")
-
-    private val accessTypes = rulesConfig.getStringList("${SecureAllEndpointsWithScopesRule::class.java.simpleName}.access-types")
+    private val scopeRegex = Regex(rulesConfig.getString(
+            "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.scope_regex"))
 
     @Check(severity = Severity.MUST)
     fun checkDefinedScopeFormats(swagger: Swagger): Violation? {
         return swagger.securityDefinitions.orEmpty().flatMap { (schemeKey, scheme) ->
             when (scheme) {
                 is OAuth2Definition -> {
-                    scheme.scopes.orEmpty().flatMap { (scope, description) ->
+                    scheme.scopes.orEmpty().flatMap { (scope, _) ->
                         checkDefinedScopeFormat(scope)?.let {
                             listOf("securityDefinitions $schemeKey $scope: $it")
                         } ?: emptyList()
@@ -39,20 +38,10 @@ class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
         }.takeIf { it.isNotEmpty() }?.let { Violation("Defined scopes should match an expected format", it) }
     }
 
-    /**
-     * Check that the supplied scope is acceptable
-     * @param scope the scope to check
-     * @return validation error message or null if the scope is valid
-     */
-    fun checkDefinedScopeFormat(scope: String): String? {
-        val components = scope.split('.')
+    private fun checkDefinedScopeFormat(scope: String): String? {
         return when {
-            components.size == 1 ->
-                if (components[0] in pseudoScopes) null
-                else "pseudo-scope '${components[0]}' should be one of $pseudoScopes"
-            components.size > 3 -> "scopes should have no more than 3 dot-separated components"
-            components.last() !in accessTypes -> "access-type '${components.last()}' should be one of $accessTypes"
-            else -> null
+            scopeRegex.matches(scope) -> null
+            else -> "scope '$scope' does not match regex '^(uid)|(([a-z-]+\\\\.){1,2}(read|write))\$'"
         }
     }
 

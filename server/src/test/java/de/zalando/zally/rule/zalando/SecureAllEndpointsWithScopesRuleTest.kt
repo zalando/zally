@@ -38,7 +38,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                 scopes:
                   uid: Any logged in user
                   fulfillment-order.read: Can read fulfillment-order app
-                  sales-order.shipment_order.write: Can create shipment_orders in the sales-order app
+                  sales-order.shipment-order.write: Can create shipment-orders in the sales-order app
             """.trimIndent()
         val swagger = SwaggerParser().parse(text)
 
@@ -82,37 +82,7 @@ class SecureAllEndpointsWithScopesRuleTest {
         val violation = rule.checkDefinedScopeFormats(swagger)
 
         assertThat(violation!!.paths)
-                .hasSameElementsAs(listOf("securityDefinitions stups max: pseudo-scope 'max' should be one of [uid]"))
-    }
-
-    @Test
-    fun checkDefinedScopeFormatWithValidPsuedoScopeReturnsNull() {
-        val message = rule.checkDefinedScopeFormat("uid")
-        assertThat(message).isNull()
-    }
-
-    @Test
-    fun checkDefinedScopeFormatWithInvalidPsuedoScopeReturnsMessage() {
-        val message = rule.checkDefinedScopeFormat("full")
-        assertThat(message).isEqualTo("pseudo-scope 'full' should be one of [uid]")
-    }
-
-    @Test
-    fun checkDefinedScopeFormatWithValidAccessTypeReturnsNull() {
-        val message = rule.checkDefinedScopeFormat("stuff.read")
-        assertThat(message).isNull()
-    }
-
-    @Test
-    fun checkDefinedScopeFormatWithValidAccessTypeReturnsMessage() {
-        val message = rule.checkDefinedScopeFormat("stuff.create")
-        assertThat(message).isEqualTo("access-type 'create' should be one of [read, write]")
-    }
-
-    @Test
-    fun checkDefinedScopeFormatWithManyComponentScopeReturnsMessage() {
-        val message = rule.checkDefinedScopeFormat("this.that.the.other")
-        assertThat(message).isEqualTo("scopes should have no more than 3 dot-separated components")
+                .hasSameElementsAs(listOf("securityDefinitions stups max: scope 'max' does not match regex '^(uid)|(([a-z-]+\\\\.){1,2}(read|write))\$'"))
     }
 
     @Test
