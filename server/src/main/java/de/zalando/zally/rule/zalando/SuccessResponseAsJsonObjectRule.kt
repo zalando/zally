@@ -1,51 +1,43 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.ComposedModel
-import io.swagger.models.ModelImpl
-import io.swagger.models.Operation
-import io.swagger.models.Swagger
-import io.swagger.models.properties.Property
-import io.swagger.models.properties.RefProperty
+import de.zalando.zally.util.extensions.allSchemas
+import de.zalando.zally.util.extensions.isObject
+import de.zalando.zally.util.extensions.producesJson
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
-    id = "110",
-    severity = Severity.MUST,
-    title = "Response As JSON Object"
+        ruleSet = ZalandoRuleSet::class,
+        id = "110",
+        severity = Severity.MUST,
+        title = "Response As JSON Object"
 )
 class SuccessResponseAsJsonObjectRule {
     private val description = "Always Return JSON Objects As Top-Level Data Structures To Support Extensibility"
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
-        val paths = swagger.paths.orEmpty().flatMap { (key, value) ->
-            value.operationMap.orEmpty().filter { it.value.producesJson }.flatMap { (method, operation) ->
-                operation.responses.orEmpty().filter { (code, response) ->
-                    isSuccess(code) && !response.schema.isObject(swagger)
-                }.map { (code, _) ->
-                    "$key $method $code"
-                }
-            }
+    fun validate(adapter: ApiAdapter): Violation? {
+
+        val paths = adapter.openAPI.paths.orEmpty().flatMap { (key, value) ->
+
+            value
+                    .readOperationsMap()
+                    .orEmpty()
+                    .filter { (_, it) -> it.producesJson }
+                    .flatMap { (method, operation) ->
+                        operation.responses.orEmpty().filter { (code, response) ->
+                            isSuccess(code) && !response.content.allSchemas().filter { it.isObject() }.isNotEmpty()
+                        }.map { (code, _) ->
+                            "$key $method $code"
+                        }
+                    }
         }
         return if (paths.isNotEmpty()) Violation(description, paths) else null
     }
 
-    private val Operation.producesJson get() = produces == null || produces.isEmpty() || produces.any { "json" in it }
 
     private fun isSuccess(codeString: String) = codeString.toIntOrNull() in 200..299
-
-    private fun Property?.isObject(swagger: Swagger) =
-        when {
-            this == null -> true
-            type == "object" -> true
-            this is RefProperty -> {
-                val model = swagger.definitions.orEmpty()[simpleRef]
-                (model is ModelImpl && model.type == "object") || model is ComposedModel
-            }
-            else -> false
-        }
 }

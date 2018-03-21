@@ -1,6 +1,7 @@
 package de.zalando.zally.util
 
 import de.zalando.zally.getFixture
+import de.zalando.zally.util.extensions.getAllJsonObjects
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test

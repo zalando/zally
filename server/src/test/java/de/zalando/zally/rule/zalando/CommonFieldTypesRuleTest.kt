@@ -1,11 +1,12 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getFixture
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.testConfig
-import io.swagger.models.Swagger
 import io.swagger.models.properties.AbstractProperty
 import io.swagger.models.properties.IntegerProperty
 import io.swagger.models.properties.StringProperty
+import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -76,17 +77,17 @@ class CommonFieldTypesRuleTest {
 
     @Test
     fun validateEmpty() {
-        assertThat(rule.validate(Swagger())).isNull()
+        assertThat(rule.validate(ApiAdapter(OpenAPI()))).isNull()
     }
 
     @Test
     fun positiveCase() {
-        assertThat(rule.validate(getFixture("common_fields.yaml"))).isNull()
+        assertThat(rule.validate(ApiAdapter(getFixture("common_fields.yaml")))).isNull()
     }
 
     @Test
     fun negativeCase() {
-        val result = rule.validate(getFixture("common_fields_invalid.yaml"))!!
+        val result = rule.validate(ApiAdapter(getFixture("common_fields_invalid.yaml")))!!
         assertThat(result.paths).hasSameElementsAs(listOf("#/definitions/Partner", "#/definitions/JobSummary"))
         assertThat(result.description).contains(listOf("'id'", "'created'", "'modified'", "'type"))
     }

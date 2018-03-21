@@ -1,6 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getFixture
+import de.zalando.zally.rule.ApiAdapter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -11,13 +12,13 @@ class UseProblemJsonRuleTest {
     @Test
     fun shouldReturnNoViolationsWhenErrorsReferencingToProblemJson() {
         val swagger = getFixture("problem_json.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger))).isNull()
     }
 
     @Test
     fun shouldReturnViolationsWhenErrorsReferencingToProblemJsonButNotProducingJson() {
         val swagger = getFixture("problem_json_not_produces_json.yaml")
-        val result = rule.validate(swagger)!!
+        val result = rule.validate(ApiAdapter(swagger))!!
         assertThat(result.paths).hasSameElementsAs(listOf(
             "/products GET 400",
             "/products GET 401",
@@ -30,13 +31,13 @@ class UseProblemJsonRuleTest {
     @Test
     fun shouldReturnNoViolationsWhenOperationsAreProducingJson() {
         val swagger = getFixture("problem_json_operations_produce_json.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger))).isNull()
     }
 
     @Test
     fun shouldReturnViolationsWhenCustomReferenceIsUsed() {
         val swagger = getFixture("api_tinbox.yaml")
-        val result = rule.validate(swagger)!!
+        val result = rule.validate(ApiAdapter(swagger))!!
         assertThat(result.paths).hasSameElementsAs(listOf(
             "/merchants GET 400",
             "/merchants GET 401",
@@ -109,7 +110,7 @@ class UseProblemJsonRuleTest {
     @Test
     fun shouldReturnViolationsWhenNoReferenceIsUsed() {
         val swagger = getFixture("api_spp.json")
-        val result = rule.validate(swagger)!!
+        val result = rule.validate(ApiAdapter(swagger))!!
         assertThat(result.paths).hasSameElementsAs(listOf(
             "/product-put-requests/{product_path} POST 400",
             "/product-put-requests/{product_path} POST 406",
@@ -132,7 +133,7 @@ class UseProblemJsonRuleTest {
     @Test
     fun shouldNotThrowExOnSchemasWithReferencesToEmptyDefinitions() {
         val swagger = getFixture("missing_definitions.yaml")
-        val result = rule.validate(swagger)!!
+        val result = rule.validate(ApiAdapter(swagger))!!
         assertThat(result.paths).hasSameElementsAs(listOf(
                 "/identifier-types/{identifier_type}/source-ids/{source_identifier} GET 401",
                 "/identifier-types/{identifier_type}/source-ids/{source_identifier} GET 403",

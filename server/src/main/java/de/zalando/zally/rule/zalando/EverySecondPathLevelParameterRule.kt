@@ -1,11 +1,11 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isPathVariable
-import io.swagger.models.Swagger
 
 @Rule(
         ruleSet = ZalandoRuleSet::class,
@@ -17,8 +17,8 @@ class EverySecondPathLevelParameterRule {
     private val description = "Every second path level must be a path parameter"
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
-        val paths = swagger.paths.orEmpty().keys.filterNot {
+    fun validate(adapter: ApiAdapter): Violation? {
+        val paths = adapter.openAPI.paths.orEmpty().keys.filterNot {
             val pathSegments = it.split("/").filter { it.isNotEmpty() }
             pathSegments.filterIndexed { i, segment -> isPathVariable(segment) == (i % 2 == 0) }.isEmpty()
         }

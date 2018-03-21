@@ -1,5 +1,6 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.swaggerWithOperations
 import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
@@ -23,7 +24,7 @@ class NotSpecifyStandardErrorCodesRuleTest {
 
         val swagger = swaggerWithOperations(operations)
 
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger))).isNull()
     }
 
     @Test
@@ -41,7 +42,7 @@ class NotSpecifyStandardErrorCodesRuleTest {
             }
         }
 
-        val violation = rule.validate(swagger)
+        val violation = rule.validate(ApiAdapter(swagger))
 
         assertThat(violation?.paths.orEmpty()).containsExactlyInAnyOrder(*expectedPaths.toTypedArray())
     }

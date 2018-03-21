@@ -1,12 +1,12 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.WordUtil.isPlural
-import de.zalando.zally.util.getAllJsonObjects
-import io.swagger.models.Swagger
+import de.zalando.zally.util.extensions.getAllJsonObjects
 
 @Rule(
         ruleSet = ZalandoRuleSet::class,
@@ -17,8 +17,8 @@ import io.swagger.models.Swagger
 class PluralizeNamesForArraysRule {
 
     @Check(severity = Severity.SHOULD)
-    fun validate(swagger: Swagger): Violation? {
-        val res = swagger.getAllJsonObjects().map { (def, path) ->
+    fun validate(adapter: ApiAdapter): Violation? {
+        val res = adapter.openAPI.getAllJsonObjects().map { (def, path) ->
             val badProps = def.entries.filter { "array" == it.value.type && !isPlural(it.key) }
             if (badProps.isNotEmpty()) {
                 val propsDesc = badProps.map { "'${it.key}'" }.joinToString(",")

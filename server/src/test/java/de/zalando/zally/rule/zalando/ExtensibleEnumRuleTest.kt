@@ -1,8 +1,9 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getFixture
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.Swagger
+import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -12,7 +13,7 @@ class ExtensibleEnumRuleTest {
 
     @Test
     fun returnsNoViolationIfEmptySwagger() {
-        assertThat(rule.validate(Swagger())).isNull()
+        assertThat(rule.validate(ApiAdapter(OpenAPI()))).isNull()
     }
 
     @Test
@@ -22,7 +23,7 @@ class ExtensibleEnumRuleTest {
                 description = "Properties/Parameters [status] are not extensible enums",
                 paths = listOf("#/definitions/CrawledAPIDefinition/properties/status"))
 
-        val violation = rule.validate(swagger)
+        val violation = rule.validate(ApiAdapter(swagger))
 
         assertThat(violation).isNotNull()
         assertThat(violation).isEqualTo(expectedViolation)
@@ -36,7 +37,7 @@ class ExtensibleEnumRuleTest {
                 paths = listOf("#/paths/apis/{api_id}/versions/GET/parameters/lifecycle_state",
                         "#/paths/apis/GET/parameters/environment"))
 
-        val violation = rule.validate(swagger)
+        val violation = rule.validate(ApiAdapter(swagger))
 
         assertThat(violation).isNotNull()
         assertThat(violation).isEqualTo(expectedViolation)
@@ -46,6 +47,6 @@ class ExtensibleEnumRuleTest {
     fun returnsNoViolationIfNoEnums() {
         val swagger = getFixture("no_must_violations.yaml")
 
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger))).isNull()
     }
 }

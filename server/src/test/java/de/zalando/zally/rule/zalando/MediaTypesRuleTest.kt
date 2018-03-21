@@ -1,25 +1,26 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getFixture
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
-import io.swagger.models.Operation
-import io.swagger.models.Path
-import io.swagger.models.Swagger
+import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class MediaTypesRuleTest {
     private val rule = MediaTypesRule()
 
-    fun swaggerWithMediaTypes(vararg pathToMedia: Pair<String, List<String>>): Swagger =
-        Swagger().apply {
+    fun swaggerWithMediaTypes(vararg pathToMedia: Pair<String, List<String>>): OpenAPI {
+/*        Swagger().apply {
             paths = pathToMedia.map { (path, types) ->
                 path to Path().apply {
                     this["get"] = Operation().apply { produces = types }
                 }
-            }.toMap()
-        }
+            }.toMap()*/
+            //TODO refactor
+            return OpenAPI()
+    }
 
     @Test
     fun isApplicationJsonOrProblemJsonForValidInput() {
@@ -53,7 +54,7 @@ class MediaTypesRuleTest {
 
     @Test
     fun emptySwagger() {
-        assertThat(rule.validate(Swagger())).isNull()
+        assertThat(rule.validate(ApiAdapter(OpenAPI()))).isNull()
     }
 
     @Test
@@ -62,14 +63,14 @@ class MediaTypesRuleTest {
             "/shipment-order/{shipment_order_id}" to listOf(
                 "application/x.zalando.contract+json;v=123",
                 "application/vnd.api+json;version=3"))
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger))).isNull()
     }
 
     @Test
     fun negativeCase() {
         val path = "/shipment-order/{shipment_order_id}"
         val swagger = swaggerWithMediaTypes(path to listOf("application/json", "application/vnd.api+json"))
-        assertThat(rule.validate(swagger)!!.paths).hasSameElementsAs(listOf("$path GET"))
+        assertThat(rule.validate(ApiAdapter(swagger))!!.paths).hasSameElementsAs(listOf("$path GET"))
     }
 
     @Test
@@ -79,7 +80,7 @@ class MediaTypesRuleTest {
             "/path2" to listOf("application/x.zalando.contract+json"),
             "/path3" to listOf("application/x.zalando.contract+json;v=123")
         )
-        val result = rule.validate(swagger)!!
+        val result = rule.validate(ApiAdapter(swagger))!!
         println(result)
         assertThat(result.paths).hasSameElementsAs(listOf(
             "/path1 GET",
@@ -90,7 +91,7 @@ class MediaTypesRuleTest {
     @Test
     fun negativeCaseSpp() {
         val swagger = getFixture("api_spp.json")
-        val result = rule.validate(swagger)!!
+        val result = rule.validate(ApiAdapter(swagger))!!
         assertThat(result.paths).hasSameElementsAs(listOf(
             "/products GET",
             "/products/{product_id} GET",
@@ -104,6 +105,6 @@ class MediaTypesRuleTest {
     @Test
     fun positiveCaseSpa() {
         val swagger = getFixture("api_spa.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger))).isNull()
     }
 }

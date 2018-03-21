@@ -1,12 +1,12 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isPathVariable
-import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
@@ -19,8 +19,8 @@ class LimitNumberOfResourcesRule(@Autowired rulesConfig: Config) {
     private val resourceTypesLimit = rulesConfig.getConfig(javaClass.simpleName).getInt("resource_types_limit")
 
     @Check(severity = Severity.SHOULD)
-    fun validate(swagger: Swagger): Violation? {
-        val resourceTypes = resourceTypes(swagger.paths.orEmpty().keys)
+    fun validate(adapter: ApiAdapter): Violation? {
+        val resourceTypes = resourceTypes(adapter.openAPI.paths.orEmpty().keys)
         return if (resourceTypes.size > resourceTypesLimit) {
             Violation("Identified ${resourceTypes.size} resource resource types, " +
                     "greater than recommended limit of $resourceTypesLimit",

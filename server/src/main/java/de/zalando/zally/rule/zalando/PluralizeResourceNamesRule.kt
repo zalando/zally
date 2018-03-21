@@ -1,13 +1,13 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
 import de.zalando.zally.util.WordUtil.isPlural
-import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
@@ -21,8 +21,8 @@ class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) {
     private val allowedPrefixes = rulesConfig.getConfig(javaClass.simpleName).getStringList("whitelist_prefixes")
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
-        val res = swagger.paths?.keys?.flatMap { path ->
+    fun validate(adapter: ApiAdapter): Violation? {
+        val res = adapter.openAPI.paths?.keys?.flatMap { path ->
             val allParts = path.split("/".toRegex())
             val partsToCheck = if (allParts.size > 1 && allowedPrefixes.contains(allParts.first())) allParts.drop(1)
             else allParts

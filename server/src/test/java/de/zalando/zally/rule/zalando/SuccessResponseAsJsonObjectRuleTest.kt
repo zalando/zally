@@ -1,6 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getFixture
+import de.zalando.zally.rule.ApiAdapter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -14,23 +15,23 @@ class SuccessResponseAsJsonObjectRuleTest {
 
     @Test
     fun positiveCase() {
-        assertThat(rule.validate(validSwagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(validSwagger))).isNull()
     }
 
     @Test
     fun negativeCase() {
-        val result = rule.validate(invalidSwagger)!!
+        val result = rule.validate(ApiAdapter(invalidSwagger))!!
         assertThat(result.paths).hasSameElementsAs(listOf("/pets GET 200", "/pets POST 200"))
     }
 
     @Test
     fun positiveCaseSpp() {
         val swagger = getFixture("api_spp.json")
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger))).isNull()
     }
 
     @Test
     fun npeBug() {
-        assertThat(rule.validate(npeSwagger)).isNotNull()
+        assertThat(rule.validate(ApiAdapter(npeSwagger))).isNotNull()
     }
 }

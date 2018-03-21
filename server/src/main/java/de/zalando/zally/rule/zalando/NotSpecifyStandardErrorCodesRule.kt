@@ -1,11 +1,11 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
@@ -22,10 +22,10 @@ class NotSpecifyStandardErrorCodesRule(@Autowired rulesConfig: Config) {
             .getIntList("standard_error_codes").toSet()
 
     @Check(severity = Severity.HINT)
-    fun validate(swagger: Swagger): Violation? {
+    fun validate(adapter: ApiAdapter): Violation? {
 
-        val paths = swagger.paths.orEmpty().flatMap { pathEntry ->
-            pathEntry.value.operationMap.orEmpty().flatMap { opEntry ->
+        val paths = adapter.openAPI.paths.orEmpty().flatMap { pathEntry ->
+            pathEntry.value.readOperationsMap().orEmpty().flatMap { opEntry ->
                 opEntry.value.responses.orEmpty().flatMap { responseEntry ->
                     val httpCode = responseEntry.key.toIntOrNull()
                     if (isStandardErrorCode(httpCode)) {

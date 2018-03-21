@@ -1,8 +1,9 @@
 package de.zalando.zally.rule.zalando
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
-import io.swagger.models.Swagger
-import io.swagger.parser.SwaggerParser
+import de.zalando.zally.rule.ApiAdapter
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.parser.OpenAPIV3Parser
 import org.assertj.core.api.Assertions
 import org.junit.Test
 
@@ -14,14 +15,14 @@ class ApiIdentifierRuleTest {
     fun correctApiIdIsSet() {
         val swagger = withApiId("zally-api")
 
-        Assertions.assertThat(rule.validate(swagger)).isNull()
+        Assertions.assertThat(rule.validate(ApiAdapter(null, swagger))).isNull()
     }
 
     @Test
     fun incorrectIdIsSet() {
         val swagger = withApiId("This?iS//some|Incorrect+&ApI)(id!!!")
 
-        val violation = rule.validate(swagger)!!
+        val violation = rule.validate(ApiAdapter(null, swagger))!!
 
         Assertions.assertThat(violation.paths).hasSameElementsAs(listOf("/info/x-api-id"))
         Assertions.assertThat(violation.description).matches(".*doesn't match.*")
@@ -29,16 +30,16 @@ class ApiIdentifierRuleTest {
 
     @Test
     fun noApiIdIsSet() {
-        val violation = rule.validate(Swagger())!!
+        val violation = rule.validate(ApiAdapter(null, OpenAPI()))!!
 
         Assertions.assertThat(violation.paths).hasSameElementsAs(listOf("/info/x-api-id"))
         Assertions.assertThat(violation.description).matches(".*should be provided.*")
     }
 
-    private fun withApiId(apiId: String): Swagger {
+    private fun withApiId(apiId: String): OpenAPI {
         val root = JsonNodeFactory.instance.objectNode()
         root.putObject("info")
             .put("x-api-id", apiId)
-        return SwaggerParser().read(root)
+        return OpenAPIV3Parser().readWithInfo(root).openAPI
     }
 }

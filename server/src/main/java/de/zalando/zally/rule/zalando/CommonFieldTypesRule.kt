@@ -1,12 +1,12 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.getAllJsonObjects
-import io.swagger.models.Swagger
+import de.zalando.zally.util.extensions.getAllJsonObjects
 import io.swagger.models.properties.Property
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -32,8 +32,8 @@ class CommonFieldTypesRule(@Autowired rulesConfig: Config) {
         }
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
-        val res = swagger.getAllJsonObjects().map { (def, path) ->
+    fun validate(adapter: ApiAdapter): Violation? {
+        val res = adapter.openAPI.getAllJsonObjects().map { (def, path) ->
             val badProps = def.entries.map { checkField(it.key, it.value) }.filterNotNull()
             if (badProps.isNotEmpty())
                 (path + ": " + badProps.joinToString(", ")) to path

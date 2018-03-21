@@ -1,6 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getFixture
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -12,13 +13,13 @@ class LimitNumberOfResourcesRuleTest {
     @Test
     fun positiveCase() {
         val swagger = getFixture("limitNumberOfResourcesValid.json")
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger))).isNull()
     }
 
     @Test
     fun negativeCase() {
         val swagger = getFixture("limitNumberOfResourcesInvalid.json")
-        val result = rule.validate(swagger)!!
+        val result = rule.validate(ApiAdapter(swagger))!!
         assertThat(result.paths).hasSameElementsAs(listOf(
             "/items",
             "/items10",

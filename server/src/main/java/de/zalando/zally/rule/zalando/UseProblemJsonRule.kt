@@ -1,18 +1,19 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.extensions.producesJson
 import io.swagger.models.ComposedModel
-import io.swagger.models.HttpMethod
 import io.swagger.models.Model
-import io.swagger.models.Operation
 import io.swagger.models.RefModel
-import io.swagger.models.Response
 import io.swagger.models.Swagger
-import io.swagger.models.properties.ObjectProperty
-import io.swagger.models.properties.RefProperty
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.Operation
+import io.swagger.v3.oas.models.PathItem
+import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
         ruleSet = ZalandoRuleSet::class,
@@ -22,36 +23,41 @@ import io.swagger.models.properties.RefProperty
 )
 class UseProblemJsonRule {
     private val description = "Operations Should Return Problem JSON When Any Problem Occurs During Processing " +
-        "Whether Caused by Client Or Server"
+            "Whether Caused by Client Or Server"
     private val requiredFields = setOf("title", "status")
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
-        val paths = swagger.paths.orEmpty().flatMap { pathEntry ->
-            pathEntry.value.operationMap.orEmpty().filter { it.key.shouldContainPayload() }.flatMap { opEntry ->
-                opEntry.value.responses.orEmpty().flatMap { responseEntry ->
-                    val httpCode = responseEntry.key.toIntOrNull()
-                    if (httpCode in 400..599 && !isValidProblemJson(swagger, responseEntry.value, opEntry.value)) {
-                        listOf("${pathEntry.key} ${opEntry.key} ${responseEntry.key}")
-                    } else emptyList()
-                }
-            }
+    fun validate(adapter: ApiAdapter): Violation? {
+        val openApi = adapter.openAPI
+        val paths = adapter.openAPI.paths.orEmpty().flatMap { pathEntry ->
+            pathEntry.value.readOperationsMap().orEmpty()
+                    .filter { it.key.shouldContainPayload() }
+                    .flatMap { opEntry ->
+                        opEntry.value.responses.orEmpty().flatMap { responseEntry ->
+                            val httpCode = responseEntry.key.toIntOrNull()
+                            if (httpCode in 400..599 && !isValidProblemJson(openApi, responseEntry.value, opEntry.value)) {
+                                listOf("${pathEntry.key} ${opEntry.key} ${responseEntry.key}")
+                            } else emptyList()
+                        }
+                    }
         }
 
         return if (paths.isNotEmpty()) Violation(description, paths) else null
     }
 
-    private fun isValidProblemJson(swagger: Swagger, response: Response, operation: Operation) =
-        isProblemJson(swagger, response) && producesJson(swagger, operation)
+    private fun isValidProblemJson(openAPI: OpenAPI, response: ApiResponse, operation: Operation) =
+            isProblemJson(openAPI, response) && operation.producesJson
 
-    private fun isProblemJson(swagger: Swagger, response: Response): Boolean {
-        val schema = response.schema
+    private fun isProblemJson(openAPI: OpenAPI, response: ApiResponse): Boolean {
+/*        val schema = response.schema
         val properties = when (schema) {
-            is RefProperty -> getProperties(swagger, swagger.definitions?.get((response.schema as RefProperty).simpleRef))
+            is RefProperty -> getProperties(openAPI, openAPI.definitions?.get((response.schema as RefProperty).simpleRef))
             is ObjectProperty -> schema.properties?.keys.orEmpty()
             else -> emptySet<String>()
         }
-        return properties.containsAll(requiredFields)
+        return properties.containsAll(requiredFields)*/
+        //TODO refactor it
+        return false
     }
 
     private fun getProperties(swagger: Swagger, definition: Model?): Set<String> {
@@ -62,17 +68,6 @@ class UseProblemJsonRule {
         }
     }
 
-    private fun producesJson(swagger: Swagger, operation: Operation) =
-        if (operation.produces.orEmpty().isEmpty()) {
-            swagger.produces.orEmpty().containsJson()
-        } else {
-            operation.produces.containsJson()
-        }
-
-    // support for application/json also with set charset e.g. "application/json; charset=utf-8"
-    private fun List<String>.containsJson() =
-        any { it.startsWith("application/json") }
-
-    private fun HttpMethod.shouldContainPayload(): Boolean =
-        name.toLowerCase() !in listOf("head", "options")
+    private fun PathItem.HttpMethod.shouldContainPayload(): Boolean =
+            name.toLowerCase() !in listOf("head", "options")
 }

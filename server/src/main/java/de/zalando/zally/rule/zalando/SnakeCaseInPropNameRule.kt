@@ -1,13 +1,13 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
-import de.zalando.zally.util.getAllJsonObjects
-import io.swagger.models.Swagger
+import de.zalando.zally.util.extensions.getAllJsonObjects
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
@@ -22,8 +22,8 @@ class SnakeCaseInPropNameRule(@Autowired rulesConfig: Config) {
     private val whitelist = rulesConfig.getStringList(SnakeCaseInPropNameRule::class.simpleName + ".whitelist").toSet()
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
-        val result = swagger.getAllJsonObjects().flatMap { (def, path) ->
+    fun validate(adapter: ApiAdapter): Violation? {
+        val result = adapter.openAPI.getAllJsonObjects().flatMap { (def, path) ->
             val badProps = def.keys.filterNot { PatternUtil.isSnakeCase(it) || whitelist.contains(it) }
             if (badProps.isNotEmpty()) listOf(badProps to path) else emptyList()
         }

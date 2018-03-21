@@ -4,6 +4,9 @@ import io.swagger.models.Swagger
 import io.swagger.v3.oas.models.OpenAPI
 
 data class ApiAdapter(val swagger: Swagger?, val openAPI: OpenAPI) {
+
+    constructor(openAPI: OpenAPI) : this(null, openAPI)
+
     fun isV2(): Boolean {
         return swagger != null
     }

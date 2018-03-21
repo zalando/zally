@@ -1,10 +1,10 @@
 package de.zalando.zally.rule.zally
 
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.Swagger
 
 @Rule(
         ruleSet = ZallyRuleSet::class,
@@ -17,8 +17,8 @@ class ExtractBasePathRule {
     private val description = "All paths start with prefix '%s'. This prefix could be part of base path."
 
     @Check(severity = Severity.HINT)
-    fun validate(swagger: Swagger): Violation? {
-        val paths = swagger.paths.orEmpty().keys
+    fun validate(adapter: ApiAdapter): Violation? {
+        val paths = adapter.openAPI.paths.orEmpty().keys
         if (paths.size < 2) {
             return null
         }
