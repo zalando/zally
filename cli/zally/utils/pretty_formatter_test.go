@@ -9,7 +9,7 @@ import (
 	"github.com/zalando/zally/cli/zally/tests"
 )
 
-func TestPrintViolationsInPrettyFormat(t *testing.T) {
+func TestPrettyFormatViolations(t *testing.T) {
 	var prettyFormatter PrettyFormatter
 
 	t.Run("FormatViolations returns violations and header", func(t *testing.T) {
@@ -34,7 +34,7 @@ func TestPrintViolationsInPrettyFormat(t *testing.T) {
 
 }
 
-func TestFormatViolationsCount(t *testing.T) {
+func TestPrettyFormatViolationsCount(t *testing.T) {
 	var prettyFormatter PrettyFormatter
 
 	t.Run("Converts ViolationsCount to string", func(t *testing.T) {
@@ -56,7 +56,7 @@ func TestFormatViolationsCount(t *testing.T) {
 	})
 }
 
-func TestFormatRule(t *testing.T) {
+func TestPrettyFormatRule(t *testing.T) {
 	t.Run("Formats single rule", func(t *testing.T) {
 		var formatter PrettyFormatter
 
@@ -76,7 +76,7 @@ func TestFormatRule(t *testing.T) {
 	})
 }
 
-func TestFormatServerMessage(t *testing.T) {
+func TestPrettyFormatServerMessage(t *testing.T) {
 	var formatter PrettyFormatter
 
 	t.Run("Formats nothing when no message", func(t *testing.T) {
@@ -93,7 +93,7 @@ func TestFormatServerMessage(t *testing.T) {
 	})
 }
 
-func TestFormatViolationInPrettyFormat(t *testing.T) {
+func TestPrettyFormatViolationInPrettyFormat(t *testing.T) {
 	var prettyFormatter PrettyFormatter
 
 	t.Run("Converts violation to string in pretty format", func(t *testing.T) {
@@ -116,7 +116,7 @@ func TestFormatViolationInPrettyFormat(t *testing.T) {
 	})
 }
 
-func TestFormatHeader(t *testing.T) {
+func TestPrettyFormatHeader(t *testing.T) {
 	var formatter PrettyFormatter
 
 	t.Run("formatHeader adds a line", func(t *testing.T) {
@@ -133,7 +133,7 @@ func TestFormatHeader(t *testing.T) {
 	})
 }
 
-func TestColorizeByTypeFunc(t *testing.T) {
+func TestPrettyColorizeByTypeFunc(t *testing.T) {
 	var formatter PrettyFormatter
 
 	t.Run("Returns red when type is MUST", func(t *testing.T) {
