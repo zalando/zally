@@ -15,19 +15,43 @@ import org.springframework.stereotype.Component
 @Component
 class OpenApiRulesValidator(@Autowired rules: RulesManager) : RulesValidator<ApiAdapter>(rules) {
 
-    override fun parse(content: String): ApiAdapter? {
-        return OpenAPIV3Parser().readContents(content, null, ParseOptions())?.let {
-            it.openAPI?.let { api -> ApiAdapter(null, api) } ?: convertSwaggerV2(content)
-        }
-    }
+    companion object {
 
-    private fun convertSwaggerV2(content: String): ApiAdapter? {
-        return SwaggerConverter().readContents(content, null, ParseOptions()).openAPI?.let { openapi ->
-            SwaggerParser().parse(content)?.let { swagger ->
-                ApiAdapter(swagger, openapi)
+        fun fromContent(content: String): ApiAdapter? {
+            return OpenAPIV3Parser().readContents(content, null, ParseOptions())?.let {
+                it.openAPI?.let { api -> ApiAdapter(null, api) } ?: swaggerFromContent(content)
             }
         }
+
+        fun fromLocation(location: String): ApiAdapter? {
+            val parseResult = OpenAPIV3Parser().readLocation(location, null, ParseOptions())
+            return parseResult?.let {
+                it.openAPI?.let { api -> ApiAdapter(null, api) } ?: swaggerFromLocation(location)
+            }
+        }
+
+        private fun swaggerFromContent(content: String): ApiAdapter? {
+            return SwaggerConverter().readContents(content, null, ParseOptions()).openAPI?.let { openapi ->
+                SwaggerParser().parse(content)?.let { swagger ->
+                    ApiAdapter(swagger, openapi)
+                }
+            }
+        }
+
+        private fun swaggerFromLocation(location: String): ApiAdapter? {
+            return SwaggerConverter().readLocation(location, null, ParseOptions()).openAPI?.let { openapi ->
+                SwaggerParser().read(location)?.let { swagger ->
+                    ApiAdapter(swagger, openapi)
+                }
+            }
+        }
+
     }
+
+    override fun parse(content: String): ApiAdapter? {
+        return OpenApiRulesValidator.fromContent(content)
+    }
+
 
     override fun ignores(root: ApiAdapter): List<String> {
         val ignores = root.vendorExtensions?.get(zallyIgnoreExtension)

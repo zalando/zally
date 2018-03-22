@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.swaggerWithOperations
 import de.zalando.zally.testConfig
+import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -25,7 +26,7 @@ class UseSpecificHttpStatusCodesTest {
 
         val swagger = swaggerWithOperations(operations)
 
-        assertThat(codes.validate(ApiAdapter(swagger))).isNull()
+        assertThat(codes.validate(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 
     @Test
@@ -50,7 +51,7 @@ class UseSpecificHttpStatusCodesTest {
             }
         }
 
-        val violation = codes.validate(ApiAdapter(swagger))
+        val violation = codes.validate(ApiAdapter(swagger, OpenAPI()))
 
         assertThat(violation?.paths.orEmpty()).containsExactlyInAnyOrder(*expectedPaths.toTypedArray())
     }

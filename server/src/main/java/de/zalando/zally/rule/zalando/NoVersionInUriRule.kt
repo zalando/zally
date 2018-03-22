@@ -5,6 +5,7 @@ import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.PatternUtil
 
 @Rule(
         ruleSet = ZalandoRuleSet::class,
@@ -17,9 +18,11 @@ class NoVersionInUriRule {
 
     @Check(severity = Severity.MUST)
     fun validate(adapter: ApiAdapter): Violation? {
-/*        val hasVersion = adapter.openAPI.basePath != null && PatternUtil.hasVersionInUrl(adapter.openAPI.basePath)
-        return if (hasVersion) Violation(description, emptyList()) else null*/
-        // TODO implement it
-        return null
+        if (adapter.isV2()) {
+            val swagger = adapter.swagger!!
+            val hasVersion = swagger.basePath != null && PatternUtil.hasVersionInUrl(swagger.basePath)
+            return if (hasVersion) Violation(description, emptyList()) else null
+        }
+        return Violation.UNSUPPORTED_API_VERSION
     }
 }

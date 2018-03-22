@@ -6,10 +6,10 @@ import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.extensions.allFlows
-import io.swagger.v3.oas.models.OpenAPI
-import io.swagger.v3.oas.models.Operation
-import io.swagger.v3.oas.models.security.SecurityScheme
+import io.swagger.models.Operation
+import io.swagger.models.Scheme
+import io.swagger.models.Swagger
+import io.swagger.models.auth.OAuth2Definition
 
 @Rule(
         ruleSet = ZalandoRuleSet::class,
@@ -22,29 +22,36 @@ class SecureWithOAuth2Rule {
 
     @Check(severity = Severity.MUST)
     fun checkSecurityDefinitions(adapter: ApiAdapter): Violation? {
-        val hasOAuth = adapter.openAPI.components.securitySchemes.orEmpty()
-                .values.any { it.type == SecurityScheme.Type.OAUTH2 }
-
-        val containsHttpScheme = adapter.openAPI.servers.orEmpty()
-                .any { it.url.startsWith(SecurityScheme.Type.HTTP.name) }
-
-        return if (!hasOAuth) {
-            Violation("No OAuth2 security definitions found", emptyList())
-        } else if (containsHttpScheme) {
-            Violation("OAuth2 should be only used together with https", emptyList())
-        } else {
-            null
+        if (adapter.isV2()) {
+            val swagger = adapter.swagger!!
+            val hasOAuth = swagger.securityDefinitions.orEmpty().values.any { it.type?.toLowerCase() == "oauth2" }
+            val containsHttpScheme = swagger.schemes.orEmpty().contains(Scheme.HTTP)
+            return if (!hasOAuth) {
+                Violation("No OAuth2 security definitions found", emptyList())
+            } else if (containsHttpScheme) {
+                Violation("OAuth2 should be only used together with https", emptyList())
+            } else {
+                null
+            }
         }
+        return Violation.UNSUPPORTED_API_VERSION
     }
 
     @Check(severity = Severity.SHOULD)
-    fun checkPasswordFlow(adapter: ApiAdapter): Violation? {
-        val definitionsWithoutPasswordFlow = adapter.openAPI.components
-                .securitySchemes
+    fun checkPasswordFlow(adapter: ApiAdapter): Violation? =
+            if (adapter.isV2()) {
+                checkPasswordFlowV2(adapter.swagger!!)
+            } else {
+                Violation.UNSUPPORTED_API_VERSION
+            }
+
+    private fun checkPasswordFlowV2(swagger: Swagger): Violation? {
+        val definitionsWithoutPasswordFlow = swagger
+                .securityDefinitions
                 .orEmpty()
                 .values
-                .filter { it.type == SecurityScheme.Type.OAUTH2 }
-                .filter { it?.flows?.clientCredentials != null }
+                .filter { it.type?.toLowerCase() == "oauth2" }
+                .filter { (it as OAuth2Definition).flow != "application" }
 
         return if (definitionsWithoutPasswordFlow.any())
             Violation("OAuth2 security definitions should use application flow", emptyList())
@@ -53,11 +60,17 @@ class SecureWithOAuth2Rule {
 
     @Check(severity = Severity.MUST)
     fun checkUsedScopes(adapter: ApiAdapter): Violation? {
-        val swagger = adapter.openAPI
+        if (adapter.isV2()) {
+            return checkUsedScopesV2(adapter.swagger!!)
+        }
+        return Violation.UNSUPPORTED_API_VERSION
+    }
+
+    private fun checkUsedScopesV2(swagger: Swagger): Violation? {
         val definedScopes = getDefinedScopes(swagger)
-        val hasTopLevelScope = hasTopLevelScope(adapter, definedScopes)
+        val hasTopLevelScope = hasTopLevelScope(swagger, definedScopes)
         val paths = swagger.paths.orEmpty().entries.flatMap { (pathKey, path) ->
-            path.readOperationsMap().orEmpty().entries.map { (method, operation) ->
+            path.operationMap.orEmpty().entries.map { (method, operation) ->
                 val actualScopes = extractAppliedScopes(operation)
                 val undefinedScopes = Sets.difference(actualScopes, definedScopes)
                 val unsecured = undefinedScopes.size == actualScopes.size && !hasTopLevelScope
@@ -77,11 +90,9 @@ class SecureWithOAuth2Rule {
     }
 
     // get the scopes from security definition
-    private fun getDefinedScopes(openApi: OpenAPI): Set<Pair<String, String>> =
-            openApi.components.securitySchemes.flatMap { (group, scheme) ->
-                scheme.flows.allFlows()
-                        .flatMap { flow -> flow.scopes.keys }
-                        .map { scope -> group to scope }
+    private fun getDefinedScopes(swagger: Swagger): Set<Pair<String, String>> =
+            swagger.securityDefinitions.orEmpty().entries.flatMap { (group, def) ->
+                (def as? OAuth2Definition)?.scopes.orEmpty().keys.map { scope -> group to scope }
             }.toSet()
 
     // Extract all oauth2 scopes applied to the given operation into a simple list
@@ -92,15 +103,10 @@ class SecureWithOAuth2Rule {
                 }
             }.orEmpty().toSet()
 
-    private fun hasTopLevelScope(adapter: ApiAdapter, definedScopes: Set<Pair<String, String>>): Boolean {
-/*
-        adapter.openAPI.security?.any { securityRequirement ->
-            securityRequirement.requirements.entries.any { (group, scopes) ->
-                scopes.any { scope -> (group to scope) in definedScopes }
-            }
-        } ?: false
-*/
-        //TODO rewrite it
-        return false
-    }
+    private fun hasTopLevelScope(swagger: Swagger, definedScopes: Set<Pair<String, String>>): Boolean =
+            swagger.security?.any { securityRequirement ->
+                securityRequirement.requirements.entries.any { (group, scopes) ->
+                    scopes.any { scope -> (group to scope) in definedScopes }
+                }
+            } ?: false
 }

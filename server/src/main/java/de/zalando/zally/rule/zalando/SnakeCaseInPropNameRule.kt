@@ -7,7 +7,7 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
-import de.zalando.zally.util.extensions.getAllJsonObjects
+import de.zalando.zally.util.getAllJsonObjects
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
@@ -23,14 +23,18 @@ class SnakeCaseInPropNameRule(@Autowired rulesConfig: Config) {
 
     @Check(severity = Severity.MUST)
     fun validate(adapter: ApiAdapter): Violation? {
-        val result = adapter.openAPI.getAllJsonObjects().flatMap { (def, path) ->
-            val badProps = def.keys.filterNot { PatternUtil.isSnakeCase(it) || whitelist.contains(it) }
-            if (badProps.isNotEmpty()) listOf(badProps to path) else emptyList()
+        if (adapter.isV2()) {
+            val swagger = adapter.swagger!!
+            val result = swagger.getAllJsonObjects().flatMap { (def, path) ->
+                val badProps = def.keys.filterNot { PatternUtil.isSnakeCase(it) || whitelist.contains(it) }
+                if (badProps.isNotEmpty()) listOf(badProps to path) else emptyList()
+            }
+            return if (result.isNotEmpty()) {
+                val (props, paths) = result.unzip()
+                val properties = props.flatten().toSet().joinToString(", ")
+                Violation(description + properties, paths)
+            } else null
         }
-        return if (result.isNotEmpty()) {
-            val (props, paths) = result.unzip()
-            val properties = props.flatten().toSet().joinToString(", ")
-            Violation(description + properties, paths)
-        } else null
+        return Violation.UNSUPPORTED_API_VERSION
     }
 }

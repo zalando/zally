@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.getFixture
 import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.swaggerWithPaths
+import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -17,7 +18,7 @@ class EverySecondPathLevelParameterRuleTest {
             "/another/{param-1}/path/{param-2}/third",
             "/merchant/{merchant_id}/order/{order_id}",
             "/orders")
-        assertThat(rule.validate(ApiAdapter(swagger))).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 
     @Test
@@ -28,7 +29,8 @@ class EverySecondPathLevelParameterRuleTest {
             "/okeish-path",
             "/{merchant_id}",
             "/{parcel_id}/info/{update-group}")
-        val result = rule.validate(ApiAdapter( swagger))!!
+        val result = rule.validate(ApiAdapter(swagger, OpenAPI()))!!
+
         assertThat(result.paths).hasSameElementsAs(listOf(
             "/api/some/{param-1}/path/",
             "/another/{param-0}/{param-1}",
@@ -38,13 +40,13 @@ class EverySecondPathLevelParameterRuleTest {
 
     @Test
     fun positiveCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        assertThat(rule.validate(ApiAdapter(swagger))).isNull()
+        val adapter = getFixture("api_spp.json")
+        assertThat(rule.validate(adapter)).isNull()
     }
 
     @Test
     fun negativeCaseSpa() {
-        val swagger = getFixture("api_spa.yaml")
-        assertThat(rule.validate(ApiAdapter(swagger))!!.paths).hasSameElementsAs(listOf("/reports/jobs", "/reports/jobs/{job-id}"))
+        val adapter = getFixture("api_spa.yaml")
+        assertThat(rule.validate(adapter)!!.paths).hasSameElementsAs(listOf("/reports/jobs", "/reports/jobs/{job-id}"))
     }
 }

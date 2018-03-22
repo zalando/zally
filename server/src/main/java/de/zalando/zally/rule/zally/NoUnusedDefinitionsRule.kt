@@ -20,22 +20,26 @@ class NoUnusedDefinitionsRule {
 
     @Check(severity = Severity.SHOULD)
     fun validate(adapter: ApiAdapter): Violation? {
-        val swagger = adapter.openAPI
+        if (adapter.isV2()) {
+            return validateV2(adapter.swagger!!)
+        }
+        return null
+    }
+
+    private fun validateV2(swagger: Swagger): Violation? {
         val paramsInPaths = swagger.paths.orEmpty().values.flatMap { path ->
-            path.readOperations().orEmpty().flatMap { operation ->
+            path.operations.orEmpty().flatMap { operation ->
                 operation.parameters.orEmpty()
             }
         }.toSet()
 
-        //TODO rewrite
-/*        val refsInPaths = swagger.paths.orEmpty().values.flatMap { path ->
-            path.readOperations().orEmpty().flatMap { operation ->
+        val refsInPaths = swagger.paths.orEmpty().values.flatMap { path ->
+            path.operations.orEmpty().flatMap { operation ->
                 val inParams = operation.parameters.orEmpty().flatMap(this::findAllRefs)
                 val inResponse = operation.responses.orEmpty().values.flatMap(this::findAllRefs)
                 inParams + inResponse
             }
         }
-
         val refsInDefs = swagger.definitions.orEmpty().values.flatMap(this::findAllRefs)
         val allRefs = (refsInPaths + refsInDefs).toSet()
 
@@ -46,8 +50,7 @@ class NoUnusedDefinitionsRule {
 
         return if (paths.isNotEmpty()) {
             Violation("Found ${paths.size} unused definitions", paths)
-        } else null*/
-        return null
+        } else null
     }
 
     fun findAllRefs(param: Parameter?): List<String> =

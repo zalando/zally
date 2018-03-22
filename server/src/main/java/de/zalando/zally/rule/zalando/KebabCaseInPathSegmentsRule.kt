@@ -8,21 +8,23 @@ import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
 
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = "129",
-        severity = Severity.MUST,
-        title = "Lowercase words with hyphens"
+    ruleSet = ZalandoRuleSet::class,
+    id = "129",
+    severity = Severity.MUST,
+    title = "Lowercase words with hyphens"
 )
 class KebabCaseInPathSegmentsRule {
 
     private val description = "Use lowercase separate words with hyphens for path segments"
 
     @Check(severity = Severity.MUST)
-    fun validate(adapter: ApiAdapter): Violation? {
-        val paths = adapter.openAPI.paths.orEmpty().keys.filterNot {
-            val pathSegments = it.split("/").filter { it.isNotEmpty() }
-            pathSegments.filter { !PatternUtil.isPathVariable(it) && !PatternUtil.isLowerCaseAndHyphens(it) }.isEmpty()
+    fun validate(adapter: ApiAdapter): Violation? =
+        adapter.withVersion2 { swagger ->
+            val paths = swagger.paths.orEmpty().keys.filterNot {
+                val pathSegments = it.split("/").filter { it.isNotEmpty() }
+                pathSegments.filter { !PatternUtil.isPathVariable(it) && !PatternUtil.isLowerCaseAndHyphens(it) }.isEmpty()
+            }
+            if (paths.isNotEmpty()) Violation(description, paths) else null
         }
-        return if (paths.isNotEmpty()) Violation(description, paths) else null
-    }
+
 }

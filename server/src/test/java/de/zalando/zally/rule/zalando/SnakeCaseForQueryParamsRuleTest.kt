@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getFixture
-import de.zalando.zally.rule.ApiAdapter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -16,24 +15,24 @@ class SnakeCaseForQueryParamsRuleTest {
 
     @Test
     fun shouldFindNoViolations() {
-        assertThat(rule.validate(ApiAdapter(validSwagger))).isNull()
+        assertThat(rule.validate(validSwagger)).isNull()
     }
 
     @Test
     fun shouldFindViolationsInLocalRef() {
-        val result = rule.validate(ApiAdapter(invalidSwaggerWithLocalParam))!!
+        val result = rule.validate(invalidSwaggerWithLocalParam)!!
         assertThat(result.paths).hasSameElementsAs(listOf("/items GET"))
     }
 
     @Test
     fun shouldFindViolationsInInternalRef() {
-        val result = rule.validate(ApiAdapter(invalidSwaggerWIthInternalRef))!!
+        val result = rule.validate(invalidSwaggerWIthInternalRef)!!
         assertThat(result.paths).hasSameElementsAs(listOf("/items GET"))
     }
 
     @Test
     fun shouldFindViolationsInExternalRef() {
-        val result = rule.validate(ApiAdapter(invalidSwaggerWithExternalRef))!!
+        val result = rule.validate(invalidSwaggerWithExternalRef)!!
         assertThat(result.paths).hasSameElementsAs(listOf("/items GET"))
     }
 }

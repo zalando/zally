@@ -22,13 +22,13 @@ class ApiIdentifierRule {
     private val path = "/info/$extensionName"
 
     @Check(severity = Severity.SHOULD)
-    fun validate(adapter: ApiAdapter): Violation? {
-        val apiId = adapter.openAPI.info?.extensions?.get(extensionName)
-
-        return when {
-            apiId == null || apiId !is String -> Violation(noApiIdDesc, listOf(path))
-            !apiId.matches(apiIdPattern) -> Violation(invalidApiIdDesc, listOf(path))
-            else -> null
+    fun validate(adapter: ApiAdapter): Violation? =
+        adapter.withVersion2 { swagger ->
+            val apiId = swagger.info?.vendorExtensions?.get(extensionName)
+            when {
+                apiId == null || apiId !is String -> Violation(noApiIdDesc, listOf(path))
+                !apiId.matches(apiIdPattern) -> Violation(invalidApiIdDesc, listOf(path))
+                else -> null
+            }
         }
-    }
 }

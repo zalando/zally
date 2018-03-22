@@ -4,6 +4,9 @@ import de.zalando.zally.getFixture
 import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
+import io.swagger.models.Operation
+import io.swagger.models.Path
+import io.swagger.models.Swagger
 import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -11,16 +14,14 @@ import org.junit.Test
 class MediaTypesRuleTest {
     private val rule = MediaTypesRule()
 
-    fun swaggerWithMediaTypes(vararg pathToMedia: Pair<String, List<String>>): OpenAPI {
-/*        Swagger().apply {
-            paths = pathToMedia.map { (path, types) ->
-                path to Path().apply {
-                    this["get"] = Operation().apply { produces = types }
-                }
-            }.toMap()*/
-            //TODO refactor
-            return OpenAPI()
-    }
+    fun swaggerWithMediaTypes(vararg pathToMedia: Pair<String, List<String>>): Swagger =
+            Swagger().apply {
+                paths = pathToMedia.map { (path, types) ->
+                    path to Path().apply {
+                        this["get"] = Operation().apply { produces = types }
+                    }
+                }.toMap()
+            }
 
     @Test
     fun isApplicationJsonOrProblemJsonForValidInput() {
@@ -54,57 +55,57 @@ class MediaTypesRuleTest {
 
     @Test
     fun emptySwagger() {
-        assertThat(rule.validate(ApiAdapter(OpenAPI()))).isNull()
+        assertThat(rule.validate(ApiAdapter(Swagger(), OpenAPI()))).isNull()
     }
 
     @Test
     fun positiveCase() {
         val swagger = swaggerWithMediaTypes(
-            "/shipment-order/{shipment_order_id}" to listOf(
-                "application/x.zalando.contract+json;v=123",
-                "application/vnd.api+json;version=3"))
-        assertThat(rule.validate(ApiAdapter(swagger))).isNull()
+                "/shipment-order/{shipment_order_id}" to listOf(
+                        "application/x.zalando.contract+json;v=123",
+                        "application/vnd.api+json;version=3"))
+        assertThat(rule.validate(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 
     @Test
     fun negativeCase() {
         val path = "/shipment-order/{shipment_order_id}"
         val swagger = swaggerWithMediaTypes(path to listOf("application/json", "application/vnd.api+json"))
-        assertThat(rule.validate(ApiAdapter(swagger))!!.paths).hasSameElementsAs(listOf("$path GET"))
+        assertThat(rule.validate(ApiAdapter(swagger, OpenAPI()))!!.paths).hasSameElementsAs(listOf("$path GET"))
     }
 
     @Test
     fun multiplePaths() {
         val swagger = swaggerWithMediaTypes(
-            "/path1" to listOf("application/json", "application/vnd.api+json"),
-            "/path2" to listOf("application/x.zalando.contract+json"),
-            "/path3" to listOf("application/x.zalando.contract+json;v=123")
+                "/path1" to listOf("application/json", "application/vnd.api+json"),
+                "/path2" to listOf("application/x.zalando.contract+json"),
+                "/path3" to listOf("application/x.zalando.contract+json;v=123")
         )
-        val result = rule.validate(ApiAdapter(swagger))!!
+        val result = rule.validate(ApiAdapter(swagger, OpenAPI()))!!
         println(result)
         assertThat(result.paths).hasSameElementsAs(listOf(
-            "/path1 GET",
-            "/path2 GET"
+                "/path1 GET",
+                "/path2 GET"
         ))
     }
 
     @Test
     fun negativeCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        val result = rule.validate(ApiAdapter(swagger))!!
+        val adapter = getFixture("api_spp.json")
+        val result = rule.validate(adapter)!!
         assertThat(result.paths).hasSameElementsAs(listOf(
-            "/products GET",
-            "/products/{product_id} GET",
-            "/products/{product_id} PATCH",
-            "/products/{product_id}/children GET",
-            "/products/{product_id}/updates/{update_id} GET",
-            "/product-put-requests/{product_path} POST",
-            "/request-groups/{request_group_id}/updates GET"))
+                "/products GET",
+                "/products/{product_id} GET",
+                "/products/{product_id} PATCH",
+                "/products/{product_id}/children GET",
+                "/products/{product_id}/updates/{update_id} GET",
+                "/product-put-requests/{product_path} POST",
+                "/request-groups/{request_group_id}/updates GET"))
     }
 
     @Test
     fun positiveCaseSpa() {
-        val swagger = getFixture("api_spa.yaml")
-        assertThat(rule.validate(ApiAdapter(swagger))).isNull()
+        val adapter = getFixture("api_spa.yaml")
+        assertThat(rule.validate(adapter)).isNull()
     }
 }

@@ -9,35 +9,29 @@ import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
 
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = "172",
-        severity = Severity.SHOULD,
-        title = "Prefer standard media type names"
+    ruleSet = ZalandoRuleSet::class,
+    id = "172",
+    severity = Severity.SHOULD,
+    title = "Prefer standard media type names"
 )
 class MediaTypesRule {
 
     private val DESCRIPTION = "Custom media types should only be used for versioning"
 
     @Check(severity = Severity.SHOULD)
-    fun validate(adapter: ApiAdapter): Violation? {
-        val paths = adapter.openAPI.paths.orEmpty().entries.flatMap { (pathName, path) ->
-            path.readOperationsMap().orEmpty().entries.flatMap { (verb, operation) ->
-                val requestMediaTypes = operation.requestBody?.content
-                        .orEmpty()
-                        .keys
-                        .filterNotNull()
-                val responseMediaTypes = operation.responses
-                        .orEmpty()
-                        .flatMap { (_, item) -> item.content.orEmpty().keys.filterNotNull() }
-
-                val mediaTypes = requestMediaTypes + responseMediaTypes
-                val violatingMediaTypes = mediaTypes.filter(this::isViolatingMediaType)
-                if (violatingMediaTypes.isNotEmpty()) listOf("$pathName $verb") else emptyList()
+    fun validate(adapter: ApiAdapter): Violation? =
+        adapter.withVersion2 { swagger ->
+            val paths = swagger.paths.orEmpty().entries.flatMap { (pathName, path) ->
+                path.operationMap.orEmpty().entries.flatMap { (verb, operation) ->
+                    val mediaTypes = ArrayList<String>() + operation.produces.orEmpty() + operation.consumes.orEmpty()
+                    val violatingMediaTypes = mediaTypes.filter(this::isViolatingMediaType)
+                    if (violatingMediaTypes.isNotEmpty()) listOf("$pathName $verb") else emptyList()
+                }
             }
+            if (paths.isNotEmpty()) Violation(DESCRIPTION, paths) else null
         }
-        return if (paths.isNotEmpty()) Violation(DESCRIPTION, paths) else null
-    }
+
 
     private fun isViolatingMediaType(mediaType: String) =
-            !isApplicationJsonOrProblemJson(mediaType) && !isCustomMediaTypeWithVersioning(mediaType)
+        !isApplicationJsonOrProblemJson(mediaType) && !isCustomMediaTypeWithVersioning(mediaType)
 }

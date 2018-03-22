@@ -24,13 +24,16 @@ class ApiAudienceRule(@Autowired rulesConfig: Config) {
     private val path = "/info/$extensionName"
 
     @Check(severity = Severity.MUST)
-    fun validate(adapter: ApiAdapter): Violation? {
-        val audience = adapter.openAPI.info?.extensions?.get(extensionName)
+    fun validate(adapter: ApiAdapter): Violation? =
+            adapter.withVersion2 { swagger ->
+                val audience = swagger.info?.vendorExtensions?.get(extensionName)
 
-        return when (audience) {
-            null, !is String -> Violation(noApiAudienceDesc, listOf(path))
-            !in validAudiences -> Violation(invalidApiAudienceDesc, listOf(path))
-            else -> null
-        }
-    }
+                when (audience) {
+                    null, !is String -> Violation(noApiAudienceDesc, listOf(path))
+                    !in validAudiences -> Violation(invalidApiAudienceDesc, listOf(path))
+                    else -> null
+                }
+            }
+
+
 }

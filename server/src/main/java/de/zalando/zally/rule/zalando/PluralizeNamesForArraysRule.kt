@@ -6,7 +6,7 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.WordUtil.isPlural
-import de.zalando.zally.util.extensions.getAllJsonObjects
+import de.zalando.zally.util.getAllJsonObjects
 
 @Rule(
         ruleSet = ZalandoRuleSet::class,
@@ -18,17 +18,21 @@ class PluralizeNamesForArraysRule {
 
     @Check(severity = Severity.SHOULD)
     fun validate(adapter: ApiAdapter): Violation? {
-        val res = adapter.openAPI.getAllJsonObjects().map { (def, path) ->
-            val badProps = def.entries.filter { "array" == it.value.type && !isPlural(it.key) }
-            if (badProps.isNotEmpty()) {
-                val propsDesc = badProps.map { "'${it.key}'" }.joinToString(",")
-                "$path: $propsDesc" to path
-            } else null
-        }.filterNotNull()
+        if (adapter.isV2()) {
+            val swagger = adapter.swagger!!
+            val res = swagger.getAllJsonObjects().map { (def, path) ->
+                val badProps = def.entries.filter { "array" == it.value.type && !isPlural(it.key) }
+                if (badProps.isNotEmpty()) {
+                    val propsDesc = badProps.map { "'${it.key}'" }.joinToString(",")
+                    "$path: $propsDesc" to path
+                } else null
+            }.filterNotNull()
 
-        return if (res.isNotEmpty()) {
-            val (desc, paths) = res.unzip()
-            Violation(desc.joinToString("\n"), paths)
-        } else null
+            return if (res.isNotEmpty()) {
+                val (desc, paths) = res.unzip()
+                Violation(desc.joinToString("\n"), paths)
+            } else null
+        }
+        return Violation.UNSUPPORTED_API_VERSION
     }
 }

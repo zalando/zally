@@ -6,9 +6,10 @@ import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.extensions.getAllJsonObjects
+import de.zalando.zally.util.getAllJsonObjects
+import io.swagger.models.Swagger
 import io.swagger.models.parameters.AbstractSerializableParameter
-import io.swagger.v3.oas.models.parameters.Parameter
+import io.swagger.models.parameters.Parameter
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
@@ -25,16 +26,22 @@ class FormatForNumbersRule(@Autowired rulesConfig: Config) {
 
     @Check(severity = Severity.MUST)
     fun validate(adapter: ApiAdapter): Violation? {
-        val swagger = adapter.openAPI
+        if (adapter.isV2()) {
+            return validateV2(adapter.swagger!!)
+        }
+        return Violation.UNSUPPORTED_API_VERSION
+    }
+
+    private fun validateV2(swagger: Swagger): Violation? {
         val fromObjects = swagger.getAllJsonObjects().flatMap { (def, path) ->
             val badProps = def.entries.filterNot { (_, prop) -> isValid(prop.type, prop.format) }.map { it.key }
             if (badProps.isNotEmpty()) listOf(badProps to path) else emptyList()
         }
-        val fromParams = swagger.components.parameters.orEmpty().entries.flatMap { (name, param) ->
+        val fromParams = swagger.parameters.orEmpty().entries.flatMap { (name, param) ->
             if (!param.hasValidFormat()) listOf(listOf(name) to "#/parameters/$name") else emptyList()
         }
         val fromPathParams = swagger.paths.orEmpty().entries.flatMap { (name, path) ->
-            path.readOperations().orEmpty().flatMap { operation ->
+            path.operations.orEmpty().flatMap { operation ->
                 val badParams = operation.parameters.orEmpty().filterNot { it.hasValidFormat() }.map { it.name }
                 if (badParams.isNotEmpty()) listOf(badParams to name) else emptyList()
             }
@@ -47,7 +54,6 @@ class FormatForNumbersRule(@Autowired rulesConfig: Config) {
         } else null
     }
 
-    //TODO implement it
     private fun Parameter.hasValidFormat(): Boolean =
             this !is AbstractSerializableParameter<*> || isValid(getType(), getFormat())
 

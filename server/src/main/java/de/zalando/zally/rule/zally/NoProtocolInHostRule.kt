@@ -17,11 +17,13 @@ class NoProtocolInHostRule {
 
     @Check(severity = Severity.MUST)
     fun validate(adapter: ApiAdapter): Violation? {
-        //TODO fix
-/*        val host = adapter.openAPI.host.orEmpty()
-        return if ("://" in host)
-            Violation(desc.format(host), emptyList())
-        else null*/
+        if (adapter.isV2()) {
+            val swagger = adapter.swagger
+            val host = swagger?.host.orEmpty()
+            return if ("://" in host)
+                Violation(desc.format(host), emptyList())
+            else null
+        }
         return null
     }
 }

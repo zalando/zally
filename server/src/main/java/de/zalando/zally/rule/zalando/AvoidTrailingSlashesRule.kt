@@ -17,8 +17,10 @@ class AvoidTrailingSlashesRule {
     private val description = "Rule avoid trailing slashes is not followed"
 
     @Check(severity = Severity.MUST)
-    fun validate(adapter: ApiAdapter): Violation? {
-        val paths = adapter.openAPI.paths.orEmpty().keys.filter { it != null && PatternUtil.hasTrailingSlash(it) }
-        return if (!paths.isEmpty()) Violation(description, paths) else null
-    }
+    fun validate(adapter: ApiAdapter): Violation? =
+            adapter.withVersion2 { swagger ->
+                val paths = swagger.paths.orEmpty().keys.filter { it != null && PatternUtil.hasTrailingSlash(it) }
+                if (!paths.isEmpty()) Violation(description, paths) else null
+            }
+
 }
