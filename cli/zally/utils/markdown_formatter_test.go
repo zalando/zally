@@ -1,11 +1,52 @@
 package utils
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/zalando/zally/cli/zally/domain"
 	"github.com/zalando/zally/cli/zally/tests"
 )
+
+func TestMarkdownFormatViolations(t *testing.T) {
+
+	var markdownFormatter MarkdownFormatter
+
+	t.Run("Returns empty string then no violations", func(t *testing.T) {
+		var violations = []domain.Violation{}
+
+		header := "MUST Violations"
+		actualResult := markdownFormatter.FormatViolations(header, violations)
+		tests.AssertEquals(t, "", actualResult)
+	})
+
+	t.Run("Formats list of violations", func(t *testing.T) {
+		var firstViolation domain.Violation
+		firstViolation.Title = "Test Must"
+		firstViolation.RuleLink = "http://example.com/first-violation"
+		firstViolation.ViolationType = "MUST"
+		firstViolation.Decription = "Test Description"
+		firstViolation.Paths = []string{"/path/one", "/path/two"}
+
+		var secondViolation domain.Violation
+		secondViolation.Title = "Test Should"
+		secondViolation.RuleLink = "http://example.com/second-violation"
+		secondViolation.ViolationType = "SHOULD"
+		secondViolation.Decription = "Test Description"
+		secondViolation.Paths = []string{"/path/one", "/path/two"}
+
+		var violations = []domain.Violation{firstViolation, secondViolation}
+
+		header := "MUST Violations"
+		actualResult := markdownFormatter.FormatViolations(header, violations)
+		expectedResult := fmt.Sprintf(
+			"%s%s%s",
+			markdownFormatter.formatHeader(header),
+			markdownFormatter.formatViolation(&firstViolation),
+			markdownFormatter.formatViolation(&secondViolation))
+		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+}
 
 func TestMarkdownFormatViolationsCount(t *testing.T) {
 	var markdownFormatter MarkdownFormatter
