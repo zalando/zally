@@ -41,7 +41,7 @@ class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
     private fun checkDefinedScopeFormat(scope: String): String? {
         return when {
             scopeRegex.matches(scope) -> null
-            else -> "scope '$scope' does not match regex '^(uid)|(([a-z-]+\\\\.){1,2}(read|write))\$'"
+            else -> "scope '$scope' does not match regex '$scopeRegex'"
         }
     }
 

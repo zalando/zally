@@ -82,7 +82,7 @@ class SecureAllEndpointsWithScopesRuleTest {
         val violation = rule.checkDefinedScopeFormats(swagger)
 
         assertThat(violation!!.paths)
-                .hasSameElementsAs(listOf("securityDefinitions stups max: scope 'max' does not match regex '^(uid)|(([a-z-]+\\\\.){1,2}(read|write))\$'"))
+                .hasSameElementsAs(listOf("securityDefinitions stups max: scope 'max' does not match regex '^(uid)|(([a-z-]+\\.){1,2}(read|write))\$'"))
     }
 
     @Test
