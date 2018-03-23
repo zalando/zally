@@ -6,7 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.util.*
 
-class OpenApiWalkerTest {
+class ReverseAstTest {
     private val ignore = HashSet(Arrays.asList(
             io.swagger.models.ArrayModel::class.java,
             io.swagger.models.ComposedModel::class.java,
@@ -14,7 +14,7 @@ class OpenApiWalkerTest {
     )) as Collection<Class<*>>?
 
     @Test
-    fun `create Swagger 2 JSON pointers`() {
+    fun `create with Swagger 2 JSON pointers`() {
         val content = """
             {
               "swagger": "2.0",
@@ -38,15 +38,14 @@ class OpenApiWalkerTest {
             """.trimIndent()
 
         val spec = SwaggerParser().parse(content)
-        val map = OpenApiWalker.walk(spec, ignore)
-        assertThat(map).hasSize(13)
+        val ast = ReverseAst.create(spec, ignore)
 
         val description = spec.paths?.get("/tests")?.get?.responses?.get("200")?.description
-        assertThat(map[description]?.pointer).isEqualTo("#/paths/~1tests/get/responses/200/description")
+        assertThat(ast.getPointer(description)).isEqualTo("#/paths/~1tests/get/responses/200/description")
     }
 
     @Test
-    fun `add Swagger 2 ignore marker`() {
+    fun `create with Swagger 2 ignore marker`() {
         val content = """
             {
               "swagger": "2.0",
@@ -71,30 +70,26 @@ class OpenApiWalkerTest {
             """.trimIndent()
 
         val spec = SwaggerParser().parse(content)
-        val map = OpenApiWalker.walk(spec, ignore)
-        assertThat(map).hasSize(14)
+        val ast = ReverseAst.create(spec, ignore)
 
         val description = spec.paths?.get("/tests")?.get?.responses?.get("200")?.description
-        assertThat(map[description]?.marker).isEqualTo(OpenApiWalker.Marker.X_ZALLY_IGNORE)
-        assertThat(map[description]?.markerValue).isEqualTo("*")
+        assertThat(ast.isIgnored(description)).isTrue()
+        assertThat(ast.getIgnoreValue(description)).isEqualTo("*")
 
         val get = spec.paths?.get("/tests")?.get
-        assertThat(map[get]?.marker).isEqualTo(OpenApiWalker.Marker.X_ZALLY_IGNORE)
-        assertThat(map[get]?.markerValue).isEqualTo("*")
+        assertThat(ast.isIgnored(get)).isTrue()
+        assertThat(ast.getIgnoreValue(get)).isEqualTo("*")
 
         val testsPath = spec.paths?.get("/tests")
-        assertThat(map[testsPath]?.marker).isNull()
-        assertThat(map[testsPath]?.markerValue).isNull()
+        assertThat(ast.isIgnored(testsPath)).isFalse()
+        assertThat(ast.getIgnoreValue(testsPath)).isNull()
     }
 
-
     @Test
-    fun `walk Swagger document`() {
+    fun `create from Swagger 2 document`() {
         val content = resourceToString("fixtures/api_spp.json")
-        val map = SwaggerParser().parse(content)
-        val result = OpenApiWalker.walk(map, ignore)
-        assertThat(result).isNotEmpty
-        // println(result.values.map { "${it.pointer} ${it.markerValue}" }.joinToString("\n"))
-        // println("mapped ${result.size} paths")
+        val spec = SwaggerParser().parse(content)
+        val ast = ReverseAst.create(spec, ignore)
+        assertThat(ast.getPointer(spec)).isEqualTo("#")
     }
 }

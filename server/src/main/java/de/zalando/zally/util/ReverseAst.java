@@ -10,16 +10,18 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 /**
- * OpenApiWalker traverses a Swagger or OpenApi object.
+ * ReverseAst holds meta information for nodes of a Swagger or OpenApi object.
  */
-public class OpenApiWalker {
-  private OpenApiWalker() {
-  }
+public class ReverseAst {
+  private static Collection<String> EXTENSION_METHOD_NAMES = new HashSet<>(Arrays.asList(
+      "getVendorExtensions",
+      "getExtensions"
+  ));
 
   /**
    * Meta information for an object node in a Swagger or OpenApi object.
    */
-  public static class Meta {
+  private static class Meta {
     private final String pointer;
     private final Marker marker;
     private final String markerValue;
@@ -29,31 +31,16 @@ public class OpenApiWalker {
       this.marker = marker != null ? marker.marker : null;
       this.markerValue = marker != null ? marker.pointer : null;
     }
-
-    @NotNull
-    public String getPointer() {
-      return pointer;
-    }
-
-    @Nullable
-    public Marker getMarker() {
-      return marker;
-    }
-
-    @Nullable
-    public String getMarkerValue() {
-      return markerValue;
-    }
   }
 
   /**
    * A stack node for tree-traversal.
    */
   private static class Node {
-    final Object object;
-    final String pointer;
-    final boolean skip;
-    final Marker marker;
+    private final Object object;
+    private final String pointer;
+    private final boolean skip;
+    private final Marker marker;
 
     Node(Object object, String pointer) {
       this(object, pointer, false, null);
@@ -86,7 +73,7 @@ public class OpenApiWalker {
   /**
    * A type of marker for an object node in a Swagger or OpenApi structure.
    */
-  public static enum Marker {
+  public enum Marker {
     X_ZALLY_IGNORE("x-zally-ignore");
 
     final String key;
@@ -96,15 +83,22 @@ public class OpenApiWalker {
     }
   }
 
+  public static class ReverseAstException extends Exception {
+    ReverseAstException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  }
+
   /**
-   * Traverse a Swagger or OpenApi object tree and construct
-   * a map of object nodes to meta information objects.
+   * Creates a new instance of ReverseAst. Traverses a Swagger or OpenApi object tree
+   * and constructs a map of object nodes to meta information objects.
    *
    * @param object Swagger or OpenApi instance.
    * @param ignore List of classes in the traversable object that should be ignored.
-   * @return IdentityHashMap of object nodes to meta information objects.
+   * @return ReverseAst instance.
+   * @throws ReverseAstException If an error occurs during reflection.
    */
-  public static Map<Object, Meta> walk(Object object, Collection<Class<?>> ignore) {
+  public static ReverseAst create(Object object, Collection<Class<?>> ignore) throws ReverseAstException {
     Deque<Node> nodes = new LinkedList<>(); // stack of tree nodes
     Deque<Node> markers = new LinkedList<>(); // stack of markers for sub-trees
     Map<Object, Meta> map = new IdentityHashMap<>(); // map of node objects to JSON pointers
@@ -194,34 +188,69 @@ public class OpenApiWalker {
               }
             } catch (ReflectiveOperationException e) {
               String message = String.format("Error invoking %s on %s at path %s", name, o.getClass(), p);
-              throw new RuntimeException(message, e);
+              throw new ReverseAstException(message, e);
             }
           }
         }
       }
     }
-    return map;
+    return new ReverseAst(map);
   }
 
-  // https://tools.ietf.org/html/rfc6901
+  @NotNull
   private static String rfc6901Encode(String s) {
+    // https://tools.ietf.org/html/rfc6901
     return s.replace("~", "~0").replace("/", "~1");
   }
 
+  @NotNull
   private static String getterNameToPathName(String name) {
     String s = name.substring(3); // `get` is first 3 characters
     return s.substring(0, 1).toLowerCase().concat(s.substring(1));
   }
 
+  @Nullable
   private static String getVendorExtension(Object object, String extension) {
-    try {
-      Method m = object.getClass().getMethod("getVendorExtensions");
-      Object extensions = m.invoke(object);
-      if (extensions instanceof Map) {
-        return (String) ((Map) extensions).get(extension);
+    for (Method m : object.getClass().getDeclaredMethods()) {
+      if (EXTENSION_METHOD_NAMES.contains(m.getName())) {
+        try {
+          Object extensions = m.invoke(object);
+          if (extensions instanceof Map) {
+            return (String) ((Map) extensions).get(extension);
+          }
+        } catch (ReflectiveOperationException e) {
+          return null;
+        }
       }
-    } catch (ReflectiveOperationException e) {
-      return null;
+    }
+    return null;
+  }
+
+  private final Map<Object, Meta> map;
+
+  private ReverseAst(Map<Object, Meta> map) {
+    this.map = map;
+  }
+
+  @Nullable
+  public String getPointer(Object key) {
+    Meta meta = this.map.get(key);
+    if (meta != null) {
+      return meta.pointer;
+    }
+    return null;
+  }
+
+  public boolean isIgnored(Object key) {
+    Meta meta = this.map.get(key);
+    return meta != null && Marker.X_ZALLY_IGNORE.equals(meta.marker);
+  }
+
+  @Nullable
+  public String getIgnoreValue(Object key) {
+    Meta meta = this.map.get(key);
+    if (meta != null && Marker.X_ZALLY_IGNORE.equals(meta.marker)) {
+      return meta.markerValue;
     }
     return null;
   }
