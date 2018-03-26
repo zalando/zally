@@ -45,9 +45,6 @@
       "post": {
         "description": "Creates a new pet in the store.  Duplicates are allowed",
         "operationId": "addPet",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "name": "pet",

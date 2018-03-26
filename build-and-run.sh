@@ -3,6 +3,8 @@
 
 set -ex
 
+hash yarn 2>/dev/null || { echo >&2 "yarn is not installed.."; exit 1; }
+
 pushd $(dirname $0) > /dev/null
 SCRIPT_DIR=$(pwd -P)
 popd > /dev/null
