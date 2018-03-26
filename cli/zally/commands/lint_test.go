@@ -150,7 +150,7 @@ func TestLintFile(t *testing.T) {
 
 		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
 
-		err := lintFile("testdata/minimal_swagger.json", requestBuilder)
+		err := lintFile("testdata/minimal_swagger.json", requestBuilder, &utils.MarkdownFormatter{})
 
 		tests.AssertEquals(t, nil, err)
 	})
@@ -166,7 +166,7 @@ func TestLintFile(t *testing.T) {
 
 		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
 
-		err := lintFile("testdata/minimal_swagger.json", requestBuilder)
+		err := lintFile("testdata/minimal_swagger.json", requestBuilder, &utils.MarkdownFormatter{})
 
 		tests.AssertEquals(t, "Failing because: 1 must violation(s) found", err.Error())
 	})
