@@ -58,11 +58,9 @@ public class ApiViolationsController {
         RulesPolicy requestPolicy = retrieveRulesPolicy(request);
 
         List<Result> violations = rulesValidator.validate(apiDefinition, requestPolicy);
-        apiReviewRepository.save(new ApiReview(request, apiDefinition, violations));
+        apiReviewRepository.save(new ApiReview(request, userAgent, apiDefinition, violations));
 
-        ApiDefinitionResponse response = buildApiDefinitionResponse(violations, userAgent);
-
-        return response;
+        return buildApiDefinitionResponse(violations, userAgent);
     }
 
     private RulesPolicy retrieveRulesPolicy(ApiDefinitionRequest request) {

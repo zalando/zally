@@ -54,4 +54,8 @@ public class ApiReviewStatistic {
     public void setViolations(List<RuleViolation> violations) {
         this.violations = violations;
     }
+
+    public String getUserAgent() {
+        return null;
+    }
 }
