@@ -36,7 +36,8 @@ public class ReviewStatisticsController {
     @GetMapping("/review-statistics")
     public ReviewStatistics retrieveReviewStatistics(
         @RequestParam(value = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-        @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+        @RequestParam(value = "user_agent", required = false) String userAgent) {
 
         if (from != null && from.isAfter(today())) {
             throw new TimeParameterIsInTheFutureException();
@@ -46,12 +47,26 @@ public class ReviewStatisticsController {
             throw new UnsufficientTimeIntervalParameterException();
         }
 
-        final Collection<ApiReview> apiReviews = from != null
-            ? apiReviewRepository.findByDayBetween(from, to != null ? to : today())
-            : apiReviewRepository.findAllFromLastWeek();
+        final Collection<ApiReview> apiReviews = findReviews(from, to, userAgent);
 
-        LOG.info("Found {} api reviews from {} to {}", apiReviews.size(), from, to);
+        LOG.info("Found {} api reviews from {} to {} user_agent {}", apiReviews.size(), from, to, userAgent);
         return new ReviewStatistics(apiReviews);
+    }
+
+    private Collection<ApiReview> findReviews(LocalDate from, LocalDate to, String userAgent) {
+        Collection<ApiReview> apiReviews;
+        LocalDate t = to != null ? to : today();
+        if (userAgent == null || userAgent.length() == 0) {
+            apiReviews = from != null
+                ? apiReviewRepository.findByDayBetween(from, t)
+                : apiReviewRepository.findAllFromLastWeek();
+        } else {
+            apiReviews = from != null
+                ? apiReviewRepository.findByUserAgentAndDayBetween(userAgent, from, t)
+                : apiReviewRepository.findByUserAgentFromLastWeek(userAgent);
+        }
+
+        return apiReviews;
     }
 
     private LocalDate today() {

@@ -9,17 +9,18 @@ import java.util.Collection;
 
 public interface ApiReviewRepository extends CrudRepository<ApiReview, Long> {
 
-    Collection<ApiReview> findByDay(LocalDate day);
-
     Collection<ApiReview> findByDayBetween(LocalDate from, LocalDate to);
+
+    Collection<ApiReview> findByUserAgentAndDayBetween(String userAgent, LocalDate from, LocalDate to);
+
 
     default Collection<ApiReview> findAllFromLastWeek() {
         final LocalDate today = Instant.now().atOffset(ZoneOffset.UTC).toLocalDate();
         return findByDayBetween(today.minusDays(7L), today);
     }
 
-    default Collection<ApiReview> findAllFromYesterday() {
-        final LocalDate yesterday = Instant.now().atOffset(ZoneOffset.UTC).minusDays(1L).toLocalDate();
-        return findByDay(yesterday);
+    default Collection<ApiReview> findByUserAgentFromLastWeek(String userAgent) {
+        final LocalDate today = Instant.now().atOffset(ZoneOffset.UTC).toLocalDate();
+        return findByUserAgentAndDayBetween(userAgent, today.minusDays(7L), today);
     }
 }

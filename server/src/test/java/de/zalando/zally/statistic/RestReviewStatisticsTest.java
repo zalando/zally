@@ -53,7 +53,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
 
         List<ApiReview> reviews = createRandomReviewsInBetween(from, now().toLocalDate());
 
-        ReviewStatistics response = getReviewStatistics(from, null);
+        ReviewStatistics response = getReviewStatisticsBetween(from, null);
 
         assertThat(response.getNumberOfEndpoints()).isEqualTo(reviews.size() * 2);
         assertThat(response.getMustViolations()).isEqualTo(reviews.size());
@@ -70,7 +70,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
 
         List<ApiReview> reviews = createRandomReviewsInBetween(from, now().toLocalDate());
 
-        ReviewStatistics response = getReviewStatistics(from, to);
+        ReviewStatistics response = getReviewStatisticsBetween(from, to);
         assertThat(response.getReviews()).hasSize(reviews.size() - 1);
     }
 
@@ -130,7 +130,6 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
     }
 
     @Test
-    @Ignore //TODO un-ignore when implemented on the endpoint level
     public void shouldStoreUserAgent() {
         LocalDate now = now().toLocalDate();
         apiReviewRepository.save(apiReview(now, null, "curl"));
@@ -138,6 +137,19 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
         ReviewStatistics statistics = getReviewStatistics();
         assertThat(statistics.getReviews()).hasSize(1);
         assertThat(statistics.getReviews().get(0).getUserAgent()).isEqualTo("curl");
+    }
+
+    @Test
+    public void shouldFilterByUserAgent() {
+        LocalDate now = now().toLocalDate();
+        apiReviewRepository.save(apiReview(now, null, "curl"));
+        apiReviewRepository.save(apiReview(now, null, null));
+
+        ReviewStatistics statistics = getReviewStatistics();
+        assertThat(statistics.getReviews()).hasSize(2);
+
+        statistics = getReviewStatisticsByUserAgent("curl");
+        assertThat(statistics.getReviews()).hasSize(1);
     }
 
     private List<ApiReview> createRandomReviewsInBetween(LocalDate from, LocalDate to) {
@@ -168,7 +180,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
     }
 
     private void assertBadRequestFor(Object from, Object to) {
-        ResponseEntity<ErrorResponse> response = getReviewStatistics(from, to, ErrorResponse.class);
+        ResponseEntity<ErrorResponse> response = getReviewStatisticsBetween(from, to, ErrorResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
         assertThat(response.getHeaders().getContentType().toString()).isEqualTo(APPLICATION_PROBLEM_JSON);

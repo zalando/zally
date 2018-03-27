@@ -49,7 +49,7 @@ public abstract class RestApiBaseTest {
 
     protected final <T> ResponseEntity<T> sendApiDefinition(ApiDefinitionRequest request, Class<T> responseType) {
         return restTemplate.postForEntity(
-                API_VIOLATIONS_URL, request, responseType
+            API_VIOLATIONS_URL, request, responseType
         );
     }
 
@@ -61,21 +61,35 @@ public abstract class RestApiBaseTest {
     }
 
 
-    protected final <T> ResponseEntity<T> getReviewStatistics(Object from, Object to, Class<T> responseType) {
+    protected final <T> ResponseEntity<T> getReviewStatisticsBetween(Object from, Object to, Class<T> responseType) {
         String url = fromPath(REVIEW_STATISTICS_URL)
-                .queryParam("from", from)
-                .queryParam("to", to)
-                .build().encode().toUriString();
+            .queryParam("from", from)
+            .queryParam("to", to)
+            .build().encode().toUriString();
+
+        return restTemplate.getForEntity(url, responseType);
+    }
+
+    protected final <T> ResponseEntity<T> getReviewStatisticsByUserAgent(Object userAgent, Class<T> responseType) {
+        String url = fromPath(REVIEW_STATISTICS_URL)
+            .queryParam("user_agent", userAgent)
+            .build().encode().toUriString();
 
         return restTemplate.getForEntity(url, responseType);
     }
 
     protected final ReviewStatistics getReviewStatistics() {
-        return getReviewStatistics(null, null);
+        return getReviewStatisticsBetween(null, null);
     }
 
-    protected final ReviewStatistics getReviewStatistics(LocalDate from, LocalDate to) {
-        ResponseEntity<ReviewStatistics> responseEntity = getReviewStatistics(from, to, ReviewStatistics.class);
+    protected final ReviewStatistics getReviewStatisticsBetween(LocalDate from, LocalDate to) {
+        ResponseEntity<ReviewStatistics> responseEntity = getReviewStatisticsBetween(from, to, ReviewStatistics.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        return responseEntity.getBody();
+    }
+
+    protected final ReviewStatistics getReviewStatisticsByUserAgent(String userAgent) {
+        ResponseEntity<ReviewStatistics> responseEntity = getReviewStatisticsByUserAgent(userAgent, ReviewStatistics.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         return responseEntity.getBody();
     }
@@ -92,9 +106,9 @@ public abstract class RestApiBaseTest {
 
     protected final <T> ResponseEntity<T> getSupportedRules(String ruleType, Boolean active, Class<T> responseType) {
         String url = fromPath(SUPPORTED_RULES_URL)
-                .queryParam("type", ruleType)
-                .queryParam("is_active", active)
-                .build().encode().toUriString();
+            .queryParam("type", ruleType)
+            .queryParam("is_active", active)
+            .build().encode().toUriString();
 
         return restTemplate.getForEntity(url, responseType);
     }
