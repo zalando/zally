@@ -25,6 +25,13 @@ var LintCommand = cli.Command{
 	Usage:     "Lint given `FILE` with API definition",
 	Action:    lint,
 	ArgsUsage: "FILE",
+	Flags: []cli.Flag{
+		cli.StringFlag{
+			Name:  "format",
+			Usage: "Output format `[pretty|markdown]`",
+			Value: "pretty",
+		},
+	},
 }
 
 func lint(c *cli.Context) error {
@@ -33,13 +40,19 @@ func lint(c *cli.Context) error {
 		return fmt.Errorf("Please specify Swagger File")
 	}
 
+	formatter, err := getFormatter(c.String("format"))
+	if err != nil {
+		cli.ShowCommandHelp(c, c.Command.Name)
+		return err
+	}
+
 	path := c.Args().First()
 	requestBuilder := utils.NewRequestBuilder(c.GlobalString("linter-service"), c.GlobalString("token"), c.App)
 
-	return lintFile(path, requestBuilder)
+	return lintFile(path, requestBuilder, formatter)
 }
 
-func lintFile(path string, requestBuilder *utils.RequestBuilder) error {
+func lintFile(path string, requestBuilder *utils.RequestBuilder, formatter utils.Formatter) error {
 	data, err := readFile(path)
 	if err != nil {
 		return err
@@ -56,7 +69,7 @@ func lintFile(path string, requestBuilder *utils.RequestBuilder) error {
 	}
 
 	var buffer bytes.Buffer
-	resultPrinter := utils.NewResultPrinter(&buffer)
+	resultPrinter := utils.NewResultPrinter(&buffer, formatter)
 	resultPrinter.PrintViolations(violations)
 
 	fmt.Print(buffer.String())
@@ -142,4 +155,19 @@ func getReader(path string, contents []byte) readers.SpecsReader {
 		return readers.NewYAMLReader(contents)
 	}
 	return readers.NewJSONReader(contents)
+}
+
+func getFormatter(format string) (utils.Formatter, error) {
+
+	if format == "markdown" {
+		var markdownFormatter utils.MarkdownFormatter
+		return &markdownFormatter, nil
+	}
+
+	if format == "pretty" {
+		var prettyFormatter utils.PrettyFormatter
+		return &prettyFormatter, nil
+	}
+
+	return nil, fmt.Errorf("Please use a supported output format")
 }

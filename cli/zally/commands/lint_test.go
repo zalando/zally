@@ -150,7 +150,7 @@ func TestLintFile(t *testing.T) {
 
 		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
 
-		err := lintFile("testdata/minimal_swagger.json", requestBuilder)
+		err := lintFile("testdata/minimal_swagger.json", requestBuilder, &utils.MarkdownFormatter{})
 
 		tests.AssertEquals(t, nil, err)
 	})
@@ -166,41 +166,60 @@ func TestLintFile(t *testing.T) {
 
 		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
 
-		err := lintFile("testdata/minimal_swagger.json", requestBuilder)
+		err := lintFile("testdata/minimal_swagger.json", requestBuilder, &utils.MarkdownFormatter{})
 
 		tests.AssertEquals(t, "Failing because: 1 must violation(s) found", err.Error())
 	})
 }
 
 func TestLint(t *testing.T) {
+	t.Run("fails_when_unknown_format_is_specified", func(t *testing.T) {
+		err := lint(getLintContext("http://example.com", []string{"testdata/minimal_swagger.json"}, "unknown"))
+		tests.AssertEquals(t, "Please use a supported output format", err.Error())
+	})
+
 	t.Run("fails_when_no_swagger_file_is_specified", func(t *testing.T) {
-		err := lint(getLintContext("http://example.com", []string{}))
+		err := lint(getLintContext("http://example.com", []string{}, "markdown"))
 		tests.AssertEquals(t, "Please specify Swagger File", err.Error())
 	})
 
-	t.Run("succeed_when_swagger_file_is_specified", func(t *testing.T) {
-		handler := func(w http.ResponseWriter, r *http.Request) {
-			fixture, _ := ioutil.ReadFile("testdata/violations_response_without_must_violations.json")
-			w.Header().Set("Content-Type", "application/json")
-			io.WriteString(w, string(fixture))
-		}
-		testServer := httptest.NewServer(http.HandlerFunc(handler))
+	t.Run("succeed_when_swagger_file_is_specified_and_format_is_markdown", func(t *testing.T) {
+		testServer := startTestServer("testdata/violations_response_without_must_violations.json")
 		defer testServer.Close()
 
-		err := lint(getLintContext(testServer.URL, []string{"testdata/minimal_swagger.json"}))
+		err := lint(getLintContext(testServer.URL, []string{"testdata/minimal_swagger.json"}, "markdown"))
+		tests.AssertEquals(t, nil, err)
+	})
+
+	t.Run("succeed_when_swagger_file_is_specified_and_format_is_pretty", func(t *testing.T) {
+		testServer := startTestServer("testdata/violations_response_without_must_violations.json")
+		defer testServer.Close()
+
+		err := lint(getLintContext(testServer.URL, []string{"testdata/minimal_swagger.json"}, "pretty"))
 		tests.AssertEquals(t, nil, err)
 	})
 }
 
-func getLintContext(url string, args []string) *cli.Context {
+func getLintContext(url string, args []string, format string) *cli.Context {
 	globalSet := flag.NewFlagSet("test", 0)
 	globalSet.String("linter-service", url, "doc")
 	globalSet.String("token", "test-token", "doc")
 
 	localSet := flag.NewFlagSet("test", 0)
 	localSet.Parse(args)
+	localSet.String("format", format, "doc")
 
 	globalCtx := cli.NewContext(nil, globalSet, nil)
 
 	return cli.NewContext(cli.NewApp(), localSet, globalCtx)
+}
+
+func startTestServer(responseBodyPath string) *httptest.Server {
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		fixture, _ := ioutil.ReadFile(responseBodyPath)
+		w.Header().Set("Content-Type", "application/json")
+		io.WriteString(w, string(fixture))
+	}
+	testServer := httptest.NewServer(http.HandlerFunc(handler))
+	return testServer
 }
