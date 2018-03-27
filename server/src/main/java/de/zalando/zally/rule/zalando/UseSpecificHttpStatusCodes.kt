@@ -1,13 +1,13 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.HttpMethod
 import io.swagger.models.Operation
-import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
@@ -24,11 +24,13 @@ class UseSpecificHttpStatusCodes(@Autowired rulesConfig: Config) {
             .map { (key, config) -> (key to config.unwrapped() as List<String>) }.toMap()
 
     @Check(severity = Severity.SHOULD)
-    fun validate(swagger: Swagger): Violation? {
-        val badPaths = swagger.paths.orEmpty().flatMap { path ->
-            path.value.operationMap.orEmpty().flatMap { getNotAllowedStatusCodes(path.key, it) }
+    fun validate(adapter: ApiAdapter): Violation? {
+        return adapter.withVersion2 { swagger ->
+            val badPaths = swagger.paths.orEmpty().flatMap { path ->
+                path.value.operationMap.orEmpty().flatMap { getNotAllowedStatusCodes(path.key, it) }
+            }
+            if (badPaths.isNotEmpty()) Violation(description, badPaths) else null
         }
-        return if (badPaths.isNotEmpty()) Violation(description, badPaths) else null
     }
 
     private fun getNotAllowedStatusCodes(path: String, entry: Map.Entry<HttpMethod, Operation>): List<String> {

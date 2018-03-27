@@ -1,16 +1,11 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.ComposedModel
-import io.swagger.models.HttpMethod
-import io.swagger.models.Model
-import io.swagger.models.Operation
-import io.swagger.models.RefModel
-import io.swagger.models.Response
-import io.swagger.models.Swagger
+import io.swagger.models.*
 import io.swagger.models.properties.ObjectProperty
 import io.swagger.models.properties.RefProperty
 
@@ -22,11 +17,17 @@ import io.swagger.models.properties.RefProperty
 )
 class UseProblemJsonRule {
     private val description = "Operations Should Return Problem JSON When Any Problem Occurs During Processing " +
-        "Whether Caused by Client Or Server"
+            "Whether Caused by Client Or Server"
     private val requiredFields = setOf("title", "status")
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
+    fun validate(adapter: ApiAdapter): Violation? =
+            if (adapter.isV2()) {
+                validateV2(adapter.swagger!!)
+            } else Violation.UNSUPPORTED_API_VERSION
+
+
+    fun validateV2(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().flatMap { pathEntry ->
             pathEntry.value.operationMap.orEmpty().filter { it.key.shouldContainPayload() }.flatMap { opEntry ->
                 opEntry.value.responses.orEmpty().flatMap { responseEntry ->
@@ -42,7 +43,7 @@ class UseProblemJsonRule {
     }
 
     private fun isValidProblemJson(swagger: Swagger, response: Response, operation: Operation) =
-        isProblemJson(swagger, response) && producesJson(swagger, operation)
+            isProblemJson(swagger, response) && producesJson(swagger, operation)
 
     private fun isProblemJson(swagger: Swagger, response: Response): Boolean {
         val schema = response.schema
@@ -63,16 +64,16 @@ class UseProblemJsonRule {
     }
 
     private fun producesJson(swagger: Swagger, operation: Operation) =
-        if (operation.produces.orEmpty().isEmpty()) {
-            swagger.produces.orEmpty().containsJson()
-        } else {
-            operation.produces.containsJson()
-        }
+            if (operation.produces.orEmpty().isEmpty()) {
+                swagger.produces.orEmpty().containsJson()
+            } else {
+                operation.produces.containsJson()
+            }
 
     // support for application/json also with set charset e.g. "application/json; charset=utf-8"
     private fun List<String>.containsJson() =
-        any { it.startsWith("application/json") }
+            any { it.startsWith("application/json") }
 
     private fun HttpMethod.shouldContainPayload(): Boolean =
-        name.toLowerCase() !in listOf("head", "options")
+            name.toLowerCase() !in listOf("head", "options")
 }

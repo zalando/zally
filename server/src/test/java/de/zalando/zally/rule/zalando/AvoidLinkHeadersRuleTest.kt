@@ -11,20 +11,20 @@ class AvoidLinkHeadersRuleTest {
 
     @Test
     fun positiveCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        assertThat(rule.validate(swagger)).isNull()
+        val adapter = getFixture("api_spp.json")
+        assertThat(rule.validate(adapter)).isNull()
     }
 
     @Test
     fun positiveCaseSpa() {
-        val swagger = getFixture("api_spa.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+        val adapter = getFixture("api_spa.yaml")
+        assertThat(rule.validate(adapter)).isNull()
     }
 
     @Test
     fun negativeCase() {
-        val swagger = getFixture("avoidLinkHeaderRuleInvalid.json")
-        val violation = rule.validate(swagger)!!
+        val adapter = getFixture("avoidLinkHeaderRuleInvalid.json")
+        val violation = rule.validate(adapter)!!
         assertThat(violation.paths).hasSameElementsAs(
             listOf("/product-put-requests/{product_path} Link", "/products Link"))
     }

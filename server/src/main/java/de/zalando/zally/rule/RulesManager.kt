@@ -1,9 +1,7 @@
 package de.zalando.zally.rule
 
 import de.zalando.zally.rule.api.Check
-import org.springframework.stereotype.Component
 
-@Component
 class RulesManager(val rules: List<RuleDetails>) {
 
     fun checks(policy: RulesPolicy): List<CheckDetails> {

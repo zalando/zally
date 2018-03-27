@@ -5,7 +5,6 @@ import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
@@ -25,7 +24,7 @@ class RulesValidatorTest {
 
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.SHOULD)
-        fun validate(swagger: Swagger): List<Violation> = listOf(
+        fun validate(adapter: ApiAdapter): List<Violation> = listOf(
                 Violation("dummy1", listOf("x", "y", "z")),
                 Violation("dummy2", listOf()))
     }
@@ -40,7 +39,7 @@ class RulesValidatorTest {
 
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
-        fun validate(swagger: Swagger, ignore: SwaggerIgnoreExtension): Violation? =
+        fun validate(adapter: ApiAdapter, ignore: SwaggerIgnoreExtension): Violation? =
                 Violation("dummy3", listOf("a"))
     }
 
@@ -54,17 +53,17 @@ class RulesValidatorTest {
 
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
-        fun invalid(swagger: Swagger): String = "Hello World!"
+        fun invalid(adapter: ApiAdapter): String = "Hello World!"
 
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
-        fun invalidParams(swagger: Swagger, json: JsonNode, text: String): Violation? = null
+        fun invalidParams(adapter: ApiAdapter, json: JsonNode, text: String): Violation? = null
     }
 
     @Test
     fun shouldReturnEmptyViolationsListWithoutRules() {
         val rules = emptyList<Any>()
-        val validator = SwaggerRulesValidator(rulesManager(rules))
+        val validator = OpenApiRulesValidator(rulesManager(rules))
         val results = validator.validate(swaggerContent, RulesPolicy(emptyArray()))
         assertThat(results)
                 .isEmpty()
@@ -73,7 +72,7 @@ class RulesValidatorTest {
     @Test
     fun shouldReturnOneViolation() {
         val rules = listOf(TestSecondRule())
-        val validator = SwaggerRulesValidator(rulesManager(rules))
+        val validator = OpenApiRulesValidator(rulesManager(rules))
         val results = validator.validate(swaggerContent, RulesPolicy(emptyArray()))
         assertThat(results.map(Result::toViolation).map(Violation::description))
                 .containsExactly("dummy3")
@@ -82,7 +81,7 @@ class RulesValidatorTest {
     @Test
     fun shouldCollectViolationsOfAllRules() {
         val rules = listOf(TestFirstRule())
-        val validator = SwaggerRulesValidator(rulesManager(rules))
+        val validator = OpenApiRulesValidator(rulesManager(rules))
         val results = validator.validate(swaggerContent, RulesPolicy(emptyArray()))
         assertThat(results.map(Result::toViolation).map(Violation::description))
                 .containsExactly("dummy1", "dummy2")
@@ -91,7 +90,7 @@ class RulesValidatorTest {
     @Test
     fun shouldSortViolationsByViolationType() {
         val rules = listOf(TestFirstRule(), TestSecondRule())
-        val validator = SwaggerRulesValidator(rulesManager(rules))
+        val validator = OpenApiRulesValidator(rulesManager(rules))
         val results = validator.validate(swaggerContent, RulesPolicy(emptyArray()))
         assertThat(results.map(Result::toViolation).map(Violation::description))
                 .containsExactly("dummy3", "dummy1", "dummy2")
@@ -100,7 +99,7 @@ class RulesValidatorTest {
     @Test
     fun shouldIgnoreSpecifiedRules() {
         val rules = listOf(TestFirstRule(), TestSecondRule())
-        val validator = SwaggerRulesValidator(rulesManager(rules))
+        val validator = OpenApiRulesValidator(rulesManager(rules))
         val results = validator.validate(swaggerContent, RulesPolicy(arrayOf("TestSecondRule")))
         assertThat(results.map(Result::toViolation).map(Violation::description))
                 .containsExactly("dummy1", "dummy2")
@@ -110,7 +109,7 @@ class RulesValidatorTest {
     fun checkReturnsStringThrowsException() {
         val rules = listOf(TestBadRule())
         assertThatThrownBy {
-            val validator = SwaggerRulesValidator(rulesManager(rules))
+            val validator = OpenApiRulesValidator(rulesManager(rules))
             validator.validate(swaggerContent, RulesPolicy(arrayOf("TestCheckApiNameIsPresentRule")))
         }.hasMessage("Unsupported return type for a @Check method!: class java.lang.String")
     }

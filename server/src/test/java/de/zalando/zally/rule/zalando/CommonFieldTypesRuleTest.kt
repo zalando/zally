@@ -1,11 +1,13 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getFixture
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.testConfig
 import io.swagger.models.Swagger
 import io.swagger.models.properties.AbstractProperty
 import io.swagger.models.properties.IntegerProperty
 import io.swagger.models.properties.StringProperty
+import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -76,7 +78,7 @@ class CommonFieldTypesRuleTest {
 
     @Test
     fun validateEmpty() {
-        assertThat(rule.validate(Swagger())).isNull()
+        assertThat(rule.validate(ApiAdapter(Swagger(), OpenAPI()))).isNull()
     }
 
     @Test

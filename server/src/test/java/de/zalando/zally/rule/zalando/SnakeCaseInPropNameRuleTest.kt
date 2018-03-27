@@ -1,8 +1,10 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.swaggerWithDefinitions
 import de.zalando.zally.testConfig
 import io.swagger.models.Swagger
+import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -12,19 +14,19 @@ class SnakeCaseInPropNameRuleTest {
 
     @Test
     fun emptySwagger() {
-        assertThat(rule.validate(Swagger())).isNull()
+        assertThat(rule.validate(ApiAdapter(Swagger(), OpenAPI()))).isNull()
     }
 
     @Test
     fun validateNormalProperty() {
         val swagger = swaggerWithDefinitions("ExampleDefinition" to listOf("test_property"))
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 
     @Test
     fun validateMultipleNormalProperties() {
         val swagger = swaggerWithDefinitions("ExampleDefinition" to listOf("test_property", "test_property_two"))
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 
     @Test
@@ -33,13 +35,13 @@ class SnakeCaseInPropNameRuleTest {
             "ExampleDefinition" to listOf("test_property"),
             "ExampleDefinitionTwo" to listOf("test_property_two")
         )
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 
     @Test
     fun validateFalseProperty() {
         val swagger = swaggerWithDefinitions("ExampleDefinition" to listOf("TEST_PROPERTY"))
-        val result = rule.validate(swagger)!!
+        val result = rule.validate(ApiAdapter(swagger, OpenAPI()))!!
         assertThat(result.description).contains("TEST_PROPERTY")
         assertThat(result.paths).hasSameElementsAs(listOf("#/definitions/ExampleDefinition"))
     }
@@ -50,7 +52,7 @@ class SnakeCaseInPropNameRuleTest {
             "ExampleDefinition" to listOf("TEST_PROPERTY"),
             "ExampleDefinitionTwo" to listOf("test_property_TWO")
         )
-        val result = rule.validate(swagger)!!
+        val result = rule.validate(ApiAdapter(swagger, OpenAPI()))!!
         assertThat(result.description).contains("TEST_PROPERTY", "test_property_TWO")
         assertThat(result.paths).hasSameElementsAs(listOf(
             "#/definitions/ExampleDefinition",
@@ -61,6 +63,6 @@ class SnakeCaseInPropNameRuleTest {
     @Test
     fun notFireOnWhitelistedProperty() {
         val swagger = swaggerWithDefinitions("ExampleDefinition" to listOf("_links"))
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 }

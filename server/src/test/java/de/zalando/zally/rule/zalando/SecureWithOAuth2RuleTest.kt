@@ -1,12 +1,14 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getFixture
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Scheme
 import io.swagger.models.Swagger
 import io.swagger.models.auth.ApiKeyAuthDefinition
 import io.swagger.models.auth.BasicAuthDefinition
 import io.swagger.models.auth.OAuth2Definition
+import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -28,7 +30,7 @@ class SecureWithOAuth2RuleTest {
 
     @Test
     fun checkSecurityDefinitionsWithEmptyReturnsViolation() {
-        assertThat(rule.checkSecurityDefinitions(Swagger())).isEqualTo(checkSecurityDefinitionsExpectedOauthViolation)
+        assertThat(rule.checkSecurityDefinitions(ApiAdapter(Swagger(), OpenAPI()))).isEqualTo(checkSecurityDefinitionsExpectedOauthViolation)
     }
 
     @Test
@@ -36,7 +38,7 @@ class SecureWithOAuth2RuleTest {
         val swagger = Swagger().apply {
             securityDefinitions = emptyMap()
         }
-        assertThat(rule.checkSecurityDefinitions(swagger)).isEqualTo(checkSecurityDefinitionsExpectedOauthViolation)
+        assertThat(rule.checkSecurityDefinitions(ApiAdapter(swagger, OpenAPI()))).isEqualTo(checkSecurityDefinitionsExpectedOauthViolation)
     }
 
     @Test
@@ -47,7 +49,7 @@ class SecureWithOAuth2RuleTest {
                 "ApiKey" to ApiKeyAuthDefinition()
             )
         }
-        assertThat(rule.checkSecurityDefinitions(swagger)).isEqualTo(checkSecurityDefinitionsExpectedOauthViolation)
+        assertThat(rule.checkSecurityDefinitions(ApiAdapter(swagger, OpenAPI()))).isEqualTo(checkSecurityDefinitionsExpectedOauthViolation)
     }
 
     @Test
@@ -58,7 +60,7 @@ class SecureWithOAuth2RuleTest {
                 "Oauth2" to OAuth2Definition()
             )
         }
-        assertThat(rule.checkSecurityDefinitions(swagger)).isEqualTo(checkSecurityDefinitionsExpectedHttpsViolation)
+        assertThat(rule.checkSecurityDefinitions(ApiAdapter(swagger, OpenAPI()))).isEqualTo(checkSecurityDefinitionsExpectedHttpsViolation)
     }
 
     @Test
@@ -70,12 +72,12 @@ class SecureWithOAuth2RuleTest {
                 "Oauth2" to OAuth2Definition()
             )
         }
-        assertThat(rule.checkSecurityDefinitions(swagger)).isNull()
+        assertThat(rule.checkSecurityDefinitions(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 
     @Test
     fun checkUsedScopesWithEmpty() {
-        assertThat(rule.checkUsedScopes(Swagger())).isNull()
+        assertThat(rule.checkUsedScopes(ApiAdapter(Swagger(), OpenAPI()))).isNull()
     }
 
     @Test
@@ -116,7 +118,7 @@ class SecureWithOAuth2RuleTest {
                 "ApiKey" to ApiKeyAuthDefinition()
             )
         }
-        assertThat(rule.checkPasswordFlow(swagger)).isNull()
+        assertThat(rule.checkPasswordFlow(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 
     @Test
@@ -129,7 +131,7 @@ class SecureWithOAuth2RuleTest {
                 }
             )
         }
-        assertThat(rule.checkPasswordFlow(swagger)).isNull()
+        assertThat(rule.checkPasswordFlow(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 
     @Test
@@ -142,7 +144,7 @@ class SecureWithOAuth2RuleTest {
                 }
             )
         }
-        assertThat(rule.checkPasswordFlow(swagger)).isEqualTo(checkPasswordFlowExpectedViolation)
+        assertThat(rule.checkPasswordFlow(ApiAdapter(swagger, OpenAPI()))).isEqualTo(checkPasswordFlowExpectedViolation)
     }
 
     @Test
@@ -153,7 +155,7 @@ class SecureWithOAuth2RuleTest {
                 "Oauth2" to OAuth2Definition()
             )
         }
-        assertThat(rule.checkPasswordFlow(swagger)).isEqualTo(checkPasswordFlowExpectedViolation)
+        assertThat(rule.checkPasswordFlow(ApiAdapter(swagger, OpenAPI()))).isEqualTo(checkPasswordFlowExpectedViolation)
     }
 
     @Test
@@ -166,6 +168,6 @@ class SecureWithOAuth2RuleTest {
                 }
             )
         }
-        assertThat(rule.checkPasswordFlow(swagger)).isEqualTo(checkPasswordFlowExpectedViolation)
+        assertThat(rule.checkPasswordFlow(ApiAdapter(swagger, OpenAPI()))).isEqualTo(checkPasswordFlowExpectedViolation)
     }
 }

@@ -1,9 +1,11 @@
 package de.zalando.zally.rule.zally
 
 import de.zalando.zally.getFixture
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.swaggerWithPaths
 import io.swagger.models.Swagger
+import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -14,19 +16,19 @@ class ExtractBasePathRuleTest {
 
     @Test
     fun validateEmptyPath() {
-        assertThat(rule.validate(Swagger())).isNull()
+        assertThat(rule.validate(ApiAdapter(Swagger(),  OpenAPI()))).isNull()
     }
 
     @Test
     fun simplePositiveCase() {
         val swagger = swaggerWithPaths("/orders/{order_id}", "/orders/{updates}", "/merchants")
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 
     @Test
     fun singlePathShouldPass() {
         val swagger = swaggerWithPaths("/orders/{order_id}")
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 
     @Test
@@ -39,7 +41,7 @@ class ExtractBasePathRuleTest {
         val rule = rule
         val expected = Violation(DESC_PATTERN.format("/shipment"),
                 emptyList())
-        assertThat(rule.validate(swagger)).isEqualTo(expected)
+        assertThat(rule.validate(ApiAdapter(swagger, OpenAPI()))).isEqualTo(expected)
     }
 
     @Test
@@ -53,7 +55,7 @@ class ExtractBasePathRuleTest {
         val rule = rule
         val expected = Violation(DESC_PATTERN.format("/queue/models"),
                 emptyList())
-        assertThat(rule.validate(swagger)).isEqualTo(expected)
+        assertThat(rule.validate(ApiAdapter(swagger, OpenAPI()))).isEqualTo(expected)
     }
 
     @Test
@@ -64,18 +66,18 @@ class ExtractBasePathRuleTest {
             "/applications/{app_id}",
             "/applications/"
         )
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 
     @Test
     fun positiveCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        assertThat(rule.validate(swagger)).isNull()
+        val adapter = getFixture("api_spp.json")
+        assertThat(rule.validate(adapter)).isNull()
     }
 
     @Test
     fun positiveCaseTinbox() {
-        val swagger = getFixture("api_tinbox.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+        val adapter = getFixture("api_tinbox.yaml")
+        assertThat(rule.validate(adapter)).isNull()
     }
 }

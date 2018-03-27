@@ -1,6 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -24,7 +25,14 @@ class FormatForNumbersRule(@Autowired rulesConfig: Config) {
             .map { (key, config) -> key to config.unwrapped() as List<String> }.toMap()
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
+    fun validate(adapter: ApiAdapter): Violation? {
+        if (adapter.isV2()) {
+            return validateV2(adapter.swagger!!)
+        }
+        return Violation.UNSUPPORTED_API_VERSION
+    }
+
+    private fun validateV2(swagger: Swagger): Violation? {
         val fromObjects = swagger.getAllJsonObjects().flatMap { (def, path) ->
             val badProps = def.entries.filterNot { (_, prop) -> isValid(prop.type, prop.format) }.map { it.key }
             if (badProps.isNotEmpty()) listOf(badProps to path) else emptyList()
@@ -48,6 +56,7 @@ class FormatForNumbersRule(@Autowired rulesConfig: Config) {
 
     private fun Parameter.hasValidFormat(): Boolean =
             this !is AbstractSerializableParameter<*> || isValid(getType(), getFormat())
+
 
     private fun isValid(type: String?, format: String?): Boolean = type2format[type]?.let { format in it } ?: true
 }

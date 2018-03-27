@@ -1,22 +1,25 @@
 package de.zalando.zally.apireview;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
 import com.fasterxml.jackson.databind.JsonNode;
-import de.zalando.zally.rule.TestRuleSet;
-import de.zalando.zally.rule.api.Check;
-import de.zalando.zally.rule.api.Rule;
-import de.zalando.zally.rule.api.Severity;
-import de.zalando.zally.rule.api.Violation;
-import de.zalando.zally.rule.zalando.UseOpenApiRule;
-import io.swagger.models.Swagger;
+import io.swagger.v3.oas.models.OpenAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+
+import de.zalando.zally.rule.ApiAdapter;
+import de.zalando.zally.rule.TestRuleSet;
+import de.zalando.zally.rule.api.Check;
+import de.zalando.zally.rule.api.Rule;
+import de.zalando.zally.rule.api.Severity;
+import de.zalando.zally.rule.api.Violation;
+import de.zalando.zally.rule.zalando.UseOpenApiRule;
 
 @Configuration
 public class RestApiTestConfiguration {
@@ -67,8 +70,9 @@ public class RestApiTestConfiguration {
     public static class TestCheckApiNameIsPresentRule {
 
         @Check(severity = Severity.MUST)
-        public Violation validate(Swagger swagger) {
-            if (swagger != null && swagger.getInfo().getTitle().contains("Product Service")) {
+        public Violation validate(ApiAdapter adapter) {
+            OpenAPI openAPI = adapter.getOpenAPI();
+            if (openAPI.getInfo().getTitle().contains("Product Service")) {
                 return new Violation("dummy", Collections.emptyList());
             } else {
                 return null;
@@ -86,7 +90,7 @@ public class RestApiTestConfiguration {
     public static class TestAlwaysGiveAHintRule {
 
         @Check(severity = Severity.HINT)
-        public Violation validate(Swagger swagger) {
+        public Violation validate(ApiAdapter adapter) {
             return new Violation("dummy", Collections.emptyList());
         }
     }

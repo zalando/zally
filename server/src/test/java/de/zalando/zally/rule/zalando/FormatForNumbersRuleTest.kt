@@ -11,27 +11,27 @@ class FormatForNumbersRuleTest {
 
     @Test
     fun positiveCase() {
-        val swagger = getFixture("formatForNumbersValid.json")
-        assertThat(rule.validate(swagger)).isNull()
+        val adapter = getFixture("formatForNumbersValid.json")
+        assertThat(rule.validate(adapter)).isNull()
     }
 
     @Test
     fun negativeCase() {
-        val swagger = getFixture("formatForNumbersInvalid.json")
-        val result = rule.validate(swagger)!!
+        val adapter = getFixture("formatForNumbersInvalid.json")
+        val result = rule.validate(adapter)!!
         assertThat(result.paths).hasSameElementsAs(listOf("#/parameters/PetFullPrice", "#/definitions/Pet", "/pets"))
         assertThat(result.description).contains("other_price", "full_price", "number_of_legs")
     }
 
     @Test
     fun positiveCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        assertThat(rule.validate(swagger)).isNull()
+        val adapter = getFixture("api_spp.json")
+        assertThat(rule.validate(adapter)).isNull()
     }
 
     @Test
     fun positiveCaseTinbox() {
-        val swagger = getFixture("api_tinbox.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+        val adapter = getFixture("api_tinbox.yaml")
+        assertThat(rule.validate(adapter)).isNull()
     }
 }

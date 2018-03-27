@@ -1,23 +1,14 @@
 package de.zalando.zally.rule.zally
 
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
-import io.swagger.models.ArrayModel
-import io.swagger.models.ComposedModel
-import io.swagger.models.Model
-import io.swagger.models.ModelImpl
-import io.swagger.models.RefModel
-import io.swagger.models.Response
-import io.swagger.models.Swagger
+import io.swagger.models.*
 import io.swagger.models.parameters.BodyParameter
 import io.swagger.models.parameters.Parameter
-import io.swagger.models.properties.ArrayProperty
-import io.swagger.models.properties.MapProperty
-import io.swagger.models.properties.ObjectProperty
-import io.swagger.models.properties.Property
-import io.swagger.models.properties.RefProperty
+import io.swagger.models.properties.*
 
 @Rule(
         ruleSet = ZallyRuleSet::class,
@@ -28,7 +19,14 @@ import io.swagger.models.properties.RefProperty
 class NoUnusedDefinitionsRule {
 
     @Check(severity = Severity.SHOULD)
-    fun validate(swagger: Swagger): Violation? {
+    fun validate(adapter: ApiAdapter): Violation? {
+        if (adapter.isV2()) {
+            return validateV2(adapter.swagger!!)
+        }
+        return null
+    }
+
+    private fun validateV2(swagger: Swagger): Violation? {
         val paramsInPaths = swagger.paths.orEmpty().values.flatMap { path ->
             path.operations.orEmpty().flatMap { operation ->
                 operation.parameters.orEmpty()

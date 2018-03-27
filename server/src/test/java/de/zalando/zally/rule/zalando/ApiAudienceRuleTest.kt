@@ -1,9 +1,11 @@
 package de.zalando.zally.rule.zalando
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.testConfig
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
+import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions
 import org.junit.Test
 
@@ -15,14 +17,14 @@ class ApiAudienceRuleTest {
     fun correctApiAudienceIsSet() {
         val swagger = withAudience("company-internal")
 
-        Assertions.assertThat(rule.validate(swagger)).isNull()
+        Assertions.assertThat(rule.validate(ApiAdapter(swagger, OpenAPI()))).isNull()
     }
 
     @Test
     fun incorrectAudienceIsSet() {
         val swagger = withAudience("not-existing-audience")
 
-        val violation = rule.validate(swagger)!!
+        val violation = rule.validate(ApiAdapter(swagger, OpenAPI()))!!
 
         Assertions.assertThat(violation.paths).hasSameElementsAs(listOf("/info/x-audience"))
         Assertions.assertThat(violation.description).matches(".*doesn't match.*")
@@ -30,7 +32,7 @@ class ApiAudienceRuleTest {
 
     @Test
     fun noApiAudienceIsSet() {
-        val violation = rule.validate(Swagger())!!
+        val violation = rule.validate(ApiAdapter(Swagger(), OpenAPI()))!!
 
         Assertions.assertThat(violation.paths).hasSameElementsAs(listOf("/info/x-audience"))
         Assertions.assertThat(violation.description).matches(".*Audience must be provided.*")

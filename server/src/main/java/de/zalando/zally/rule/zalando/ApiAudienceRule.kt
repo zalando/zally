@@ -1,11 +1,11 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
+import de.zalando.zally.rule.ApiAdapter
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
@@ -24,13 +24,16 @@ class ApiAudienceRule(@Autowired rulesConfig: Config) {
     private val path = "/info/$extensionName"
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
-        val audience = swagger.info?.vendorExtensions?.get(extensionName)
+    fun validate(adapter: ApiAdapter): Violation? =
+            adapter.withVersion2 { swagger ->
+                val audience = swagger.info?.vendorExtensions?.get(extensionName)
 
-        return when (audience) {
-            null, !is String -> Violation(noApiAudienceDesc, listOf(path))
-            !in validAudiences -> Violation(invalidApiAudienceDesc, listOf(path))
-            else -> null
-        }
-    }
+                when (audience) {
+                    null, !is String -> Violation(noApiAudienceDesc, listOf(path))
+                    !in validAudiences -> Violation(invalidApiAudienceDesc, listOf(path))
+                    else -> null
+                }
+            }
+
+
 }
