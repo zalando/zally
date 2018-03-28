@@ -10,7 +10,6 @@ import de.zalando.zally.rule.zalando.AvoidTrailingSlashesRule;
 import de.zalando.zally.rule.zalando.ZalandoRuleSet;
 import de.zalando.zally.util.ErrorResponse;
 import de.zalando.zally.util.TestDateUtil;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 

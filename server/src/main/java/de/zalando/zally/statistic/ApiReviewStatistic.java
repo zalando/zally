@@ -57,11 +57,11 @@ public class ApiReviewStatistic {
         this.violations = violations;
     }
 
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
-    }
-
     public String getUserAgent() {
         return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
     }
 }

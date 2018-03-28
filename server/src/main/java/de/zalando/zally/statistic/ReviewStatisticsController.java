@@ -47,26 +47,12 @@ public class ReviewStatisticsController {
             throw new UnsufficientTimeIntervalParameterException();
         }
 
-        final Collection<ApiReview> apiReviews = findReviews(from, to, userAgent);
+        final Collection<ApiReview> apiReviews = from != null
+            ? apiReviewRepository.findByDayBetween(userAgent, from, to != null ? to : today())
+            : apiReviewRepository.findFromLastWeek(userAgent);
 
         LOG.info("Found {} api reviews from {} to {} user_agent {}", apiReviews.size(), from, to, userAgent);
         return new ReviewStatistics(apiReviews);
-    }
-
-    private Collection<ApiReview> findReviews(LocalDate from, LocalDate to, String userAgent) {
-        Collection<ApiReview> apiReviews;
-        LocalDate t = to != null ? to : today();
-        if (userAgent == null || userAgent.length() == 0) {
-            apiReviews = from != null
-                ? apiReviewRepository.findByDayBetween(from, t)
-                : apiReviewRepository.findAllFromLastWeek();
-        } else {
-            apiReviews = from != null
-                ? apiReviewRepository.findByUserAgentAndDayBetween(userAgent, from, t)
-                : apiReviewRepository.findByUserAgentFromLastWeek(userAgent);
-        }
-
-        return apiReviews;
     }
 
     private LocalDate today() {
