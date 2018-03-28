@@ -3,7 +3,7 @@ swagger: '2.0'
 info:
  title: Zally
  description: Zalando's API Linter
- version: "1.3.1"
+ version: "1.3.0"
  x-api-id: 48aa0090-25ef-11e8-b467-0ed5f89f718b
  x-audience: company-internal
  contact:
