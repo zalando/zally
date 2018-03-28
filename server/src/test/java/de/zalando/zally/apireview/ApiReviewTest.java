@@ -25,7 +25,7 @@ public class ApiReviewTest {
         Result mustViolation2 = result(Severity.MUST, emptyList());
         Result shouldViolation = result(Severity.SHOULD, emptyList());
 
-        ApiReview apiReview = new ApiReview(new ApiDefinitionRequest(), "", asList(mustViolation1, mustViolation2, shouldViolation));
+        ApiReview apiReview = new ApiReview(new ApiDefinitionRequest(), null, "", asList(mustViolation1, mustViolation2, shouldViolation));
 
         assertThat(apiReview.getMustViolations()).isEqualTo(2);
         assertThat(apiReview.getShouldViolations()).isEqualTo(1);
@@ -40,7 +40,7 @@ public class ApiReviewTest {
 
         String apiDefinition = ResourceUtil.resourceToString("fixtures/limitNumberOfResourcesValid.json");
 
-        ApiReview apiReview = new ApiReview(new ApiDefinitionRequest(), apiDefinition, asList(violation1, violation2));
+        ApiReview apiReview = new ApiReview(new ApiDefinitionRequest(), null, apiDefinition, asList(violation1, violation2));
 
         assertThat(apiReview.getNumberOfEndpoints()).isEqualTo(2);
     }
@@ -48,7 +48,7 @@ public class ApiReviewTest {
     @Test
     public void shouldParseApiNameFromApiDefinition() throws IOException {
         String apiDefinition = ResourceUtil.resourceToString("fixtures/limitNumberOfResourcesValid.json");
-        ApiReview apiReview = new ApiReview(new ApiDefinitionRequest(), apiDefinition, emptyList());
+        ApiReview apiReview = new ApiReview(new ApiDefinitionRequest(), null, apiDefinition, emptyList());
         assertThat(apiReview.getName()).isEqualTo("Test Service");
     }
 

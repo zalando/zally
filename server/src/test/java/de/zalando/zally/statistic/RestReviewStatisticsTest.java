@@ -52,7 +52,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
 
         List<ApiReview> reviews = createRandomReviewsInBetween(from, now().toLocalDate());
 
-        ReviewStatistics response = getReviewStatistics(from, null);
+        ReviewStatistics response = getReviewStatisticsBetween(from, null);
 
         assertThat(response.getNumberOfEndpoints()).isEqualTo(reviews.size() * 2);
         assertThat(response.getMustViolations()).isEqualTo(reviews.size());
@@ -69,7 +69,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
 
         List<ApiReview> reviews = createRandomReviewsInBetween(from, now().toLocalDate());
 
-        ReviewStatistics response = getReviewStatistics(from, to);
+        ReviewStatistics response = getReviewStatisticsBetween(from, to);
         assertThat(response.getReviews()).hasSize(reviews.size() - 1);
     }
 
@@ -105,9 +105,9 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
     @Test
     public void shouldReturnNumberOfUniqueApiReviewsBasedOnApiName() {
         LocalDate now = now().toLocalDate();
-        apiReviewRepository.save(apiReview(now, "API A"));
-        apiReviewRepository.save(apiReview(now, "API B"));
-        apiReviewRepository.save(apiReview(now, "API B"));
+        apiReviewRepository.save(apiReview(now, "API A", null));
+        apiReviewRepository.save(apiReview(now, "API B", null));
+        apiReviewRepository.save(apiReview(now, "API B", null));
 
         ReviewStatistics statistics = getReviewStatistics();
 
@@ -118,9 +118,9 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
     @Test
     public void deduplicatedReviewStatisticsShouldIgnoreApisWithoutName() {
         LocalDate now = now().toLocalDate();
-        apiReviewRepository.save(apiReview(now, null));
-        apiReviewRepository.save(apiReview(now, ""));
-        apiReviewRepository.save(apiReview(now, "Nice API"));
+        apiReviewRepository.save(apiReview(now, null, null));
+        apiReviewRepository.save(apiReview(now, "", null));
+        apiReviewRepository.save(apiReview(now, "Nice API", null));
 
         ReviewStatistics statistics = getReviewStatistics();
 
@@ -128,12 +128,35 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
         assertThat(statistics.getTotalReviewsDeduplicated()).isEqualTo(1);
     }
 
+    @Test
+    public void shouldStoreUserAgent() {
+        LocalDate now = now().toLocalDate();
+        apiReviewRepository.save(apiReview(now, null, "curl"));
+
+        ReviewStatistics statistics = getReviewStatistics();
+        assertThat(statistics.getReviews()).hasSize(1);
+        assertThat(statistics.getReviews().get(0).getUserAgent()).isEqualTo("curl");
+    }
+
+    @Test
+    public void shouldFilterByUserAgent() {
+        LocalDate now = now().toLocalDate();
+        apiReviewRepository.save(apiReview(now, null, "curl"));
+        apiReviewRepository.save(apiReview(now, null, null));
+
+        ReviewStatistics statistics = getReviewStatistics();
+        assertThat(statistics.getReviews()).hasSize(2);
+
+        statistics = getReviewStatisticsByUserAgent("curl");
+        assertThat(statistics.getReviews()).hasSize(1);
+    }
+
     private List<ApiReview> createRandomReviewsInBetween(LocalDate from, LocalDate to) {
         List<ApiReview> reviews = new LinkedList<>();
 
         LocalDate currentDate = LocalDate.from(from);
         while (currentDate.isBefore(to)) {
-            reviews.add(apiReview(currentDate, "My API"));
+            reviews.add(apiReview(currentDate, "My API", null));
             currentDate = currentDate.plusDays(1L);
         }
 
@@ -141,11 +164,12 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
         return reviews;
     }
 
-    private ApiReview apiReview(LocalDate date, String apiName) {
-        ApiReview review = new ApiReview(new ApiDefinitionRequest(), "dummyApiDefinition", createRandomViolations());
+    private ApiReview apiReview(LocalDate date, String apiName, String userAgent) {
+        ApiReview review = new ApiReview(new ApiDefinitionRequest(), null, "dummyApiDefinition", createRandomViolations());
         review.setDay(date);
         review.setName(apiName);
         review.setNumberOfEndpoints(2);
+        review.setUserAgent(userAgent);
 
         return review;
     }
@@ -155,7 +179,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
     }
 
     private void assertBadRequestFor(Object from, Object to) {
-        ResponseEntity<ErrorResponse> response = getReviewStatistics(from, to, ErrorResponse.class);
+        ResponseEntity<ErrorResponse> response = getReviewStatisticsBetween(from, to, ErrorResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
         assertThat(response.getHeaders().getContentType().toString()).isEqualTo(APPLICATION_PROBLEM_JSON);

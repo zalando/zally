@@ -36,7 +36,8 @@ public class ReviewStatisticsController {
     @GetMapping("/review-statistics")
     public ReviewStatistics retrieveReviewStatistics(
         @RequestParam(value = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-        @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+        @RequestParam(value = "user_agent", required = false) String userAgent) {
 
         if (from != null && from.isAfter(today())) {
             throw new TimeParameterIsInTheFutureException();
@@ -47,10 +48,10 @@ public class ReviewStatisticsController {
         }
 
         final Collection<ApiReview> apiReviews = from != null
-            ? apiReviewRepository.findByDayBetween(from, to != null ? to : today())
-            : apiReviewRepository.findAllFromLastWeek();
+            ? apiReviewRepository.findByDayBetween(userAgent, from, to != null ? to : today())
+            : apiReviewRepository.findFromLastWeek(userAgent);
 
-        LOG.info("Found {} api reviews from {} to {}", apiReviews.size(), from, to);
+        LOG.info("Found {} api reviews from {} to {} user_agent {}", apiReviews.size(), from, to, userAgent);
         return new ReviewStatistics(apiReviews);
     }
 

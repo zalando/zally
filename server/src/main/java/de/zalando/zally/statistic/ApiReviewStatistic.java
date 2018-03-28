@@ -11,6 +11,7 @@ public class ApiReviewStatistic {
     private String api;
     private boolean successful;
     private int numberOfEndpoints;
+    private String userAgent;
     private List<RuleViolation> violations;
 
     ApiReviewStatistic() {
@@ -20,6 +21,7 @@ public class ApiReviewStatistic {
         api = apiReview.getName();
         successful = apiReview.isSuccessfulProcessed();
         numberOfEndpoints = apiReview.getNumberOfEndpoints();
+        userAgent = apiReview.getUserAgent();
         violations = new LinkedList<>(apiReview.getRuleViolations());
     }
 
@@ -53,5 +55,13 @@ public class ApiReviewStatistic {
 
     public void setViolations(List<RuleViolation> violations) {
         this.violations = violations;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
     }
 }

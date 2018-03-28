@@ -45,6 +45,8 @@ public class ApiReview implements Serializable {
     @Column(nullable = false)
     private LocalDate day;
 
+    private String userAgent;
+
     @Column(nullable = false)
     @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentOffsetDateTime",
         parameters = {@Parameter(name = "javaZone", value = "UTC")})
@@ -66,15 +68,16 @@ public class ApiReview implements Serializable {
     }
 
     public ApiReview(ApiDefinitionRequest request) {
-        this(request, null, Collections.emptyList());
+        this(request, null, null, Collections.emptyList());
     }
 
-    public ApiReview(ApiDefinitionRequest request, String apiDefinition, List<Result> violations) {
+    public ApiReview(ApiDefinitionRequest request, String userAgent, String apiDefinition, List<Result> violations) {
         this.jsonPayload = request.toString();
         this.apiDefinition = apiDefinition;
         this.successfulProcessed = StringUtils.isNotBlank(apiDefinition);
         this.created = Instant.now().atOffset(ZoneOffset.UTC);
         this.day = created.toLocalDate();
+        this.userAgent = userAgent;
 
         this.name = ApiNameParser.extractApiName(apiDefinition);
         this.ruleViolations = violations.stream()
@@ -190,6 +193,14 @@ public class ApiReview implements Serializable {
 
     public void setRuleViolations(List<RuleViolation> ruleViolations) {
         this.ruleViolations = ruleViolations;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    public String getUserAgent() {
+        return this.userAgent;
     }
 
     @Override
