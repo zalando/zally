@@ -75,37 +75,31 @@ class SecureWithOAuth2RuleTest {
 
     @Test
     fun checkUsedScopesWithEmpty() {
-        assertThat(rule.checkUsedScopes(Swagger())).isNull()
-    }
-
-    @Test
-    fun checkUsedScopesWithoutScope() {
-        val swagger = getFixture("api_without_scopes_defined.yaml")
-        assertThat(rule.checkUsedScopes(swagger)!!.paths).hasSize(4)
+        assertThat(rule.checkUsedScopesAreDefined(Swagger())).isNull()
     }
 
     @Test
     fun checkUsedScopesWithDefinedScope() {
         val swagger = getFixture("api_with_defined_scope.yaml")
-        assertThat(rule.checkUsedScopes(swagger)).isNull()
+        assertThat(rule.checkUsedScopesAreDefined(swagger)).isNull()
     }
 
     @Test
     fun checkUsedScopesWithUndefinedScope() {
         val swagger = getFixture("api_with_undefined_scope.yaml")
-        assertThat(rule.checkUsedScopes(swagger)!!.paths).hasSize(2)
+        assertThat(rule.checkUsedScopesAreDefined(swagger)!!.paths).hasSize(2)
     }
 
     @Test
     fun checkUsedScopesWithDefinedAndUndefinedScope() {
         val swagger = getFixture("api_with_defined_and_undefined_scope.yaml")
-        assertThat(rule.checkUsedScopes(swagger)!!.paths).hasSize(2)
+        assertThat(rule.checkUsedScopesAreDefined(swagger)!!.paths).hasSize(2)
     }
 
     @Test
     fun checkUsedScopesWithDefinedTopLevelScope() {
         val swagger = getFixture("api_with_toplevel_scope.yaml")
-        assertThat(rule.checkUsedScopes(swagger)).isNull()
+        assertThat(rule.checkUsedScopesAreDefined(swagger)).isNull()
     }
 
     @Test
