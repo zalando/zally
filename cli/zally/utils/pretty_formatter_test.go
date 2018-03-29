@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/logrusorgru/aurora"
 	"github.com/zalando/zally/cli/zally/domain"
 	"github.com/zalando/zally/cli/zally/tests"
 )
@@ -130,34 +129,5 @@ func TestPrettyFormatHeader(t *testing.T) {
 	t.Run("formatHeader returns empty string when no header", func(t *testing.T) {
 		result := formatter.formatHeader("")
 		tests.AssertEquals(t, "", result)
-	})
-}
-
-func TestPrettyColorizeByTypeFunc(t *testing.T) {
-	var formatter PrettyFormatter
-
-	t.Run("Returns red when type is MUST", func(t *testing.T) {
-		result := formatter.colorizeByTypeFunc("MUST")
-		tests.AssertEquals(t, aurora.Red("abcde"), result("abcde"))
-	})
-
-	t.Run("Returns brown when type is SHOULD", func(t *testing.T) {
-		result := formatter.colorizeByTypeFunc("SHOULD")
-		tests.AssertEquals(t, aurora.Brown("abcde"), result("abcde"))
-	})
-
-	t.Run("Returns green when type is MAY", func(t *testing.T) {
-		result := formatter.colorizeByTypeFunc("MAY")
-		tests.AssertEquals(t, aurora.Green("abcde"), result("abcde"))
-	})
-
-	t.Run("Returns cyan when type is HINT", func(t *testing.T) {
-		result := formatter.colorizeByTypeFunc("HINT")
-		tests.AssertEquals(t, aurora.Cyan("abcde"), result("abcde"))
-	})
-
-	t.Run("Returns gray by default", func(t *testing.T) {
-		result := formatter.colorizeByTypeFunc("WHATEVER")
-		tests.AssertEquals(t, aurora.Gray("abcde"), result("abcde"))
 	})
 }
