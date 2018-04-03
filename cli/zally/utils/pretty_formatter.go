@@ -40,7 +40,7 @@ func (f *PrettyFormatter) FormatViolations(header string, violations []domain.Vi
 func (f *PrettyFormatter) FormatRule(rule *domain.Rule) string {
 	var buffer bytes.Buffer
 
-	var colorizer PrettyColorizer
+	colorizer := NewPrettyColorizer(true)
 	colorize := colorizer.ColorizeByTypeFunc(rule.Type)
 	fmt.Fprintf(
 		&buffer,
@@ -70,7 +70,7 @@ func (f *PrettyFormatter) formatHeader(header string) string {
 func (f *PrettyFormatter) formatViolation(violation *domain.Violation) string {
 	var buffer bytes.Buffer
 
-	var colorizer PrettyColorizer
+	colorizer := NewPrettyColorizer(true)
 	colorize := colorizer.ColorizeByTypeFunc(violation.ViolationType)
 
 	fmt.Fprintf(&buffer, "%s %s\n", colorize(violation.ViolationType), colorize(violation.Title))

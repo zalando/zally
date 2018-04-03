@@ -4,20 +4,28 @@ import "github.com/logrusorgru/aurora"
 
 // PrettyColorizer is used to generate ANSII colors for output
 type PrettyColorizer struct {
+	auroraInstance aurora.Aurora
+}
+
+// NewPrettyColorizer creates an instance of PrettyColorizer
+func NewPrettyColorizer(useColors bool) *PrettyColorizer {
+	var prettyColorizer PrettyColorizer
+	prettyColorizer.auroraInstance = aurora.NewAurora(useColors)
+	return &prettyColorizer
 }
 
 // ColorizeByTypeFunc returns color function by a given type
-func (f *PrettyColorizer) ColorizeByTypeFunc(ruleType string) func(interface{}) aurora.Value {
+func (c *PrettyColorizer) ColorizeByTypeFunc(ruleType string) func(interface{}) aurora.Value {
 	switch ruleType {
 	case "MUST":
-		return aurora.Red
+		return c.auroraInstance.Red
 	case "SHOULD":
-		return aurora.Brown
+		return c.auroraInstance.Brown
 	case "MAY":
-		return aurora.Green
+		return c.auroraInstance.Green
 	case "HINT":
-		return aurora.Cyan
+		return c.auroraInstance.Cyan
 	default:
-		return aurora.Gray
+		return c.auroraInstance.Gray
 	}
 }

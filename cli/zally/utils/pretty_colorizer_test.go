@@ -1,14 +1,15 @@
 package utils
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/logrusorgru/aurora"
 	"github.com/zalando/zally/cli/zally/tests"
 )
 
-func TestColorizeByTypeFunc(t *testing.T) {
-	var colorizer PrettyColorizer
+func TestColorizeByTypeFuncIsUsingColors(t *testing.T) {
+	colorizer := NewPrettyColorizer(true)
 
 	t.Run("Returns red when type is MUST", func(t *testing.T) {
 		result := colorizer.ColorizeByTypeFunc("MUST")
@@ -33,5 +34,14 @@ func TestColorizeByTypeFunc(t *testing.T) {
 	t.Run("Returns gray by default", func(t *testing.T) {
 		result := colorizer.ColorizeByTypeFunc("WHATEVER")
 		tests.AssertEquals(t, aurora.Gray("abcde"), result("abcde"))
+	})
+}
+
+func TestColorizeByTypeFuncIsNotUsingColors(t *testing.T) {
+	colorizer := NewPrettyColorizer(false)
+
+	t.Run("Returns gray by default", func(t *testing.T) {
+		result := colorizer.ColorizeByTypeFunc("MUST")
+		tests.AssertEquals(t, "abcde", fmt.Sprint(result("abcde")))
 	})
 }
