@@ -11,6 +11,14 @@ import (
 
 // PrettyFormatter is used to generate violations in pretty format
 type PrettyFormatter struct {
+	colorizer *PrettyColorizer
+}
+
+// NewPrettyFormatter creates a formatter for text output
+func NewPrettyFormatter(colorizer *PrettyColorizer) PrettyFormatter {
+	var prettyFormatter PrettyFormatter
+	prettyFormatter.colorizer = colorizer
+	return prettyFormatter
 }
 
 // FormatViolationsCount generates violation counters in in pretty format
