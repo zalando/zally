@@ -165,7 +165,8 @@ func getFormatter(format string) (utils.Formatter, error) {
 	}
 
 	if format == "pretty" {
-		var prettyFormatter utils.PrettyFormatter
+		colorizer := utils.NewPrettyColorizer(true)
+		prettyFormatter := utils.NewPrettyFormatter(colorizer)
 		return &prettyFormatter, nil
 	}
 

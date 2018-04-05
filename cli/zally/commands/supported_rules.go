@@ -93,7 +93,9 @@ func fetchRules(requestBuilder *utils.RequestBuilder, rulesType string) (*domain
 
 func printRules(rules *domain.Rules) {
 	var buffer bytes.Buffer
-	var formatter utils.PrettyFormatter
+
+	colorizer := utils.NewPrettyColorizer(true)
+	formatter := utils.NewPrettyFormatter(colorizer)
 	resultPrinter := utils.NewResultPrinter(&buffer, &formatter)
 	resultPrinter.PrintRules(rules)
 
