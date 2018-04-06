@@ -13,7 +13,8 @@ import (
 func TestNewResultPrinter(t *testing.T) {
 	t.Run("accepts buffer and result printer", func(t *testing.T) {
 		var buffer *bytes.Buffer
-		var formatter PrettyFormatter
+
+		formatter := NewPrettyFormatter(NewPrettyColorizer(true))
 
 		resultPrinter := NewResultPrinter(buffer, &formatter)
 
@@ -44,9 +45,10 @@ func TestPrintRules(t *testing.T) {
 	mayRule.IsActive = true
 	mayRule.URL = "https://example.com/third-rule"
 
+	formatter := NewPrettyFormatter(NewPrettyColorizer(true))
+
 	t.Run("Prints sorted rules when found", func(t *testing.T) {
 		var buffer bytes.Buffer
-		var formatter PrettyFormatter
 		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		var rules domain.Rules
@@ -65,7 +67,6 @@ func TestPrintRules(t *testing.T) {
 
 	t.Run("Prints no rules when not found", func(t *testing.T) {
 		var buffer bytes.Buffer
-		var formatter PrettyFormatter
 		resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 		var rules domain.Rules
@@ -79,7 +80,7 @@ func TestPrintRules(t *testing.T) {
 
 func TestPrintViolations(t *testing.T) {
 	var buffer bytes.Buffer
-	var formatter PrettyFormatter
+	formatter := NewPrettyFormatter(NewPrettyColorizer(true))
 	resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 	var mustViolation domain.Violation
