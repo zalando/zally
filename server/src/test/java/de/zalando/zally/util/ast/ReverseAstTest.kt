@@ -1,4 +1,4 @@
-package de.zalando.zally.util
+package de.zalando.zally.util.ast
 
 import de.zalando.zally.util.ResourceUtil.resourceToString
 import io.swagger.parser.SwaggerParser
@@ -38,7 +38,7 @@ class ReverseAstTest {
             """.trimIndent()
 
         val spec = SwaggerParser().parse(content)
-        val ast = ReverseAst.create(spec, ignore)
+        val ast = ReverseAst.fromObject(spec).ignore(ignore).build()
 
         val description = spec.paths?.get("/tests")?.get?.responses?.get("200")?.description
         assertThat(ast.getPointer(description)).isEqualTo("#/paths/~1tests/get/responses/200/description")
@@ -70,7 +70,7 @@ class ReverseAstTest {
             """.trimIndent()
 
         val spec = SwaggerParser().parse(content)
-        val ast = ReverseAst.create(spec, ignore)
+        val ast = ReverseAst.fromObject(spec).ignore(ignore).build()
 
         val description = spec.paths?.get("/tests")?.get?.responses?.get("200")?.description
         assertThat(ast.isIgnored(description)).isTrue()
@@ -89,7 +89,7 @@ class ReverseAstTest {
     fun `create from Swagger 2 document`() {
         val content = resourceToString("fixtures/api_spp.json")
         val spec = SwaggerParser().parse(content)
-        val ast = ReverseAst.create(spec, ignore)
+        val ast = ReverseAst.fromObject(spec).ignore(ignore).build()
         assertThat(ast.getPointer(spec)).isEqualTo("#")
     }
 }

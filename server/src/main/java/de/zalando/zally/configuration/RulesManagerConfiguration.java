@@ -20,7 +20,7 @@ public class RulesManagerConfiguration {
     @Autowired
     private ApplicationContext context;
 
-  @Bean
+    @Bean
     public Collection<Object> rules() {
         return context.getBeansWithAnnotation(Rule.class).values();
     }
