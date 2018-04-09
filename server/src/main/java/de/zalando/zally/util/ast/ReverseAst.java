@@ -8,11 +8,10 @@ import java.util.Map;
  */
 public class ReverseAst {
     /**
-     * Creates a new instance of ReverseAst. Traverses a Swagger or OpenApi object tree
-     * and constructs a map of object nodes to meta information objects.
+     * Creates a new instance of ReverseAstBuilder from a Swagger or OpenApi object.
      *
      * @param root Swagger or OpenApi instance.
-     * @return ReverseAst instance.
+     * @return ReverseAstBuilder instance.
      */
     public static ReverseAstBuilder fromObject(Object root) {
         return new ReverseAstBuilder(root);

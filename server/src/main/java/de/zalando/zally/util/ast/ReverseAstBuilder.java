@@ -56,6 +56,7 @@ public class ReverseAstBuilder {
 
     /**
      * Construct a new ReverseAst instance from the root object in this builder.
+     * Traverses a Swagger or OpenApi object tree and constructs a map of object nodes to meta information objects.
      *
      * @return A new ReverseAst instance.
      * @throws ReverseAstException If an error occurs during reflection.
