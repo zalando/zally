@@ -17,6 +17,7 @@ import (
 	"github.com/zalando/zally/cli/zally/domain"
 	"github.com/zalando/zally/cli/zally/readers"
 	"github.com/zalando/zally/cli/zally/utils"
+	"github.com/zalando/zally/cli/zally/utils/formatters"
 )
 
 // LintCommand lints given API definition file
@@ -52,7 +53,7 @@ func lint(c *cli.Context) error {
 	return lintFile(path, requestBuilder, formatter)
 }
 
-func lintFile(path string, requestBuilder *utils.RequestBuilder, formatter utils.Formatter) error {
+func lintFile(path string, requestBuilder *utils.RequestBuilder, formatter formatters.Formatter) error {
 	data, err := readFile(path)
 	if err != nil {
 		return err
@@ -157,16 +158,16 @@ func getReader(path string, contents []byte) readers.SpecsReader {
 	return readers.NewJSONReader(contents)
 }
 
-func getFormatter(format string) (utils.Formatter, error) {
+func getFormatter(format string) (formatters.Formatter, error) {
 
 	if format == "markdown" {
-		var markdownFormatter utils.MarkdownFormatter
+		var markdownFormatter formatters.MarkdownFormatter
 		return &markdownFormatter, nil
 	}
 
 	if format == "pretty" {
-		colorizer := utils.NewPrettyColorizer(true)
-		prettyFormatter := utils.NewPrettyFormatter(colorizer)
+		colorizer := formatters.NewPrettyColorizer(true)
+		prettyFormatter := formatters.NewPrettyFormatter(colorizer)
 		return &prettyFormatter, nil
 	}
 

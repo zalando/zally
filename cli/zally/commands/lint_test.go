@@ -19,6 +19,7 @@ import (
 	"github.com/zalando/zally/cli/zally/domain"
 	"github.com/zalando/zally/cli/zally/tests"
 	"github.com/zalando/zally/cli/zally/utils"
+	"github.com/zalando/zally/cli/zally/utils/formatters"
 )
 
 var app = cli.NewApp()
@@ -150,7 +151,7 @@ func TestLintFile(t *testing.T) {
 
 		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
 
-		err := lintFile("testdata/minimal_swagger.json", requestBuilder, &utils.MarkdownFormatter{})
+		err := lintFile("testdata/minimal_swagger.json", requestBuilder, &formatters.MarkdownFormatter{})
 
 		tests.AssertEquals(t, nil, err)
 	})
@@ -166,7 +167,7 @@ func TestLintFile(t *testing.T) {
 
 		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
 
-		err := lintFile("testdata/minimal_swagger.json", requestBuilder, &utils.MarkdownFormatter{})
+		err := lintFile("testdata/minimal_swagger.json", requestBuilder, &formatters.MarkdownFormatter{})
 
 		tests.AssertEquals(t, "Failing because: 1 must violation(s) found", err.Error())
 	})

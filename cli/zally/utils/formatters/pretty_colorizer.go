@@ -1,4 +1,4 @@
-package utils
+package formatters
 
 import "github.com/logrusorgru/aurora"
 

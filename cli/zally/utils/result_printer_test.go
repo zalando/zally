@@ -8,13 +8,15 @@ import (
 
 	"github.com/zalando/zally/cli/zally/domain"
 	"github.com/zalando/zally/cli/zally/tests"
+	"github.com/zalando/zally/cli/zally/utils/formatters"
 )
 
 func TestNewResultPrinter(t *testing.T) {
 	t.Run("accepts buffer and result printer", func(t *testing.T) {
 		var buffer *bytes.Buffer
 
-		formatter := NewPrettyFormatter(NewPrettyColorizer(true))
+		colorizer := formatters.NewPrettyColorizer(true)
+		formatter := formatters.NewPrettyFormatter(colorizer)
 
 		resultPrinter := NewResultPrinter(buffer, &formatter)
 
@@ -45,7 +47,8 @@ func TestPrintRules(t *testing.T) {
 	mayRule.IsActive = true
 	mayRule.URL = "https://example.com/third-rule"
 
-	formatter := NewPrettyFormatter(NewPrettyColorizer(true))
+	colorizer := formatters.NewPrettyColorizer(true)
+	formatter := formatters.NewPrettyFormatter(colorizer)
 
 	t.Run("Prints sorted rules when found", func(t *testing.T) {
 		var buffer bytes.Buffer
@@ -80,7 +83,9 @@ func TestPrintRules(t *testing.T) {
 
 func TestPrintViolations(t *testing.T) {
 	var buffer bytes.Buffer
-	formatter := NewPrettyFormatter(NewPrettyColorizer(true))
+
+	colorizer := formatters.NewPrettyColorizer(true)
+	formatter := formatters.NewPrettyFormatter(colorizer)
 	resultPrinter := NewResultPrinter(&buffer, &formatter)
 
 	var mustViolation domain.Violation
