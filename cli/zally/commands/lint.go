@@ -29,7 +29,7 @@ var LintCommand = cli.Command{
 	Flags: []cli.Flag{
 		cli.StringFlag{
 			Name:  "format",
-			Usage: "Output format `[pretty|markdown]`",
+			Usage: "Output format `[pretty|markdown|text]`",
 			Value: "pretty",
 		},
 	},
@@ -167,6 +167,12 @@ func getFormatter(format string) (formatters.Formatter, error) {
 
 	if format == "pretty" {
 		colorizer := formatters.NewPrettyColorizer(true)
+		prettyFormatter := formatters.NewPrettyFormatter(colorizer)
+		return &prettyFormatter, nil
+	}
+
+	if format == "text" {
+		colorizer := formatters.NewPrettyColorizer(false)
 		prettyFormatter := formatters.NewPrettyFormatter(colorizer)
 		return &prettyFormatter, nil
 	}
