@@ -29,7 +29,7 @@ public class ReverseAstBuilder {
     }
 
     private final Deque<Node> nodes = new LinkedList<>(); // stack of tree nodes
-    private final Map<Object, Meta> map = new IdentityHashMap<>(); // map of node objects to JSON pointers
+    private final Map<Object, Node> map = new IdentityHashMap<>(); // map of node objects to JSON pointers
     private final Collection<Class<?>> ignore = new HashSet<>(Arrays.asList(
             String.class,
             Integer.class,
@@ -65,24 +65,30 @@ public class ReverseAstBuilder {
         while (!nodes.isEmpty()) {
             Node node = nodes.pop();
 
+            if (!ignore.contains(node.object.getClass())) {
+                Collection<Node> children;
+                if (node.object instanceof Map) {
+                    children = handleMap((Map<?, ?>) node.object, node.pointer, node.marker);
+                } else if (node.object instanceof List) {
+                    children = handleList((List<?>) node.object, node.pointer, node.marker);
+                } else {
+                    children = handleObject(node.object, node.pointer, node.marker);
+                }
+                for (Node child : children) {
+                    nodes.push(child.setParent(node));
+                }
+                node.setChildren(children);
+            }
             if (!node.skip) {
-                map.put(node.object, new Meta(node.pointer, node.marker));
-            }
-            if (ignore.contains(node.object.getClass())) {
-                continue;
-            }
-            if (node.object instanceof Map) {
-                handleMap((Map<?, ?>) node.object, node.pointer, node.marker, nodes);
-            } else if (node.object instanceof List) {
-                handleList((List<?>) node.object, node.pointer, node.marker, nodes);
-            } else {
-                handleObject(node.object, node.pointer, node.marker, nodes);
+                map.put(node.object, node);
             }
         }
         return new ReverseAst(map);
     }
 
-    static void handleMap(Map<?, ?> map, String pointer, Marker marker, Deque<Node> nodes) {
+    static Deque<Node> handleMap(Map<?, ?> map, String pointer, Marker marker) {
+        Deque<Node> nodes = new LinkedList<>();
+
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             Object key = entry.getKey();
             Object value = entry.getValue();
@@ -91,9 +97,12 @@ public class ReverseAstBuilder {
                 nodes.push(new Node(value, newPointer, marker));
             }
         }
+        return nodes;
     }
 
-    static void handleList(List<?> list, String pointer, Marker marker, Deque<Node> nodes) {
+    static Deque<Node> handleList(List<?> list, String pointer, Marker marker) {
+        Deque<Node> nodes = new LinkedList<>();
+
         for (int i = 0; i < list.size(); i++) {
             Object value = list.get(i);
             if (value != null) {
@@ -101,11 +110,13 @@ public class ReverseAstBuilder {
                 nodes.push(new Node(value, newPointer, marker));
             }
         }
+        return nodes;
     }
 
-    static void handleObject(Object object, String pointer, Marker marker, Deque<Node> nodes) throws ReverseAstException {
-        // Check if an ignore extension exists at this position.
+    static Deque<Node> handleObject(Object object, String pointer, Marker marker) throws ReverseAstException {
+        Deque<Node> nodes = new LinkedList<>();
         String ignoreExtension = getVendorExtension(object, Marker.TYPE_X_ZALLY_IGNORE);
+
         if (ignoreExtension != null) {
             marker = new Marker(Marker.TYPE_X_ZALLY_IGNORE, ignoreExtension);
         }
@@ -131,6 +142,7 @@ public class ReverseAstBuilder {
                 }
             }
         }
+        return nodes;
     }
 
     static boolean isPublicGetterMethod(Method m) {
