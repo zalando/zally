@@ -1,0 +1,156 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Metaschema for https://zalando.github.io/problem/schema.yaml#/Problem",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "object"
+      ]
+    },
+    "properties": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "string"
+              ]
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "uri"
+              ]
+            },
+            "description": {
+              "type": "string"
+            },
+            "default": {
+              "type": "string",
+              "enum": [
+                "about:blank"
+              ]
+            },
+            "example": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "format",
+            "default"
+          ]
+        },
+        "title": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "string"
+              ]
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        "status": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "integer"
+              ]
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "int32"
+              ]
+            },
+            "description": {
+              "type": "string"
+            },
+            "minimum": {
+              "type": "number",
+              "minimum": 100,
+              "maximum": 100
+            },
+            "maximum": {
+              "type": "number",
+              "minimum": 599,
+              "maximum": 600
+            },
+            "exclusiveMaximum": {
+              "type": "boolean"
+            },
+            "example": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "type",
+            "format",
+            "minimum",
+            "maximum",
+            "exclusiveMaximum"
+          ]
+        },
+        "detail": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "string"
+              ]
+            },
+            "description": {
+              "type": "string"
+            },
+            "example": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        },
+        "instance": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "string"
+              ]
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "uri"
+              ]
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "format"
+          ]
+        }
+      }
+    }
+  }
+}

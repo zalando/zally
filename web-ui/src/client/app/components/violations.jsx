@@ -28,6 +28,9 @@ export function Violations(props) {
 }
 
 export function Violation(props) {
+  const { violation } = props;
+  // OpenAPI 3 violations have a `pointer` and Swagger violations have `paths`.
+  const paths = violation.pointer ? [violation.pointer] : violation.paths || [];
   return (
     <li
       style={{
@@ -37,24 +40,21 @@ export function Violation(props) {
       }}
     >
       <h4 className="dc-h4">
-        <RuleType type={props.violation.violation_type} />
-        {props.violation.violation_type} {'\u2013'} {props.violation.title}
+        <RuleType type={violation.violation_type} />
+        {violation.violation_type} {'\u2013'} {violation.title}
       </h4>
 
-      <p>{props.violation.description}</p>
+      <p>{violation.description}</p>
 
       <If
-        test={() => !!props.violation.rule_link}
+        test={() => !!violation.rule_link}
         dataTestId="if-violation-rule-link"
       >
-        <ViolationRuleLink ruleLink={props.violation.rule_link} />
+        <ViolationRuleLink ruleLink={violation.rule_link} />
       </If>
 
-      <If
-        test={() => !!props.violation.paths.length}
-        dataTestId="if-violation-paths"
-      >
-        <ViolationPaths paths={props.violation.paths} />
+      <If test={() => !!paths.length} dataTestId="if-violation-paths">
+        <ViolationPaths paths={paths} />
       </If>
     </li>
   );

@@ -1,0 +1,158 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Fashion Store
+  description: A Fashion API written in Swagger 2.0
+  termsOfService: https://www.fashion.com/terms
+  contact:
+    name: Fashion Team
+    email: team@fashion.com
+    url: https://www.fashion.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  x-audience: external-public
+  x-api-id: "96a35d00-b8f2-47f4-ba06-0ea48477b9bb"
+host: fashion.com
+basePath: "/api"
+schemes:
+- https
+securityDefinitions:
+  oauth:
+    type: oauth2
+    flow: application
+    tokenUrl: https://www.fashion.com/tokens
+    scopes:
+      fashion.articles.read: "Read article information."
+      fashion.articles.write: "Modify article information."
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  "/articles":
+    get:
+      description: Returns all articles.
+      operationId: findArticles
+      security:
+      - oauth:
+        - fashion.articles.read
+      parameters:
+      - name: tags
+        in: query
+        description: tags to filter by
+        required: false
+        type: array
+        collectionFormat: csv
+        items:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return.
+        required: false
+        type: integer
+        format: int32
+      responses:
+        '200':
+          description: Article response.
+          schema:
+            "$ref": "#/definitions/ArticleList"
+        default:
+          description: Unexpected error.
+          schema:
+            "$ref": "#/definitions/Problem"
+    post:
+      description: Create a new article in the store.
+      operationId: addArticle
+      security:
+      - oauth:
+        - fashion.articles.read
+        - fashion.articles.write
+      parameters:
+      - name: article
+        in: body
+        description: Article to add to the store.
+        required: true
+        schema:
+          "$ref": "#/definitions/NewArticle"
+      responses:
+        '201':
+          description: Article response.
+          schema:
+            "$ref": "#/definitions/Article"
+        default:
+          description: Unexpected error.
+          schema:
+            "$ref": "#/definitions/Problem"
+  "/articles/{id}":
+    get:
+      description: Returns a single article.
+      operationId: findArticleById
+      security:
+      - oauth:
+        - fashion.articles.read
+      parameters:
+      - name: id
+        in: path
+        description: ID of article to fetch.
+        required: true
+        type: string
+      responses:
+        '200':
+          description: Article response.
+          schema:
+            "$ref": "#/definitions/Article"
+        default:
+          description: unexpected error
+          schema:
+            "$ref": "#/definitions/Problem"
+    delete:
+      description: Deletes the article with the given ID.
+      operationId: deleteArticle
+      security:
+      - oauth:
+        - fashion.articles.read
+        - fashion.articles.write
+      parameters:
+      - name: id
+        in: path
+        description: ID of the article to delete.
+        required: true
+        type: string
+      responses:
+        '204':
+          description: Article deleted.
+        default:
+          description: Unexpected error.
+          schema:
+            "$ref": "#/definitions/Problem"
+definitions:
+  Article:
+    type: object
+    allOf:
+    - "$ref": "#/definitions/NewArticle"
+    - required:
+      - id
+      properties:
+        id:
+          type: string
+  NewArticle:
+    type: object
+    required:
+    - name
+    properties:
+      name:
+        type: string
+      tag:
+        type: string
+  ArticleList:
+    type: object
+    required:
+    - articles
+    properties:
+      articles:
+        type: array
+        items:
+          "$ref": "#/definitions/Article"
+  Problem:
+    "$ref": "https://zalando.github.io/problem/schema.yaml#/Problem"

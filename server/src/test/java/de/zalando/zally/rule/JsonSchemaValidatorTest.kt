@@ -11,9 +11,10 @@ class JsonSchemaValidatorTest {
         val onlineSchema = "http://simple-referenced-schema.json/schema"
         val localResource = Resources.getResource("schemas/simple-referenced-schema.json").toString()
 
-        val schemaUrl = Resources.getResource("schemas/simple-schema.json")
+        val file = "schemas/simple-schema.json"
+        val schemaUrl = Resources.getResource(file)
         val json = ObjectTreeReader().read(schemaUrl)
-        val jsonSchemaValidator = JsonSchemaValidator(json, mapOf(onlineSchema to localResource))
+        val jsonSchemaValidator = JsonSchemaValidator(file, json, mapOf(onlineSchema to localResource))
 
         val jsonToValidate = ObjectTreeReader().read("""
         {
@@ -33,9 +34,10 @@ class JsonSchemaValidatorTest {
         val onlineSchema = "http://json-schema.org/draft-04/schema"
         val localResource = Resources.getResource("schemas/json-schema.json").toString()
 
-        val schemaUrl = Resources.getResource("schemas/swagger-schema.json")
+        val file = "schemas/openapi-2-schema.json"
+        val schemaUrl = Resources.getResource(file)
         val json = ObjectTreeReader().read(schemaUrl)
-        var jsonSchemaValidator = JsonSchemaValidator(json, mapOf(onlineSchema to localResource))
+        var jsonSchemaValidator = JsonSchemaValidator(file, json, mapOf(onlineSchema to localResource))
 
         val specJson = ObjectTreeReader().read(Resources.getResource("fixtures/api_tinbox.yaml"))
 

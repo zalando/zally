@@ -13,7 +13,7 @@ import com.github.fge.msgsimple.load.MessageBundles
 import com.github.fge.msgsimple.source.PropertiesMessageSource
 import java.io.IOException
 
-class JsonSchemaValidator(val schema: JsonNode, schemaRedirects: Map<String, String> = mapOf()) {
+class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirects: Map<String, String> = mapOf()) {
 
     data class ValidationResult(
         val isSuccess: Boolean,

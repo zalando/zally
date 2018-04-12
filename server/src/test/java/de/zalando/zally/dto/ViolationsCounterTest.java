@@ -102,6 +102,6 @@ public class ViolationsCounterTest {
                 AvoidTrailingSlashesRule.class.getAnnotation(Rule.class),
                 "Test Description",
                 violationType,
-                new ArrayList<>());
+                "#/pointer");
     }
 }

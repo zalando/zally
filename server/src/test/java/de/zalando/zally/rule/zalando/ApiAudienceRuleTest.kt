@@ -1,10 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import de.zalando.zally.rule.Context
 import de.zalando.zally.testConfig
-import io.swagger.models.Swagger
-import io.swagger.parser.SwaggerParser
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class ApiAudienceRuleTest {
@@ -13,33 +11,37 @@ class ApiAudienceRuleTest {
 
     @Test
     fun correctApiAudienceIsSet() {
-        val swagger = withAudience("company-internal")
+        val context = withAudience("company-internal")
 
-        Assertions.assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(context)).isNull()
     }
 
     @Test
     fun incorrectAudienceIsSet() {
-        val swagger = withAudience("not-existing-audience")
+        val context = withAudience("not-existing-audience")
+        val violation = rule.validate(context)
 
-        val violation = rule.validate(swagger)!!
-
-        Assertions.assertThat(violation.paths).hasSameElementsAs(listOf("/info/x-audience"))
-        Assertions.assertThat(violation.description).matches(".*doesn't match.*")
+        assertThat(violation?.pointer).isEqualTo("#/info/x-audience")
+        assertThat(violation?.description).matches(".*doesn't match.*")
     }
 
     @Test
     fun noApiAudienceIsSet() {
-        val violation = rule.validate(Swagger())!!
+        val context = withAudience("null")
+        val violation = rule.validate(context)
 
-        Assertions.assertThat(violation.paths).hasSameElementsAs(listOf("/info/x-audience"))
-        Assertions.assertThat(violation.description).matches(".*Audience must be provided.*")
+        assertThat(violation?.pointer).isEqualTo("#/info/x-audience")
+        assertThat(violation?.description).matches(".*Audience must be provided.*")
     }
 
-    private fun withAudience(apiAudience: String): Swagger {
-        val root = JsonNodeFactory.instance.objectNode()
-        root.putObject("info")
-            .put("x-audience", apiAudience)
-        return SwaggerParser().read(root)
+    private fun withAudience(apiAudience: String): Context {
+        val content = """
+            openapi: '3.0.0'
+            info:
+              x-audience: $apiAudience
+            paths: {}
+            """.trimIndent()
+
+        return Context.createOpenApiContext(content)!!
     }
 }

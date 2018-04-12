@@ -32,6 +32,7 @@ public class RuleViolation implements Serializable {
     @Enumerated(EnumType.STRING)
     private Severity type;
 
+    @Deprecated
     @Column(nullable = false)
     private int occurrence;
 
@@ -42,7 +43,7 @@ public class RuleViolation implements Serializable {
         super();
     }
 
-    public RuleViolation(ApiReview apiReview, String name, Severity type, int occurrence) {
+    public RuleViolation(ApiReview apiReview, String name, Severity type, @Deprecated int occurrence) {
         this.apiReview = apiReview;
         this.name = name;
         this.type = type;
@@ -81,10 +82,12 @@ public class RuleViolation implements Serializable {
         this.type = type;
     }
 
+    @Deprecated
     public int getOccurrence() {
         return occurrence;
     }
 
+    @Deprecated
     public void setOccurrence(int occurrence) {
         this.occurrence = occurrence;
     }
