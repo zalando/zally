@@ -25,11 +25,6 @@ var SupportedRulesCommand = cli.Command{
 			Name:  "type",
 			Usage: "Rules Type",
 		},
-		cli.StringFlag{
-			Name:  "format",
-			Usage: "Output format `[pretty|markdown|text]`",
-			Value: "pretty",
-		},
 	},
 }
 
@@ -43,7 +38,7 @@ func listRules(c *cli.Context) error {
 		return err
 	}
 
-	formatter, err := formatters.NewFormatter(c.String("format"))
+	formatter, err := formatters.NewFormatter(c.GlobalString("format"))
 	if err != nil {
 		cli.ShowCommandHelp(c, c.Command.Name)
 		return err

@@ -152,10 +152,10 @@ func getSupportedRulesContext(url string, ruleType string, format string) *cli.C
 	globalSet := flag.NewFlagSet("test", 0)
 	globalSet.String("linter-service", url, "doc")
 	globalSet.String("token", "test-token", "doc")
+	globalSet.String("format", format, "doc")
 
 	localSet := flag.NewFlagSet("test", 0)
 	localSet.String("type", ruleType, "doc")
-	localSet.String("format", format, "doc")
 
 	globalCtx := cli.NewContext(nil, globalSet, nil)
 

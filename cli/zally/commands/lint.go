@@ -26,13 +26,6 @@ var LintCommand = cli.Command{
 	Usage:     "Lint given `FILE` with API definition",
 	Action:    lint,
 	ArgsUsage: "FILE",
-	Flags: []cli.Flag{
-		cli.StringFlag{
-			Name:  "format",
-			Usage: "Output format `[pretty|markdown|text]`",
-			Value: "pretty",
-		},
-	},
 }
 
 func lint(c *cli.Context) error {
@@ -41,7 +34,7 @@ func lint(c *cli.Context) error {
 		return fmt.Errorf("Please specify Swagger File")
 	}
 
-	formatter, err := formatters.NewFormatter(c.String("format"))
+	formatter, err := formatters.NewFormatter(c.GlobalString("format"))
 	if err != nil {
 		cli.ShowCommandHelp(c, c.Command.Name)
 		return err
