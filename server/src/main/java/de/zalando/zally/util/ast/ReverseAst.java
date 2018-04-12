@@ -69,7 +69,8 @@ public class ReverseAst {
                 siblings.push(child.getChildren());
             }
         }
-        return null;
+        // Fall back on converting the input pointer.
+        return JsonPointers.convertPointer(key.pointer);
     }
 
     @Nullable

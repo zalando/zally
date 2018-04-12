@@ -132,9 +132,15 @@ class ReverseAstTest {
         val swaggerAst = ReverseAst.fromObject(swaggerSpec).build()
 
         val openApiPet = openApiSpec.components.schemas["Pet"]
-        val openApiNode = openApiAst.getNode(openApiPet)
+        val openApiPetNode = openApiAst.getNode(openApiPet)
 
         assertThat(openApiAst.getPointer(openApiPet)).isEqualTo("#/components/schemas/Pet")
-        assertThat(swaggerAst.getPointer(openApiNode)).isEqualTo("#/definitions/Pet")
+        assertThat(swaggerAst.getPointer(openApiPetNode)).isEqualTo("#/definitions/Pet")
+
+        val openApiUrl = openApiSpec.servers[0].url
+        val openApiUrlNode = openApiAst.getNode(openApiUrl)
+
+        assertThat(openApiAst.getPointer(openApiUrl)).isEqualTo("#/servers/0/url")
+        assertThat(swaggerAst.getPointer(openApiUrlNode)).isEqualTo("#/basePath")
     }
 }
