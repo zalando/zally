@@ -191,22 +191,6 @@ func TestLint(t *testing.T) {
 		err := lint(getLintContext(testServer.URL, []string{"testdata/minimal_swagger.json"}, "markdown"))
 		tests.AssertEquals(t, nil, err)
 	})
-
-	t.Run("succeed_when_swagger_file_is_specified_and_format_is_pretty", func(t *testing.T) {
-		testServer := startTestServer("testdata/violations_response_without_must_violations.json")
-		defer testServer.Close()
-
-		err := lint(getLintContext(testServer.URL, []string{"testdata/minimal_swagger.json"}, "pretty"))
-		tests.AssertEquals(t, nil, err)
-	})
-
-	t.Run("succeed_when_swagger_file_is_specified_and_format_is_text", func(t *testing.T) {
-		testServer := startTestServer("testdata/violations_response_without_must_violations.json")
-		defer testServer.Close()
-
-		err := lint(getLintContext(testServer.URL, []string{"testdata/minimal_swagger.json"}, "text"))
-		tests.AssertEquals(t, nil, err)
-	})
 }
 
 func getLintContext(url string, args []string, format string) *cli.Context {
