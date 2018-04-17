@@ -1,4 +1,4 @@
-package utils
+package formatters
 
 import (
 	"bytes"
@@ -11,6 +11,14 @@ import (
 
 // PrettyFormatter is used to generate violations in pretty format
 type PrettyFormatter struct {
+	colorizer *PrettyColorizer
+}
+
+// NewPrettyFormatter creates a formatter for text output
+func NewPrettyFormatter(colorizer *PrettyColorizer) PrettyFormatter {
+	var prettyFormatter PrettyFormatter
+	prettyFormatter.colorizer = colorizer
+	return prettyFormatter
 }
 
 // FormatViolationsCount generates violation counters in in pretty format
@@ -39,7 +47,8 @@ func (f *PrettyFormatter) FormatViolations(header string, violations []domain.Vi
 // FormatRule formats rule description
 func (f *PrettyFormatter) FormatRule(rule *domain.Rule) string {
 	var buffer bytes.Buffer
-	colorize := f.colorizeByTypeFunc(rule.Type)
+
+	colorize := f.colorizer.ColorizeByTypeFunc(rule.Type)
 	fmt.Fprintf(
 		&buffer,
 		"%s %s: %s\n\t%s\n\n",
@@ -68,7 +77,7 @@ func (f *PrettyFormatter) formatHeader(header string) string {
 func (f *PrettyFormatter) formatViolation(violation *domain.Violation) string {
 	var buffer bytes.Buffer
 
-	colorize := f.colorizeByTypeFunc(violation.ViolationType)
+	colorize := f.colorizer.ColorizeByTypeFunc(violation.ViolationType)
 
 	fmt.Fprintf(&buffer, "%s %s\n", colorize(violation.ViolationType), colorize(violation.Title))
 	fmt.Fprintf(&buffer, "\t%s\n", violation.Decription)
@@ -81,19 +90,4 @@ func (f *PrettyFormatter) formatViolation(violation *domain.Violation) string {
 	fmt.Fprintf(&buffer, "\n")
 
 	return buffer.String()
-}
-
-func (f *PrettyFormatter) colorizeByTypeFunc(ruleType string) func(interface{}) aurora.Value {
-	switch ruleType {
-	case "MUST":
-		return aurora.Red
-	case "SHOULD":
-		return aurora.Brown
-	case "MAY":
-		return aurora.Green
-	case "HINT":
-		return aurora.Cyan
-	default:
-		return aurora.Gray
-	}
 }

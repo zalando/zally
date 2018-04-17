@@ -5,16 +5,17 @@ import (
 	"io"
 
 	"github.com/zalando/zally/cli/zally/domain"
+	"github.com/zalando/zally/cli/zally/utils/formatters"
 )
 
 // ResultPrinter helps to print results to the CLI
 type ResultPrinter struct {
 	buffer    io.Writer
-	formatter Formatter
+	formatter formatters.Formatter
 }
 
 // NewResultPrinter creates an instance of ResultPrinter
-func NewResultPrinter(buffer io.Writer, formatter Formatter) ResultPrinter {
+func NewResultPrinter(buffer io.Writer, formatter formatters.Formatter) ResultPrinter {
 	var resultPrinter ResultPrinter
 	resultPrinter.buffer = buffer
 	resultPrinter.formatter = formatter

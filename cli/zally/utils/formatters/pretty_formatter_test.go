@@ -1,16 +1,15 @@
-package utils
+package formatters
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/logrusorgru/aurora"
 	"github.com/zalando/zally/cli/zally/domain"
 	"github.com/zalando/zally/cli/zally/tests"
 )
 
 func TestPrettyFormatViolations(t *testing.T) {
-	var prettyFormatter PrettyFormatter
+	prettyFormatter := NewPrettyFormatter(NewPrettyColorizer(true))
 
 	t.Run("FormatViolations returns violations and header", func(t *testing.T) {
 		var mustViolation domain.Violation
@@ -35,7 +34,7 @@ func TestPrettyFormatViolations(t *testing.T) {
 }
 
 func TestPrettyFormatViolationsCount(t *testing.T) {
-	var prettyFormatter PrettyFormatter
+	prettyFormatter := NewPrettyFormatter(NewPrettyColorizer(true))
 
 	t.Run("Converts ViolationsCount to string", func(t *testing.T) {
 		var count domain.ViolationsCount
@@ -57,9 +56,9 @@ func TestPrettyFormatViolationsCount(t *testing.T) {
 }
 
 func TestPrettyFormatRule(t *testing.T) {
-	t.Run("Formats single rule", func(t *testing.T) {
-		var formatter PrettyFormatter
+	prettyFormatter := NewPrettyFormatter(NewPrettyColorizer(true))
 
+	t.Run("Formats single rule", func(t *testing.T) {
 		var rule domain.Rule
 		rule.Title = "Must Rule"
 		rule.Type = "MUST"
@@ -67,7 +66,7 @@ func TestPrettyFormatRule(t *testing.T) {
 		rule.IsActive = true
 		rule.URL = "https://example.com/rule"
 
-		result := formatter.FormatRule(&rule)
+		result := prettyFormatter.FormatRule(&rule)
 
 		tests.AssertEquals(
 			t,
@@ -77,16 +76,16 @@ func TestPrettyFormatRule(t *testing.T) {
 }
 
 func TestPrettyFormatServerMessage(t *testing.T) {
-	var formatter PrettyFormatter
+	prettyFormatter := NewPrettyFormatter(NewPrettyColorizer(true))
 
 	t.Run("Formats nothing when no message", func(t *testing.T) {
-		actualResult := formatter.FormatServerMessage("")
+		actualResult := prettyFormatter.FormatServerMessage("")
 
 		tests.AssertEquals(t, "", actualResult)
 	})
 
 	t.Run("Formats message when specified", func(t *testing.T) {
-		actualResult := formatter.FormatServerMessage("Hello world!")
+		actualResult := prettyFormatter.FormatServerMessage("Hello world!")
 		expectedResult := "\n\nServer message:\n===============\n\n\x1b[32mHello world!\x1b[0m\n\n\n"
 
 		tests.AssertEquals(t, expectedResult, actualResult)
@@ -94,7 +93,7 @@ func TestPrettyFormatServerMessage(t *testing.T) {
 }
 
 func TestPrettyFormatViolationInPrettyFormat(t *testing.T) {
-	var prettyFormatter PrettyFormatter
+	prettyFormatter := NewPrettyFormatter(NewPrettyColorizer(true))
 
 	t.Run("Converts violation to string in pretty format", func(t *testing.T) {
 
@@ -117,47 +116,18 @@ func TestPrettyFormatViolationInPrettyFormat(t *testing.T) {
 }
 
 func TestPrettyFormatHeader(t *testing.T) {
-	var formatter PrettyFormatter
+	prettyFormatter := NewPrettyFormatter(NewPrettyColorizer(true))
 
 	t.Run("formatHeader adds a line", func(t *testing.T) {
 
-		actualResult := formatter.formatHeader("Header")
+		actualResult := prettyFormatter.formatHeader("Header")
 		expectedResult := "Header\n======\n\n"
 
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})
 
 	t.Run("formatHeader returns empty string when no header", func(t *testing.T) {
-		result := formatter.formatHeader("")
+		result := prettyFormatter.formatHeader("")
 		tests.AssertEquals(t, "", result)
-	})
-}
-
-func TestPrettyColorizeByTypeFunc(t *testing.T) {
-	var formatter PrettyFormatter
-
-	t.Run("Returns red when type is MUST", func(t *testing.T) {
-		result := formatter.colorizeByTypeFunc("MUST")
-		tests.AssertEquals(t, aurora.Red("abcde"), result("abcde"))
-	})
-
-	t.Run("Returns brown when type is SHOULD", func(t *testing.T) {
-		result := formatter.colorizeByTypeFunc("SHOULD")
-		tests.AssertEquals(t, aurora.Brown("abcde"), result("abcde"))
-	})
-
-	t.Run("Returns green when type is MAY", func(t *testing.T) {
-		result := formatter.colorizeByTypeFunc("MAY")
-		tests.AssertEquals(t, aurora.Green("abcde"), result("abcde"))
-	})
-
-	t.Run("Returns cyan when type is HINT", func(t *testing.T) {
-		result := formatter.colorizeByTypeFunc("HINT")
-		tests.AssertEquals(t, aurora.Cyan("abcde"), result("abcde"))
-	})
-
-	t.Run("Returns gray by default", func(t *testing.T) {
-		result := formatter.colorizeByTypeFunc("WHATEVER")
-		tests.AssertEquals(t, aurora.Gray("abcde"), result("abcde"))
 	})
 }
