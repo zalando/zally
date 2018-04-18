@@ -7,22 +7,19 @@ import (
 // NewFormatter creates a formatter for a given format
 func NewFormatter(format string) (Formatter, error) {
 
-	if format == "markdown" {
+	switch format {
+	case "markdown":
 		var markdownFormatter MarkdownFormatter
 		return &markdownFormatter, nil
-	}
-
-	if format == "pretty" {
+	case "pretty":
 		colorizer := NewPrettyColorizer(true)
 		prettyFormatter := NewPrettyFormatter(colorizer)
 		return &prettyFormatter, nil
-	}
-
-	if format == "text" {
+	case "text":
 		colorizer := NewPrettyColorizer(false)
 		prettyFormatter := NewPrettyFormatter(colorizer)
 		return &prettyFormatter, nil
+	default:
+		return nil, fmt.Errorf("Please use a supported output format")
 	}
-
-	return nil, fmt.Errorf("Please use a supported output format")
 }
