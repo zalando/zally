@@ -29,6 +29,11 @@ func CreateApp() *cli.App {
 			Usage:  "OAuth2 Token `OAUTH2_TOKEN`",
 			EnvVar: "TOKEN",
 		},
+		cli.StringFlag{
+			Name:  "format",
+			Usage: "Output format `[pretty|markdown|text]`",
+			Value: "pretty",
+		},
 	}
 
 	return app

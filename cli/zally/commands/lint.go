@@ -26,13 +26,6 @@ var LintCommand = cli.Command{
 	Usage:     "Lint given `FILE` with API definition",
 	Action:    lint,
 	ArgsUsage: "FILE",
-	Flags: []cli.Flag{
-		cli.StringFlag{
-			Name:  "format",
-			Usage: "Output format `[pretty|markdown|text]`",
-			Value: "pretty",
-		},
-	},
 }
 
 func lint(c *cli.Context) error {
@@ -41,7 +34,7 @@ func lint(c *cli.Context) error {
 		return fmt.Errorf("Please specify Swagger File")
 	}
 
-	formatter, err := getFormatter(c.String("format"))
+	formatter, err := formatters.NewFormatter(c.GlobalString("format"))
 	if err != nil {
 		cli.ShowCommandHelp(c, c.Command.Name)
 		return err
@@ -156,26 +149,4 @@ func getReader(path string, contents []byte) readers.SpecsReader {
 		return readers.NewYAMLReader(contents)
 	}
 	return readers.NewJSONReader(contents)
-}
-
-func getFormatter(format string) (formatters.Formatter, error) {
-
-	if format == "markdown" {
-		var markdownFormatter formatters.MarkdownFormatter
-		return &markdownFormatter, nil
-	}
-
-	if format == "pretty" {
-		colorizer := formatters.NewPrettyColorizer(true)
-		prettyFormatter := formatters.NewPrettyFormatter(colorizer)
-		return &prettyFormatter, nil
-	}
-
-	if format == "text" {
-		colorizer := formatters.NewPrettyColorizer(false)
-		prettyFormatter := formatters.NewPrettyFormatter(colorizer)
-		return &prettyFormatter, nil
-	}
-
-	return nil, fmt.Errorf("Please use a supported output format")
 }

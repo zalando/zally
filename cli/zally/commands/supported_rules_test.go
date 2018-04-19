@@ -9,6 +9,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/zalando/zally/cli/zally/utils/formatters"
+
 	"fmt"
 
 	"flag"
@@ -32,7 +34,7 @@ func TestListRules(t *testing.T) {
 		testServer := httptest.NewServer(http.HandlerFunc(handler))
 		defer testServer.Close()
 
-		err := listRules(getSupportedRulesContext(testServer.URL, "mustt"))
+		err := listRules(getSupportedRulesContext(testServer.URL, "mustt", "pretty"))
 		tests.AssertEquals(t, "mustt is not supported", err.Error())
 	})
 
@@ -45,7 +47,7 @@ func TestListRules(t *testing.T) {
 		testServer := httptest.NewServer(http.HandlerFunc(handler))
 		defer testServer.Close()
 
-		err := listRules(getSupportedRulesContext(testServer.URL, "must"))
+		err := listRules(getSupportedRulesContext(testServer.URL, "must", "pretty"))
 		expectedError := fmt.Sprintf(
 			"Get %s/supported-rules?is_active=true&type=must: net/http: request canceled"+
 				" (Client.Timeout exceeded while awaiting headers)",
@@ -126,6 +128,8 @@ func TestValidateType(t *testing.T) {
 }
 
 func TestPrintRules(t *testing.T) {
+	formatter, _ := formatters.NewFormatter("pretty")
+
 	t.Run("prints rules", func(t *testing.T) {
 		var shouldRule domain.Rule
 		shouldRule.Title = "Second Rule"
@@ -140,14 +144,15 @@ func TestPrintRules(t *testing.T) {
 		tests.AssertEquals(
 			t,
 			"\x1b[33mS001\x1b[0m \x1b[33mSHOULD\x1b[0m: Second Rule\n\thttps://example.com/second-rule\n\n",
-			capturePrintRulesOutput(&rules))
+			capturePrintRulesOutput(&rules, formatter))
 	})
 }
 
-func getSupportedRulesContext(url string, ruleType string) *cli.Context {
+func getSupportedRulesContext(url string, ruleType string, format string) *cli.Context {
 	globalSet := flag.NewFlagSet("test", 0)
 	globalSet.String("linter-service", url, "doc")
 	globalSet.String("token", "test-token", "doc")
+	globalSet.String("format", format, "doc")
 
 	localSet := flag.NewFlagSet("test", 0)
 	localSet.String("type", ruleType, "doc")
@@ -157,12 +162,12 @@ func getSupportedRulesContext(url string, ruleType string) *cli.Context {
 	return cli.NewContext(cli.NewApp(), localSet, globalCtx)
 }
 
-func capturePrintRulesOutput(rules *domain.Rules) string {
+func capturePrintRulesOutput(rules *domain.Rules, formatter formatters.Formatter) string {
 	oldStdout := os.Stdout // keep backup of the real stdout
 	reader, writer, _ := os.Pipe()
 	os.Stdout = writer
 
-	printRules(rules)
+	printRules(rules, formatter)
 
 	writer.Close()
 	os.Stdout = oldStdout
