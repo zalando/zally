@@ -1,0 +1,36 @@
+swagger: "2.0"
+info:
+  title: Partner Service Adapter
+  description: |
+    Admin APIs for adding, modifying and deleting jobs to retrieve catalog and stock updates from Partners
+  version: "1.0.0"
+  contact:
+    name: Merchant Core - Article (codename ARTMC)
+    email: team-artmc@zalando.de
+host: psa.artmc.zalan.do
+basePath: /
+schemes:
+  - https
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  /:
+    x-zally-ignore: "1"
+    get:
+      description: "Invalid path"
+
+  /ignored-path:
+    x-zally-ignore: "1"
+    get:
+      description: "Another invalid path"
+
+  /valid-path:
+    get:
+      description: "Valid path"
+
+  /another-valid-path:
+    get:
+      description: "Another valid path"
+
