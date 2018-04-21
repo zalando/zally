@@ -9,6 +9,7 @@ info:
   contact:
     name: "Merchant Inventory Quality (codename Glitch)"
     email: "team-glitch@zalando.de"
+    url: "http://example.com"
 host: "tinbox.glitch.zalan.do"
 basePath: "/"
 schemes:
