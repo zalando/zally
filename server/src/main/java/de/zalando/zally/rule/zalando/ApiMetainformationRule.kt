@@ -57,20 +57,17 @@ class ApiMetainformationRule {
             else -> null
         }
 
-
     @Check(severity = Severity.MUST)
     fun validateContactName(swagger: Swagger): Violation? =
         if (swagger.info?.contact?.name.isNullOrBlank()) {
             Violation("Contact name is empty", listOf("$basePath/contact/name"))
         } else null
 
-
     @Check(severity = Severity.MUST)
     fun validateContactUrl(swagger: Swagger): Violation? =
         if (swagger.info?.contact?.url.isNullOrBlank()) {
             Violation("Contact url is empty", listOf("$basePath/contact/url"))
         } else null
-
 
     @Check(severity = Severity.MUST)
     fun validateContactEmail(swagger: Swagger): Violation? =

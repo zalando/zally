@@ -15,7 +15,6 @@ class ApiMetainformationRuleTest {
     fun validationPassed() =
         assertThat(validate(swagger).filterNotNull()).isEmpty()
 
-
     @Test
     fun infoBlockNotFound() {
         val expected = Violation("Info block should be provided", listOf("/info"))
@@ -102,6 +101,4 @@ class ApiMetainformationRuleTest {
             rule.validateContactName(swagger),
             rule.validateContactUrl(swagger),
             rule.validateContactEmail(swagger))
-
-
 }
