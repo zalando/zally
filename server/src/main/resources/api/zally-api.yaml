@@ -20,7 +20,7 @@ info:
  contact:
    name: Team API Management
    email: team-api-management@zalando.de
-   url: http://tech.zalando.de
+   url: "http://tech.zalando.de"
 
 externalDocs:
   description: Open Source project's page
@@ -31,7 +31,7 @@ host: "zally.overarching.zalan.do"
 schemes:
   - https
 
-basePath: /
+basePath: "/"
 
 securityDefinitions:
   oauth2:
