@@ -96,7 +96,7 @@ func TestIntegrationWithLocalJsonFile(t *testing.T) {
 
 func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 	t.Run("integrationWithRemoteYamlFile", func(t *testing.T) {
-		ts := testHttpServer()
+		ts := testHTTPServer()
 		defer ts.Close()
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", ts.URL + "/api_spa.yaml"})
 
@@ -113,7 +113,7 @@ func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 func TestIntegrationWithRemoteJsonFile(t *testing.T) {
 
 	t.Run("integrationWithRemoteJsonFile", func(t *testing.T) {
-		ts := testHttpServer()
+		ts := testHTTPServer()
 		defer ts.Close()
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", ts.URL + "/api_spp.json"})
 
@@ -161,7 +161,7 @@ func TestIntegrationNotReceiveDeprecationMessage(t *testing.T) {
 	})
 }
 
-func testHttpServer() *httptest.Server {
+func testHTTPServer() *httptest.Server {
 	ts := httptest.NewServer(http.HandlerFunc(fileHandler))
 	return ts
 }
