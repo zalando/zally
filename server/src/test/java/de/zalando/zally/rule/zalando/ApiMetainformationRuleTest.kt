@@ -6,6 +6,9 @@ import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
+/**
+ * Tests for Rule 218
+ */
 class ApiMetainformationRuleTest {
 
     val rule = ApiMetainformationRule()

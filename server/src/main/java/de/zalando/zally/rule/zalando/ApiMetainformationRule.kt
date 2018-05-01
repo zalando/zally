@@ -6,6 +6,9 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
 
+/**
+ * Set of violation checks for [Rule 218][http://zalando.github.io/restful-api-guidelines/#218]
+ */
 @Rule(
     ruleSet = ZalandoRuleSet::class,
     id = "218",
@@ -17,6 +20,9 @@ class ApiMetainformationRule {
     private val versionRegex = """^\d+.\d+(.\d+)?""".toRegex()
     private val basePath = "/info"
 
+    /**
+     * Check info block
+     */
     @Check(severity = Severity.MUST)
     fun validateInfoBlock(swagger: Swagger): Violation? {
         val info = swagger.info
@@ -26,30 +32,44 @@ class ApiMetainformationRule {
         }
     }
 
+    /**
+     * Check title
+     */
     @Check(severity = Severity.MUST)
     fun validateInfoTitle(swagger: Swagger): Violation? =
         if (swagger.info?.title.isNullOrBlank()) {
             Violation("Title is not defined", listOf("$basePath/title"))
         } else null
 
+    /**
+     * Check description
+     */
     @Check(severity = Severity.MUST)
     fun validateInfoDescription(swagger: Swagger): Violation? =
         if (swagger.info?.description.isNullOrBlank()) {
             Violation("Description is not defined", listOf("$basePath/description"))
         } else null
 
+    /**
+     * Check version property
+     */
     @Check(severity = Severity.MUST)
     fun validateInfoVersion(swagger: Swagger): Violation? {
         val version = swagger.info?.version
-        return when {
-            version.isNullOrBlank() ->
-                Violation("Version is not defined", listOf("$basePath/version"))
-            !versionRegex.matches(version!!) ->
-                Violation("Version is not following Semver rules", listOf("$basePath/version"))
-            else -> null
+        return if (version.isNullOrBlank()) {
+            Violation("Version is not defined", listOf("$basePath/version"))
+        } else {
+            version?.let { v ->
+                if (!versionRegex.matches(v)) {
+                    Violation("Version is not following Semver rules", listOf("$basePath/version"))
+                } else null
+            }
         }
     }
 
+    /**
+     * Check contacts
+     */
     @Check(severity = Severity.MUST)
     fun validateContact(swagger: Swagger): Violation? =
         when (swagger.info?.contact) {
@@ -57,18 +77,27 @@ class ApiMetainformationRule {
             else -> null
         }
 
+    /**
+     * Check contact name
+     */
     @Check(severity = Severity.MUST)
     fun validateContactName(swagger: Swagger): Violation? =
         if (swagger.info?.contact?.name.isNullOrBlank()) {
             Violation("Contact name is empty", listOf("$basePath/contact/name"))
         } else null
 
+    /**
+     * Check contact URL
+     */
     @Check(severity = Severity.MUST)
     fun validateContactUrl(swagger: Swagger): Violation? =
         if (swagger.info?.contact?.url.isNullOrBlank()) {
             Violation("Contact url is empty", listOf("$basePath/contact/url"))
         } else null
 
+    /**
+     * Check contact email
+     */
     @Check(severity = Severity.MUST)
     fun validateContactEmail(swagger: Swagger): Violation? =
         if (swagger.info?.contact?.email.isNullOrBlank()) {
