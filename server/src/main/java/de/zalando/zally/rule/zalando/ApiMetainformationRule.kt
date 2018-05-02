@@ -56,14 +56,16 @@ class ApiMetainformationRule {
     @Check(severity = Severity.MUST)
     fun validateInfoVersion(swagger: Swagger): Violation? {
         val version = swagger.info?.version
-        return if (version.isNullOrBlank()) {
-            Violation("Version is not defined", listOf("$basePath/version"))
-        } else {
-            version?.let { v ->
-                if (!versionRegex.matches(v)) {
+        return when (version) {
+            null -> Violation("Version is not defined", listOf("$basePath/version"))
+            else ->
+                if (version.isBlank()) {
+                    Violation("Version is not defined", listOf("$basePath/version"))
+                } else if (!versionRegex.matches(version)) {
                     Violation("Version is not following Semver rules", listOf("$basePath/version"))
-                } else null
-            }
+                } else {
+                    null
+                }
         }
     }
 

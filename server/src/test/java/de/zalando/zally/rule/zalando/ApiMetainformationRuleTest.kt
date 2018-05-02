@@ -30,7 +30,9 @@ class ApiMetainformationRuleTest {
     fun checkInvalidTitle() {
         val expected = Violation("Title is not defined", listOf("/info/title"))
         swagger.info?.title = ""
-        val violation = rule.validateInfoTitle(swagger)
+        var violation = rule.validateInfoTitle(swagger)
+        assertThat(violation).isEqualTo(expected)
+        violation = rule.validateInfoTitle(Swagger())
         assertThat(violation).isEqualTo(expected)
     }
 
@@ -38,7 +40,9 @@ class ApiMetainformationRuleTest {
     fun checkInvalidDescription() {
         val expected = Violation("Description is not defined", listOf("/info/description"))
         swagger.info?.description = ""
-        val violation = rule.validateInfoDescription(swagger)
+        var violation = rule.validateInfoDescription(swagger)
+        assertThat(violation).isEqualTo(expected)
+        violation = rule.validateInfoDescription(Swagger())
         assertThat(violation).isEqualTo(expected)
     }
 
@@ -46,7 +50,9 @@ class ApiMetainformationRuleTest {
     fun checkVersionNotDefined() {
         val expected = Violation("Version is not defined", listOf("/info/version"))
         swagger.info?.version = ""
-        val violation = rule.validateInfoVersion(swagger)
+        var violation = rule.validateInfoVersion(swagger)
+        assertThat(violation).isEqualTo(expected)
+        violation = rule.validateInfoVersion(Swagger())
         assertThat(violation).isEqualTo(expected)
     }
 
