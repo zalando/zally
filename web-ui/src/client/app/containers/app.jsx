@@ -29,7 +29,11 @@ export function App(props) {
               className="main-navigation-bar__logo"
               src={MOUNTPATH + 'assets/logo.png'}
             />
-            Zally API Linter
+            API Linter
+          </Link>{' '}
+          - an UI instance of the{' '}
+          <Link to="https://github.com/zalando/zally" target="_blank">
+            'Zally' open source project
           </Link>
         </h1>
         {OAUTH_ENABLED === true ? (
