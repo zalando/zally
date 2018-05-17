@@ -35,6 +35,12 @@ class PluralizeResourceNamesRuleTest {
     }
 
     @Test
+    fun positiveCaseNoMustViolations() {
+        val swagger = getFixture("no_must_violations.yaml")
+        assertThat(rule.validate(swagger)).isNull()
+    }
+
+    @Test
     fun negativeCaseTinbox() {
         val swagger = getFixture("api_tinbox.yaml")
         val result = rule.validate(swagger)!!
