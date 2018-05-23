@@ -40,8 +40,7 @@ class RulesValidatorTest {
 
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
-        fun validate(swagger: Swagger, ignore: SwaggerIgnoreExtension): Violation? =
-                Violation("dummy3", listOf("a"))
+        fun validate(swagger: Swagger): Violation? = Violation("dummy3", listOf("a"))
     }
 
     @Rule(

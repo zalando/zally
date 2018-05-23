@@ -50,13 +50,13 @@ func TestIntegrationWithLocalYamlFile(t *testing.T) {
 	t.Run("integrationWithLocalYamlFile", func(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spa.yaml"})
 
-		assert.Contains(t, out, "MUST violations: 7")
-		assert.Contains(t, out, "SHOULD violations: 3")
+		assert.Contains(t, out, "MUST violations: 6")
+		assert.Contains(t, out, "SHOULD violations: 2")
 		assert.Contains(t, out, "MAY violations: 0")
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, "Failing because: 7 must violation(s) found", e.Error())
+		assert.Equal(t, "Failing because: 6 must violation(s) found", e.Error())
 	})
 }
 
@@ -65,13 +65,13 @@ func TestIntegrationWithSomeOtherLocalYamlFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_tinbox.yaml"})
 
 		assert.Contains(t, out, "Provide API Specification using OpenAPI")
-		assert.Contains(t, out, "MUST violations: 10")
-		assert.Contains(t, out, "SHOULD violations: 4")
+		assert.Contains(t, out, "MUST violations: 32")
+		assert.Contains(t, out, "SHOULD violations: 3")
 		assert.Contains(t, out, "MAY violations: 0")
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, "Failing because: 10 must violation(s) found", e.Error())
+		assert.Equal(t, "Failing because: 32 must violation(s) found", e.Error())
 	})
 }
 
@@ -80,13 +80,13 @@ func TestIntegrationWithLocalJsonFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spp.json"})
 
 		fmt.Println(out)
-		assert.Contains(t, out, "MUST violations: 2")
-		assert.Contains(t, out, "SHOULD violations: 4")
+		assert.Contains(t, out, "MUST violations: 7")
+		assert.Contains(t, out, "SHOULD violations: 3")
 		assert.Contains(t, out, "MAY violations: 1")
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, e.Error(), "Failing because: 2 must violation(s) found")
+		assert.Equal(t, e.Error(), "Failing because: 7 must violation(s) found")
 	})
 }
 
@@ -94,13 +94,13 @@ func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 	t.Run("integrationWithRemoteYamlFile", func(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "https://raw.githubusercontent.com/zalando/zally/e542a2d6e8f7f37f4adf2242343e453961537a08/server/src/test/resources/api_spa.yaml"})
 
-		assert.Contains(t, out, "MUST violations: 8")
-		assert.Contains(t, out, "SHOULD violations: 3")
+		assert.Contains(t, out, "MUST violations: 7")
+		assert.Contains(t, out, "SHOULD violations: 2")
 		assert.Contains(t, out, "MAY violations: 0")
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, "Failing because: 8 must violation(s) found", e.Error())
+		assert.Equal(t, "Failing because: 7 must violation(s) found", e.Error())
 	})
 }
 
@@ -108,13 +108,13 @@ func TestIntegrationWithRemoteJsonFile(t *testing.T) {
 	t.Run("integrationWithRemoteJsonFile", func(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "https://raw.githubusercontent.com/zalando/zally/e542a2d6e8f7f37f4adf2242343e453961537a08/server/src/test/resources/api_spp.json"})
 
-		assert.Contains(t, out, "MUST violations: 3")
-		assert.Contains(t, out, "SHOULD violations: 4")
+		assert.Contains(t, out, "MUST violations: 8")
+		assert.Contains(t, out, "SHOULD violations: 3")
 		assert.Contains(t, out, "MAY violations: 1")
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, "Failing because: 3 must violation(s) found", e.Error())
+		assert.Equal(t, "Failing because: 8 must violation(s) found", e.Error())
 	})
 }
 
@@ -123,7 +123,7 @@ func TestIntegrationWithNoMustViolations(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/no_must_violations.yaml"})
 
 		assert.Contains(t, out, "MUST violations: 0")
-		assert.Contains(t, out, "SHOULD violations: 3")
+		assert.Contains(t, out, "SHOULD violations: 2")
 		assert.Contains(t, out, "MAY violations: 1")
 		assert.Contains(t, out, "HINT violations: 0")
 
@@ -135,11 +135,10 @@ func TestIntegrationWithZallyApiDefinition(t *testing.T) {
 	t.Run("integrationWithZallyApiDefinition", func(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/main/resources/api/zally-api.yaml"})
 
-		assert.Contains(t, out, "[33mSHOULD[0m [33mUse Specific HTTP Status Codes[0m")
 		assert.Contains(t, out, "[36mHINT[0m [36mNot Specify Standard Error Codes[0m")
 
 		assert.Contains(t, out, "MUST violations: 0")
-		assert.Contains(t, out, "SHOULD violations: 1")
+		assert.Contains(t, out, "SHOULD violations: 0")
 		assert.Contains(t, out, "MAY violations: 0")
 		assert.Contains(t, out, "HINT violations: 1")
 

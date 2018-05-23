@@ -40,11 +40,10 @@ public class ReviewStatistics {
         violations = apiReviews.stream()
             .flatMap(r -> r.getRuleViolations().stream())
             .collect(Collectors.groupingBy(RuleViolation::getName))
-            .entrySet().stream()
+            .entrySet()
+            .stream()
             .filter(entry -> !entry.getValue().isEmpty())
-            .map(entry ->
-                new ViolationStatistic(entry.getValue().get(0),
-                    entry.getValue().stream().mapToInt(RuleViolation::getOccurrence).sum()))
+            .map(entry -> new ViolationStatistic(entry.getValue().get(0), 1))
             .collect(Collectors.toList());
         reviews = apiReviews.stream().map(ApiReviewStatistic::new).collect(Collectors.toList());
     }

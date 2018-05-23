@@ -10,6 +10,7 @@ import de.zalando.zally.rule.zalando.AvoidTrailingSlashesRule;
 import de.zalando.zally.rule.zalando.ZalandoRuleSet;
 import de.zalando.zally.util.ErrorResponse;
 import de.zalando.zally.util.TestDateUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 
@@ -40,7 +41,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
 
         assertThat(response.getReviews()).hasSize(reviews.size());
         assertThat(response.getViolations()).hasSize(1);
-        assertThat(response.getViolations().get(0).getOccurrence()).isEqualTo(reviews.size());
+        assertThat(response.getViolations().get(0).getOccurrence()).isEqualTo(1);
     }
 
     @Test
@@ -175,7 +176,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
     }
 
     private List<Result> createRandomViolations() {
-        return Arrays.asList(new Result(new ZalandoRuleSet(), AvoidTrailingSlashesRule.class.getAnnotation(Rule.class), "", Severity.MUST, Arrays.asList("path")));
+        return Arrays.asList(new Result(new ZalandoRuleSet(), AvoidTrailingSlashesRule.class.getAnnotation(Rule.class), "", Severity.MUST, "#/pointer"));
     }
 
     private void assertBadRequestFor(Object from, Object to) {

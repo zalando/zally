@@ -21,9 +21,9 @@ public class ApiReviewTest {
 
     @Test
     public void shouldAggregateRuleTypeCount() {
-        Result mustViolation1 = result(Severity.MUST, emptyList());
-        Result mustViolation2 = result(Severity.MUST, emptyList());
-        Result shouldViolation = result(Severity.SHOULD, emptyList());
+        Result mustViolation1 = result(Severity.MUST, "#/pointer1");
+        Result mustViolation2 = result(Severity.MUST, "#/pointer2");
+        Result shouldViolation = result(Severity.SHOULD, "#/pointer3");
 
         ApiReview apiReview = new ApiReview(new ApiDefinitionRequest(), null, "", asList(mustViolation1, mustViolation2, shouldViolation));
 
@@ -35,8 +35,8 @@ public class ApiReviewTest {
 
     @Test
     public void shouldCalculateNumberOfEndpoints() throws IOException {
-        Result violation1 = result(Severity.MUST, asList("1", "2"));
-        Result violation2 = result(Severity.MUST, asList("3"));
+        Result violation1 = result(Severity.MUST, "#/pointer1");
+        Result violation2 = result(Severity.MUST, "#/pointer2");
 
         String apiDefinition = ResourceUtil.resourceToString("fixtures/limitNumberOfResourcesValid.json");
 
@@ -53,7 +53,7 @@ public class ApiReviewTest {
     }
 
     @NotNull
-    private Result result(Severity severity, List<String> paths) {
-        return new Result(new TestRuleSet(), UseOpenApiRule.class.getAnnotation(Rule.class), "", severity, paths);
+    private Result result(Severity severity, String pointer) {
+        return new Result(new TestRuleSet(), UseOpenApiRule.class.getAnnotation(Rule.class), "", severity, pointer);
     }
 }

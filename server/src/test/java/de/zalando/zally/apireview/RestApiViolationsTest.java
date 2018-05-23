@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -56,44 +56,42 @@ public class RestApiViolationsTest extends RestApiBaseTest {
 
     @Test
     public void shouldValidateGivenApiDefinition() throws IOException {
-        ApiDefinitionResponse response = sendApiDefinition(readApiDefinition("fixtures/api_spp.json"));
+        ApiDefinitionResponse response = sendApiDefinition(readApiDefinition("fixtures/openapi3_petstore_expanded.json"));
 
         List<ViolationDTO> violations = response.getViolations();
         assertThat(violations).hasSize(3);
-        assertThat(violations.get(0).getTitle()).isEqualTo("Test Rule");
-        assertThat(violations.get(1).getTitle()).isEqualTo("Test Hint Rule");
-        assertThat(violations.get(2).getTitle()).isEqualTo("schema");
+        assertThat(violations.get(0).getDescription()).isEqualTo("TestCheckAlwaysReport3MustViolations #1");
+        assertThat(violations.get(1).getDescription()).isEqualTo("TestCheckAlwaysReport3MustViolations #2");
+        assertThat(violations.get(2).getDescription()).isEqualTo("TestCheckAlwaysReport3MustViolations #3");
     }
 
     @Test
     public void shouldReturnCounters() throws IOException {
-        ApiDefinitionResponse response = sendApiDefinition(readApiDefinition("fixtures/api_spp.json"));
+        ApiDefinitionResponse response = sendApiDefinition(readApiDefinition("fixtures/openapi3_petstore_expanded.json"));
 
         Map<String, Integer> count = response.getViolationsCount();
-        assertThat(count.get("must")).isEqualTo(2);
+        assertThat(count.get("must")).isEqualTo(3);
         assertThat(count.get("should")).isEqualTo(0);
         assertThat(count.get("may")).isEqualTo(0);
-        assertThat(count.get("hint")).isEqualTo(1);
+        assertThat(count.get("hint")).isEqualTo(0);
     }
 
     @Test
     public void shouldIgnoreRulesWithVendorExtension() throws IOException {
-        ApiDefinitionResponse response = sendApiDefinition(readApiDefinition("fixtures/api_spp_ignored_rules.json"));
+        ApiDefinitionResponse response = sendApiDefinition(readApiDefinition("fixtures/openapi3_petstore_ignored.json"));
 
         List<ViolationDTO> violations = response.getViolations();
-        assertThat(violations).hasSize(1);
-        assertThat(violations.get(0).getTitle()).isEqualTo("Test Hint Rule");
+        assertThat(violations).isEmpty();
     }
 
     @Test
     public void shouldIgnoreRulesWithApiParameter() throws IOException {
-        ApiDefinitionRequest request = readApiDefinition("fixtures/api_spp.json");
-        request.setIgnoreRules(Arrays.asList("TestCheckApiNameIsPresentJsonRule", "TestCheckApiNameIsPresentRule"));
+        ApiDefinitionRequest request = readApiDefinition("fixtures/openapi3_petstore_expanded.json");
+        request.setIgnoreRules(Collections.singletonList("TestCheckAlwaysReport3MustViolations"));
         ApiDefinitionResponse response = sendApiDefinition(request);
 
         List<ViolationDTO> violations = response.getViolations();
-        assertThat(violations).hasSize(1);
-        assertThat(violations.get(0).getTitle()).isEqualTo("Test Hint Rule");
+        assertThat(violations).isEmpty();
     }
 
     @Test
@@ -124,38 +122,39 @@ public class RestApiViolationsTest extends RestApiBaseTest {
     }
 
     @Test
-    public void shouldRespondWithViolationWhenApiDefinitionFieldIsNotValidSwaggerDefinition() throws IOException {
+    public void shouldRespondWithViolationWhenApiDefinitionFieldIsNotValidSwaggerDefinition() {
         ApiDefinitionResponse response = sendApiDefinition(
                 ApiDefinitionRequest.Factory.fromJson("\"no swagger definition\"")
         );
 
-        assertThat(response.getViolations()).hasSize(1);
-        assertThat(response.getViolations().get(0).getTitle()).isEqualTo("Provide API Specification using OpenAPI");
+        assertThat(response.getViolations()).hasSize(4);
+        assertThat(response.getViolations().get(0).getTitle()).isEqualTo("TestCheckIsOpenApi3");
     }
 
     @Test
     public void shouldReadJsonSpecificationFromUrl() throws IOException {
-        String definitionUrl = JadlerUtil.stubResource("fixtures/api_spp.json");
+        String definitionUrl = JadlerUtil.stubResource("fixtures/openapi3_petstore_expanded.json");
 
         List<ViolationDTO> violations = sendApiDefinition(
                 ApiDefinitionRequest.Factory.fromUrl(definitionUrl)
         ).getViolations();
 
         assertThat(violations).hasSize(3);
-        assertThat(violations.get(0).getTitle()).isEqualTo("Test Rule");
-        assertThat(violations.get(1).getTitle()).isEqualTo("Test Hint Rule");
+        assertThat(violations.get(0).getDescription()).isEqualTo("TestCheckAlwaysReport3MustViolations #1");
+        assertThat(violations.get(1).getDescription()).isEqualTo("TestCheckAlwaysReport3MustViolations #2");
+        assertThat(violations.get(2).getDescription()).isEqualTo("TestCheckAlwaysReport3MustViolations #3");
     }
 
     @Test
     public void shouldReadYamlSpecificationFromUrl() throws IOException {
-        String definitionUrl = JadlerUtil.stubResource("fixtures/api_spa.yaml");
+        String definitionUrl = JadlerUtil.stubResource("fixtures/openapi3_petstore.yaml");
 
         List<ViolationDTO> violations = sendApiDefinition(
                 ApiDefinitionRequest.Factory.fromUrl(definitionUrl)
         ).getViolations();
 
-        assertThat(violations).hasSize(1);
-        assertThat(violations.get(0).getTitle()).isEqualTo("Test Hint Rule");
+        assertThat(violations).hasSize(3);
+        assertThat(violations.get(0).getTitle()).isEqualTo("TestCheckAlwaysReport3MustViolations");
     }
 
     @Test
@@ -182,7 +181,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
 
     @Test
     public void shouldStoreSuccessfulApiReviewRequest() throws IOException {
-        sendApiDefinition(readApiDefinition("fixtures/api_spp.json"));
+        sendApiDefinition(readApiDefinition("fixtures/openapi3_petstore_expanded.json"));
         assertThat(apiReviewRepository.count()).isEqualTo(1L);
         assertThat(apiReviewRepository.findAll().iterator().next().isSuccessfulProcessed()).isTrue();
     }

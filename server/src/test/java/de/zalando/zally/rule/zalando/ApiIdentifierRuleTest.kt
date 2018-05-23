@@ -1,9 +1,7 @@
 package de.zalando.zally.rule.zalando
 
-import com.fasterxml.jackson.databind.node.JsonNodeFactory
-import io.swagger.models.Swagger
-import io.swagger.parser.SwaggerParser
-import org.assertj.core.api.Assertions
+import de.zalando.zally.rule.Context
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class ApiIdentifierRuleTest {
@@ -12,33 +10,37 @@ class ApiIdentifierRuleTest {
 
     @Test
     fun correctApiIdIsSet() {
-        val swagger = withApiId("zally-api")
+        val context = withApiId("zally-api")
 
-        Assertions.assertThat(rule.validate(swagger)).isNull()
+        assertThat(rule.validate(context)).isNull()
     }
 
     @Test
     fun incorrectIdIsSet() {
-        val swagger = withApiId("This?iS//some|Incorrect+&ApI)(id!!!")
+        val context = withApiId("This?iS//some|Incorrect+&ApI)(id!!!")
+        val violation = rule.validate(context)!!
 
-        val violation = rule.validate(swagger)!!
-
-        Assertions.assertThat(violation.paths).hasSameElementsAs(listOf("/info/x-api-id"))
-        Assertions.assertThat(violation.description).matches(".*doesn't match.*")
+        assertThat(violation.pointer).isEqualTo("#/info/x-api-id")
+        assertThat(violation.description).matches(".*doesn't match.*")
     }
 
     @Test
     fun noApiIdIsSet() {
-        val violation = rule.validate(Swagger())!!
+        val context = withApiId("null")
+        val violation = rule.validate(context)!!
 
-        Assertions.assertThat(violation.paths).hasSameElementsAs(listOf("/info/x-api-id"))
-        Assertions.assertThat(violation.description).matches(".*should be provided.*")
+        assertThat(violation.pointer).isEqualTo("#/info/x-api-id")
+        assertThat(violation.description).matches(".*should be provided.*")
     }
 
-    private fun withApiId(apiId: String): Swagger {
-        val root = JsonNodeFactory.instance.objectNode()
-        root.putObject("info")
-            .put("x-api-id", apiId)
-        return SwaggerParser().read(root)
+    private fun withApiId(apiId: String): Context {
+        val content = """
+            openapi: '3.0.0'
+            info:
+              x-api-id: $apiId
+            paths: {}
+            """.trimIndent()
+
+        return Context.createOpenApiContext(content)!!
     }
 }

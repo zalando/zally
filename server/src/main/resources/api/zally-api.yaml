@@ -360,6 +360,8 @@ definitions:
         type: array
         items:
           type: string
+      pointer:
+        type: string
 
   ViolationsCount:
     type: object

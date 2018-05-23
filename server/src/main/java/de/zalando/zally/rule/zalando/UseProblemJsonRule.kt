@@ -1,78 +1,65 @@
 package de.zalando.zally.rule.zalando
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.common.io.Resources
+import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.JsonSchemaValidator
+import de.zalando.zally.rule.JsonSchemaValidator.ValidationMessage
+import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.ComposedModel
-import io.swagger.models.HttpMethod
-import io.swagger.models.Model
-import io.swagger.models.Operation
-import io.swagger.models.RefModel
-import io.swagger.models.Response
-import io.swagger.models.Swagger
-import io.swagger.models.properties.ObjectProperty
-import io.swagger.models.properties.RefProperty
+import io.swagger.v3.oas.models.media.Schema
+import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = "176",
-        severity = Severity.MUST,
-        title = "Use Problem JSON"
+    ruleSet = ZalandoRuleSet::class,
+    id = "176",
+    severity = Severity.MUST,
+    title = "Use Problem JSON"
 )
 class UseProblemJsonRule {
     private val description = "Operations Should Return Problem JSON When Any Problem Occurs During Processing " +
-        "Whether Caused by Client Or Server"
-    private val requiredFields = setOf("title", "status")
+        "Whether Caused by Client Or Server."
+
+    private val objectMapper by lazy { ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL) }
+
+    private val problemSchemaValidator by lazy {
+        val schemaUrl = Resources.getResource("schemas/problem-meta-schema.json")
+        val json = ObjectTreeReader().read(schemaUrl)
+        JsonSchemaValidator("Problem", json)
+    }
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
-        val paths = swagger.paths.orEmpty().flatMap { pathEntry ->
-            pathEntry.value.operationMap.orEmpty().filter { it.key.shouldContainPayload() }.flatMap { opEntry ->
-                opEntry.value.responses.orEmpty().flatMap { responseEntry ->
-                    val httpCode = responseEntry.key.toIntOrNull()
-                    if (httpCode in 400..599 && !isValidProblemJson(swagger, responseEntry.value, opEntry.value)) {
-                        listOf("${pathEntry.key} ${opEntry.key} ${responseEntry.key}")
-                    } else emptyList()
-                }
+    fun validate(context: Context): List<Violation> {
+        return context.api.paths.orEmpty().flatMap { (_, pathItem) ->
+            pathItem.readOperations().flatMap {
+                it.responses.orEmpty()
+                    .filter { (code, _) ->
+                        code.toIntOrNull() in 400..599 || code == "default"
+                    }
+                    .flatMap { (_, response) ->
+                        testForProblemSchema(response)
+                    }
+                    .map { (schema, validation) ->
+                        val pointer = (context.pointerForValue(schema) ?: "#") + validation.path
+                        Violation("$description ${validation.message}", pointer)
+                    }
             }
         }
-
-        return if (paths.isNotEmpty()) Violation(description, paths) else null
     }
 
-    private fun isValidProblemJson(swagger: Swagger, response: Response, operation: Operation) =
-        isProblemJson(swagger, response) && producesJson(swagger, operation)
-
-    private fun isProblemJson(swagger: Swagger, response: Response): Boolean {
-        val schema = response.schema
-        val properties = when (schema) {
-            is RefProperty -> getProperties(swagger, swagger.definitions?.get((response.schema as RefProperty).simpleRef))
-            is ObjectProperty -> schema.properties?.keys.orEmpty()
-            else -> emptySet<String>()
-        }
-        return properties.containsAll(requiredFields)
-    }
-
-    private fun getProperties(swagger: Swagger, definition: Model?): Set<String> {
-        return when (definition) {
-            is ComposedModel -> definition.allOf.orEmpty().flatMap { getProperties(swagger, it) }.toSet()
-            is RefModel -> getProperties(swagger, swagger.definitions[definition.simpleRef])
-            else -> definition?.properties?.keys.orEmpty()
-        }
-    }
-
-    private fun producesJson(swagger: Swagger, operation: Operation) =
-        if (operation.produces.orEmpty().isEmpty()) {
-            swagger.produces.orEmpty().containsJson()
-        } else {
-            operation.produces.containsJson()
-        }
-
-    // support for application/json also with set charset e.g. "application/json; charset=utf-8"
-    private fun List<String>.containsJson() =
-        any { it.startsWith("application/json") }
-
-    private fun HttpMethod.shouldContainPayload(): Boolean =
-        name.toLowerCase() !in listOf("head", "options")
+    private fun testForProblemSchema(response: ApiResponse): List<Pair<Schema<*>, ValidationMessage>> =
+        response.content?.flatMap { (type, mediaType) ->
+            if (!type.startsWith("application/json")) {
+                val message = ValidationMessage("Media type must be application/json.", "")
+                return listOf(Pair(mediaType.schema, message))
+            }
+            val node = objectMapper.convertValue(mediaType.schema, JsonNode::class.java)
+            val result = problemSchemaValidator.validate(node)
+            result.messages.map { Pair(mediaType.schema, it) }
+        } ?: emptyList()
 }

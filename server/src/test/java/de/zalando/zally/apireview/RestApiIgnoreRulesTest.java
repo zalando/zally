@@ -12,28 +12,11 @@ import java.util.Map;
 import static de.zalando.zally.util.ResourceUtil.readApiDefinition;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestPropertySource(properties = "zally.ignoreRules=TestAlwaysGiveAHintRule")
+@TestPropertySource(properties = "zally.ignoreRules=TestCheckAlwaysReport3MustViolations")
 public class RestApiIgnoreRulesTest extends RestApiBaseTest {
-
     @Test
-    public void shouldIgnoreWithProperty() throws IOException {
-        ApiDefinitionResponse response = sendApiDefinition(readApiDefinition("fixtures/api_spp.json"));
-
-        List<ViolationDTO> violations = response.getViolations();
-        assertThat(violations).hasSize(2);
-        assertThat(violations.get(0).getTitle()).isEqualTo("Test Rule");
-        assertThat(violations.get(1).getTitle()).isEqualTo("schema");
-
-        Map<String, Integer> count = response.getViolationsCount();
-        assertThat(count.get("must")).isEqualTo(2);
-        assertThat(count.get("should")).isEqualTo(0);
-        assertThat(count.get("may")).isEqualTo(0);
-        assertThat(count.get("hint")).isEqualTo(0);
-    }
-
-    @Test
-    public void testIgnoreAllActiveWithVendorExtension() throws IOException {
-        ApiDefinitionResponse response = sendApiDefinition(readApiDefinition("fixtures/api_spp_ignored_rules.json"));
+    public void testShouldNotReportViolationsIfIgnoreIsPresent() throws IOException {
+        ApiDefinitionResponse response = sendApiDefinition(readApiDefinition("fixtures/openapi3_petstore_expanded.json"));
         assertThat(response.getViolations()).isEmpty();
     }
 }
