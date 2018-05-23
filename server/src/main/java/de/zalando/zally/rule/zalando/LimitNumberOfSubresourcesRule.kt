@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.rule.SwaggerIgnoreExtension
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -21,10 +20,10 @@ class LimitNumberOfSubresourcesRule(@Autowired rulesConfig: Config) {
     private val subresourcesLimit = rulesConfig.getConfig(javaClass.simpleName).getInt("subresources_limit")
 
     @Check(severity = Severity.SHOULD)
-    fun validate(swagger: Swagger, ignore: SwaggerIgnoreExtension): Violation? {
+    fun validate(swagger: Swagger): Violation? {
 
         val paths = swagger.paths.orEmpty()
-                .filterValues { ignore.accepts(it.vendorExtensions) }
+//                .filterValues { ignore.accepts(it.vendorExtensions) } FIXME
                 .keys.filter { path ->
             path.split("/").filter { it.isNotEmpty() && !PatternUtil.isPathVariable(it) }.size - 1 > subresourcesLimit
         }

@@ -6,9 +6,6 @@ import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.api.Violation;
-import de.zalando.zally.rule.zalando.UseOpenApiRule;
-import io.swagger.models.Swagger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -16,78 +13,54 @@ import org.springframework.context.annotation.Profile;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 @Configuration
 public class RestApiTestConfiguration {
-
-    @Autowired
-    private UseOpenApiRule invalidApiRule;
 
     @Bean
     @Primary
     @Profile("test")
     public Collection<Object> rules() {
         return Arrays.asList(
-                new TestCheckApiNameIsPresentJsonRule(),
-                new TestCheckApiNameIsPresentRule(),
-                new TestAlwaysGiveAHintRule(),
-                invalidApiRule
+                new TestCheckIsOpenApi3(),
+                new TestCheckAlwaysReport3MustViolations()
         );
     }
 
     /** Rule used for testing */
     @Rule(
             ruleSet = TestRuleSet.class,
-            id = "TestCheckApiNameIsPresentJsonRule",
+            id = "TestCheckIsOpenApi3",
             severity = Severity.MUST,
-            title = "schema"
+            title = "TestCheckIsOpenApi3"
     )
-    public static class TestCheckApiNameIsPresentJsonRule {
+    public static class TestCheckIsOpenApi3 {
 
         @Check(severity = Severity.MUST)
-        public Iterable<Violation> validate(final JsonNode swagger) {
-            JsonNode title = swagger.path("info").path("title");
-            if (!title.isMissingNode() && title.textValue().contains("Product Service")) {
-                return Arrays.asList(
-                        new Violation("schema incorrect", Collections.emptyList()));
-            } else {
-                return Collections.emptyList();
+        public Violation validate(JsonNode json) {
+            if (!"3.0.0".equals(json.path("openapi").textValue())) {
+                return new Violation("TestCheckIsOpenApi3", "#/openapi");
             }
+            return null;
         }
     }
 
     /** Rule used for testing */
     @Rule(
             ruleSet = TestRuleSet.class,
-            id = "TestCheckApiNameIsPresentRule",
+            id = "TestCheckAlwaysReport3MustViolations",
             severity = Severity.MUST,
-            title = "Test Rule"
+            title = "TestCheckAlwaysReport3MustViolations"
     )
-    public static class TestCheckApiNameIsPresentRule {
+    public static class TestCheckAlwaysReport3MustViolations {
 
         @Check(severity = Severity.MUST)
-        public Violation validate(Swagger swagger) {
-            if (swagger != null && swagger.getInfo().getTitle().contains("Product Service")) {
-                return new Violation("dummy", Collections.emptyList());
-            } else {
-                return null;
-            }
-        }
-    }
-
-    /** Rule used for testing */
-    @Rule(
-            ruleSet = TestRuleSet.class,
-            id = "TestAlwaysGiveAHintRule",
-            severity = Severity.HINT,
-            title = "Test Hint Rule"
-    )
-    public static class TestAlwaysGiveAHintRule {
-
-        @Check(severity = Severity.HINT)
-        public Violation validate(Swagger swagger) {
-            return new Violation("dummy", Collections.emptyList());
+        public Iterable<Violation> validate(JsonNode json) {
+            return Arrays.asList(
+                    new Violation("TestCheckAlwaysReport3MustViolations #1", "#"),
+                    new Violation("TestCheckAlwaysReport3MustViolations #2", "#"),
+                    new Violation("TestCheckAlwaysReport3MustViolations #3", "#")
+            );
         }
     }
 }

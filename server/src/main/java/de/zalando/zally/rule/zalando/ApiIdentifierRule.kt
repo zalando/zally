@@ -1,10 +1,10 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.rule.Context
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.Swagger
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -19,15 +19,14 @@ class ApiIdentifierRule {
     private val invalidApiIdDesc = "API Identifier doesn't match the pattern $apiIdPattern"
 
     private val extensionName = "x-api-id"
-    private val path = "/info/$extensionName"
 
     @Check(severity = Severity.SHOULD)
-    fun validate(swagger: Swagger): Violation? {
-        val apiId = swagger.info?.vendorExtensions?.get(extensionName)
+    fun validate(context: Context): Violation? {
+        val apiId = context.api.info?.extensions?.get(extensionName)
 
         return when {
-            apiId == null || apiId !is String -> Violation(noApiIdDesc, listOf(path))
-            !apiId.matches(apiIdPattern) -> Violation(invalidApiIdDesc, listOf(path))
+            apiId == null || apiId !is String -> Violation(noApiIdDesc, context.currentPointer)
+            !apiId.matches(apiIdPattern) -> Violation(invalidApiIdDesc, context.currentPointer)
             else -> null
         }
     }

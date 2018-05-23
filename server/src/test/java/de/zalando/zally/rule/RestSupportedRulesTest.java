@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
@@ -17,10 +18,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@TestPropertySource(properties = "zally.ignoreRules=TestCheckApiNameIsPresentJsonRule,TestCheckApiNameIsPresentRule")
+@TestPropertySource(properties = "zally.ignoreRules=TestCheckAlwaysReport3MustViolations")
 public class RestSupportedRulesTest extends RestApiBaseTest {
 
-    private static final List<String> IGNORED_RULES = Arrays.asList("TestCheckApiNameIsPresentJsonRule", "TestCheckApiNameIsPresentRule");
+    private static final List<String> IGNORED_RULES = Collections.singletonList("TestCheckAlwaysReport3MustViolations");
 
     @Autowired
     private RulesManager implementedRules;

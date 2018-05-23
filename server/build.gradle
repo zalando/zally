@@ -3,12 +3,12 @@ configurations {
 }
 
 def versions = [
-        jacoco : '0.7.8',
+        jacoco: '0.7.8',
 ]
 
 buildscript {
 
-    ext.kotlin_version = '1.2.30'
+    ext.kotlin_version = '1.2.31'
     ext.spring_boot_version = '2.0.0.RELEASE'
 
     repositories {
@@ -21,7 +21,7 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_version")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-        classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
+        classpath("org.jetbrains.kotlin:kotlin-allopen:$kotlin_version")
         classpath('com.github.ben-manes:gradle-versions-plugin:0.17.0')
         classpath('de.undercouch:gradle-download-task:3.4.1')
     }
@@ -54,7 +54,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile("io.swagger:swagger-parser:1.0.34")
+    compile("io.swagger.parser.v3:swagger-parser:2.0.0")
     compile("com.github.java-json-tools:json-schema-validator:2.2.8")
     compile("org.springframework.boot:spring-boot-starter-web:$spring_boot_version")
     compile("org.springframework.boot:spring-boot-starter-undertow:$spring_boot_version")

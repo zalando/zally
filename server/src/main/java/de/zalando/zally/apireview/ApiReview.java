@@ -1,8 +1,8 @@
 package de.zalando.zally.apireview;
 
 import de.zalando.zally.dto.ApiDefinitionRequest;
-import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.Result;
+import de.zalando.zally.rule.api.Severity;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -81,7 +81,11 @@ public class ApiReview implements Serializable {
 
         this.name = ApiNameParser.extractApiName(apiDefinition);
         this.ruleViolations = violations.stream()
-            .map(v -> new RuleViolation(this, v.getRule().getClass().getSimpleName(), v.getViolationType(), v.getPaths().size()))
+            .map(v -> new RuleViolation(
+                this,
+                String.format("%s (%s)", v.getRule().title(), v.getRule().id()),
+                v.getViolationType(),
+                v.getPaths().size()))
             .collect(Collectors.toList());
 
         this.numberOfEndpoints = EndpointCounter.count(apiDefinition);
