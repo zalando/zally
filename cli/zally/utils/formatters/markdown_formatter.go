@@ -47,6 +47,14 @@ func (f *MarkdownFormatter) FormatRule(rule *domain.Rule) string {
 	return buffer.String()
 }
 
+// FormatMessage formats message
+func (f *MarkdownFormatter) FormatMessage(message string) string {
+	if message != "" {
+		return fmt.Sprintf("\n%s\n\n", message)
+	}
+	return ""
+}
+
 // FormatServerMessage formats server message
 func (f *MarkdownFormatter) FormatServerMessage(message string) string {
 	if message != "" {

@@ -33,6 +33,10 @@ func (r *ResultPrinter) PrintViolations(violations *domain.Violations) {
 		fmt.Fprint(r.buffer, r.formatter.FormatViolationsCount(&violations.ViolationsCount))
 	}
 	fmt.Fprint(r.buffer, r.formatter.FormatServerMessage(violations.Message))
+
+	if violations.Message == "" && len(violations.Violations) == 0 {
+		fmt.Fprint(r.buffer, r.formatter.FormatMessage("Congratulations! No violations found."))
+	}
 }
 
 // PrintRules prints a list of supported rules

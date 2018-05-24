@@ -75,6 +75,23 @@ func TestPrettyFormatRule(t *testing.T) {
 	})
 }
 
+func TestPrettyFormatMessage(t *testing.T) {
+	prettyFormatter := NewPrettyFormatter(NewPrettyColorizer(true))
+
+	t.Run("Formats nothing when no message", func(t *testing.T) {
+		actualResult := prettyFormatter.FormatMessage("")
+
+		tests.AssertEquals(t, "", actualResult)
+	})
+
+	t.Run("Formats message when specified", func(t *testing.T) {
+		actualResult := prettyFormatter.FormatMessage("Congratulations!")
+		expectedResult := "\n\x1b[32mCongratulations!\x1b[0m\n\n"
+
+		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+}
+
 func TestPrettyFormatServerMessage(t *testing.T) {
 	prettyFormatter := NewPrettyFormatter(NewPrettyColorizer(true))
 
@@ -129,5 +146,39 @@ func TestPrettyFormatHeader(t *testing.T) {
 	t.Run("formatHeader returns empty string when no header", func(t *testing.T) {
 		result := prettyFormatter.formatHeader("")
 		tests.AssertEquals(t, "", result)
+	})
+}
+
+func TestTextFormatMessage(t *testing.T) {
+	prettyFormatter := NewPrettyFormatter(NewPrettyColorizer(false))
+
+	t.Run("Formats nothing when no message", func(t *testing.T) {
+		actualResult := prettyFormatter.FormatServerMessage("")
+
+		tests.AssertEquals(t, "", actualResult)
+	})
+
+	t.Run("Formats message when specified", func(t *testing.T) {
+		actualResult := prettyFormatter.FormatMessage("Congratulations!")
+		expectedResult := "\nCongratulations!\n\n"
+
+		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+}
+
+func TestTextFormatServerMessage(t *testing.T) {
+	prettyFormatter := NewPrettyFormatter(NewPrettyColorizer(false))
+
+	t.Run("Formats nothing when no message", func(t *testing.T) {
+		actualResult := prettyFormatter.FormatServerMessage("")
+
+		tests.AssertEquals(t, "", actualResult)
+	})
+
+	t.Run("Formats message when specified", func(t *testing.T) {
+		actualResult := prettyFormatter.FormatServerMessage("Hello world!")
+		expectedResult := "\n\nServer message:\n===============\n\nHello world!\n\n\n"
+
+		tests.AssertEquals(t, expectedResult, actualResult)
 	})
 }
