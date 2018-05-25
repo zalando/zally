@@ -48,5 +48,6 @@ public class WordUtilTest {
     @Test
     public void specialCasePluralized() {
         assertTrue(isPlural("vat")); //whitelisted
+        assertTrue(isPlural("apis")); //whitelisted
     }
 }
