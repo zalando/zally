@@ -46,7 +46,7 @@ class UseProblemJsonRule {
                     }
                     .map { (schema, validation) ->
                         val pointer = (context.pointerForValue(schema) ?: "") + validation.path
-                        Violation("$description ${validation.message}", pointer)
+                        Violation("$description ${validation.message}", emptyList(), pointer)
                     }
             }
         }

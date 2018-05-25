@@ -12,7 +12,7 @@ data class Result(
     val description: String,
     val violationType: Severity,
     @Deprecated("Use `pointer` instead.") val paths: List<String>,
-    val pointer: String? = if (paths.size == 1) paths[0] else null
+    val pointer: String? = null
 ) {
     constructor(
         ruleSet: RuleSet,

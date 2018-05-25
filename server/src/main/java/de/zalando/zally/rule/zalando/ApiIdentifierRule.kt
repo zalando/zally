@@ -25,8 +25,8 @@ class ApiIdentifierRule {
         val apiId = context.api.info?.extensions?.get(extensionName)
 
         return when {
-            apiId == null || apiId !is String -> Violation(noApiIdDesc, context.currentPointer)
-            !apiId.matches(apiIdPattern) -> Violation(invalidApiIdDesc, context.currentPointer)
+            apiId == null || apiId !is String -> Violation(noApiIdDesc, emptyList(), context.currentPointer)
+            !apiId.matches(apiIdPattern) -> Violation(invalidApiIdDesc, emptyList(), context.currentPointer)
             else -> null
         }
     }

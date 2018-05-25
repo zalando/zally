@@ -26,8 +26,8 @@ class ApiAudienceRule(@Autowired rulesConfig: Config) {
         val audience = context.api.info?.extensions?.get(extensionName)
 
         return when (audience) {
-            null, !is String -> Violation(noApiAudienceDesc, context.currentPointer)
-            !in validAudiences -> Violation(invalidApiAudienceDesc, context.currentPointer)
+            null, !is String -> Violation(noApiAudienceDesc, emptyList(), context.currentPointer)
+            !in validAudiences -> Violation(invalidApiAudienceDesc, emptyList(), context.currentPointer)
             else -> null
         }
     }

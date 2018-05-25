@@ -46,7 +46,7 @@ abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
         // TODO: make pointer not-null and remove usage of `paths`
         return violations
             .filterNot {
-                ignore(root, it.pointer ?: it.paths.firstOrNull() ?: "", details.rule.id)
+                ignore(root, it.pointer ?: "", details.rule.id)
             }
             .map {
                 if (it.pointer != null) {

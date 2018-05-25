@@ -33,7 +33,7 @@ class UseSpecificHttpStatusCodes(@Autowired rulesConfig: Config) {
                 }
             }.map {
                 val pointer = context.pointerForValue(it) ?: context.currentPointer
-                Violation("Operations should use specific HTTP status codes", pointer)
+                Violation("Operations should use specific HTTP status codes", emptyList(), pointer)
             }
         }
     }
