@@ -50,8 +50,8 @@ class UseProblemJsonRuleTest {
         val violations = rule.validate(context)
 
         assertThat(violations.map { it.pointer }).containsExactlyInAnyOrder(
-            "#/paths/~1bad/get/responses/default/content/application~1json/schema/properties/status",
-            "#/paths/~1bad/get/responses/default/content/application~1json/schema/properties/status/type"
+            "/paths/~1bad/get/responses/default/content/application~1json/schema/properties/status",
+            "/paths/~1bad/get/responses/default/content/application~1json/schema/properties/status/type"
         )
     }
 
@@ -70,7 +70,7 @@ class UseProblemJsonRuleTest {
         assertThat(violations).allMatch {
             it.description.endsWith("application/json.") &&
                 it.pointer?.endsWith("/schema")?.or(
-                    it.pointer?.matches(Regex("^#/definitions/.*Problem$")) ?: false
+                    it.pointer?.matches(Regex("^/definitions/.*Problem$")) ?: false
                 ) ?: false
         }
     }

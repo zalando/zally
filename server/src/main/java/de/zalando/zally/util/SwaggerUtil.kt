@@ -31,7 +31,7 @@ fun Swagger.getAllJsonObjects(): List<ObjectDefinition> {
         }
     }
     val fromDefinitions = definitions.orEmpty().flatMap { (name, def) ->
-        findJsonObjects(def, "#/definitions/$name", visitedPaths)
+        findJsonObjects(def, "/definitions/$name", visitedPaths)
     }
     return (fromPaths + fromDefinitions).toSet().toList()
 }
@@ -48,7 +48,7 @@ private fun Swagger.findJsonObjects(property: Property?, path: String, visitedPa
     when (property) {
         is RefProperty -> {
             val model = definitions.orEmpty()[property.simpleRef]
-            findJsonObjects(model, "#/definitions/${property.simpleRef}", visitedPaths)
+            findJsonObjects(model, "/definitions/${property.simpleRef}", visitedPaths)
         }
         is ArrayProperty -> findJsonObjects(property.items, "$path items", visitedPaths)
         is MapProperty -> findJsonObjects(property.additionalProperties, path, visitedPaths)
@@ -59,7 +59,7 @@ private fun Swagger.findJsonObjects(property: Property?, path: String, visitedPa
 private fun Swagger.findJsonObjects(model: Model?, path: String, visitedPaths: MutableSet<String>): List<ObjectDefinition> =
     when (model) {
         is RefModel ->
-            findJsonObjects(model.properties, "#/definitions/${model.simpleRef}", visitedPaths)
+            findJsonObjects(model.properties, "/definitions/${model.simpleRef}", visitedPaths)
         is ArrayModel ->
             findJsonObjects(model.items, "$path items", visitedPaths)
         is ModelImpl ->

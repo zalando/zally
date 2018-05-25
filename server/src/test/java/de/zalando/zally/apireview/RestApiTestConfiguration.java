@@ -39,7 +39,7 @@ public class RestApiTestConfiguration {
         @Check(severity = Severity.MUST)
         public Violation validate(JsonNode json) {
             if (!"3.0.0".equals(json.path("openapi").textValue())) {
-                return new Violation("TestCheckIsOpenApi3", "#/openapi");
+                return new Violation("TestCheckIsOpenApi3", "/openapi");
             }
             return null;
         }
@@ -57,9 +57,9 @@ public class RestApiTestConfiguration {
         @Check(severity = Severity.MUST)
         public Iterable<Violation> validate(JsonNode json) {
             return Arrays.asList(
-                    new Violation("TestCheckAlwaysReport3MustViolations #1", "#"),
-                    new Violation("TestCheckAlwaysReport3MustViolations #2", "#"),
-                    new Violation("TestCheckAlwaysReport3MustViolations #3", "#")
+                    new Violation("TestCheckAlwaysReport3MustViolations #1", ""),
+                    new Violation("TestCheckAlwaysReport3MustViolations #2", ""),
+                    new Violation("TestCheckAlwaysReport3MustViolations #3", "")
             );
         }
     }

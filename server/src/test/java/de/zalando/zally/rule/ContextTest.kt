@@ -12,7 +12,7 @@ class ContextTest {
         val context = Context.createSwaggerContext(content)
         assertThat(context).isNotNull
         assertThat(context?.api).isInstanceOf(OpenAPI::class.java)
-        assertThat(context?.pointerForValue(context.api.info.title)).isEqualTo("#/info/title")
+        assertThat(context?.pointerForValue(context.api.info.title)).isEqualTo("/info/title")
     }
 
     @Test
@@ -28,6 +28,6 @@ class ContextTest {
         val context = Context.createOpenApiContext(content)
         assertThat(context).isNotNull
         assertThat(context?.api).isInstanceOf(OpenAPI::class.java)
-        assertThat(context?.pointerForValue(context.api.info.title)).isEqualTo("#/info/title")
+        assertThat(context?.pointerForValue(context.api.info.title)).isEqualTo("/info/title")
     }
 }

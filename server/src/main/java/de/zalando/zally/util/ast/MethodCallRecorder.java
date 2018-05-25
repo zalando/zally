@@ -106,7 +106,7 @@ public final class MethodCallRecorder<T> {
     private final Map<Object, IdentityHashMap<Method, String>> methodPointerCache = new IdentityHashMap<>();
 
     public MethodCallRecorder(T object) {
-        this.currentPointer = "#";
+        this.currentPointer = "";
         this.proxy = createProxy(object, null);
     }
 

@@ -49,7 +49,7 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
             }
             if (violations.isEmpty()) {
                 violations += result.messages.map {
-                    Violation("Does not match ${validator.name}: ${it.message}", "#" + it.path)
+                    Violation("Does not match ${validator.name}: ${it.message}", it.path)
                 }
             }
         }

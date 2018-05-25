@@ -20,7 +20,7 @@ class ApiIdentifierRuleTest {
         val context = withApiId("This?iS//some|Incorrect+&ApI)(id!!!")
         val violation = rule.validate(context)!!
 
-        assertThat(violation.pointer).isEqualTo("#/info/x-api-id")
+        assertThat(violation.pointer).isEqualTo("/info/x-api-id")
         assertThat(violation.description).matches(".*doesn't match.*")
     }
 
@@ -29,7 +29,7 @@ class ApiIdentifierRuleTest {
         val context = withApiId("null")
         val violation = rule.validate(context)!!
 
-        assertThat(violation.pointer).isEqualTo("#/info/x-api-id")
+        assertThat(violation.pointer).isEqualTo("/info/x-api-id")
         assertThat(violation.description).matches(".*should be provided.*")
     }
 

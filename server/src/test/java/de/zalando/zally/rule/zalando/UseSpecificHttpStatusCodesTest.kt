@@ -46,7 +46,7 @@ class UseSpecificHttpStatusCodesTest {
 
         val expectedPointers = operations.flatMap { method ->
             method.value.map { code ->
-                "#/paths/~1test/${method.key}/responses/$code"
+                "/paths/~1test/${method.key}/responses/$code"
             }
         }
 

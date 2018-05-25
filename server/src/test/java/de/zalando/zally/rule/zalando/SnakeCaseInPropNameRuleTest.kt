@@ -41,7 +41,7 @@ class SnakeCaseInPropNameRuleTest {
         val swagger = swaggerWithDefinitions("ExampleDefinition" to listOf("TEST_PROPERTY"))
         val result = rule.validate(swagger)!!
         assertThat(result.description).contains("TEST_PROPERTY")
-        assertThat(result.paths).hasSameElementsAs(listOf("#/definitions/ExampleDefinition"))
+        assertThat(result.paths).hasSameElementsAs(listOf("/definitions/ExampleDefinition"))
     }
 
     @Test
@@ -53,8 +53,8 @@ class SnakeCaseInPropNameRuleTest {
         val result = rule.validate(swagger)!!
         assertThat(result.description).contains("TEST_PROPERTY", "test_property_TWO")
         assertThat(result.paths).hasSameElementsAs(listOf(
-            "#/definitions/ExampleDefinition",
-            "#/definitions/ExampleDefinitionTwo")
+            "/definitions/ExampleDefinition",
+            "/definitions/ExampleDefinitionTwo")
         )
     }
 

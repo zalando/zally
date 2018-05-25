@@ -39,7 +39,7 @@ public class ReverseAstBuilder<T> {
     private final Map<String, Node> pointersToNodes = new HashMap<>();
 
     ReverseAstBuilder(T root) {
-        nodes.push(new Node(root, "#", null));
+        nodes.push(new Node(root, "", null));
     }
 
     public ReverseAstBuilder<T> withExtensionMethodNames(String... names) {

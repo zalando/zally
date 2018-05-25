@@ -30,7 +30,7 @@ class ReverseAstTest {
         val ast = ReverseAst.fromObject(spec).build()
 
         val description = spec.paths?.get("/tests")?.get?.responses?.get("200")?.description
-        assertThat(ast.getPointer(description)).isEqualTo("#/paths/~1tests/get/responses/200/description")
+        assertThat(ast.getPointer(description)).isEqualTo("/paths/~1tests/get/responses/200/description")
     }
 
     @Test
@@ -58,23 +58,23 @@ class ReverseAstTest {
         val spec = SwaggerParser().parse(content)
         val ast = ReverseAst.fromObject(spec).withExtensionMethodNames("getVendorExtensions").build()
 
-        var pointer = "#/paths/~1tests/get/responses/200/description"
+        var pointer = "/paths/~1tests/get/responses/200/description"
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues("#/paths/~1tests/get/responses/200/description")).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues("/paths/~1tests/get/responses/200/description")).hasSize(1).contains("*")
 
-        pointer = "#/paths/~1tests/get"
-        assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
-
-        pointer = "#/paths/~1tests"
+        pointer = "/paths/~1tests/get"
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
         assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
 
-        pointer = "#/paths"
+        pointer = "/paths/~1tests"
+        assertThat(ast.isIgnored(pointer, "*")).isTrue()
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+
+        pointer = "/paths"
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
         assertThat(ast.getIgnoreValues(pointer)).isEmpty()
 
-        pointer = "#/paths/others"
+        pointer = "/paths/others"
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
         assertThat(ast.getIgnoreValues(pointer)).isEmpty()
     }
@@ -84,7 +84,7 @@ class ReverseAstTest {
         val content = resourceToString("fixtures/swagger2_petstore_expanded.yaml")
         val spec = SwaggerParser().parse(content)
         val ast = ReverseAst.fromObject(spec).build()
-        assertThat(ast.getPointer(spec)).isEqualTo("#")
+        assertThat(ast.getPointer(spec)).isEqualTo("")
     }
 
     @Test
@@ -92,7 +92,7 @@ class ReverseAstTest {
         val content = resourceToString("fixtures/openapi3_petstore_expanded.json")
         val spec = OpenAPIParser().readContents(content, null, ParseOptions())
         val ast = ReverseAst.fromObject(spec).build()
-        assertThat(ast.getPointer(spec)).isEqualTo("#")
+        assertThat(ast.getPointer(spec)).isEqualTo("")
     }
 
     @Test
@@ -121,23 +121,23 @@ class ReverseAstTest {
         val map = Json.mapper().convertValue(json, Map::class.java)
         val ast = ReverseAst.fromObject(map).build()
 
-        var pointer = "#/paths/~1tests/get/responses/200/description"
+        var pointer = "/paths/~1tests/get/responses/200/description"
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues("#/paths/~1tests/get/responses/200/description")).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues("/paths/~1tests/get/responses/200/description")).hasSize(1).contains("*")
 
-        pointer = "#/paths/~1tests/get"
-        assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
-
-        pointer = "#/paths/~1tests"
+        pointer = "/paths/~1tests/get"
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
         assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
 
-        pointer = "#/paths"
+        pointer = "/paths/~1tests"
+        assertThat(ast.isIgnored(pointer, "*")).isTrue()
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+
+        pointer = "/paths"
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
         assertThat(ast.getIgnoreValues(pointer)).isEmpty()
 
-        pointer = "#/paths/others"
+        pointer = "/paths/others"
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
         assertThat(ast.getIgnoreValues(pointer)).isEmpty()
     }
