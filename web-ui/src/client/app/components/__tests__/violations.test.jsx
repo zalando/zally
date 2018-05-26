@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import {
   ViolationRuleLink,
+  ViolationPointer,
   ViolationPaths,
   Violations,
   Violation,
@@ -15,6 +16,16 @@ describe('ViolationRuleLink component', () => {
 
     expect(link).toHaveLength(1);
     expect(link.text()).toEqual('foo');
+  });
+});
+
+describe('ViolationPointer component', () => {
+  test('should return the pointer', () => {
+    const pointer = '/pointer/1';
+    const component = shallow(<ViolationPointer pointer={pointer} />);
+    const p = component.find('p');
+
+    expect(p.text()).toEqual('Pointer: /pointer/1');
   });
 });
 
