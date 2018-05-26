@@ -1,5 +1,6 @@
 package de.zalando.zally.rule
 
+import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.RuleSet
 import de.zalando.zally.rule.api.Severity
@@ -12,7 +13,7 @@ data class Result(
     val description: String,
     val violationType: Severity,
     @Deprecated("Use `pointer` instead.") val paths: List<String>,
-    val pointer: String? = null
+    val pointer: JsonPointer? = null
 ) {
     constructor(
         ruleSet: RuleSet,
@@ -22,5 +23,5 @@ data class Result(
         vararg paths: String
     ) : this(ruleSet, rule, description, violationType, asList(*paths))
 
-    fun toViolation(): Violation = Violation(description, paths)
+    fun toViolation(): Violation = Violation(description, paths, pointer)
 }

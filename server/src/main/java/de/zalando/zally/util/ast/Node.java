@@ -1,5 +1,7 @@
 package de.zalando.zally.util.ast;
 
+import com.fasterxml.jackson.core.JsonPointer;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -12,15 +14,15 @@ final class Node {
     private Node parent;
     private Collection<Node> children;
     final Object object;
-    final String pointer;
+    final JsonPointer pointer;
     final Marker marker;
     final boolean skip;
 
-    Node(Object object, String pointer, Marker marker) {
+    Node(Object object, JsonPointer pointer, Marker marker) {
         this(object, pointer, marker, false);
     }
 
-    Node(Object object, String pointer, Marker marker, boolean skip) {
+    Node(Object object, JsonPointer pointer, Marker marker, boolean skip) {
         this.object = object;
         this.pointer = pointer;
         this.skip = skip;

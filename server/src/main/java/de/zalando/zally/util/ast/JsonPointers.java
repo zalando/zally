@@ -1,5 +1,7 @@
 package de.zalando.zally.util.ast;
 
+import com.fasterxml.jackson.core.JsonPointer;
+
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
@@ -46,13 +48,27 @@ public final class JsonPointers {
      * @return Equivalent Swagger 2 JSON pointer or null.
      */
     @Nullable
-    public static String convertPointer(String pointer) {
-        for (Function<String, String> fn : POINTER_FUNCTIONS) {
-            String convertedPointer = fn.apply(pointer);
-            if (convertedPointer != null) {
-                return convertedPointer;
+    public static JsonPointer convertPointer(JsonPointer pointer) {
+        if (pointer != null) {
+            for (Function<String, String> fn : POINTER_FUNCTIONS) {
+                String convertedPointer = fn.apply(pointer.toString());
+                if (convertedPointer != null) {
+                    return JsonPointer.compile(convertedPointer);
+                }
             }
         }
         return null;
+    }
+
+    public static JsonPointer escape(final String unescaped) {
+        // https://tools.ietf.org/html/rfc6901
+        final String escaped = "/" + unescaped
+            .replace("~", "~0")
+            .replace("/", "~1");
+        return JsonPointer.compile(escaped);
+    }
+
+    public static JsonPointer empty() {
+        return JsonPointer.compile("");
     }
 }

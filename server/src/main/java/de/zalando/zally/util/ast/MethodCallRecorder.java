@@ -1,5 +1,6 @@
 package de.zalando.zally.util.ast;
 
+import com.fasterxml.jackson.core.JsonPointer;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.aop.framework.ProxyFactory;
 
@@ -21,7 +22,6 @@ import java.util.Set;
 
 import static de.zalando.zally.util.ast.Util.PRIMITIVES;
 import static de.zalando.zally.util.ast.Util.getterNameToPointer;
-import static de.zalando.zally.util.ast.Util.rfc6901Encode;
 
 /**
  * MethodCallRecorder creates a Proxy around an object, typically Swagger or OpenApi, and records
@@ -87,26 +87,22 @@ public final class MethodCallRecorder<T> {
         throw new MethodCallRecorderException(m.getReturnType().toString());
     }
 
-    static String toPointer(String s) {
-        return "/".concat(rfc6901Encode(getterNameToPointer(s)));
-    }
-
-    static String toPointer(Method m, Object... arguments) {
+    static JsonPointer toPointer(Method m, Object... arguments) {
         String s = m.getName();
         if (arguments.length > 0) {
             s = s.concat(Objects.toString(arguments[0]));
         }
-        return toPointer(s);
+        return JsonPointers.escape(getterNameToPointer(s));
     }
 
     private final T proxy;
-    private String currentPointer;
+    private JsonPointer currentPointer;
     private final Set<String> skipMethods = new HashSet<>();
-    private final Map<Object, String> objectPointerCache = new IdentityHashMap<>();
-    private final Map<Object, IdentityHashMap<Method, String>> methodPointerCache = new IdentityHashMap<>();
+    private final Map<Object, JsonPointer> objectPointerCache = new IdentityHashMap<>();
+    private final Map<Object, IdentityHashMap<Method, JsonPointer>> methodPointerCache = new IdentityHashMap<>();
 
     public MethodCallRecorder(T object) {
-        this.currentPointer = "";
+        this.currentPointer = JsonPointers.empty();
         this.proxy = createProxy(object, null);
     }
 
@@ -182,7 +178,7 @@ public final class MethodCallRecorder<T> {
         // called as keys.
         // methodPointerCache is a nested map that holds "method" pointers with the objects and the
         // called methods as keys.
-        final String objectPointer;
+        final JsonPointer objectPointer;
         if (objectPointerCache.containsKey(object)) {
             objectPointer = objectPointerCache.get(object);
         } else {
@@ -190,23 +186,23 @@ public final class MethodCallRecorder<T> {
             objectPointer = currentPointer;
         }
         if (methodPointerCache.containsKey(object)) {
-            Map<Method, String> methodMap = methodPointerCache.get(object);
+            Map<Method, JsonPointer> methodMap = methodPointerCache.get(object);
             if (methodMap.containsKey(method)) {
                 currentPointer = methodMap.get(method);
             } else {
-                currentPointer = objectPointer.concat(toPointer(method, arguments));
+                currentPointer = objectPointer.append(toPointer(method, arguments));
                 methodMap.put(method, currentPointer);
             }
         } else {
-            IdentityHashMap<Method, String> methodMap = new IdentityHashMap<>();
-            currentPointer = objectPointer.concat(toPointer(method, arguments));
+            IdentityHashMap<Method, JsonPointer> methodMap = new IdentityHashMap<>();
+            currentPointer = objectPointer.append(toPointer(method, arguments));
             methodMap.put(method, currentPointer);
             methodPointerCache.put(object, methodMap);
         }
     }
 
     @Nonnull
-    public String getPointer() {
+    public JsonPointer getPointer() {
         return this.currentPointer;
     }
 }

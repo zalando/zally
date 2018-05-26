@@ -21,7 +21,7 @@ class ApiAudienceRuleTest {
         val context = withAudience("not-existing-audience")
         val violation = rule.validate(context)
 
-        assertThat(violation?.pointer).isEqualTo("/info/x-audience")
+        assertThat(violation?.pointer).hasToString("/info/x-audience")
         assertThat(violation?.description).matches(".*doesn't match.*")
     }
 
@@ -30,7 +30,7 @@ class ApiAudienceRuleTest {
         val context = withAudience("null")
         val violation = rule.validate(context)
 
-        assertThat(violation?.pointer).isEqualTo("/info/x-audience")
+        assertThat(violation?.pointer).hasToString("/info/x-audience")
         assertThat(violation?.description).matches(".*Audience must be provided.*")
     }
 

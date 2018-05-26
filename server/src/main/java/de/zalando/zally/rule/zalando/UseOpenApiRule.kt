@@ -11,6 +11,7 @@ import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.ast.JsonPointers
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import java.net.URL
@@ -44,12 +45,12 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
 
         for (validator in jsonSchemaValidators) {
             val result = validator.validate(swagger)
-            if (result.isSuccess) {
+            if (result.isEmpty()) {
                 return emptyList()
             }
             if (violations.isEmpty()) {
-                violations += result.messages.map {
-                    Violation("Does not match ${validator.name}: ${it.message}", it.path)
+                violations += result.map {
+                    Violation("Does not match ${validator.name}: ${it.description}", emptyList(), it.pointer ?: JsonPointers.empty())
                 }
             }
         }

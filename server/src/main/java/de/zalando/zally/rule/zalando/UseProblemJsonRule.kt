@@ -6,12 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.io.Resources
 import de.zalando.zally.rule.Context
 import de.zalando.zally.rule.JsonSchemaValidator
-import de.zalando.zally.rule.JsonSchemaValidator.ValidationMessage
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.ast.JsonPointers
 import io.swagger.v3.oas.models.media.Schema
 import io.swagger.v3.oas.models.responses.ApiResponse
 
@@ -45,21 +45,21 @@ class UseProblemJsonRule {
                         testForProblemSchema(response)
                     }
                     .map { (schema, validation) ->
-                        val pointer = (context.pointerForValue(schema) ?: "") + validation.path
-                        Violation("$description ${validation.message}", emptyList(), pointer)
+                        val pointer = (context.pointerForValue(schema) ?: JsonPointers.empty()).append(validation.pointer ?: JsonPointers.empty())
+                        Violation("$description ${validation.description}", emptyList(), pointer)
                     }
             }
         }
     }
 
-    private fun testForProblemSchema(response: ApiResponse): List<Pair<Schema<*>, ValidationMessage>> =
+    private fun testForProblemSchema(response: ApiResponse): List<Pair<Schema<*>, Violation>> =
         response.content?.flatMap { (type, mediaType) ->
             if (!type.startsWith("application/json")) {
-                val message = ValidationMessage("Media type must be application/json.", "")
+                val message = Violation("Media type must be application/json.", "")
                 return listOf(Pair(mediaType.schema, message))
             }
             val node = objectMapper.convertValue(mediaType.schema, JsonNode::class.java)
             val result = problemSchemaValidator.validate(node)
-            result.messages.map { Pair(mediaType.schema, it) }
+            result.map { Pair(mediaType.schema, it) }
         } ?: emptyList()
 }

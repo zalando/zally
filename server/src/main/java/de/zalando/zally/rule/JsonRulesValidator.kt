@@ -1,5 +1,6 @@
 package de.zalando.zally.rule
 
+import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.util.Json
@@ -28,5 +29,5 @@ class JsonRulesValidator(@Autowired rules: RulesManager) : RulesValidator<JsonNo
         ReverseAst.fromObject(it).build()
     }
 
-    override fun ignore(root: JsonNode, pointer: String, ruleId: String) = ast?.isIgnored(pointer, ruleId) ?: false
+    override fun ignore(root: JsonNode, pointer: JsonPointer, ruleId: String) = ast?.isIgnored(pointer, ruleId) ?: false
 }

@@ -49,7 +49,7 @@ class UseProblemJsonRuleTest {
         val context = Context.createOpenApiContext(content)!!
         val violations = rule.validate(context)
 
-        assertThat(violations.map { it.pointer }).containsExactlyInAnyOrder(
+        assertThat(violations.map { it.pointer.toString() }).containsExactlyInAnyOrder(
             "/paths/~1bad/get/responses/default/content/application~1json/schema/properties/status",
             "/paths/~1bad/get/responses/default/content/application~1json/schema/properties/status/type"
         )
@@ -69,8 +69,8 @@ class UseProblemJsonRuleTest {
         val violations = rule.validate(context)
         assertThat(violations).allMatch {
             it.description.endsWith("application/json.") &&
-                it.pointer?.endsWith("/schema")?.or(
-                    it.pointer?.matches(Regex("^/definitions/.*Problem$")) ?: false
+                it.pointer?.toString()?.endsWith("/schema")?.or(
+                    it.pointer?.toString()?.matches(Regex("^/definitions/.*Problem$")) ?: false
                 ) ?: false
         }
     }

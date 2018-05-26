@@ -96,7 +96,7 @@ public class ApiViolationsController {
             violation.getViolationType(),
             violation.getRuleSet().url(violation.getRule()).toString(),
             violation.getPaths(),
-            violation.getPointer()
+            violation.getPointer() == null ? null : violation.getPointer().toString()
         );
     }
 

@@ -1,6 +1,8 @@
 package de.zalando.zally.rule
 
+import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.ast.JsonPointers
 import org.slf4j.LoggerFactory
 
 abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
@@ -46,16 +48,16 @@ abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
         // TODO: make pointer not-null and remove usage of `paths`
         return violations
             .filterNot {
-                ignore(root, it.pointer ?: "", details.rule.id)
+                ignore(root, it.pointer ?: JsonPointers.empty(), details.rule.id)
             }
             .map {
                 if (it.pointer != null) {
-                    Result(details.ruleSet, details.rule, it.description, details.check.severity, it.pointer)
+                    Result(details.ruleSet, details.rule, it.description, details.check.severity, it.paths, it.pointer)
                 } else {
                     Result(details.ruleSet, details.rule, it.description, details.check.severity, it.paths)
                 }
             }
     }
 
-    abstract fun ignore(root: RootT, pointer: String, ruleId: String): Boolean
+    abstract fun ignore(root: RootT, pointer: JsonPointer, ruleId: String): Boolean
 }
