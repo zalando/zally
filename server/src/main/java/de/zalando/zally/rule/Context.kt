@@ -1,6 +1,7 @@
 package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.ast.JsonPointers
 import de.zalando.zally.util.ast.MethodCallRecorder
 import de.zalando.zally.util.ast.ReverseAst
@@ -20,8 +21,11 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
 
     val api = recorder.proxy
 
-    val currentPointer: JsonPointer
-        get() = recorder.pointer
+    fun violation(description: String, location: Any): Violation =
+        violation(description, pointerForValue(location))
+
+    fun violation(description: String, pointer: JsonPointer? = null): Violation =
+        Violation(description, pointer ?: recorder.pointer)
 
     fun isIgnored(pointer: JsonPointer, ruleId: String): Boolean =
         swaggerAst?.isIgnored(pointer, ruleId) ?: openApiAst.isIgnored(pointer, ruleId)

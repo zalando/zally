@@ -45,8 +45,12 @@ class UseProblemJsonRule {
                         testForProblemSchema(response)
                     }
                     .map { (schema, validation) ->
-                        val pointer = (context.pointerForValue(schema) ?: JsonPointers.empty()).append(validation.pointer ?: JsonPointers.empty())
-                        Violation("$description ${validation.description}", emptyList(), pointer)
+                        context.violation(description, schema)
+                            .let {
+                                Violation(
+                                        "${it.description} ${validation.description}",
+                                        it.pointer!!.append(validation.pointer ?: JsonPointers.empty()))
+                            }
                     }
             }
         }
@@ -55,7 +59,7 @@ class UseProblemJsonRule {
     private fun testForProblemSchema(response: ApiResponse): List<Pair<Schema<*>, Violation>> =
         response.content?.flatMap { (type, mediaType) ->
             if (!type.startsWith("application/json")) {
-                val message = Violation("Media type must be application/json.", "")
+                val message = Violation("Media type must be application/json.")
                 return listOf(Pair(mediaType.schema, message))
             }
             val node = objectMapper.convertValue(mediaType.schema, JsonNode::class.java)
