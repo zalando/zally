@@ -17,11 +17,9 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import static de.zalando.zally.util.ast.Util.PRIMITIVES;
-import static de.zalando.zally.util.ast.Util.getterNameToPointer;
 
 /**
  * MethodCallRecorder creates a Proxy around an object, typically Swagger or OpenApi, and records
@@ -30,6 +28,13 @@ import static de.zalando.zally.util.ast.Util.getterNameToPointer;
  * Proxies as well, making it possible to generate JSON pointers for all possible properties.
  */
 public final class MethodCallRecorder<T> {
+
+    private final T proxy;
+    private JsonPointer currentPointer;
+    private final Set<String> skipMethods = new HashSet<>();
+    private final Map<Object, JsonPointer> objectPointerCache = new IdentityHashMap<>();
+    private final Map<Object, IdentityHashMap<Method, JsonPointer>> methodPointerCache = new IdentityHashMap<>();
+
     static class MethodCallRecorderException extends Throwable {
         MethodCallRecorderException(String message) {
             super(message);
@@ -40,24 +45,24 @@ public final class MethodCallRecorder<T> {
         }
     }
 
-    static boolean isGetterMethod(Method m) {
+    private static boolean isGetterMethod(Method m) {
         return m.getName().startsWith("get") && m.getReturnType() != null;
     }
 
-    static boolean isPrimitive(Object o) {
+    private static boolean isPrimitive(Object o) {
         return isPrimitive(o.getClass());
     }
 
-    static boolean isPrimitive(Class<?> c) {
+    private static boolean isPrimitive(Class<?> c) {
         return PRIMITIVES.contains(c);
     }
 
-    static boolean isGenericContainer(Object o) {
+    private static boolean isGenericContainer(Object o) {
         return o instanceof Collection || o instanceof Map;
     }
 
     @SuppressWarnings("unchecked")
-    static <T> T createInstance(Class<T> c) throws MethodCallRecorderException {
+    private static <T> T createInstance(Class<T> c) throws MethodCallRecorderException {
         if (c.isAssignableFrom(Map.class)) {
             return (T) new HashMap<>();
         }
@@ -78,7 +83,7 @@ public final class MethodCallRecorder<T> {
         }
     }
 
-    static Class<?> getGenericReturnValueType(Method m) throws MethodCallRecorderException {
+    private static Class<?> getGenericReturnValueType(Method m) throws MethodCallRecorderException {
         Type type = m.getGenericReturnType();
         if (type instanceof ParameterizedType) {
             Type[] typeArgs = ((ParameterizedType) type).getActualTypeArguments();
@@ -86,20 +91,6 @@ public final class MethodCallRecorder<T> {
         }
         throw new MethodCallRecorderException(m.getReturnType().toString());
     }
-
-    static JsonPointer toPointer(Method m, Object... arguments) {
-        String s = m.getName();
-        if (arguments.length > 0) {
-            s = s.concat(Objects.toString(arguments[0]));
-        }
-        return JsonPointers.escape(getterNameToPointer(s));
-    }
-
-    private final T proxy;
-    private JsonPointer currentPointer;
-    private final Set<String> skipMethods = new HashSet<>();
-    private final Map<Object, JsonPointer> objectPointerCache = new IdentityHashMap<>();
-    private final Map<Object, IdentityHashMap<Method, JsonPointer>> methodPointerCache = new IdentityHashMap<>();
 
     public MethodCallRecorder(T object) {
         this.currentPointer = JsonPointers.empty();
@@ -190,12 +181,12 @@ public final class MethodCallRecorder<T> {
             if (methodMap.containsKey(method)) {
                 currentPointer = methodMap.get(method);
             } else {
-                currentPointer = objectPointer.append(toPointer(method, arguments));
+                currentPointer = objectPointer.append(JsonPointers.escape(method, arguments));
                 methodMap.put(method, currentPointer);
             }
         } else {
             IdentityHashMap<Method, JsonPointer> methodMap = new IdentityHashMap<>();
-            currentPointer = objectPointer.append(toPointer(method, arguments));
+            currentPointer = objectPointer.append(JsonPointers.escape(method, arguments));
             methodMap.put(method, currentPointer);
             methodPointerCache.put(object, methodMap);
         }

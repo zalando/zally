@@ -3,8 +3,10 @@ package de.zalando.zally.util.ast;
 import com.fasterxml.jackson.core.JsonPointer;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,7 +62,19 @@ public final class JsonPointers {
         return null;
     }
 
-    public static JsonPointer escape(final String unescaped) {
+    protected static JsonPointer escape(final Method method, Object... arguments) {
+        String name = method.getName();
+        if (arguments.length > 0) {
+            name = name.concat(Objects.toString(arguments[0]));
+        }
+        if (name.startsWith("get")) {
+            name = name.substring(3);
+            name = name.substring(0, 1).toLowerCase().concat(name.substring(1));
+        }
+        return escape(name);
+    }
+
+    protected static JsonPointer escape(final String unescaped) {
         // https://tools.ietf.org/html/rfc6901
         final String escaped = "/" + unescaped
             .replace("~", "~0")

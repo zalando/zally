@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.zalando.zally.util.ast.Util.PRIMITIVES;
-import static de.zalando.zally.util.ast.Util.getterNameToPointer;
 
 public class ReverseAstBuilder<T> {
     private Collection<String> extensionMethodNames = new HashSet<>();
@@ -73,7 +72,7 @@ public class ReverseAstBuilder<T> {
                     children = handleObject(node.object, node.pointer, node.marker);
                 }
                 for (Node child : children) {
-                    nodes.push(child.setParent(node));
+                    nodes.push(child);
                 }
                 node.setChildren(children);
             }
@@ -85,9 +84,9 @@ public class ReverseAstBuilder<T> {
         return new ReverseAst<>(objectsToNodes, pointersToNodes);
     }
 
-    private Deque<Node> handleMap(Map<?, ?> map, JsonPointer pointer, Marker marker) {
-        Deque<Node> nodes = new LinkedList<>();
-        marker = getMarker(map).orElse(marker);
+    private Deque<Node> handleMap(Map<?, ?> map, JsonPointer pointer, Marker defaultMarker) {
+        final Deque<Node> nodes = new LinkedList<>();
+        final Marker marker = getMarker(map).orElse(defaultMarker);
 
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             Object key = entry.getKey();
@@ -109,7 +108,7 @@ public class ReverseAstBuilder<T> {
     }
 
     private Deque<Node> handleArray(Object[] objects, JsonPointer pointer, Marker marker) {
-        Deque<Node> nodes = new LinkedList<>();
+        final Deque<Node> nodes = new LinkedList<>();
 
         for (int i = 0; i < objects.length; i++) {
             Object value = objects[i];
@@ -121,9 +120,9 @@ public class ReverseAstBuilder<T> {
         return nodes;
     }
 
-    private Deque<Node> handleObject(Object object, JsonPointer pointer, Marker marker) throws ReverseAstException {
-        Deque<Node> nodes = new LinkedList<>();
-        marker = getMarker(object).orElse(marker);
+    private Deque<Node> handleObject(Object object, JsonPointer pointer, Marker defaultMarker) throws ReverseAstException {
+        final Deque<Node> nodes = new LinkedList<>();
+        final Marker marker = getMarker(object).orElse(defaultMarker);
 
         for (Method m : object.getClass().getDeclaredMethods()) {
             String name = m.getName();
@@ -137,7 +136,7 @@ public class ReverseAstBuilder<T> {
                             // We must not use the method name but re-use the current pointer.
                             nodes.push(new Node(value, pointer, marker, /* skip */true));
                         } else {
-                            JsonPointer newPointer = pointer.append(JsonPointers.escape(getterNameToPointer(name)));
+                            JsonPointer newPointer = pointer.append(JsonPointers.escape(m));
                             nodes.push(new Node(value, newPointer, marker));
                         }
                     }

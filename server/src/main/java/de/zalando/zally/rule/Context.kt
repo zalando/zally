@@ -21,16 +21,35 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
 
     val api = recorder.proxy
 
-    fun violation(description: String, location: Any): Violation =
-        violation(description, pointerForValue(location))
+    /**
+     * Creates a Violation with a pointer to the OpenAPI or Swagger model node specified,
+     * defaulting to the last recorded location.
+     * @param description the description of the Violation
+     * @param value the OpenAPI or Swagger model node
+     * @return the new Violation
+     */
+    fun violation(description: String, value: Any): Violation =
+        violation(description, pointerForValue(value))
 
+    /**
+     * Creates a Violation with the specified pointer, defaulting to the last recorded location.
+     * @param description the description of the Violation
+     * @param pointer an existing pointer or null
+     * @return the new Violation
+     */
     fun violation(description: String, pointer: JsonPointer? = null): Violation =
         Violation(description, pointer ?: recorder.pointer)
 
+    /**
+     * Check whether a location should be ignored by a specific rule.
+     * @param pointer the location to check
+     * @param ruleId the rule id to check
+     * @return true if the location should be ignored for this rule
+     */
     fun isIgnored(pointer: JsonPointer, ruleId: String): Boolean =
         swaggerAst?.isIgnored(pointer, ruleId) ?: openApiAst.isIgnored(pointer, ruleId)
 
-    fun pointerForValue(value: Any): JsonPointer? = if (swaggerAst != null) {
+    private fun pointerForValue(value: Any): JsonPointer? = if (swaggerAst != null) {
         val swaggerPointer = swaggerAst.getPointer(value)
         if (swaggerPointer != null)
             swaggerPointer

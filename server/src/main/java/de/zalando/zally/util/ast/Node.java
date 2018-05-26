@@ -3,7 +3,6 @@ package de.zalando.zally.util.ast;
 import com.fasterxml.jackson.core.JsonPointer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -11,10 +10,9 @@ import java.util.LinkedList;
  * A stack node for tree-traversal.
  */
 final class Node {
-    private Node parent;
     private Collection<Node> children;
-    final Object object;
-    final JsonPointer pointer;
+    protected final Object object;
+    protected final JsonPointer pointer;
     final Marker marker;
     final boolean skip;
 
@@ -29,19 +27,9 @@ final class Node {
         this.marker = marker;
     }
 
-    Node setParent(Node parent) {
-        this.parent = parent;
-        return this;
-    }
-
     Node setChildren(Collection<Node> children) {
         this.children = children;
         return this;
-    }
-
-    @Nullable
-    Node getParent() {
-        return parent;
     }
 
     @Nonnull

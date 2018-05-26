@@ -59,15 +59,15 @@ class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirect
                     .filterNot(JsonNode::isMissingNode)
                     .map(JsonNode::textValue)
                     .joinToString("; ")
-            return Violation(message + schemaRefs, pointer.toString())
+            return Violation(message + schemaRefs, pointer)
         } else {
-            return Violation(message, pointer.toString())
+            return Violation(message, pointer)
         }
     }
 
     private fun createValidationMessageWithSchemaPath(node: JsonNode, message: String, pointer: JsonPointer): Violation {
         val schemaPath = node.at("/schema/pointer").textValue()
-        return Violation(message + schemaPath, pointer.toString())
+        return Violation(message + schemaPath, pointer)
     }
 
     private fun createValidatorFactory(schemaRedirects: Map<String, String>): JsonSchemaFactory {
@@ -88,16 +88,16 @@ class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirect
         val urlTranslatorConfig = URITranslatorConfiguration.newBuilder()
         schemaRedirects.forEach { (from, to) -> urlTranslatorConfig.addSchemaRedirect(from, to) }
 
-        val loadingConfig = LoadingConfiguration.newBuilder()
+        return LoadingConfiguration.newBuilder()
                 .setURITranslatorConfiguration(urlTranslatorConfig.freeze())
                 .freeze()
-        return loadingConfig
     }
 
     private fun getValidationMessagesBundle(): MessageBundle {
         val customValidationMessages = PropertiesMessageSource.fromResource("/schema-validation-messages.properties")
-        val validationMessages = MessageBundles.getBundle(JsonSchemaValidationBundle::class.java).thaw()
-                .appendSource(customValidationMessages).freeze()
-        return validationMessages
+        return MessageBundles.getBundle(JsonSchemaValidationBundle::class.java)
+                .thaw()
+                .appendSource(customValidationMessages)
+                .freeze()
     }
 }
