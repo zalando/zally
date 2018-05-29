@@ -1,11 +1,13 @@
 package de.zalando.zally.apireview;
 
+import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.zalando.zally.rule.TestRuleSet;
 import de.zalando.zally.rule.api.Check;
 import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.api.Violation;
+import de.zalando.zally.util.ast.JsonPointers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -39,7 +41,7 @@ public class RestApiTestConfiguration {
         @Check(severity = Severity.MUST)
         public Violation validate(JsonNode json) {
             if (!"3.0.0".equals(json.path("openapi").textValue())) {
-                return new Violation("TestCheckIsOpenApi3", "#/openapi");
+                return new Violation("TestCheckIsOpenApi3", JsonPointer.compile("/openapi"));
             }
             return null;
         }
@@ -57,9 +59,9 @@ public class RestApiTestConfiguration {
         @Check(severity = Severity.MUST)
         public Iterable<Violation> validate(JsonNode json) {
             return Arrays.asList(
-                    new Violation("TestCheckAlwaysReport3MustViolations #1", "#"),
-                    new Violation("TestCheckAlwaysReport3MustViolations #2", "#"),
-                    new Violation("TestCheckAlwaysReport3MustViolations #3", "#")
+                    new Violation("TestCheckAlwaysReport3MustViolations #1", JsonPointers.empty()),
+                    new Violation("TestCheckAlwaysReport3MustViolations #2", JsonPointers.empty()),
+                    new Violation("TestCheckAlwaysReport3MustViolations #3", JsonPointers.empty())
             );
         }
     }

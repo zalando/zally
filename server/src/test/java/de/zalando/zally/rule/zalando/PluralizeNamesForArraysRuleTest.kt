@@ -18,7 +18,7 @@ class PluralizeNamesForArraysRuleTest {
     fun negativeCase() {
         val swagger = getFixture("pluralizeArrayNamesInvalid.json")
         val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("#/definitions/Pet"))
+        assertThat(result.paths).hasSameElementsAs(listOf("/definitions/Pet"))
         assertThat(result.description).contains("name", "tag")
     }
 

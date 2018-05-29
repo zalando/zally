@@ -45,8 +45,8 @@ class NoUnusedDefinitionsRule {
         val refsInDefs = swagger.definitions.orEmpty().values.flatMap(this::findAllRefs)
         val allRefs = (refsInPaths + refsInDefs).toSet()
 
-        val unusedParams = swagger.parameters.orEmpty().filterValues { it !in paramsInPaths }.keys.map { "#/parameters/$it" }
-        val unusedDefs = swagger.definitions.orEmpty().keys.filter { it !in allRefs }.map { "#/definitions/$it" }
+        val unusedParams = swagger.parameters.orEmpty().filterValues { it !in paramsInPaths }.keys.map { "/parameters/$it" }
+        val unusedDefs = swagger.definitions.orEmpty().keys.filter { it !in allRefs }.map { "/definitions/$it" }
 
         val paths = unusedParams + unusedDefs
 

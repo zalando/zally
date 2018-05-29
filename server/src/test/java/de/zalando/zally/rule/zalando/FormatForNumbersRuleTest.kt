@@ -19,7 +19,7 @@ class FormatForNumbersRuleTest {
     fun negativeCase() {
         val swagger = getFixture("formatForNumbersInvalid.json")
         val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("#/parameters/PetFullPrice", "#/definitions/Pet", "/pets"))
+        assertThat(result.paths).hasSameElementsAs(listOf("/parameters/PetFullPrice", "/definitions/Pet", "/pets"))
         assertThat(result.description).contains("other_price", "full_price", "number_of_legs")
     }
 

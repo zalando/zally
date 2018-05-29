@@ -22,15 +22,15 @@ class SwaggerUtilTest {
             "/pets/{petId} GET 200 owners items",
             "/pets/{petId} GET no_limit",
             "/pets/{petId} GET no_limit limit_desc",
-            "#/definitions/Pet",
-            "#/definitions/Names items",
-            "#/definitions/Nickname",
-            "#/definitions/PetName",
-            "#/definitions/Importance",
-            "#/definitions/NameForParam",
-            "#/definitions/PetName last_name",
-            "#/definitions/PetName middle_name items",
-            "#/definitions/Error"
+            "/definitions/Pet",
+            "/definitions/Names items",
+            "/definitions/Nickname",
+            "/definitions/PetName",
+            "/definitions/Importance",
+            "/definitions/NameForParam",
+            "/definitions/PetName last_name",
+            "/definitions/PetName middle_name items",
+            "/definitions/Error"
         ))
     }
 

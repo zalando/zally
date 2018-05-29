@@ -23,17 +23,17 @@ install: true
 script:
   # Unit-test and build server
   - cd server/
-  - ./gradlew build --info
+  - ./gradlew --console=plain build --info
   - cd ..
 
   # Unit-test and build integration server
   - cd github-integration/
-  - ./gradlew build --info
+  - ./gradlew --console=plain build --info
   - cd ..
 
   # Launch local zally server
   - cd server/
-  - ./gradlew bootRun > /dev/null &
+  - ./gradlew --console=plain bootRun > /dev/null &
   - echo $! > /tmp/zally_server.pid
   - cd ..
 

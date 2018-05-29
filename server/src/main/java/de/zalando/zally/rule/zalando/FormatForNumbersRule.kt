@@ -30,7 +30,7 @@ class FormatForNumbersRule(@Autowired rulesConfig: Config) {
             if (badProps.isNotEmpty()) listOf(badProps to path) else emptyList()
         }
         val fromParams = swagger.parameters.orEmpty().entries.flatMap { (name, param) ->
-            if (!param.hasValidFormat()) listOf(listOf(name) to "#/parameters/$name") else emptyList()
+            if (!param.hasValidFormat()) listOf(listOf(name) to "/parameters/$name") else emptyList()
         }
         val fromPathParams = swagger.paths.orEmpty().entries.flatMap { (name, path) ->
             path.operations.orEmpty().flatMap { operation ->

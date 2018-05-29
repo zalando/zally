@@ -21,9 +21,9 @@ public class ApiReviewTest {
 
     @Test
     public void shouldAggregateRuleTypeCount() {
-        Result mustViolation1 = result(Severity.MUST, "#/pointer1");
-        Result mustViolation2 = result(Severity.MUST, "#/pointer2");
-        Result shouldViolation = result(Severity.SHOULD, "#/pointer3");
+        Result mustViolation1 = result(Severity.MUST, "/pointer1");
+        Result mustViolation2 = result(Severity.MUST, "/pointer2");
+        Result shouldViolation = result(Severity.SHOULD, "/pointer3");
 
         ApiReview apiReview = new ApiReview(new ApiDefinitionRequest(), null, "", asList(mustViolation1, mustViolation2, shouldViolation));
 
@@ -35,8 +35,8 @@ public class ApiReviewTest {
 
     @Test
     public void shouldCalculateNumberOfEndpoints() throws IOException {
-        Result violation1 = result(Severity.MUST, "#/pointer1");
-        Result violation2 = result(Severity.MUST, "#/pointer2");
+        Result violation1 = result(Severity.MUST, "/pointer1");
+        Result violation2 = result(Severity.MUST, "/pointer2");
 
         String apiDefinition = ResourceUtil.resourceToString("fixtures/limitNumberOfResourcesValid.json");
 

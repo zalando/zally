@@ -53,7 +53,14 @@ export function Violation(props) {
         <ViolationRuleLink ruleLink={violation.rule_link} />
       </If>
 
-      <If test={() => !!paths.length} dataTestId="if-violation-paths">
+      <If test={() => !!violation.pointer} dataTestId="if-violation-pointer">
+        <ViolationPointer pointer={violation.pointer} />
+      </If>
+
+      <If
+        test={() => !!paths.length && !violation.pointer}
+        dataTestId="if-violation-paths"
+      >
         <ViolationPaths paths={paths} />
       </If>
     </li>
@@ -69,6 +76,10 @@ export function ViolationRuleLink(props) {
       </a>
     </p>
   );
+}
+
+export function ViolationPointer(props) {
+  return <p>Pointer: {props.pointer}</p>;
 }
 
 export function ViolationPaths(props) {

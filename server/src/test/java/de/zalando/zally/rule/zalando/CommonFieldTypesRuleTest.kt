@@ -87,7 +87,7 @@ class CommonFieldTypesRuleTest {
     @Test
     fun negativeCase() {
         val result = rule.validate(getFixture("common_fields_invalid.yaml"))!!
-        assertThat(result.paths).hasSameElementsAs(listOf("#/definitions/Partner", "#/definitions/JobSummary"))
+        assertThat(result.paths).hasSameElementsAs(listOf("/definitions/Partner", "/definitions/JobSummary"))
         assertThat(result.description).contains(listOf("'id'", "'created'", "'modified'", "'type"))
     }
 }

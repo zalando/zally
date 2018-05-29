@@ -1,5 +1,6 @@
 package de.zalando.zally.util.ast;
 
+import com.fasterxml.jackson.core.JsonPointer;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.aop.framework.ProxyFactory;
 
@@ -16,12 +17,9 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import static de.zalando.zally.util.ast.Util.PRIMITIVES;
-import static de.zalando.zally.util.ast.Util.getterNameToPointer;
-import static de.zalando.zally.util.ast.Util.rfc6901Encode;
 
 /**
  * MethodCallRecorder creates a Proxy around an object, typically Swagger or OpenApi, and records
@@ -30,6 +28,13 @@ import static de.zalando.zally.util.ast.Util.rfc6901Encode;
  * Proxies as well, making it possible to generate JSON pointers for all possible properties.
  */
 public final class MethodCallRecorder<T> {
+
+    private final T proxy;
+    private JsonPointer currentPointer;
+    private final Set<String> skipMethods = new HashSet<>();
+    private final Map<Object, JsonPointer> objectPointerCache = new IdentityHashMap<>();
+    private final Map<Object, IdentityHashMap<Method, JsonPointer>> methodPointerCache = new IdentityHashMap<>();
+
     static class MethodCallRecorderException extends Throwable {
         MethodCallRecorderException(String message) {
             super(message);
@@ -40,24 +45,24 @@ public final class MethodCallRecorder<T> {
         }
     }
 
-    static boolean isGetterMethod(Method m) {
+    private static boolean isGetterMethod(Method m) {
         return m.getName().startsWith("get") && m.getReturnType() != null;
     }
 
-    static boolean isPrimitive(Object o) {
+    private static boolean isPrimitive(Object o) {
         return isPrimitive(o.getClass());
     }
 
-    static boolean isPrimitive(Class<?> c) {
+    private static boolean isPrimitive(Class<?> c) {
         return PRIMITIVES.contains(c);
     }
 
-    static boolean isGenericContainer(Object o) {
+    private static boolean isGenericContainer(Object o) {
         return o instanceof Collection || o instanceof Map;
     }
 
     @SuppressWarnings("unchecked")
-    static <T> T createInstance(Class<T> c) throws MethodCallRecorderException {
+    private static <T> T createInstance(Class<T> c) throws MethodCallRecorderException {
         if (c.isAssignableFrom(Map.class)) {
             return (T) new HashMap<>();
         }
@@ -78,7 +83,7 @@ public final class MethodCallRecorder<T> {
         }
     }
 
-    static Class<?> getGenericReturnValueType(Method m) throws MethodCallRecorderException {
+    private static Class<?> getGenericReturnValueType(Method m) throws MethodCallRecorderException {
         Type type = m.getGenericReturnType();
         if (type instanceof ParameterizedType) {
             Type[] typeArgs = ((ParameterizedType) type).getActualTypeArguments();
@@ -87,26 +92,8 @@ public final class MethodCallRecorder<T> {
         throw new MethodCallRecorderException(m.getReturnType().toString());
     }
 
-    static String toPointer(String s) {
-        return "/".concat(rfc6901Encode(getterNameToPointer(s)));
-    }
-
-    static String toPointer(Method m, Object... arguments) {
-        String s = m.getName();
-        if (arguments.length > 0) {
-            s = s.concat(Objects.toString(arguments[0]));
-        }
-        return toPointer(s);
-    }
-
-    private final T proxy;
-    private String currentPointer;
-    private final Set<String> skipMethods = new HashSet<>();
-    private final Map<Object, String> objectPointerCache = new IdentityHashMap<>();
-    private final Map<Object, IdentityHashMap<Method, String>> methodPointerCache = new IdentityHashMap<>();
-
     public MethodCallRecorder(T object) {
-        this.currentPointer = "#";
+        this.currentPointer = JsonPointers.empty();
         this.proxy = createProxy(object, null);
     }
 
@@ -182,7 +169,7 @@ public final class MethodCallRecorder<T> {
         // called as keys.
         // methodPointerCache is a nested map that holds "method" pointers with the objects and the
         // called methods as keys.
-        final String objectPointer;
+        final JsonPointer objectPointer;
         if (objectPointerCache.containsKey(object)) {
             objectPointer = objectPointerCache.get(object);
         } else {
@@ -190,23 +177,23 @@ public final class MethodCallRecorder<T> {
             objectPointer = currentPointer;
         }
         if (methodPointerCache.containsKey(object)) {
-            Map<Method, String> methodMap = methodPointerCache.get(object);
+            Map<Method, JsonPointer> methodMap = methodPointerCache.get(object);
             if (methodMap.containsKey(method)) {
                 currentPointer = methodMap.get(method);
             } else {
-                currentPointer = objectPointer.concat(toPointer(method, arguments));
+                currentPointer = objectPointer.append(JsonPointers.escape(method, arguments));
                 methodMap.put(method, currentPointer);
             }
         } else {
-            IdentityHashMap<Method, String> methodMap = new IdentityHashMap<>();
-            currentPointer = objectPointer.concat(toPointer(method, arguments));
+            IdentityHashMap<Method, JsonPointer> methodMap = new IdentityHashMap<>();
+            currentPointer = objectPointer.append(JsonPointers.escape(method, arguments));
             methodMap.put(method, currentPointer);
             methodPointerCache.put(object, methodMap);
         }
     }
 
     @Nonnull
-    public String getPointer() {
+    public JsonPointer getPointer() {
         return this.currentPointer;
     }
 }
