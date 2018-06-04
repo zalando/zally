@@ -176,7 +176,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
     }
 
     private List<Result> createRandomViolations() {
-        return Arrays.asList(new Result(new ZalandoRuleSet(), AvoidTrailingSlashesRule.class.getAnnotation(Rule.class), "", Severity.MUST, "#/pointer"));
+        return Arrays.asList(new Result(new ZalandoRuleSet(), AvoidTrailingSlashesRule.class.getAnnotation(Rule.class), "", Severity.MUST, "/pointer"));
     }
 
     private void assertBadRequestFor(Object from, Object to) {

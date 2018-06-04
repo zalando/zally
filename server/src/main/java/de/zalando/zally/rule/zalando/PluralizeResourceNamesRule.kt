@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired
         title = "Pluralize Resource Names"
 )
 class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) {
-    private val description = "Resources %s are singular (but we are not sure)"
+    private val description = "Resource '%s' appears to be singular (but we are not sure)"
     private val allowedPrefixes = rulesConfig.getConfig(javaClass.simpleName).getStringList("whitelist_prefixes")
 
     @Check(severity = Severity.MUST)

@@ -18,7 +18,7 @@ class PluralizeNamesForArraysRuleTest {
     fun negativeCase() {
         val swagger = getFixture("pluralizeArrayNamesInvalid.json")
         val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("#/definitions/Pet"))
+        assertThat(result.paths).hasSameElementsAs(listOf("/definitions/Pet"))
         assertThat(result.description).contains("name", "tag")
     }
 
@@ -31,6 +31,12 @@ class PluralizeNamesForArraysRuleTest {
     @Test
     fun positiveCaseTinbox() {
         val swagger = getFixture("api_tinbox.yaml")
+        assertThat(rule.validate(swagger)).isNull()
+    }
+
+    @Test
+    fun positiveCaseNoMustViolations() {
+        val swagger = getFixture("no_must_violations.yaml")
         assertThat(rule.validate(swagger)).isNull()
     }
 }

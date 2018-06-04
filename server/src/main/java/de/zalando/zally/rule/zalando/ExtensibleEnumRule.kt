@@ -44,7 +44,7 @@ class ExtensibleEnumRule {
     private fun enumProperties(swagger: Swagger): Map<String, String> =
         swagger.definitions.orEmpty().flatMap { (defName, model) ->
             val enumProps = model.properties.orEmpty().filter { (_, prop) -> prop.isEnum() }
-            enumProps.map { (propName, _) -> propName to "#/definitions/$defName/properties/$propName" }
+            enumProps.map { (propName, _) -> propName to "/definitions/$defName/properties/$propName" }
         }.toMap()
 
     private fun enumParameters(swagger: Swagger): Map<String, String> {
@@ -54,7 +54,7 @@ class ExtensibleEnumRule {
 
         return pathsOperationsAndEnums
             .filter { (_, opAndEnums) -> opAndEnums.isNotEmpty() }
-            .flatMap { (pathName, opAndEnums) -> opAndEnums.map { (op, enums) -> "#/paths$pathName/$op" to enums } }
+            .flatMap { (pathName, opAndEnums) -> opAndEnums.map { (op, enums) -> "/paths$pathName/$op" to enums } }
             .flatMap { (operationPath, enums) -> enums.map { it to "$operationPath/parameters/$it" } }.toMap()
     }
 

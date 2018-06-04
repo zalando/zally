@@ -112,13 +112,14 @@ func TestPrettyFormatServerMessage(t *testing.T) {
 func TestPrettyFormatViolationInPrettyFormat(t *testing.T) {
 	prettyFormatter := NewPrettyFormatter(NewPrettyColorizer(true))
 
-	t.Run("Converts violation to string in pretty format", func(t *testing.T) {
+	var violation domain.Violation
+	violation.Title = "Test Title"
+	violation.RuleLink = "http://example.com/violation"
+	violation.ViolationType = "MUST"
+	violation.Decription = "Test Description"
 
-		var violation domain.Violation
-		violation.Title = "Test Title"
-		violation.RuleLink = "http://example.com/violation"
-		violation.ViolationType = "MUST"
-		violation.Decription = "Test Description"
+	t.Run("Converts violation to string in pretty format with just paths", func(t *testing.T) {
+
 		violation.Paths = []string{"/path/one", "/path/two"}
 
 		actualResult := prettyFormatter.formatViolation(&violation)
@@ -127,6 +128,32 @@ func TestPrettyFormatViolationInPrettyFormat(t *testing.T) {
 			"\thttp://example.com/violation\n" +
 			"\t\t/path/one\n" +
 			"\t\t/path/two\n\n"
+
+		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+
+	t.Run("Converts violation to string in pretty format with paths and pointer", func(t *testing.T) {
+
+		violation.Pointer = "/pointer/1"
+
+		actualResult := prettyFormatter.formatViolation(&violation)
+		expectedResult := "\x1b[31mMUST\x1b[0m \x1b[31mTest Title\x1b[0m\n" +
+			"\tTest Description\n" +
+			"\thttp://example.com/violation\n" +
+			"\t\t/pointer/1\n\n"
+
+		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+
+	t.Run("Converts violation to string in pretty format with just pointer", func(t *testing.T) {
+
+		violation.Paths = nil
+
+		actualResult := prettyFormatter.formatViolation(&violation)
+		expectedResult := "\x1b[31mMUST\x1b[0m \x1b[31mTest Title\x1b[0m\n" +
+			"\tTest Description\n" +
+			"\thttp://example.com/violation\n" +
+			"\t\t/pointer/1\n\n"
 
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})

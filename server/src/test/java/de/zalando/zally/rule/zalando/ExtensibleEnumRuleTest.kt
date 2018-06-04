@@ -20,7 +20,7 @@ class ExtensibleEnumRuleTest {
         val swagger = getFixture("enum_in_model_property.yaml")
         val expectedViolation = Violation(
                 description = "Properties/Parameters [status] are not extensible enums",
-                paths = listOf("#/definitions/CrawledAPIDefinition/properties/status"))
+                paths = listOf("/definitions/CrawledAPIDefinition/properties/status"))
 
         val violation = rule.validate(swagger)
 
@@ -33,8 +33,8 @@ class ExtensibleEnumRuleTest {
         val swagger = getFixture("enum_in_request_parameter.yaml")
         val expectedViolation = Violation(
                 description = "Properties/Parameters [lifecycle_state, environment] are not extensible enums",
-                paths = listOf("#/paths/apis/{api_id}/versions/GET/parameters/lifecycle_state",
-                        "#/paths/apis/GET/parameters/environment"))
+                paths = listOf("/paths/apis/{api_id}/versions/GET/parameters/lifecycle_state",
+                        "/paths/apis/GET/parameters/environment"))
 
         val violation = rule.validate(swagger)
 

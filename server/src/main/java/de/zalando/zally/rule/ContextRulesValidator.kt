@@ -1,5 +1,6 @@
 package de.zalando.zally.rule
 
+import com.fasterxml.jackson.core.JsonPointer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -13,5 +14,5 @@ class ContextRulesValidator(@Autowired rules: RulesManager) : RulesValidator<Con
     override fun parse(content: String): Context? =
             Context.createOpenApiContext(content) ?: Context.createSwaggerContext(content)
 
-    override fun ignore(root: Context, pointer: String, ruleId: String) = root.isIgnored(pointer, ruleId)
+    override fun ignore(root: Context, pointer: JsonPointer, ruleId: String) = root.isIgnored(pointer, ruleId)
 }

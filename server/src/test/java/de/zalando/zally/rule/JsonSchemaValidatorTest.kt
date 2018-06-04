@@ -25,8 +25,8 @@ class JsonSchemaValidatorTest {
         """)
 
         val valResult = jsonSchemaValidator.validate(jsonToValidate)
-        assertThat(valResult.isSuccess).isFalse()
-        assertThat(valResult.messages[0].message).isEqualTo("numeric instance is lower than the required minimum (minimum: 0, found: -10)")
+        assertThat(valResult.isEmpty()).isFalse()
+        assertThat(valResult[0].description).isEqualTo("numeric instance is lower than the required minimum (minimum: 0, found: -10)")
     }
 
     @Test
@@ -42,7 +42,7 @@ class JsonSchemaValidatorTest {
         val specJson = ObjectTreeReader().read(Resources.getResource("fixtures/api_tinbox.yaml"))
 
         val valResult = jsonSchemaValidator.validate(specJson)
-        assertThat(valResult.isSuccess).isFalse()
-        assertThat(valResult.messages[0].message).isEqualTo("instance failed to match at least one required schema among 2")
+        assertThat(valResult.isEmpty()).isFalse()
+        assertThat(valResult[0].description).isEqualTo("instance failed to match at least one required schema among 2")
     }
 }

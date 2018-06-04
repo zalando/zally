@@ -46,7 +46,7 @@ class UseSpecificHttpStatusCodesTest {
 
         val expectedPointers = operations.flatMap { method ->
             method.value.map { code ->
-                "#/paths/~1test/${method.key}/responses/$code"
+                "/paths/~1test/${method.key}/responses/$code"
             }
         }
 
@@ -55,6 +55,7 @@ class UseSpecificHttpStatusCodesTest {
         val violations = codes.allowOnlySpecificStatusCodes(context)
 
         assertThat(violations).isNotEmpty
-        assertThat(violations.map { it.pointer }).containsExactlyInAnyOrder(*expectedPointers.toTypedArray())
+        assertThat(violations.map { it.pointer.toString() })
+            .containsExactlyInAnyOrder(*expectedPointers.toTypedArray())
     }
 }

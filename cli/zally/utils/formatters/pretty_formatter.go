@@ -90,8 +90,12 @@ func (f *PrettyFormatter) formatViolation(violation *domain.Violation) string {
 	fmt.Fprintf(&buffer, "\t%s\n", violation.Decription)
 	fmt.Fprintf(&buffer, "\t%s\n", violation.RuleLink)
 
-	for _, path := range violation.Paths {
-		fmt.Fprintf(&buffer, "\t\t%s\n", path)
+	if violation.Pointer != "" {
+		fmt.Fprintf(&buffer, "\t\t%s\n", violation.Pointer)
+	} else {
+		for _, path := range violation.Paths {
+			fmt.Fprintf(&buffer, "\t\t%s\n", path)
+		}
 	}
 
 	fmt.Fprintf(&buffer, "\n")

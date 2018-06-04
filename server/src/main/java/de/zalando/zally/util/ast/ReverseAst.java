@@ -1,5 +1,7 @@
 package de.zalando.zally.util.ast;
 
+import com.fasterxml.jackson.core.JsonPointer;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -31,7 +33,7 @@ public class ReverseAst<T> {
     }
 
     @Nullable
-    public String getPointer(Object key) {
+    public JsonPointer getPointer(Object key) {
         Node node = this.objectsToNodes.get(key);
         if (node != null) {
             return node.pointer;
@@ -39,8 +41,8 @@ public class ReverseAst<T> {
         return null;
     }
 
-    public boolean isIgnored(String pointer, String ignoreValue) {
-        return isIgnored(this.pointersToNodes.get(pointer), ignoreValue);
+    public boolean isIgnored(JsonPointer pointer, String ignoreValue) {
+        return isIgnored(this.pointersToNodes.get(pointer.toString()), ignoreValue);
     }
 
     private boolean isIgnored(Node node, String ignoreValue) {
@@ -56,8 +58,8 @@ public class ReverseAst<T> {
         return marker != null && Marker.TYPE_X_ZALLY_IGNORE.equals(marker.type) && marker.values.contains(ignoreValue);
     }
 
-    public Collection<String> getIgnoreValues(String pointer) {
-        return getIgnoreValues(this.pointersToNodes.get(pointer));
+    public Collection<String> getIgnoreValues(JsonPointer pointer) {
+        return getIgnoreValues(this.pointersToNodes.get(pointer.toString()));
     }
 
     private Collection<String> getIgnoreValues(Node node) {

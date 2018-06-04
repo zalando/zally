@@ -1,5 +1,6 @@
 package de.zalando.zally.rule
 
+import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
@@ -24,5 +25,5 @@ class SwaggerRulesValidator(@Autowired rules: RulesManager) : RulesValidator<Swa
         }
     }
 
-    override fun ignore(root: Swagger, pointer: String, ruleId: String) = ast?.isIgnored(pointer, ruleId) ?: false
+    override fun ignore(root: Swagger, pointer: JsonPointer, ruleId: String) = ast?.isIgnored(pointer, ruleId) ?: false
 }

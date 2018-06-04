@@ -17,8 +17,8 @@ class NoUnusedDefinitionsRuleTest {
     fun negativeCase() {
         val results = rule.validate(getFixture("unusedDefinitionsInvalid.json"))!!.paths
         assertThat(results).hasSameElementsAs(listOf(
-            "#/definitions/PetName",
-            "#/parameters/FlowId"
+            "/definitions/PetName",
+            "/parameters/FlowId"
         ))
     }
 

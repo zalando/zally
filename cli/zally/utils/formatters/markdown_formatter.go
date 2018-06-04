@@ -68,9 +68,15 @@ func (f *MarkdownFormatter) formatViolation(violation *domain.Violation) string 
 
 	fmt.Fprintf(&buffer, "### `%s` [%s](%s)\n\n", violation.ViolationType, violation.Title, violation.RuleLink)
 	fmt.Fprintf(&buffer, "> %s\n\n", violation.Decription)
-	for _, path := range violation.Paths {
-		fmt.Fprintf(&buffer, "- %s\n", path)
+
+	if violation.Pointer != "" {
+		fmt.Fprintf(&buffer, "- %s\n", violation.Pointer)
+	} else {
+		for _, path := range violation.Paths {
+			fmt.Fprintf(&buffer, "- %s\n", path)
+		}
 	}
+	
 	fmt.Fprintf(&buffer, "\n")
 
 	return buffer.String()
