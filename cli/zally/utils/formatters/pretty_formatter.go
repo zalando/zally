@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/logrusorgru/aurora"
 	"github.com/zalando/zally/cli/zally/domain"
 )
 
@@ -59,10 +58,18 @@ func (f *PrettyFormatter) FormatRule(rule *domain.Rule) string {
 	return buffer.String()
 }
 
+// FormatMessage formats message
+func (f *PrettyFormatter) FormatMessage(message string) string {
+	if message != "" {
+		return fmt.Sprintf("\n%s\n\n", f.colorizer.auroraInstance.Green(message))
+	}
+	return ""
+}
+
 // FormatServerMessage formats server message
 func (f *PrettyFormatter) FormatServerMessage(message string) string {
 	if message != "" {
-		return fmt.Sprintf("\n\n%s%s\n\n\n", f.formatHeader("Server message:"), aurora.Green(message))
+		return fmt.Sprintf("\n\n%s%s\n\n\n", f.formatHeader("Server message:"), f.colorizer.auroraInstance.Green(message))
 	}
 	return ""
 }

@@ -6,6 +6,7 @@ import "github.com/zalando/zally/cli/zally/domain"
 type Formatter interface {
 	FormatViolations(header string, violations []domain.Violation) string
 	FormatViolationsCount(violationsCount *domain.ViolationsCount) string
+	FormatMessage(message string) string
 	FormatServerMessage(message string) string
 	FormatRule(rule *domain.Rule) string
 }

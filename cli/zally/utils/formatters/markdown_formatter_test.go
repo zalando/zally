@@ -89,6 +89,23 @@ func TestMarkdownFormatRule(t *testing.T) {
 	})
 }
 
+func TestMarkdownFormatMessage(t *testing.T) {
+	var formatter MarkdownFormatter
+
+	t.Run("Formats nothing when no message", func(t *testing.T) {
+		actualResult := formatter.FormatMessage("")
+
+		tests.AssertEquals(t, "", actualResult)
+	})
+
+	t.Run("Formats message when specified", func(t *testing.T) {
+		actualResult := formatter.FormatMessage("Congratulations!")
+		expectedResult := "\nCongratulations!\n\n"
+
+		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+}
+
 func TestMarkdownFormatServerMessage(t *testing.T) {
 	var formatter MarkdownFormatter
 

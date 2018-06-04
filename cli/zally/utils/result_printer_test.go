@@ -110,14 +110,18 @@ func TestPrintViolations(t *testing.T) {
 	violationsCount.May = 3
 	violationsCount.Hint = 4
 
-	t.Run("PrintViolations prints nothing if no violations", func(t *testing.T) {
+	t.Run("PrintViolations prints success if no violations", func(t *testing.T) {
 		buffer.Reset()
 
 		var violations domain.Violations
 		resultPrinter.PrintViolations(&violations)
 
-		result := string(buffer.Bytes())
-		tests.AssertEquals(t, "", result)
+		actualResult := string(buffer.Bytes())
+		expectedResult := fmt.Sprintf(
+			"%s",
+			formatter.FormatMessage("Congratulations! No violations found."))
+
+		tests.AssertEquals(t, expectedResult, actualResult)
 	})
 
 	t.Run("PrintViolations returns list of violation strings", func(t *testing.T) {
