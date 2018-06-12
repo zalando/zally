@@ -21,11 +21,13 @@ describe('ViolationRuleLink component', () => {
 
 describe('ViolationPointer component', () => {
   test('should return the pointer', () => {
-    const pointer = '/pointer/1';
+    const pointer = '/paths/~1~01things/get/responses/200/content/*~1*';
     const component = shallow(<ViolationPointer pointer={pointer} />);
     const p = component.find('p');
 
-    expect(p.text()).toEqual('Pointer: /pointer/1');
+    expect(p.text()).toEqual(
+      'Location: paths > /~1things > get > responses > 200 > content > */*'
+    );
   });
 });
 
