@@ -16,5 +16,10 @@ type Violation struct {
 
 // ToPointerDisplayString returns the violation's Pointer in user friendly display format
 func (v *Violation) ToPointerDisplayString() string {
-	return strings.Replace(strings.Replace(strings.Replace(strings.TrimPrefix(v.Pointer, "/"), "/", " > ", -1), "~1", "/", -1), "~0", "~", -1)
+	display := v.Pointer
+	display = strings.TrimPrefix(display, "/")
+	display = strings.Replace(display, "/", " > ", -1)
+	display = strings.Replace(display, "~1", "/", -1)
+	display = strings.Replace(display, "~0", "~", -1)
+	return display
 }
