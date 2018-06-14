@@ -4,6 +4,7 @@ import de.zalando.zally.rule.api.Violation
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.StringAssert
 
+@Suppress("UndocumentedPublicClass")
 class ViolationAssert(actual: Violation?) : AbstractAssert<ViolationAssert, Violation?>(actual, ViolationAssert::class.java) {
 
     fun descriptionEqualTo(description: String): ViolationAssert {

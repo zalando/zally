@@ -4,6 +4,7 @@ import de.zalando.zally.rule.Context
 import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
 import org.junit.Test
 
+@Suppress("StringLiteralDuplication", "UndocumentedPublicClass", "UnsafeCallOnNullableType")
 class AvoidTrailingSlashesRuleTest {
 
     private val rule = AvoidTrailingSlashesRule()

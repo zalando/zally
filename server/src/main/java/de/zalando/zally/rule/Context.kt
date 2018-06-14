@@ -53,8 +53,8 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @param pointer an existing pointer or null
      * @return the new Violation
      */
-    fun violations(description: String, pointer: JsonPointer? = null): List<Violation> =
-        listOf(Violation(description, pointer as JsonPointer))
+    fun violations(description: String, pointer: JsonPointer?): List<Violation> =
+        listOf(violation(description, pointer))
 
     /**
      * Creates a Violation with a pointer to the OpenAPI or Swagger model node specified,
