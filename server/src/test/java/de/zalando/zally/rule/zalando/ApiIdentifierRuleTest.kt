@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.Context
-import org.assertj.core.api.Assertions.assertThat
+import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
 import org.junit.Test
 
 class ApiIdentifierRuleTest {
@@ -12,7 +12,10 @@ class ApiIdentifierRuleTest {
     fun correctApiIdIsSet() {
         val context = withApiId("zally-api")
 
-        assertThat(rule.validate(context)).isNull()
+        val violation = rule.validate(context)
+
+        assertThat(violation)
+            .isNull()
     }
 
     @Test
@@ -20,8 +23,9 @@ class ApiIdentifierRuleTest {
         val context = withApiId("This?iS//some|Incorrect+&ApI)(id!!!")
         val violation = rule.validate(context)!!
 
-        assertThat(violation.pointer).hasToString("/info/x-api-id")
-        assertThat(violation.description).matches(".*doesn't match.*")
+        assertThat(violation)
+            .pointerEqualTo("/info/x-api-id")
+            .descriptionMatches(".*doesn't match.*")
     }
 
     @Test
@@ -29,8 +33,9 @@ class ApiIdentifierRuleTest {
         val context = withApiId("null")
         val violation = rule.validate(context)!!
 
-        assertThat(violation.pointer).hasToString("/info/x-api-id")
-        assertThat(violation.description).matches(".*should be provided.*")
+        assertThat(violation)
+            .pointerEqualTo("/info/x-api-id")
+            .descriptionMatches(".*should be provided.*")
     }
 
     private fun withApiId(apiId: String): Context {

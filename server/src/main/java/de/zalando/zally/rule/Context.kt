@@ -8,6 +8,7 @@ import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.parser.OpenAPIV3Parser
 import io.swagger.v3.parser.converter.SwaggerConverter
 import io.swagger.v3.parser.core.models.ParseOptions
@@ -20,6 +21,40 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
     private val swaggerAst = swagger?.let { ReverseAst.fromObject(it).withExtensionMethodNames(*extensionNames).build() }
 
     val api = recorder.proxy
+
+    /**
+     * Convenience method for filtering and iterating over the paths in order to create Violations.
+     * @param pathFilter a filter selecting the paths to validate
+     * @param action the action to perform on filtered items
+     * @return a list of Violations and/or nulls where no violations are necessary
+     */
+    fun validatePaths(
+        pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
+        action: (Map.Entry<String, PathItem>) -> List<Violation?>
+    ): List<Violation> = api.paths
+        .orEmpty()
+        .filter(pathFilter)
+        .flatMap(action)
+        .filterNotNull()
+
+    /**
+     * Creates a List of one Violation with a pointer to the OpenAPI or Swagger model node specified,
+     * defaulting to the last recorded location.
+     * @param description the description of the Violation
+     * @param value the OpenAPI or Swagger model node
+     * @return the new Violation
+     */
+    fun violations(description: String, value: Any): List<Violation> =
+        listOf(violation(description, value))
+
+    /**
+     * Creates a List of one Violation with the specified pointer, defaulting to the last recorded location.
+     * @param description the description of the Violation
+     * @param pointer an existing pointer or null
+     * @return the new Violation
+     */
+    fun violations(description: String, pointer: JsonPointer? = null): List<Violation> =
+        listOf(Violation(description, pointer as JsonPointer))
 
     /**
      * Creates a Violation with a pointer to the OpenAPI or Swagger model node specified,

@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
 import de.zalando.zally.testConfig
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class ApiAudienceRuleTest {
@@ -13,7 +13,10 @@ class ApiAudienceRuleTest {
     fun correctApiAudienceIsSet() {
         val context = withAudience("company-internal")
 
-        assertThat(rule.validate(context)).isNull()
+        val violation = rule.validate(context)
+
+        assertThat(violation)
+            .isNull()
     }
 
     @Test
@@ -21,8 +24,9 @@ class ApiAudienceRuleTest {
         val context = withAudience("not-existing-audience")
         val violation = rule.validate(context)
 
-        assertThat(violation?.pointer).hasToString("/info/x-audience")
-        assertThat(violation?.description).matches(".*doesn't match.*")
+        assertThat(violation)
+            .pointerEqualTo("/info/x-audience")
+            .descriptionMatches(".*doesn't match.*")
     }
 
     @Test
@@ -30,8 +34,9 @@ class ApiAudienceRuleTest {
         val context = withAudience("null")
         val violation = rule.validate(context)
 
-        assertThat(violation?.pointer).hasToString("/info/x-audience")
-        assertThat(violation?.description).matches(".*Audience must be provided.*")
+        assertThat(violation)
+            .pointerEqualTo("/info/x-audience")
+            .descriptionMatches(".*Audience must be provided.*")
     }
 
     private fun withAudience(apiAudience: String): Context {
