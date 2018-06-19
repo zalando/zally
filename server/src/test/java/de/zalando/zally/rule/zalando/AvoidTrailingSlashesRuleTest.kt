@@ -1,29 +1,54 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.swaggerWithPaths
-import io.swagger.models.Swagger
-import org.assertj.core.api.Assertions.assertThat
+import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
 import org.junit.Test
 
+@Suppress("StringLiteralDuplication", "UndocumentedPublicClass", "UnsafeCallOnNullableType")
 class AvoidTrailingSlashesRuleTest {
 
     private val rule = AvoidTrailingSlashesRule()
 
     @Test
     fun emptySwagger() {
-        assertThat(rule.validate(Swagger())).isNull()
+        val context = Context.createOpenApiContext("""
+            openapi: '3.0.0'
+            """.trimIndent())!!
+
+        val violations = rule.validate(context)
+
+        assertThat(violations).isEmpty()
     }
 
     @Test
     fun positiveCase() {
-        val testAPI = swaggerWithPaths("/api/test-api")
-        assertThat(rule.validate(testAPI)).isNull()
+        val context = Context.createOpenApiContext("""
+            openapi: '3.0.0'
+            paths:
+              /api/test-api: {}
+            """.trimIndent())!!
+
+        val violations = rule.validate(context)
+
+        assertThat(violations).isEmpty()
     }
 
     @Test
     fun negativeCase() {
-        val testAPI = swaggerWithPaths("/api/test-api/", "/api/test", "/some/other/path", "/long/bad/path/with/slash/")
-        assertThat(rule.validate(testAPI)!!.paths).hasSameElementsAs(
-            listOf("/api/test-api/", "/long/bad/path/with/slash/"))
+        val context = Context.createOpenApiContext("""
+            openapi: '3.0.0'
+            paths:
+              /api/test-api/: {}
+              /api/test: {}
+              /some/other/path: {}
+              /long/bad/path/with/slash/: {}
+            """.trimIndent())!!
+
+        val violations = rule.validate(context)
+
+        assertThat(violations)
+            .descriptionsAllEqualTo("Rule avoid trailing slashes is not followed")
+            .pointersEqualTo("/paths/~1api~1test-api~1", "/paths/~1long~1bad~1path~1with~1slash~1")
+            .hasSize(2)
     }
 }
