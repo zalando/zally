@@ -9,6 +9,9 @@ import de.zalando.zally.rule.api.Violation
 import io.swagger.v3.oas.models.PathItem
 import org.springframework.beans.factory.annotation.Autowired
 
+/**
+ * Validate that HTTP methods and statuses align as expected
+ */
 @Rule(
     ruleSet = ZalandoRuleSet::class,
     id = "150",
@@ -26,6 +29,11 @@ class UseStandardHttpStatusCodes(@Autowired rulesConfig: Config) {
         }
         .toMap()
 
+    /**
+     * Validate that HTTP methods and statuses align as expected
+     * @param context the context to validate
+     * @return list of identified violations
+     */
     @Check(severity = Severity.MUST)
     fun allowOnlyStandardStatusCodes(context: Context): List<Violation> =
         context.validateOperations { (method, operation) ->

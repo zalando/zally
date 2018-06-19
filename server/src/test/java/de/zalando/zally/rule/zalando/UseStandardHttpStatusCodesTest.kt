@@ -6,6 +6,7 @@ import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
+@Suppress("UndocumentedPublicClass")
 class UseStandardHttpStatusCodesTest {
     private val codes = UseStandardHttpStatusCodes(testConfig)
 
