@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired
     ruleSet = ZalandoRuleSet::class,
     id = "150",
     severity = Severity.MUST,
-    title = "Use Specific HTTP Status Codes"
+    title = "Use Standard HTTP Status Codes"
 )
-class UseSpecificHttpStatusCodes(@Autowired rulesConfig: Config) {
+class UseStandardHttpStatusCodes(@Autowired rulesConfig: Config) {
 
     private val allowed = rulesConfig
         .getConfig("${javaClass.simpleName}.allowed")
@@ -27,7 +27,7 @@ class UseSpecificHttpStatusCodes(@Autowired rulesConfig: Config) {
         .toMap()
 
     @Check(severity = Severity.MUST)
-    fun allowOnlySpecificStatusCodes(context: Context): List<Violation> {
+    fun allowOnlyStandardStatusCodes(context: Context): List<Violation> {
         return context.api.paths.orEmpty().flatMap { (_, pathItem) ->
             pathItem.readOperationsMap().orEmpty().flatMap { (method, operation) ->
                 operation.responses.filterNot { (statusCode, _) ->
@@ -36,7 +36,7 @@ class UseSpecificHttpStatusCodes(@Autowired rulesConfig: Config) {
                     response
                 }
             }.map {
-                context.violation("Operations should use specific HTTP status codes", it)
+                context.violation("Operations should use standard HTTP status codes", it)
             }
         }
     }

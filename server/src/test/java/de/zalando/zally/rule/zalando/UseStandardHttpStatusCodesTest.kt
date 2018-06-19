@@ -6,8 +6,8 @@ import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
-class UseSpecificHttpStatusCodesTest {
-    private val codes = UseSpecificHttpStatusCodes(testConfig)
+class UseStandardHttpStatusCodesTest {
+    private val codes = UseStandardHttpStatusCodes(testConfig)
 
     @Test
     fun shouldPassIfOperationsAreAllowed() {
@@ -26,7 +26,7 @@ class UseSpecificHttpStatusCodesTest {
         val openApi = openApiWithOperations(operations)
         val context = Context(openApi)
 
-        assertThat(codes.allowOnlySpecificStatusCodes(context)).isEmpty()
+        assertThat(codes.allowOnlyStandardStatusCodes(context)).isEmpty()
     }
 
     @Test
@@ -52,7 +52,7 @@ class UseSpecificHttpStatusCodesTest {
 
         val openApi = openApiWithOperations(operations)
         val context = Context(openApi)
-        val violations = codes.allowOnlySpecificStatusCodes(context)
+        val violations = codes.allowOnlyStandardStatusCodes(context)
 
         assertThat(violations).isNotEmpty
         assertThat(violations.map { it.pointer.toString() })
