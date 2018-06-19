@@ -38,7 +38,7 @@ class UseSpecificHttpStatusCodesTest {
         )
         val operations = mapOf(
             "get" to listOf("201", "202", "204", "207", "303", "409", "412", "415", "423") + notAllowedAll,
-            "post" to listOf("204", "304", "409", "412", "423") + notAllowedAll,
+            "post" to listOf("204", "304", "412", "423") + notAllowedAll,
             "put" to listOf("304") + notAllowedAll,
             "patch" to listOf("201", "304") + notAllowedAll,
             "delete" to listOf("201", "304") + notAllowedAll

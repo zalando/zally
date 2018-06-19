@@ -17,10 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired
 )
 class UseSpecificHttpStatusCodes(@Autowired rulesConfig: Config) {
 
-    private val allowedStatusCodes = rulesConfig
-        .getConfig("${javaClass.simpleName}.allowed_codes")
+    private val allowed = rulesConfig
+        .getConfig("${javaClass.simpleName}.allowed")
         .entrySet()
-        .map { (key, config) -> (key to config.unwrapped() as List<String>) }.toMap()
+        .map { (key, config) ->
+            @Suppress("UNCHECKED_CAST")
+            key to config.unwrapped() as List<String>
+        }
+        .toMap()
 
     @Check(severity = Severity.MUST)
     fun allowOnlySpecificStatusCodes(context: Context): List<Violation> {
@@ -37,7 +41,8 @@ class UseSpecificHttpStatusCodes(@Autowired rulesConfig: Config) {
         }
     }
 
-    private fun isAllowed(method: PathItem.HttpMethod, statusCode: String) =
-        allowedStatusCodes[method.name.toLowerCase()].orEmpty().contains(statusCode) ||
-            allowedStatusCodes["all"].orEmpty().contains(statusCode)
+    private fun isAllowed(method: PathItem.HttpMethod, statusCode: String): Boolean {
+        val allowedMethods = allowed[statusCode.toLowerCase()].orEmpty()
+        return allowedMethods.contains(method.name) || allowedMethods.contains("ALL")
+    }
 }
