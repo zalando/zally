@@ -8,6 +8,7 @@ import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.parser.OpenAPIV3Parser
 import io.swagger.v3.parser.converter.SwaggerConverter
@@ -21,6 +22,25 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
     private val swaggerAst = swagger?.let { ReverseAst.fromObject(it).withExtensionMethodNames(*extensionNames).build() }
 
     val api = recorder.proxy
+
+    /**
+     * Convenience method for filtering and iterating over the operations in order to create Violations.
+     * @param pathFilter a filter selecting the paths to validate
+     * @param operationFilter a filter selecting the operations to validate
+     * @param action the action to perform on filtered items
+     * @return a list of Violations and/or nulls where no violations are necessary
+     */
+    fun validateOperations(
+        pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
+        operationFilter: (Map.Entry<PathItem.HttpMethod, Operation>) -> Boolean = { true },
+        action: (Map.Entry<PathItem.HttpMethod, Operation>) -> List<Violation?>
+    ): List<Violation> = validatePaths(pathFilter = pathFilter) { (_, path) ->
+        path.readOperationsMap()
+            .orEmpty()
+            .filter(operationFilter)
+            .flatMap(action)
+            .filterNotNull()
+    }
 
     /**
      * Convenience method for filtering and iterating over the paths in order to create Violations.

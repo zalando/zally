@@ -27,19 +27,14 @@ class UseStandardHttpStatusCodes(@Autowired rulesConfig: Config) {
         .toMap()
 
     @Check(severity = Severity.MUST)
-    fun allowOnlyStandardStatusCodes(context: Context): List<Violation> {
-        return context.api.paths.orEmpty().flatMap { (_, pathItem) ->
-            pathItem.readOperationsMap().orEmpty().flatMap { (method, operation) ->
-                operation.responses.filterNot { (statusCode, _) ->
-                    isAllowed(method, statusCode)
-                }.map { (_, response) ->
-                    response
-                }
-            }.map {
-                context.violation("Operations should use standard HTTP status codes", it)
+    fun allowOnlyStandardStatusCodes(context: Context): List<Violation> =
+        context.validateOperations { (method, operation) ->
+            operation.responses.orEmpty().filterNot { (status, _) ->
+                isAllowed(method, status)
+            }.map { (_, response) ->
+                context.violation("Operations should use standard HTTP status codes", response)
             }
         }
-    }
 
     private fun isAllowed(method: PathItem.HttpMethod, statusCode: String): Boolean {
         val allowedMethods = allowed[statusCode.toLowerCase()].orEmpty()
