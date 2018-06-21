@@ -23,6 +23,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.zalando.zally.util.ast.Util.PRIMITIVES;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.naturalOrder;
+import static java.util.stream.Collectors.toList;
 
 public class ReverseAstBuilder<T> {
     private Collection<String> extensionMethodNames = new HashSet<>();
@@ -124,36 +127,26 @@ public class ReverseAstBuilder<T> {
         final Deque<Node> nodes = new LinkedList<>();
         final Marker marker = getMarker(object).orElse(defaultMarker);
 
-        for (Method m : object.getClass().getDeclaredMethods()) {
+        for (Method m : traversalMethods(object.getClass())) {
             String name = m.getName();
-            // Find all public getter methods.
-            if (isPublicGetterMethod(m)) {
-                try {
-                    Object value = m.invoke(object);
-                    if (value != null) {
-                        if (m.isAnnotationPresent(JsonAnyGetter.class)) {
-                            // A `JsonAnyGetter` method is simply a wrapper for nested properties.
-                            // We must not use the method name but re-use the current pointer.
-                            nodes.push(new Node(value, pointer, marker, /* skip */true));
-                        } else {
-                            JsonPointer newPointer = pointer.append(JsonPointers.escape(m));
-                            nodes.push(new Node(value, newPointer, marker));
-                        }
+            try {
+                Object value = m.invoke(object);
+                if (value != null) {
+                    if (m.isAnnotationPresent(JsonAnyGetter.class)) {
+                        // A `JsonAnyGetter` method is simply a wrapper for nested properties.
+                        // We must not use the method name but re-use the current pointer.
+                        nodes.push(new Node(value, pointer, marker, /* skip */true));
+                    } else {
+                        JsonPointer newPointer = pointer.append(JsonPointers.escape(m));
+                        nodes.push(new Node(value, newPointer, marker));
                     }
-                } catch (ReflectiveOperationException e) {
-                    String message = String.format("Error invoking %s on %s at path %s", name, object.getClass(), pointer);
-                    throw new ReverseAstException(message, e);
                 }
+            } catch (ReflectiveOperationException e) {
+                String message = String.format("Error invoking %s on %s at path %s", name, object.getClass(), pointer);
+                throw new ReverseAstException(message, e);
             }
         }
         return nodes;
-    }
-
-    private boolean isPublicGetterMethod(Method m) {
-        return m.getName().startsWith("get")
-            && m.getParameterCount() == 0
-            && Modifier.isPublic(m.getModifiers())
-            && !m.isAnnotationPresent(JsonIgnore.class);
     }
 
     private Optional<Marker> getMarker(Map<?, ?> map) {
@@ -173,7 +166,7 @@ public class ReverseAstBuilder<T> {
         if (object instanceof Map) {
             return getVendorExtensions((Map) object, extensionName);
         }
-        for (Method m : object.getClass().getDeclaredMethods()) {
+        for (Method m : traversalMethods(object.getClass())) {
             if (extensionMethodNames.contains(m.getName())) {
                 try {
                     Object extensions = m.invoke(object);
@@ -200,5 +193,24 @@ public class ReverseAstBuilder<T> {
             }
         }
         return null;
+    }
+
+    static List<Method> traversalMethods(Class<?> clazz) {
+        return Arrays
+                .stream(clazz.getMethods())
+                .filter(ReverseAstBuilder::isPublicGetterMethod)
+                .sorted(comparing(Method::getName,
+                        comparing( (String name) -> !name.equals("getPaths"))
+                                .thenComparing(naturalOrder())))
+                .collect(toList());
+    }
+
+    private static boolean isPublicGetterMethod(Method m) {
+        return m.getName().startsWith("get")
+                && !m.getName().equals("getClass")
+                && !m.getName().equals("getDeclaringClass")
+                && m.getParameterCount() == 0
+                && Modifier.isPublic(m.getModifiers())
+                && !m.isAnnotationPresent(JsonIgnore.class);
     }
 }
