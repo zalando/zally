@@ -120,12 +120,12 @@ public final class MethodCallRecorder<T> {
     private MethodInterceptor createMethodInterceptor(Object object, Method parent) {
         return invocation -> {
             Method m = invocation.getMethod();
-            Object[] arguments = invocation.getArguments();
-            updatePointer(object, m, arguments);
-
             if (!isGetterMethod(m)) {
                 return invocation.proceed();
             }
+
+            Object[] arguments = invocation.getArguments();
+            updatePointer(object, m, arguments);
             Object result = m.invoke(invocation.getThis(), arguments);
 
             // The result is null but we must construct a Proxy of the result type anyway.
