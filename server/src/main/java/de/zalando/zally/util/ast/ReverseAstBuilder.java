@@ -195,12 +195,12 @@ public class ReverseAstBuilder<T> {
         return null;
     }
 
-    static List<Method> traversalMethods(Class<?> clazz) {
+    protected static List<Method> traversalMethods(Class<?> clazz) {
         return Arrays
                 .stream(clazz.getMethods())
                 .filter(ReverseAstBuilder::isPublicGetterMethod)
                 .sorted(comparing(Method::getName,
-                        comparing( (String name) -> !name.equals("getPaths"))
+                        comparing( (String name) -> !"getPaths".equals(name))
                                 .thenComparing(naturalOrder())))
                 .collect(toList());
     }

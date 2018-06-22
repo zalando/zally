@@ -9,6 +9,7 @@ import io.swagger.v3.oas.models.parameters.QueryParameter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
+@Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "StringLiteralDuplication")
 class ReverseAstBuilderTest {
 
     @Test
