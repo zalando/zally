@@ -9,6 +9,7 @@ import java.util.List;
 public class ApiReviewStatistic {
 
     private String api;
+    private String apiId;
     private boolean successful;
     private int numberOfEndpoints;
     private String userAgent;
@@ -19,6 +20,7 @@ public class ApiReviewStatistic {
 
     ApiReviewStatistic(ApiReview apiReview) {
         api = apiReview.getName();
+        apiId = apiReview.getApiId();
         successful = apiReview.isSuccessfulProcessed();
         numberOfEndpoints = apiReview.getNumberOfEndpoints();
         userAgent = apiReview.getUserAgent();
@@ -63,5 +65,9 @@ public class ApiReviewStatistic {
 
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+    }
+
+    public String getApiId() {
+        return apiId;
     }
 }
