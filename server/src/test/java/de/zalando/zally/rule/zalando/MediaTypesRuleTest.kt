@@ -1,40 +1,34 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getFixture
+import de.zalando.zally.rule.Context
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
 import io.swagger.models.Operation
 import io.swagger.models.Path
 import io.swagger.models.Swagger
+import io.swagger.parser.SwaggerParser
+import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class MediaTypesRuleTest {
-    private val rule = MediaTypesRule()
-
-    fun swaggerWithMediaTypes(vararg pathToMedia: Pair<String, List<String>>): Swagger =
-        Swagger().apply {
-            paths = pathToMedia.map { (path, types) ->
-                path to Path().apply {
-                    this["get"] = Operation().apply { produces = types }
-                }
-            }.toMap()
-        }
 
     @Test
-    fun isApplicationJsonOrProblemJsonForValidInput() {
+    fun `isApplicationJsonOrProblemJson for valid input`() {
         assertThat(isApplicationJsonOrProblemJson("application/json")).isTrue()
         assertThat(isApplicationJsonOrProblemJson("application/problem+json")).isTrue()
     }
 
     @Test
-    fun isApplicationJsonOrProblemJsonForInvalidInput() {
+    fun `isApplicationJsonOrProblemJson for invalid input`() {
         assertThat(isApplicationJsonOrProblemJson("application/vnd.api+json")).isFalse()
         assertThat(isApplicationJsonOrProblemJson("application/x.zalando.contract+json")).isFalse()
     }
 
     @Test
-    fun isCustomMediaTypeWithVersioningForValidInput() {
+    fun `isCustomMediaTypeWithVersioning for valid input`() {
         assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;v=12")).isTrue()
         assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;v=34")).isTrue()
         assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;version=123")).isTrue()
@@ -42,7 +36,7 @@ class MediaTypesRuleTest {
     }
 
     @Test
-    fun isCustomMediaTypeWithVersioningForInvalidInput() {
+    fun `isCustomMediaTypeWithVersioning for invalid input`() {
         assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json")).isFalse()
         assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json")).isFalse()
         assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;ver=1")).isFalse()
@@ -51,13 +45,20 @@ class MediaTypesRuleTest {
         assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;")).isFalse()
     }
 
+    // todo #714: Delete this when conversion to `Context` is over.
     @Test
-    fun emptySwagger() {
+    fun `DEPRECATED empty specification causes no violation`() {
         assertThat(rule.validate(Swagger())).isNull()
     }
 
     @Test
-    fun positiveCase() {
+    fun `empty specification causes no violation`() {
+        val context = Context(OpenAPI())
+        assertThat(rule.validate(context)).isEmpty()
+    }
+
+    @Test
+    fun `versioned custom media type causes no violation`() {
         val swagger = swaggerWithMediaTypes(
             "/shipment-order/{shipment_order_id}" to listOf(
                 "application/x.zalando.contract+json;v=123",
@@ -66,14 +67,14 @@ class MediaTypesRuleTest {
     }
 
     @Test
-    fun negativeCase() {
+    fun `custom media type without versioning causes violation`() {
         val path = "/shipment-order/{shipment_order_id}"
         val swagger = swaggerWithMediaTypes(path to listOf("application/json", "application/vnd.api+json"))
         assertThat(rule.validate(swagger)!!.paths).hasSameElementsAs(listOf("$path GET"))
     }
 
     @Test
-    fun multiplePaths() {
+    fun `only some of multiple paths without versioning causes violation`() {
         val swagger = swaggerWithMediaTypes(
             "/path1" to listOf("application/json", "application/vnd.api+json"),
             "/path2" to listOf("application/x.zalando.contract+json"),
@@ -106,4 +107,18 @@ class MediaTypesRuleTest {
         val swagger = getFixture("api_spa.yaml")
         assertThat(rule.validate(swagger)).isNull()
     }
+
+    private val rule = MediaTypesRule()
+
+    private fun swaggerWithMediaTypes(vararg pathToMedia: Pair<String, List<String>>): Swagger =
+        Swagger().apply {
+            paths = pathToMedia
+                .map { (path, types) ->
+                    path to Path().apply {
+                        this["get"] = Operation().apply { produces = types }
+                    }
+                }
+                .toMap()
+        }
+
 }
