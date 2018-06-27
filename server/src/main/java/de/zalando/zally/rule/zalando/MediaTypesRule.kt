@@ -22,6 +22,7 @@ class MediaTypesRule {
 
     private val description = "Custom media types should only be used for versioning"
 
+    @Deprecated("DELETE AS PART OF #714")
     @Check(severity = Severity.SHOULD)
     fun validate(swagger: Swagger): Violation? {
         val paths = swagger.paths.orEmpty().entries.flatMap { (pathName, path) ->
@@ -40,11 +41,11 @@ class MediaTypesRule {
             path.readOperations().flatMap { operation ->
                 val consumedMediaViolations = operation.requestBody?.content.orEmpty()
                     .filter { (mediaType, _) -> this.isViolatingMediaType(mediaType) }
-                    .map { context.violation(description, it) } // todo #714: Check if pointer still valid without the 2nd parameter
+                    .map { (_, mediaType) -> context.violation(description, mediaType) }
                 val producedMediaViolation = operation.responses.orEmpty().values
                     .flatMap { response -> response.content.orEmpty().entries }
                     .filter { (mediaType, _) -> isViolatingMediaType(mediaType) }
-                    .map { context.violation(description, it) } // todo #714: Check if pointer still valid without the 2nd parameter
+                    .map { (_, mediaType) ->  context.violation(description, mediaType) }
                 consumedMediaViolations + producedMediaViolation
             }
         }

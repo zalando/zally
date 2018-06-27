@@ -1,7 +1,9 @@
 package de.zalando.zally.rule.zalando
 
+import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.getFixture
 import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
 import io.swagger.models.Swagger
@@ -68,8 +70,11 @@ class MediaTypesRuleTest {
     @Test
     fun `custom media type without versioning causes violation`() {
         val path = "/shipment-order/{shipment_order_id}"
-        val swagger = swaggerWithMediaTypes(path to listOf("application/json", "application/vnd.api+json"))
-        assertThat(rule.validate(swagger)!!.paths).hasSameElementsAs(listOf("$path GET"))
+        val context = contextWithMediaTypes(path to listOf("application/json", "application/vnd.api+json"))
+        assertThat(rule.validate(context)).hasSameElementsAs(listOf(
+            Violation(
+                "Custom media types should only be used for versioning",
+                JsonPointer.valueOf("/paths/~1shipment-order~1{shipment_order_id}/get/responses/200/content/application~1vnd.api+json"))))
     }
 
     @Test
