@@ -38,7 +38,7 @@ class MediaTypesRule {
     fun validate(context: Context): List<Violation> =
         context.api.paths.orEmpty().values.flatMap { path ->
             path.readOperations().flatMap { operation ->
-                val consumedMediaViolations = operation.requestBody.content.orEmpty()
+                val consumedMediaViolations = operation.requestBody?.content.orEmpty()
                     .filter { (mediaType, _) -> this.isViolatingMediaType(mediaType) }
                     .map { context.violation(description, it) } // todo #714: Check if pointer still valid without the 2nd parameter
                 val producedMediaViolation = operation.responses.orEmpty().values
