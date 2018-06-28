@@ -1,5 +1,6 @@
 package de.zalando.zally
 
+import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
@@ -77,3 +78,15 @@ fun openApiWithOperations(operations: Map<String, Iterable<String>>): OpenAPI =
         paths = Paths()
         paths.addPathItem("/test", pathItem)
     }
+
+/**
+ * Builds a [JsonPointer] by providing its unescaped parts. Increase readability of hard-coded [JsonPointer] creations.
+ */
+fun jsonPointerOf(vararg parts: Any): JsonPointer = JsonPointer.valueOf(
+    parts
+        .fold(StringBuilder()) { acc, part ->
+            val escapedPart = part.toString().replace("~", "~0").replace("/", "~1")
+            acc.append(JsonPointer.SEPARATOR).append(escapedPart)
+        }
+        .toString()
+)

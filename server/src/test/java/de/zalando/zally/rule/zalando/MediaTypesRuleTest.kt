@@ -2,6 +2,7 @@ package de.zalando.zally.rule.zalando
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.getFixture
+import de.zalando.zally.jsonPointerOf
 import de.zalando.zally.rule.Context
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
@@ -72,23 +73,21 @@ class MediaTypesRuleTest {
         val path = "/shipment-order/{shipment_order_id}"
         val context = contextWithMediaTypes(path to listOf("application/json", "application/vnd.api+json"))
         assertThat(rule.validate(context)).hasSameElementsAs(listOf(
-            Violation(
-                "Custom media types should only be used for versioning",
-                JsonPointer.valueOf("/paths/~1shipment-order~1{shipment_order_id}/get/responses/200/content/application~1vnd.api+json"))))
+            Violation(description, jsonPointerOf("paths", "/shipment-order/{shipment_order_id}", "get", "responses", 200, "content", "application/vnd.api+json"))
+        ))
     }
 
     @Test
     fun `only some of multiple paths without versioning causes violation`() {
-        val swagger = swaggerWithMediaTypes(
+        val context = contextWithMediaTypes(
             "/path1" to listOf("application/json", "application/vnd.api+json"),
             "/path2" to listOf("application/x.zalando.contract+json"),
             "/path3" to listOf("application/x.zalando.contract+json;v=123")
         )
-        val result = rule.validate(swagger)!!
-        println(result)
-        assertThat(result.paths).hasSameElementsAs(listOf(
-            "/path1 GET",
-            "/path2 GET"
+        val result = rule.validate(context)
+        assertThat(result).hasSameElementsAs(listOf(
+            Violation(description, jsonPointerOf("paths", "/path1", "get", "responses", 200, "content", "application/vnd.api+json")),
+            Violation(description, jsonPointerOf("paths", "/path2", "get", "responses", 200, "content", "application/x.zalando.contract+json"))
         ))
     }
 
@@ -113,6 +112,8 @@ class MediaTypesRuleTest {
     }
 
     private val rule = MediaTypesRule()
+
+    private val description = "Custom media types should only be used for versioning"
 
     private fun swaggerWithMediaTypes(vararg pathToMedia: Pair<String, List<String>>): Swagger =
         Swagger().apply {
