@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+import de.zalando.zally.rule.Context
 import de.zalando.zally.rule.ObjectTreeReader
 import io.swagger.models.ModelImpl
 import io.swagger.models.Operation
@@ -25,6 +26,11 @@ val testConfig: Config by lazy {
 }
 
 fun getFixture(fileName: String): Swagger = SwaggerParser().read("fixtures/$fileName")
+
+fun getContextFromFixture(fileName: String): Context? {
+    val content = getResourceContent(fileName)
+    return Context.createOpenApiContext(content) ?: Context.createSwaggerContext(content)
+}
 
 fun getResourceContent(fileName: String): String = ClasspathHelper.loadFileFromClasspath("fixtures/$fileName")
 
@@ -78,15 +84,3 @@ fun openApiWithOperations(operations: Map<String, Iterable<String>>): OpenAPI =
         paths = Paths()
         paths.addPathItem("/test", pathItem)
     }
-
-/**
- * Builds a [JsonPointer] by providing its unescaped parts. Increase readability of hard-coded [JsonPointer] creations.
- */
-fun jsonPointerOf(vararg parts: Any): JsonPointer = JsonPointer.valueOf(
-    parts
-        .fold(StringBuilder()) { acc, part ->
-            val escapedPart = part.toString().replace("~", "~0").replace("/", "~1")
-            acc.append(JsonPointer.SEPARATOR).append(escapedPart)
-        }
-        .toString()
-)

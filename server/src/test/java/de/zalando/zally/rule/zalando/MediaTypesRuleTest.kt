@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zalando
 
 import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.getContextFromFixture
 import de.zalando.zally.getFixture
-import de.zalando.zally.jsonPointerOf
 import de.zalando.zally.rule.Context
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
@@ -73,7 +73,7 @@ class MediaTypesRuleTest {
         val path = "/shipment-order/{shipment_order_id}"
         val context = contextWithMediaTypes(path to listOf("application/json", "application/vnd.api+json"))
         assertThat(rule.validate(context)).hasSameElementsAs(listOf(
-            Violation(description, jsonPointerOf("paths", "/shipment-order/{shipment_order_id}", "get", "responses", 200, "content", "application/vnd.api+json"))
+            v("/paths/~1shipment-order~1{shipment_order_id}/get/responses/200/content/application~1vnd.api+json")
         ))
     }
 
@@ -86,23 +86,26 @@ class MediaTypesRuleTest {
         )
         val result = rule.validate(context)
         assertThat(result).hasSameElementsAs(listOf(
-            Violation(description, jsonPointerOf("paths", "/path1", "get", "responses", 200, "content", "application/vnd.api+json")),
-            Violation(description, jsonPointerOf("paths", "/path2", "get", "responses", 200, "content", "application/x.zalando.contract+json"))
+            v("/paths/~1path1/get/responses/200/content/application~1vnd.api+json"),
+            v("paths/~1path2/get/responses/200/content/application~1x.zalando.contract+json")
         ))
     }
 
     @Test
     fun negativeCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf(
-            "/products GET",
-            "/products/{product_id} GET",
-            "/products/{product_id} PATCH",
-            "/products/{product_id}/children GET",
-            "/products/{product_id}/updates/{update_id} GET",
-            "/product-put-requests/{product_path} POST",
-            "/request-groups/{request_group_id}/updates GET"))
+        val context = getContextFromFixture("api_spp.json")!!
+        val result = rule.validate(context)
+        assertThat(result).hasSameElementsAs(listOf(
+            // --- consumes ---
+            v("/paths/~1products~1{product_id}/patch/consumes"),
+            v("/paths/~1product-put-requests~1{product_path}/post/consumes"),
+            // --- produces ---
+            v("/paths/~1products/get/responses/200"),
+            v("/paths/~1products~1{product_id}/get/responses/200"),
+            v("/paths/~1products~1{product_id}~1children/get/responses/200"),
+            v("/paths/~1products~1{product_id}~1updates~1{update_id}/get/responses/200"),
+            v("/paths/~1request-groups~1{request_group_id}~1updates/get/responses/200")
+        ))
     }
 
     @Test
@@ -112,8 +115,6 @@ class MediaTypesRuleTest {
     }
 
     private val rule = MediaTypesRule()
-
-    private val description = "Custom media types should only be used for versioning"
 
     private fun swaggerWithMediaTypes(vararg pathToMedia: Pair<String, List<String>>): Swagger =
         Swagger().apply {
@@ -142,5 +143,10 @@ class MediaTypesRuleTest {
                 })
             }
         })
+
+    private fun v(pointer: String) = Violation(
+        description = "Custom media types should only be used for versioning",
+        pointer = JsonPointer.compile(pointer)
+    )
 
 }
