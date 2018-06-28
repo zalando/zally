@@ -87,7 +87,7 @@ class MediaTypesRuleTest {
         val result = rule.validate(context)
         assertThat(result).hasSameElementsAs(listOf(
             v("/paths/~1path1/get/responses/200/content/application~1vnd.api+json"),
-            v("paths/~1path2/get/responses/200/content/application~1x.zalando.contract+json")
+            v("/paths/~1path2/get/responses/200/content/application~1x.zalando.contract+json")
         ))
     }
 
