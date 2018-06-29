@@ -14,7 +14,7 @@ class JsonPointersTest {
     }
 
     @Test
-    fun escapeWithGetInfoMethod() {
+    fun `escape() turns getInfo to info`() {
         val method = Swagger::class.java.methods.first { it.name == "getInfo" }
 
         val pointer = JsonPointers.escape(method)
@@ -23,7 +23,7 @@ class JsonPointersTest {
     }
 
     @Test
-    fun escapeWithMapGetMethod() {
+    fun `escape() turns get(KEY) to KEY`() {
         val method = Map::class.java.methods.first { it.name == "get" }
 
         val pointer = JsonPointers.escape(method, "KEY")
