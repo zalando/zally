@@ -2,12 +2,10 @@ package de.zalando.zally.rule.zalando
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.getContextFromFixture
-import de.zalando.zally.getFixture
 import de.zalando.zally.rule.Context
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
-import io.swagger.models.Swagger
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.PathItem
@@ -18,8 +16,6 @@ import io.swagger.v3.oas.models.responses.ApiResponse
 import io.swagger.v3.oas.models.responses.ApiResponses
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import io.swagger.models.Operation as v2Operation
-import io.swagger.models.Path as v2Path
 
 class MediaTypesRuleTest {
 
@@ -92,7 +88,7 @@ class MediaTypesRuleTest {
     }
 
     @Test
-    fun negativeCaseSpp() {
+    fun `the SPP API generates violations`() {
         val context = getContextFromFixture("api_spp.json")!!
         val result = rule.validate(context)
         assertThat(result).hasSameElementsAs(listOf(
@@ -109,23 +105,12 @@ class MediaTypesRuleTest {
     }
 
     @Test
-    fun positiveCaseSpa() {
-        val swagger = getFixture("api_spa.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+    fun `the SPA API generates no violations`() {
+        val context = getContextFromFixture("api_spa.yaml")!!
+        assertThat(rule.validate(context)).isEmpty()
     }
 
     private val rule = MediaTypesRule()
-
-    private fun swaggerWithMediaTypes(vararg pathToMedia: Pair<String, List<String>>): Swagger =
-        Swagger().apply {
-            paths = pathToMedia
-                .map { (path, types) ->
-                    path to v2Path().apply {
-                        this["get"] = v2Operation().apply { produces = types }
-                    }
-                }
-                .toMap()
-        }
 
     private fun contextWithMediaTypes(vararg pathToMedia: Pair<String, List<String>>): Context =
         Context(OpenAPI().apply {
@@ -148,5 +133,4 @@ class MediaTypesRuleTest {
         description = "Custom media types should only be used for versioning",
         pointer = JsonPointer.compile(pointer)
     )
-
 }
