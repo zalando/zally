@@ -23,15 +23,13 @@ class MediaTypesRule {
 
     @Check(severity = Severity.SHOULD)
     fun validate(context: Context): List<Violation> =
-        context.api.paths?.values.orEmpty().flatMap { path ->
-            path.readOperations().flatMap { operation ->
-                val consumedMediaTypes = operation.requestBody?.content?.entries.orEmpty()
-                val producedMediaTypes = operation.responses?.values.orEmpty()
-                    .flatMap { it.content?.entries.orEmpty() }
-                (consumedMediaTypes + producedMediaTypes)
-                    .filter { isViolatingMediaType(it.key) }
-                    .map { context.violation(description, it.value) }
-            }
+        context.validateOperations { (_, operation) ->
+            val consumedMediaTypes = operation.requestBody?.content?.entries.orEmpty()
+            val producedMediaTypes = operation.responses?.values.orEmpty()
+                .flatMap { it.content?.entries.orEmpty() }
+            (consumedMediaTypes + producedMediaTypes)
+                .filter { isViolatingMediaType(it.key) }
+                .map { context.violation(description, it.value) }
         }
 
     private fun isViolatingMediaType(mediaType: String) =
