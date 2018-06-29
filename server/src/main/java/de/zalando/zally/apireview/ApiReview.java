@@ -34,6 +34,8 @@ public class ApiReview implements Serializable {
 
     private String name;
 
+    private String apiId;
+
     @Column(nullable = false)
     private String jsonPayload;
 
@@ -79,7 +81,8 @@ public class ApiReview implements Serializable {
         this.day = created.toLocalDate();
         this.userAgent = userAgent;
 
-        this.name = ApiNameParser.extractApiName(apiDefinition);
+        this.name = OpenApiHelper.extractApiName(apiDefinition);
+        this.apiId = OpenApiHelper.extractApiId(apiDefinition);
         this.ruleViolations = violations.stream()
             .map(v -> new RuleViolation(
                 this,
@@ -141,6 +144,14 @@ public class ApiReview implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getApiId() {
+        return apiId;
+    }
+
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
     }
 
     public LocalDate getDay() {
