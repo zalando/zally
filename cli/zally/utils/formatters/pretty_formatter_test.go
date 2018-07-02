@@ -134,13 +134,13 @@ func TestPrettyFormatViolationInPrettyFormat(t *testing.T) {
 
 	t.Run("Converts violation to string in pretty format with paths and pointer", func(t *testing.T) {
 
-		violation.Pointer = "/pointer/1"
+		violation.Pointer = "/paths/~1~01things/get/responses/200/content/*~1*"
 
 		actualResult := prettyFormatter.formatViolation(&violation)
 		expectedResult := "\x1b[31mMUST\x1b[0m \x1b[31mTest Title\x1b[0m\n" +
 			"\tTest Description\n" +
 			"\thttp://example.com/violation\n" +
-			"\t\t/pointer/1\n\n"
+			"\t\tpaths > /~1things > get > responses > 200 > content > */*\n\n"
 
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})
@@ -153,7 +153,7 @@ func TestPrettyFormatViolationInPrettyFormat(t *testing.T) {
 		expectedResult := "\x1b[31mMUST\x1b[0m \x1b[31mTest Title\x1b[0m\n" +
 			"\tTest Description\n" +
 			"\thttp://example.com/violation\n" +
-			"\t\t/pointer/1\n\n"
+			"\t\tpaths > /~1things > get > responses > 200 > content > */*\n\n"
 
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})
