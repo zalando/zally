@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class JsonRulesValidator(@Autowired rules: RulesManager) : RulesValidator<JsonNode>(rules) {
-    private var ast: ReverseAst<Map<*, *>>? = null
+    private var ast: ReverseAst? = null
 
     override fun parse(content: String): JsonNode? {
         return try {

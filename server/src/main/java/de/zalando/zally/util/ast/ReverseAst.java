@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * ReverseAst holds meta information for nodes of a Swagger or OpenApi object.
  */
-public class ReverseAst<T> {
+public class ReverseAst {
     /**
      * Creates a new instance of ReverseAstBuilder from a Swagger or OpenApi object.
      *
