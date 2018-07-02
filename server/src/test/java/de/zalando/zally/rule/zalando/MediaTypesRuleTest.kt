@@ -7,14 +7,8 @@ import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
 import io.swagger.v3.oas.models.OpenAPI
-import io.swagger.v3.oas.models.Operation
-import io.swagger.v3.oas.models.PathItem
-import io.swagger.v3.oas.models.Paths
-import io.swagger.v3.oas.models.media.Content
-import io.swagger.v3.oas.models.media.MediaType
-import io.swagger.v3.oas.models.responses.ApiResponse
-import io.swagger.v3.oas.models.responses.ApiResponses
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class MediaTypesRuleTest {
@@ -57,17 +51,35 @@ class MediaTypesRuleTest {
 
     @Test
     fun `versioned custom media type causes no violation`() {
-        val context = contextWithMediaTypes(
-            "/shipment-order/{shipment_order_id}" to listOf(
-                "application/x.zalando.contract+json;v=123",
-                "application/vnd.api+json;version=3"))
+        @Language("YAML")
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.0
+            paths:
+              "/shipment-order/{shipment_order_id}":
+                get:
+                  responses:
+                    200:
+                      content:
+                        "application/x.zalando.contract+json;v=123": {}
+                        "application/vnd.api+json;version=3": {}
+        """.trimIndent())!!
         assertThat(rule.validate(context)).isEmpty()
     }
 
     @Test
     fun `custom media type without versioning causes violation`() {
-        val path = "/shipment-order/{shipment_order_id}"
-        val context = contextWithMediaTypes(path to listOf("application/json", "application/vnd.api+json"))
+        @Language("YAML")
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.0
+            paths:
+              "/shipment-order/{shipment_order_id}":
+                get:
+                  responses:
+                    200:
+                      content:
+                        "application/json": {}
+                        "application/vnd.api+json": {}
+        """.trimIndent())!!
         assertThat(rule.validate(context)).hasSameElementsAs(listOf(
             v("/paths/~1shipment-order~1{shipment_order_id}/get/responses/200/content/application~1vnd.api+json")
         ))
@@ -75,11 +87,30 @@ class MediaTypesRuleTest {
 
     @Test
     fun `only some of multiple paths without versioning causes violation`() {
-        val context = contextWithMediaTypes(
-            "/path1" to listOf("application/json", "application/vnd.api+json"),
-            "/path2" to listOf("application/x.zalando.contract+json"),
-            "/path3" to listOf("application/x.zalando.contract+json;v=123")
-        )
+        @Language("YAML")
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.0
+            paths:
+              "/path1":
+                get:
+                  responses:
+                    200:
+                      content:
+                        "application/json": {}
+                        "application/vnd.api+json": {}
+              "/path2":
+                get:
+                  responses:
+                    200:
+                      content:
+                        "application/x.zalando.contract+json": {}
+              "/path3":
+                get:
+                  responses:
+                    200:
+                      content:
+                        "application/x.zalando.contract+json;v=123": {}
+        """.trimIndent())!!
         val result = rule.validate(context)
         assertThat(result).hasSameElementsAs(listOf(
             v("/paths/~1path1/get/responses/200/content/application~1vnd.api+json"),
@@ -111,23 +142,6 @@ class MediaTypesRuleTest {
     }
 
     private val rule = MediaTypesRule()
-
-    private fun contextWithMediaTypes(vararg pathToMedia: Pair<String, List<String>>): Context =
-        Context(OpenAPI().apply {
-            paths = pathToMedia.fold(Paths()) { paths, (path, types) ->
-                paths.addPathItem(path, PathItem().apply {
-                    get = Operation().apply {
-                        responses = ApiResponses().apply {
-                            addApiResponse("200", ApiResponse().apply {
-                                content = types.fold(Content()) { content, type ->
-                                    content.addMediaType(type, MediaType())
-                                }
-                            })
-                        }
-                    }
-                })
-            }
-        })
 
     private fun v(pointer: String) = Violation(
         description = "Custom media types should only be used for versioning",
