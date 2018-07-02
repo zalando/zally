@@ -70,7 +70,7 @@ func (f *MarkdownFormatter) formatViolation(violation *domain.Violation) string 
 	fmt.Fprintf(&buffer, "> %s\n\n", violation.Decription)
 
 	if violation.Pointer != "" {
-		fmt.Fprintf(&buffer, "- %s\n", violation.Pointer)
+		fmt.Fprintf(&buffer, "- %s\n", violation.ToPointerDisplayString())
 	} else {
 		for _, path := range violation.Paths {
 			fmt.Fprintf(&buffer, "- %s\n", path)

@@ -79,7 +79,12 @@ export function ViolationRuleLink(props) {
 }
 
 export function ViolationPointer(props) {
-  return <p>Pointer: {props.pointer}</p>;
+  const display = props.pointer
+    .replace(/^\//g, '')
+    .replace(/\//g, ' > ')
+    .replace(/~1/g, '/')
+    .replace(/~0/g, '~');
+  return <p>Location: {display}</p>;
 }
 
 export function ViolationPaths(props) {

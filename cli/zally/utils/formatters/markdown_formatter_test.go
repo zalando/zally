@@ -147,12 +147,12 @@ func TestMarkdownFormatViolation(t *testing.T) {
 
 	t.Run("Converts violation to string in pretty format with paths and pointer", func(t *testing.T) {
 
-		violation.Pointer = "/pointer/1"
+		violation.Pointer = "/paths/~1~01things/get/responses/200/content/*~1*"
 
 		actualResult := markdownFormatter.formatViolation(&violation)
 		expectedResult := "### `MUST` [Test Title](http://example.com/violation)\n\n" +
 			"> Test Description\n\n" +
-			"- /pointer/1\n\n"
+			"- paths > /~1things > get > responses > 200 > content > */*\n\n"
 
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})
@@ -164,7 +164,7 @@ func TestMarkdownFormatViolation(t *testing.T) {
 		actualResult := markdownFormatter.formatViolation(&violation)
 		expectedResult := "### `MUST` [Test Title](http://example.com/violation)\n\n" +
 			"> Test Description\n\n" +
-			"- /pointer/1\n\n"
+			"- paths > /~1things > get > responses > 200 > content > */*\n\n"
 
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})
