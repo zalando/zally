@@ -81,7 +81,7 @@ func TestIntegrationWithLocalJsonFile(t *testing.T) {
 
 		fmt.Println(out)
 		assert.Contains(t, out, "MUST violations: 7")
-		assert.Contains(t, out, "SHOULD violations: 10")
+		assert.Contains(t, out, "SHOULD violations: 9")
 		assert.Contains(t, out, "MAY violations: 1")
 		assert.Contains(t, out, "HINT violations: 1")
 
@@ -109,7 +109,7 @@ func TestIntegrationWithRemoteJsonFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "https://raw.githubusercontent.com/zalando/zally/e542a2d6e8f7f37f4adf2242343e453961537a08/server/src/test/resources/api_spp.json"})
 
 		assert.Contains(t, out, "MUST violations: 8")
-		assert.Contains(t, out, "SHOULD violations: 10")
+		assert.Contains(t, out, "SHOULD violations: 9")
 		assert.Contains(t, out, "MAY violations: 1")
 		assert.Contains(t, out, "HINT violations: 1")
 
