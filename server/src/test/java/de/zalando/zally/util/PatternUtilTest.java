@@ -2,18 +2,7 @@ package de.zalando.zally.util;
 
 import org.junit.Test;
 
-import static de.zalando.zally.util.PatternUtil.hasTrailingSlash;
-import static de.zalando.zally.util.PatternUtil.hasVersionInUrl;
-import static de.zalando.zally.util.PatternUtil.isCamelCase;
-import static de.zalando.zally.util.PatternUtil.isHyphenated;
-import static de.zalando.zally.util.PatternUtil.isHyphenatedCamelCase;
-import static de.zalando.zally.util.PatternUtil.isHyphenatedPascalCase;
-import static de.zalando.zally.util.PatternUtil.isKebabCase;
-import static de.zalando.zally.util.PatternUtil.isLowerCaseAndHyphens;
-import static de.zalando.zally.util.PatternUtil.isPascalCase;
-import static de.zalando.zally.util.PatternUtil.isPathVariable;
-import static de.zalando.zally.util.PatternUtil.isSnakeCase;
-import static de.zalando.zally.util.PatternUtil.isVersion;
+import static de.zalando.zally.util.PatternUtil.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

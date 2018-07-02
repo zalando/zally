@@ -73,5 +73,4 @@ public class PatternUtil {
     public static boolean isCustomMediaTypeWithVersioning(String mediaType) {
         return mediaType.matches(PATTERN_CUSTOM_WITH_VERSIONING);
     }
-
 }
