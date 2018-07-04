@@ -32,10 +32,10 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
         pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
         action: (Map.Entry<String, PathItem>) -> List<Violation?>
     ): List<Violation> = api.paths
-        .orEmpty()
-        .filter(pathFilter)
-        .flatMap(action)
-        .filterNotNull()
+            .orEmpty()
+            .filter(pathFilter)
+            .flatMap(action)
+            .filterNotNull()
 
     /**
      * Creates a List of one Violation with a pointer to the OpenAPI or Swagger model node specified,
@@ -45,7 +45,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return the new Violation
      */
     fun violations(description: String, value: Any): List<Violation> =
-        listOf(violation(description, value))
+            listOf(violation(description, value))
 
     /**
      * Creates a List of one Violation with the specified pointer, defaulting to the last recorded location.
@@ -54,7 +54,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return the new Violation
      */
     fun violations(description: String, pointer: JsonPointer?): List<Violation> =
-        listOf(violation(description, pointer))
+            listOf(violation(description, pointer))
 
     /**
      * Creates a Violation with a pointer to the OpenAPI or Swagger model node specified,
@@ -64,7 +64,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return the new Violation
      */
     fun violation(description: String, value: Any): Violation =
-        violation(description, pointerForValue(value))
+            violation(description, pointerForValue(value))
 
     /**
      * Creates a Violation with the specified pointer, defaulting to the last recorded location.
@@ -73,7 +73,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return the new Violation
      */
     fun violation(description: String, pointer: JsonPointer? = null): Violation =
-        Violation(description, pointer ?: recorder.pointer)
+            Violation(description, pointer ?: recorder.pointer)
 
     /**
      * Check whether a location should be ignored by a specific rule.
@@ -82,7 +82,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return true if the location should be ignored for this rule
      */
     fun isIgnored(pointer: JsonPointer, ruleId: String): Boolean =
-        swaggerAst?.isIgnored(pointer, ruleId) ?: openApiAst.isIgnored(pointer, ruleId)
+            swaggerAst?.isIgnored(pointer, ruleId) ?: openApiAst.isIgnored(pointer, ruleId)
 
     private fun pointerForValue(value: Any): JsonPointer? = if (swaggerAst != null) {
         val swaggerPointer = swaggerAst.getPointer(value)
@@ -113,18 +113,18 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
         }
 
         fun createSwaggerContext(content: String): Context? =
-            SwaggerParser().readWithInfo(content, true)?.let {
-                val swagger = it.swagger ?: return null
-                val openApi = SwaggerConverter().convert(it)?.openAPI
+                SwaggerParser().readWithInfo(content, true)?.let {
+                    val swagger = it.swagger ?: return null
+                    val openApi = SwaggerConverter().convert(it)?.openAPI
 
-                openApi?.let {
-                    try {
-                        ResolverFully(true).resolveFully(it)
-                    } catch (e: NullPointerException) {
-                        log.warn("Failed to fully resolve Swagger schema.", e)
+                    openApi?.let {
+                        try {
+                            ResolverFully(true).resolveFully(it)
+                        } catch (e: NullPointerException) {
+                            log.warn("Failed to fully resolve Swagger schema.", e)
+                        }
+                        Context(openApi, swagger)
                     }
-                    Context(openApi, swagger)
                 }
-            }
     }
 }
