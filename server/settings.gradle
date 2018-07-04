@@ -17,3 +17,5 @@ include 'services:webservice'
 */
 
 rootProject.name = 'zally'
+
+include 'zally-rule-api'

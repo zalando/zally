@@ -27,8 +27,19 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'kotlin'
+allprojects {
+  apply plugin: 'java'
+  apply plugin: 'kotlin'
+
+  repositories {
+    jcenter()
+    mavenCentral()
+  }
+
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
+}
+
 apply plugin: 'kotlin-allopen'
 apply plugin: 'jacoco'
 apply plugin: 'org.springframework.boot'
@@ -45,15 +56,9 @@ jar {
     version = '1.0.0'
 }
 
-repositories {
-    jcenter()
-    mavenCentral()
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 dependencies {
+    compile project('zally-rule-api')
+
     compile("io.swagger.parser.v3:swagger-parser:2.0.0")
     compile("com.github.java-json-tools:json-schema-validator:2.2.8")
     compile("org.springframework.boot:spring-boot-starter-web:$spring_boot_version")
@@ -79,6 +84,8 @@ dependencies {
     compile("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
     compile("com.typesafe:config:1.3.3")
     compile("de.mpg.mpi-inf:javatools:1.0.1")
+
+    testCompile project('zally-rule-api')
 
     testCompile("net.jadler:jadler-core:1.3.0")
     testCompile("net.jadler:jadler-jdk:1.3.0")

@@ -1,0 +1,5 @@
+dependencies {
+  compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9+")
+
+  compile("org.springframework.boot:spring-boot-starter-web:$spring_boot_version")
+}
