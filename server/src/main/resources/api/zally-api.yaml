@@ -1,14 +1,29 @@
 swagger: '2.0'
 
 info:
- title: Zally
- description: Zalando's API Linter
- version: "1.4.0"
+ title: Zally - Zalando's API Linter
+ description: |
+         Zally is a quality assurance tool. It's main purpose is to check the complience of
+         API specifications to a specific set of API design rules.
+
+         The service is able to lint the API specification in OpenAPI format. The result of
+         the linting is a set of Violations. A violation contains information about the violated
+         rule, its severity, and path of the violation in the specification document.
+
+         The API also provides a result and statistics endpoint. It contains aggregated statics like
+         the number of linting requests and the number of checked endpoints. Additionally, all
+         linting results and the linted API specifications can be retrieved.
+
+ version: "1.4.1"
  x-api-id: 48aa0090-25ef-11e8-b467-0ed5f89f718b
  x-audience: company-internal
  contact:
    name: Team API Management
    email: team-api-management@zalando.de
+
+externalDocs:
+  description: Open Source project's page
+  url: https://opensource.zalando.com/zally/
 
 host: "zally.overarching.zalan.do"
 
@@ -26,13 +41,6 @@ securityDefinitions:
       uid: submit API specification for validation
 
 parameters:
-  Authorization:
-    name: Authorization
-    in: header
-    description: OAUTH2 (IAM)
-    required: true
-    type: string
-    format: OAUTH2 (IAM)
   LintingRequest:
     name: Request
     in: body
@@ -97,7 +105,6 @@ paths:
         using Zally without authentication but supply a password
         protected url and still get a `401 Unauthorized` response.
       parameters:
-        - $ref: '#/parameters/Authorization'
         - $ref: '#/parameters/LintingRequest'
       consumes:
         - application/json
@@ -111,15 +118,11 @@ paths:
         400:
           description: Input file not parsable
           schema:
-            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
-        415:
-          description: API definition url responded with content-type which clearly isn't JSON or YAML.
-          schema:
-            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+            $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
         default:
-          description: An array of error objects
+          description: Error object
           schema:
-            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+            $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
       security:
         - oauth2:
           - uid
@@ -132,7 +135,6 @@ paths:
         Returns a list of rules which are supported by a current Zally
         installation.
       parameters:
-        - $ref: '#/parameters/Authorization'
         - $ref: '#/parameters/RulesType'
         - $ref: '#/parameters/IsActive'
       consumes:
@@ -147,11 +149,11 @@ paths:
         400:
           description: One of the query parameters is incorrect
           schema:
-            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+            $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
         default:
-          description: An array of error objects
+          description: Error object
           schema:
-            $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+            $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
       security:
         - oauth2:
           - uid
@@ -159,13 +161,12 @@ paths:
   '/review-statistics':
       get:
         summary:
-          Provides query capabilites for automatically computed review statistics.
+          Provides query capabilites for linting summaries and automatically computed review statistics.
         description: |
-          Returns a list of all review statistics for a given interval in time.
-          If none of the query parameters is supplied, a list of all review statistics
-          for the last week is returned.
+          Returns a list of all linting results and review statistics for a given
+          interval in time. If none of the query parameters is supplied, a list of
+          all linting results and review statistics for the last week is returned.
         parameters:
-          - $ref: '#/parameters/Authorization'
           - $ref: '#/parameters/From'
           - $ref: '#/parameters/To'
           - $ref: '#/parameters/UserAgent'
@@ -181,11 +182,11 @@ paths:
           400:
             description: One of the query parameters is incorrect
             schema:
-              $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+              $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
           default:
-            description: An array of error objects
+            description: Error object
             schema:
-              $ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+              $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
         security:
           - oauth2:
             - uid
@@ -197,12 +198,15 @@ definitions:
     properties:
       api_definition:
         type: object
+        description: Specification object in OpenAPI format
       api_definition_url:
         type: string
+        description: Link to the specification in OpenAPI format
       ignoreRules:
         type: array
         items:
           type: string
+        description: List of rule ids to be ignored
 
   LintingResponse:
     type: object
@@ -214,8 +218,10 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Violation'
+        description: List of violations
       message:
         type: string
+        description: Custom server message
       violations_count:
         $ref: '#/definitions/ViolationsCount'
 
@@ -232,7 +238,7 @@ definitions:
 
   ReviewStatisticsResponse:
     type: object
-    description: Review statistics for a given interval in time
+    description: Linting results and review statistics for a given interval in time
     required:
       - total_reviews
       - total_reviews_deduplicated
@@ -249,34 +255,42 @@ definitions:
         type: integer
         format: int32
         example: 23
+        description: Total number of lintings
       total_reviews_deduplicated:
         type: integer
         format: int32
         example: 12
+        description: Unique APIs linted
       successful_reviews:
         type: integer
         format: int32
         example: 17
+        description: Number of successful lintings
       number_of_endpoints:
         type: integer
         format: int32
         example: 10
+        description: Number of endpoints in the linted APIs
       must_violations:
         type: integer
         format: int32
         example: 123
+        description: Number of MUST violations
       should_violations:
         type: integer
         format: int32
         example: 81
+        description: Number of SHOULD violations
       may_violations:
         type: integer
         format: int32
         example: 32
+        description: Number of MAY violations
       hint_violations:
         type: integer
         format: int32
         example: 5
+        description: Number of HINTS
       violations:
         type: array
         items:
@@ -288,7 +302,7 @@ definitions:
 
   ReviewStatistic:
     type: object
-    description: One api review
+    description: One API review
     required:
       - api
       - successful
@@ -297,20 +311,24 @@ definitions:
     properties:
       api:
         type: string
-        example: 'My API'
+        description: API title
+        example: Awesome API
       api_id:
         type: string
         description: x-api-id OpenAPI extension, if present in the specification
         example: 48aa0090-25ef-11e8-b467-0ed5f89f718b
       successful:
         type: boolean
+        description: 'true if linting has not failed'
       user_agent:
         type: string
         example: 'Zally-CLI/2.0'
+        description: User agent which has been issued the linting
       number_of_endpoints:
         type: integer
         format: int32
         example: 7
+        description: Number of endpoints in the API
       violations:
         type: array
         items:
@@ -326,18 +344,15 @@ definitions:
     properties:
       name:
         type: string
-        example: 'My API'
+        description: Violation text
+        example: 'Rule X has been violated'
       type:
-        type: string
-        x-extensible-enum:
-        - MUST
-        - SHOULD
-        - MAY
-        - HINT
+        $ref: '#/definitions/RuleType'
       occurrence:
         type: integer
         format: int32
         example: 6
+        description: Number of occurrence
 
   Violation:
     type: object
@@ -349,23 +364,23 @@ definitions:
     properties:
       title:
         type: string
+        description: Violation title
       description:
         type: string
+        description: Violation text
       violation_type:
-        type: string
-        x-extensible-enum:
-        - MUST
-        - SHOULD
-        - MAY
-        - HINT
+        $ref: '#/definitions/RuleType'
       rule_link:
         type: string
+        description: Violated rule URL
       paths:
         type: array
         items:
           type: string
+        description: Violated paths
       pointer:
         type: string
+        description: JsonPointer to the violated path in the specification
 
   ViolationsCount:
     type: object
@@ -405,16 +420,29 @@ definitions:
     properties:
       title:
         type: string
+        description: Rule title
         example: 'Do Not Use URI Versioning'
       code:
         type: string
+        description: Rule id
         example: '115'
       type:
-        type: string
-        example: 'MUST'
+        $ref: '#/definitions/RuleType'
       url:
         type: string
+        description: Link to the rule's description
         example: 'https://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning'
       is_active:
         type: boolean
+        description: Shows whether the rule is activated
         example: true
+
+  RuleType:
+    type: string
+    x-extensible-enum:
+      - MUST
+      - SHOULD
+      - COULD
+      - MAY
+      - HINT
+    description: Rule type / severity

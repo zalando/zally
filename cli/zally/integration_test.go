@@ -131,21 +131,6 @@ func TestIntegrationWithNoMustViolations(t *testing.T) {
 	})
 }
 
-func TestIntegrationWithZallyApiDefinition(t *testing.T) {
-	t.Run("integrationWithZallyApiDefinition", func(t *testing.T) {
-		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/main/resources/api/zally-api.yaml"})
-
-		assert.Contains(t, out, "Not Specify Standard Error Codes")
-
-		assert.Contains(t, out, "MUST violations: 0")
-		assert.Contains(t, out, "SHOULD violations: 0")
-		assert.Contains(t, out, "MAY violations: 0")
-		assert.Contains(t, out, "HINT violations: 1")
-
-		assert.Nil(t, e)
-	})
-}
-
 func TestIntegrationDisplayRulesList(t *testing.T) {
 	t.Run("integrationDisplayRulesList", func(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "rules"})
