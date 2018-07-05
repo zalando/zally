@@ -26,7 +26,14 @@ public final class JsonPointers {
         createFn(compile("^/components/responses/(.*)$"), "/responses/%s"),
         createFn(compile("^/components/parameters/(.*)$"), "/parameters/%s"),
         createFn(compile("^/components/securitySchemes/(.*)$"), "/securityDefinitions/%s"),
-        createFn(compile("^/paths/(.+/responses/.+)/content/.+/(schema.*)$"), "/paths/%s/%s")
+        createFn(compile("^/paths/(.+/responses/.+)/content/.+/(schema.*)$"), "/paths/%s/%s"),
+
+        // VERB/responses/STATUS_CODE/content/MEDIA_TYPE --> VERB/responses/STATUS_CODE
+        // Could also be VERB/produces but this information is lost from Swagger 2 to OpenAPI 3 conversion.
+        createFn(compile("^/paths/(.+/responses/.+)/content/[^/]*$"), "/paths/%s"),
+
+        // VERB/requestBody/content/MEDIA_TYPE --> VERB/consumes
+        createFn(compile("^/paths/(.*)/requestBody/content/[^/]*$"),"/paths/%s/consumes")
     );
 
     private static Function<String, String> createFn(Pattern pattern, String pointerOut) {

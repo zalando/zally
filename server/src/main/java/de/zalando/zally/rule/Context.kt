@@ -8,7 +8,9 @@ import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
 import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.PathItem
+import io.swagger.v3.oas.models.PathItem.HttpMethod
 import io.swagger.v3.parser.OpenAPIV3Parser
 import io.swagger.v3.parser.converter.SwaggerConverter
 import io.swagger.v3.parser.core.models.ParseOptions
@@ -36,6 +38,18 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
             .filter(pathFilter)
             .flatMap(action)
             .filterNotNull()
+
+    fun validateOperations(
+        pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
+        operationFilter: (Map.Entry<HttpMethod, Operation>) -> Boolean = { true },
+        action: (Map.Entry<HttpMethod, Operation>) -> List<Violation?>
+    ): List<Violation> = validatePaths(pathFilter) { (_, path) ->
+        path.readOperationsMap()
+            .orEmpty()
+            .filter(operationFilter)
+            .flatMap(action)
+            .filterNotNull()
+    }
 
     /**
      * Creates a List of one Violation with a pointer to the OpenAPI or Swagger model node specified,
