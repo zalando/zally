@@ -50,13 +50,13 @@ func TestIntegrationWithLocalYamlFile(t *testing.T) {
 	t.Run("integrationWithLocalYamlFile", func(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spa.yaml"})
 
-		assert.Contains(t, out, "MUST violations: 6")
+		assert.Contains(t, out, "MUST violations: 5")
 		assert.Contains(t, out, "SHOULD violations: 2")
 		assert.Contains(t, out, "MAY violations: 0")
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, "Failing because: 6 must violation(s) found", e.Error())
+		assert.Equal(t, "Failing because: 5 must violation(s) found", e.Error())
 	})
 }
 
@@ -65,13 +65,13 @@ func TestIntegrationWithSomeOtherLocalYamlFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_tinbox.yaml"})
 
 		assert.Contains(t, out, "Provide API Specification using OpenAPI")
-		assert.Contains(t, out, "MUST violations: 32")
+		assert.Contains(t, out, "MUST violations: 31")
 		assert.Contains(t, out, "SHOULD violations: 3")
 		assert.Contains(t, out, "MAY violations: 0")
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, "Failing because: 32 must violation(s) found", e.Error())
+		assert.Equal(t, "Failing because: 31 must violation(s) found", e.Error())
 	})
 }
 
@@ -94,13 +94,13 @@ func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 	t.Run("integrationWithRemoteYamlFile", func(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "https://raw.githubusercontent.com/zalando/zally/e542a2d6e8f7f37f4adf2242343e453961537a08/server/src/test/resources/api_spa.yaml"})
 
-		assert.Contains(t, out, "MUST violations: 7")
+		assert.Contains(t, out, "MUST violations: 6")
 		assert.Contains(t, out, "SHOULD violations: 2")
 		assert.Contains(t, out, "MAY violations: 0")
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, "Failing because: 7 must violation(s) found", e.Error())
+		assert.Equal(t, "Failing because: 6 must violation(s) found", e.Error())
 	})
 }
 
