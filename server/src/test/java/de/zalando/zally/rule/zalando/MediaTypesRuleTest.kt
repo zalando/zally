@@ -1,40 +1,32 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getFixture
+import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.getContextFromFixture
+import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
-import io.swagger.models.Operation
-import io.swagger.models.Path
-import io.swagger.models.Swagger
+import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class MediaTypesRuleTest {
-    private val rule = MediaTypesRule()
-
-    fun swaggerWithMediaTypes(vararg pathToMedia: Pair<String, List<String>>): Swagger =
-        Swagger().apply {
-            paths = pathToMedia.map { (path, types) ->
-                path to Path().apply {
-                    this["get"] = Operation().apply { produces = types }
-                }
-            }.toMap()
-        }
 
     @Test
-    fun isApplicationJsonOrProblemJsonForValidInput() {
+    fun `isApplicationJsonOrProblemJson for valid input`() {
         assertThat(isApplicationJsonOrProblemJson("application/json")).isTrue()
         assertThat(isApplicationJsonOrProblemJson("application/problem+json")).isTrue()
     }
 
     @Test
-    fun isApplicationJsonOrProblemJsonForInvalidInput() {
+    fun `isApplicationJsonOrProblemJson for invalid input`() {
         assertThat(isApplicationJsonOrProblemJson("application/vnd.api+json")).isFalse()
         assertThat(isApplicationJsonOrProblemJson("application/x.zalando.contract+json")).isFalse()
     }
 
     @Test
-    fun isCustomMediaTypeWithVersioningForValidInput() {
+    fun `isCustomMediaTypeWithVersioning for valid input`() {
         assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;v=12")).isTrue()
         assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;v=34")).isTrue()
         assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;version=123")).isTrue()
@@ -42,7 +34,7 @@ class MediaTypesRuleTest {
     }
 
     @Test
-    fun isCustomMediaTypeWithVersioningForInvalidInput() {
+    fun `isCustomMediaTypeWithVersioning for invalid input`() {
         assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json")).isFalse()
         assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json")).isFalse()
         assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;ver=1")).isFalse()
@@ -52,58 +44,107 @@ class MediaTypesRuleTest {
     }
 
     @Test
-    fun emptySwagger() {
-        assertThat(rule.validate(Swagger())).isNull()
+    fun `empty specification causes no violation`() {
+        val context = Context(OpenAPI())
+        assertThat(rule.validate(context)).isEmpty()
     }
 
     @Test
-    fun positiveCase() {
-        val swagger = swaggerWithMediaTypes(
-            "/shipment-order/{shipment_order_id}" to listOf(
-                "application/x.zalando.contract+json;v=123",
-                "application/vnd.api+json;version=3"))
-        assertThat(rule.validate(swagger)).isNull()
+    fun `versioned custom media type causes no violation`() {
+        @Language("YAML")
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.0
+            paths:
+              "/shipment-order/{shipment_order_id}":
+                get:
+                  responses:
+                    200:
+                      content:
+                        "application/x.zalando.contract+json;v=123": {}
+                        "application/vnd.api+json;version=3": {}
+        """.trimIndent())!!
+        assertThat(rule.validate(context)).isEmpty()
     }
 
     @Test
-    fun negativeCase() {
-        val path = "/shipment-order/{shipment_order_id}"
-        val swagger = swaggerWithMediaTypes(path to listOf("application/json", "application/vnd.api+json"))
-        assertThat(rule.validate(swagger)!!.paths).hasSameElementsAs(listOf("$path GET"))
-    }
-
-    @Test
-    fun multiplePaths() {
-        val swagger = swaggerWithMediaTypes(
-            "/path1" to listOf("application/json", "application/vnd.api+json"),
-            "/path2" to listOf("application/x.zalando.contract+json"),
-            "/path3" to listOf("application/x.zalando.contract+json;v=123")
-        )
-        val result = rule.validate(swagger)!!
-        println(result)
-        assertThat(result.paths).hasSameElementsAs(listOf(
-            "/path1 GET",
-            "/path2 GET"
+    fun `custom media type without versioning causes violation`() {
+        @Language("YAML")
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.0
+            paths:
+              "/shipment-order/{shipment_order_id}":
+                get:
+                  responses:
+                    200:
+                      content:
+                        "application/json": {}
+                        "application/vnd.api+json": {}
+        """.trimIndent())!!
+        assertThat(rule.validate(context)).hasSameElementsAs(listOf(
+            v("/paths/~1shipment-order~1{shipment_order_id}/get/responses/200/content/application~1vnd.api+json")
         ))
     }
 
     @Test
-    fun negativeCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf(
-            "/products GET",
-            "/products/{product_id} GET",
-            "/products/{product_id} PATCH",
-            "/products/{product_id}/children GET",
-            "/products/{product_id}/updates/{update_id} GET",
-            "/product-put-requests/{product_path} POST",
-            "/request-groups/{request_group_id}/updates GET"))
+    fun `only some of multiple paths without versioning causes violation`() {
+        @Language("YAML")
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.0
+            paths:
+              "/path1":
+                get:
+                  responses:
+                    200:
+                      content:
+                        "application/json": {}
+                        "application/vnd.api+json": {}
+              "/path2":
+                get:
+                  responses:
+                    200:
+                      content:
+                        "application/x.zalando.contract+json": {}
+              "/path3":
+                get:
+                  responses:
+                    200:
+                      content:
+                        "application/x.zalando.contract+json;v=123": {}
+        """.trimIndent())!!
+        val result = rule.validate(context)
+        assertThat(result).hasSameElementsAs(listOf(
+            v("/paths/~1path1/get/responses/200/content/application~1vnd.api+json"),
+            v("/paths/~1path2/get/responses/200/content/application~1x.zalando.contract+json")
+        ))
     }
 
     @Test
-    fun positiveCaseSpa() {
-        val swagger = getFixture("api_spa.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+    fun `the SPP API generates violations`() {
+        val context = getContextFromFixture("api_spp.json")!!
+        val result = rule.validate(context)
+        assertThat(result).hasSameElementsAs(listOf(
+            // --- consumes ---
+            v("/paths/~1products~1{product_id}/patch/consumes"),
+            v("/paths/~1product-put-requests~1{product_path}/post/consumes"),
+            // --- produces ---
+            v("/paths/~1products/get/responses/200"),
+            v("/paths/~1products~1{product_id}/get/responses/200"),
+            v("/paths/~1products~1{product_id}~1children/get/responses/200"),
+            v("/paths/~1products~1{product_id}~1updates~1{update_id}/get/responses/200"),
+            v("/paths/~1request-groups~1{request_group_id}~1updates/get/responses/200")
+        ))
     }
+
+    @Test
+    fun `the SPA API generates no violations`() {
+        val context = getContextFromFixture("api_spa.yaml")!!
+        assertThat(rule.validate(context)).isEmpty()
+    }
+
+    private val rule = MediaTypesRule()
+
+    private fun v(pointer: String) = Violation(
+        description = "Custom media types should only be used for versioning",
+        pointer = JsonPointer.compile(pointer)
+    )
 }

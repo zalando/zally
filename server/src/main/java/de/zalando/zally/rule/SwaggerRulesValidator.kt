@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class SwaggerRulesValidator(@Autowired rules: RulesManager) : RulesValidator<Swagger>(rules) {
-    private var ast: ReverseAst<Swagger>? = null
+    private var ast: ReverseAst? = null
 
     override fun parse(content: String): Swagger? {
         return try {

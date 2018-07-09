@@ -10,7 +10,6 @@ import de.zalando.zally.rule.zalando.AvoidTrailingSlashesRule;
 import de.zalando.zally.rule.zalando.ZalandoRuleSet;
 import de.zalando.zally.util.ErrorResponse;
 import de.zalando.zally.util.TestDateUtil;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 
@@ -95,12 +94,13 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
     }
 
     @Test
-    public void shouldReturnApiName() {
+    public void shouldReturnApiNameAndId() {
         int reviewsCount = 7;
         createRandomReviewsInBetween(now().minusDays(reviewsCount).toLocalDate(), now().toLocalDate());
         ReviewStatistics response = getReviewStatistics();
         assertThat(response.getReviews()).hasSize(reviewsCount);
         assertThat(response.getReviews().get(0).getApi()).isEqualTo("My API");
+        assertThat(response.getReviews().get(0).getApiId()).isEqualTo("48aa0090-25ef-11e8-b467-0ed5f89f718b");
     }
 
     @Test
@@ -169,6 +169,7 @@ public class RestReviewStatisticsTest extends RestApiBaseTest {
         ApiReview review = new ApiReview(new ApiDefinitionRequest(), null, "dummyApiDefinition", createRandomViolations());
         review.setDay(date);
         review.setName(apiName);
+        review.setApiId("48aa0090-25ef-11e8-b467-0ed5f89f718b");
         review.setNumberOfEndpoints(2);
         review.setUserAgent(userAgent);
 

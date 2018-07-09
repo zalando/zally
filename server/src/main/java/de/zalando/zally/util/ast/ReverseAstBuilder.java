@@ -54,7 +54,7 @@ public class ReverseAstBuilder<T> {
      * @throws ReverseAstException If an error occurs during reflection.
      */
     @Nonnull
-    public ReverseAst<T> build() throws ReverseAstException {
+    public ReverseAst build() throws ReverseAstException {
         while (!nodes.isEmpty()) {
             Node node = nodes.pop();
 
@@ -81,7 +81,7 @@ public class ReverseAstBuilder<T> {
                 pointersToNodes.put(node.pointer.toString(), node);
             }
         }
-        return new ReverseAst<>(objectsToNodes, pointersToNodes);
+        return new ReverseAst(objectsToNodes, pointersToNodes);
     }
 
     private Deque<Node> handleMap(Map<?, ?> map, JsonPointer pointer, Marker defaultMarker) {

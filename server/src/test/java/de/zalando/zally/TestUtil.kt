@@ -3,6 +3,7 @@ package de.zalando.zally
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+import de.zalando.zally.rule.Context
 import de.zalando.zally.rule.ObjectTreeReader
 import io.swagger.models.ModelImpl
 import io.swagger.models.Operation
@@ -24,6 +25,11 @@ val testConfig: Config by lazy {
 }
 
 fun getFixture(fileName: String): Swagger = SwaggerParser().read("fixtures/$fileName")
+
+fun getContextFromFixture(fileName: String): Context? {
+    val content = getResourceContent(fileName)
+    return Context.createOpenApiContext(content) ?: Context.createSwaggerContext(content)
+}
 
 fun getResourceContent(fileName: String): String = ClasspathHelper.loadFileFromClasspath("fixtures/$fileName")
 
