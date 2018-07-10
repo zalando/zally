@@ -1,13 +1,14 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
+import de.zalando.zally.rule.Context
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.getAllJsonObjects
-import io.swagger.models.Swagger
-import io.swagger.models.properties.Property
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.media.Schema
+
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
@@ -20,29 +21,31 @@ class CommonFieldTypesRule(@Autowired rulesConfig: Config) {
 
     @Suppress("UNCHECKED_CAST")
     private val commonFields = rulesConfig.getConfig("${javaClass.simpleName}.common_types").entrySet()
-        .map { (key, config) -> key to config.unwrapped() as List<String?> }.toMap()
+            .map { (key, config) -> key to config.unwrapped() as List<String?> }.toMap()
 
-    fun checkField(name: String, property: Property): String? =
-        commonFields[name.toLowerCase()]?.let { (type, format) ->
-            if (property.type != type)
-                "field '$name' has type '${property.type}' (expected type '$type')"
-            else if (property.format != format && format != null)
-                "field '$name' has type '${property.type}' with format '${property.format}' (expected format '$format')"
-            else null
-        }
+    fun checkField(name: String, property: Schema<Any>): String? =
+            commonFields[name.toLowerCase()]?.let { (type, format) ->
+                if (property.type != type)
+                    "field '$name' has type '${property.type}' (expected type '$type')"
+                else if (property.format != format && format != null)
+                    "field '$name' has type '${property.type}' with format '${property.format}' (expected format '$format')"
+                else null
+            }
+
+    private fun allSchemas(api: OpenAPI): List<Map.Entry<String, Schema<Any>>> {
+        val objectSchemas = (api.components.schemas.orEmpty().values +
+                api.components.responses.values.flatMap { it.content.values.map { it.schema } } +
+                api.components.requestBodies.values.flatMap { it.content.values.map { it.schema } } +
+                api.paths.orEmpty().flatMap { it.value.readOperations().flatMap { it.parameters.orEmpty().map { it.schema } } } +
+                api.paths.orEmpty().flatMap { it.value.readOperations().flatMap { it.responses.orEmpty().flatMap { it.value.content.values.map { it.schema } } } })
+        return objectSchemas.flatMap { it.properties.entries }
+    }
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
-        val res = swagger.getAllJsonObjects().map { (def, path) ->
-            val badProps = def.entries.map { checkField(it.key, it.value) }.filterNotNull()
-            if (badProps.isNotEmpty())
-                (path + ": " + badProps.joinToString(", ")) to path
-            else null
-        }.filterNotNull()
-
-        return if (res.isNotEmpty()) {
-            val (desc, paths) = res.unzip()
-            Violation(desc.joinToString(", "), paths)
-        } else null
+    fun checkTypesOfCommonFields(context: Context): List<Violation> {
+        return allSchemas(context.api)
+                .map { (name, schema) -> Pair(checkField(name, schema).orEmpty(), schema) }
+                .filterNot { it.first.isEmpty() }
+                .map { context.violation(it.first, it.second) }
     }
 }

@@ -31,8 +31,8 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return a list of Violations and/or nulls where no violations are necessary
      */
     fun validatePaths(
-        pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
-        action: (Map.Entry<String, PathItem>) -> List<Violation?>
+            pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
+            action: (Map.Entry<String, PathItem>) -> List<Violation?>
     ): List<Violation> = api.paths
             .orEmpty()
             .filter(pathFilter)
@@ -47,15 +47,15 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return a list of Violations and/or nulls where no violations are necessary
      */
     fun validateOperations(
-        pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
-        operationFilter: (Map.Entry<HttpMethod, Operation>) -> Boolean = { true },
-        action: (Map.Entry<HttpMethod, Operation>) -> List<Violation?>
+            pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
+            operationFilter: (Map.Entry<HttpMethod, Operation>) -> Boolean = { true },
+            action: (Map.Entry<HttpMethod, Operation>) -> List<Violation?>
     ): List<Violation> = validatePaths(pathFilter) { (_, path) ->
         path.readOperationsMap()
-            .orEmpty()
-            .filter(operationFilter)
-            .flatMap(action)
-            .filterNotNull()
+                .orEmpty()
+                .filter(operationFilter)
+                .flatMap(action)
+                .filterNotNull()
     }
 
     /**
