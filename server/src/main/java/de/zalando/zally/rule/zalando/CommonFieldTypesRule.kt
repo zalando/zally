@@ -8,7 +8,6 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.media.Schema
-
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
@@ -36,9 +35,19 @@ class CommonFieldTypesRule(@Autowired rulesConfig: Config) {
         val objectSchemas = (api.components.schemas.orEmpty().values +
                 api.components.responses.values.flatMap { it.content.values.map { it.schema } } +
                 api.components.requestBodies.values.flatMap { it.content.values.map { it.schema } } +
-                api.paths.orEmpty().flatMap { it.value.readOperations().flatMap { it.parameters.orEmpty().map { it.schema } } } +
-                api.paths.orEmpty().flatMap { it.value.readOperations().flatMap { it.responses.orEmpty().flatMap { it.value.content.values.map { it.schema } } } })
-        return objectSchemas.flatMap { it.properties.entries }
+                api.paths.orEmpty().flatMap {
+                    it.value.readOperations().flatMap {
+                        it.parameters.orEmpty()
+                                .map { it.schema }
+                    }
+                } +
+                api.paths.orEmpty().flatMap {
+                    it.value.readOperations().flatMap {
+                        it.responses.orEmpty()
+                                .flatMap { it.value.content.orEmpty().values.map { it.schema } }
+                    }
+                })
+        return objectSchemas.flatMap { it.properties.orEmpty().entries }
     }
 
     @Check(severity = Severity.MUST)

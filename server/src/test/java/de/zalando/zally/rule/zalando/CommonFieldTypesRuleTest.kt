@@ -2,9 +2,12 @@ package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.Context
 import de.zalando.zally.testConfig
-import io.swagger.v3.parser.util.SchemaTypeUtil.*
+import io.swagger.v3.parser.util.SchemaTypeUtil.STRING_TYPE
+import io.swagger.v3.parser.util.SchemaTypeUtil.INTEGER_TYPE
+import io.swagger.v3.parser.util.SchemaTypeUtil.UUID_FORMAT
+import io.swagger.v3.parser.util.SchemaTypeUtil.DATE_TIME_FORMAT
+import io.swagger.v3.parser.util.SchemaTypeUtil.createSchema
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.Test
 
 class CommonFieldTypesRuleTest {
@@ -74,7 +77,6 @@ class CommonFieldTypesRuleTest {
 
         assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
     }
-
 
     @Test
     fun `checkTypesOfCommonFields should not return any violations for a specification with non-common fields`() {
@@ -162,6 +164,36 @@ class CommonFieldTypesRuleTest {
                             properties:
                               id:
                                 type: integer
+        """.trimIndent())!!
+
+        val violations = rule.checkTypesOfCommonFields(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations).hasSize(1)
+        assertThat(violations[0].description).containsPattern(".*expected type 'string'.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1pets/get/responses/200/content/application~1json/schema/properties/id")
+    }
+
+    @Test
+    fun `checkTypesOfCommonFields should also test references`() {
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.1
+            paths:
+              /pets:
+                get:
+                  responses:
+                    200:
+                      content:
+                        application/json:
+                          schema:
+                            properties:
+                              id:
+                                "${'$'}ref": "#/components/schemas/CustomId"
+            components:
+              schemas:
+                CustomId:
+                  type: integer
+                  format: int64
         """.trimIndent())!!
 
         val violations = rule.checkTypesOfCommonFields(context)

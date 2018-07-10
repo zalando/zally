@@ -31,8 +31,8 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return a list of Violations and/or nulls where no violations are necessary
      */
     fun validatePaths(
-            pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
-            action: (Map.Entry<String, PathItem>) -> List<Violation?>
+        pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
+        action: (Map.Entry<String, PathItem>) -> List<Violation?>
     ): List<Violation> = api.paths
             .orEmpty()
             .filter(pathFilter)
@@ -47,9 +47,9 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return a list of Violations and/or nulls where no violations are necessary
      */
     fun validateOperations(
-            pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
-            operationFilter: (Map.Entry<HttpMethod, Operation>) -> Boolean = { true },
-            action: (Map.Entry<HttpMethod, Operation>) -> List<Violation?>
+        pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
+        operationFilter: (Map.Entry<HttpMethod, Operation>) -> Boolean = { true },
+        action: (Map.Entry<HttpMethod, Operation>) -> List<Violation?>
     ): List<Violation> = validatePaths(pathFilter) { (_, path) ->
         path.readOperationsMap()
                 .orEmpty()
@@ -66,7 +66,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return the new Violation
      */
     fun violations(description: String, value: Any): List<Violation> =
-            listOf(violation(description, value))
+        listOf(violation(description, value))
 
     /**
      * Creates a List of one Violation with the specified pointer, defaulting to the last recorded location.
@@ -75,7 +75,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return the new Violation
      */
     fun violations(description: String, pointer: JsonPointer?): List<Violation> =
-            listOf(violation(description, pointer))
+        listOf(violation(description, pointer))
 
     /**
      * Creates a Violation with a pointer to the OpenAPI or Swagger model node specified,
@@ -85,7 +85,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return the new Violation
      */
     fun violation(description: String, value: Any): Violation =
-            violation(description, pointerForValue(value))
+        violation(description, pointerForValue(value))
 
     /**
      * Creates a Violation with the specified pointer, defaulting to the last recorded location.
@@ -94,7 +94,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return the new Violation
      */
     fun violation(description: String, pointer: JsonPointer? = null): Violation =
-            Violation(description, pointer ?: recorder.pointer)
+        Violation(description, pointer ?: recorder.pointer)
 
     /**
      * Check whether a location should be ignored by a specific rule.
@@ -103,7 +103,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @return true if the location should be ignored for this rule
      */
     fun isIgnored(pointer: JsonPointer, ruleId: String): Boolean =
-            swaggerAst?.isIgnored(pointer, ruleId) ?: openApiAst.isIgnored(pointer, ruleId)
+        swaggerAst?.isIgnored(pointer, ruleId) ?: openApiAst.isIgnored(pointer, ruleId)
 
     private fun pointerForValue(value: Any): JsonPointer? = if (swaggerAst != null) {
         val swaggerPointer = swaggerAst.getPointer(value)
