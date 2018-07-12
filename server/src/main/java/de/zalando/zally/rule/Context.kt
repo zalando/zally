@@ -25,25 +25,6 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
     val api = recorder.proxy
 
     /**
-     * Convenience method for filtering and iterating over the operations in order to create Violations.
-     * @param pathFilter a filter selecting the paths to validate
-     * @param operationFilter a filter selecting the operations to validate
-     * @param action the action to perform on filtered items
-     * @return a list of Violations and/or nulls where no violations are necessary
-     */
-    fun validateOperations(
-        pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
-        operationFilter: (Map.Entry<PathItem.HttpMethod, Operation>) -> Boolean = { true },
-        action: (Map.Entry<PathItem.HttpMethod, Operation>) -> List<Violation?>
-    ): List<Violation> = validatePaths(pathFilter = pathFilter) { (_, path) ->
-        path.readOperationsMap()
-            .orEmpty()
-            .filter(operationFilter)
-            .flatMap(action)
-            .filterNotNull()
-    }
-
-    /**
      * Convenience method for filtering and iterating over the paths in order to create Violations.
      * @param pathFilter a filter selecting the paths to validate
      * @param action the action to perform on filtered items
@@ -58,6 +39,13 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
             .flatMap(action)
             .filterNotNull()
 
+    /**
+     * Convenience method for filtering and iterating over the operations in order to create Violations.
+     * @param pathFilter a filter selecting the paths to validate
+     * @param operationFilter a filter selecting the operations to validate
+     * @param action the action to perform on filtered items
+     * @return a list of Violations and/or nulls where no violations are necessary
+     */
     fun validateOperations(
         pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
         operationFilter: (Map.Entry<HttpMethod, Operation>) -> Boolean = { true },
