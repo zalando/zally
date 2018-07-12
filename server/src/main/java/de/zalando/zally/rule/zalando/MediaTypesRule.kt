@@ -1,34 +1,36 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.rule.Context
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
-import io.swagger.models.Swagger
 
+/**
+ * @see "https://opensource.zalando.com/restful-api-guidelines/#172"
+ */
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = "172",
-        severity = Severity.SHOULD,
-        title = "Prefer standard media type names"
+    ruleSet = ZalandoRuleSet::class,
+    id = "172",
+    severity = Severity.SHOULD,
+    title = "Prefer standard media type names"
 )
 class MediaTypesRule {
 
-    private val DESCRIPTION = "Custom media types should only be used for versioning"
+    private val description = "Custom media types should only be used for versioning"
 
     @Check(severity = Severity.SHOULD)
-    fun validate(swagger: Swagger): Violation? {
-        val paths = swagger.paths.orEmpty().entries.flatMap { (pathName, path) ->
-            path.operationMap.orEmpty().entries.flatMap { (verb, operation) ->
-                val mediaTypes = ArrayList<String>() + operation.produces.orEmpty() + operation.consumes.orEmpty()
-                val violatingMediaTypes = mediaTypes.filter(this::isViolatingMediaType)
-                if (violatingMediaTypes.isNotEmpty()) listOf("$pathName $verb") else emptyList()
-            }
+    fun validate(context: Context): List<Violation> =
+        context.validateOperations { (_, operation) ->
+            val consumedMediaTypes = operation.requestBody?.content?.entries.orEmpty()
+            val producedMediaTypes = operation.responses?.values.orEmpty()
+                .flatMap { it.content?.entries.orEmpty() }
+            (consumedMediaTypes + producedMediaTypes)
+                .filter { isViolatingMediaType(it.key) }
+                .map { context.violation(description, it.value) }
         }
-        return if (paths.isNotEmpty()) Violation(DESCRIPTION, paths) else null
-    }
 
     private fun isViolatingMediaType(mediaType: String) =
         !isApplicationJsonOrProblemJson(mediaType) && !isCustomMediaTypeWithVersioning(mediaType)

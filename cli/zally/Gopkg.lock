@@ -38,6 +38,19 @@
   version = "v1.20.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/zalando/zally"
+  packages = [
+    "cli/zally/commands",
+    "cli/zally/domain",
+    "cli/zally/readers",
+    "cli/zally/tests",
+    "cli/zally/utils",
+    "cli/zally/utils/formatters"
+  ]
+  revision = "5c77c4a5e63f8a11dc457d756099298fcd864e3c"
+
+[[projects]]
   branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -46,6 +59,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "af4cae93c6d7de4a923043a02fbf131a816c3042fc3eeaf562adac5957740ea2"
+  inputs-digest = "5a2310d23b970c38de9f682334a3a9faf64f957ea7d5881e4550db0528fc65bd"
   solver-name = "gps-cdcl"
   solver-version = 1
