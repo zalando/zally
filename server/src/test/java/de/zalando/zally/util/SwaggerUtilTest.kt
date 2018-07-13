@@ -6,6 +6,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class SwaggerUtilTest {
+
+    @Test
+    fun `new undocumented function`() {
+
+    }
+
     @Test
     fun `empty swagger has no definitions`() {
         val swagger = Swagger()
