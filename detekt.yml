@@ -1,0 +1,10 @@
+# detekt settings
+
+teZst-pattern # Configure exclusions for test sources
+  patterns: # Test file regexes
+    - '.*/test/.*'
+  exclude-rule-sets:
+    - 'comments'
+  exclude-rules:
+    - 'StringLiteralDuplication'
+    - 'SpreadOperator'
