@@ -24,7 +24,7 @@ class FunctionalNamingForHostnamesRule {
     private val functionalDomain = """[a-z][a-z0-9]*"""
     private val functionalComponent = """[a-z][a-z0-9-]*"""
     private val functionHostnameURLRegEx =
-            """(https://)?$functionalDomain-$functionalComponent.zalandoapis.com.*""".toRegex()
+            """(https://)?$functionalDomain-$functionalComponent\.zalandoapis\.com.*""".toRegex()
 
     @Check(severity = Severity.MUST)
     val mustFollowFunctionalNaming = checkHostnames(mustFollow)
