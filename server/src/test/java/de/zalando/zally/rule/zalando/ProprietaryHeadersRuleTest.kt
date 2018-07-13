@@ -1,10 +1,11 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.DefaultContext
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.testConfig
-import org.junit.Test
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
+import org.junit.Test
 
 class ProprietaryHeadersRuleTest {
 
@@ -65,7 +66,7 @@ class ProprietaryHeadersRuleTest {
 
     @Test
     fun `validate(Request|Response)Headers should return no violation for empty API`() {
-        val violations = rule.validateRequestHeaders(Context.createOpenApiContext("openapi: 3.0.1")!!)
+        val violations = rule.validateRequestHeaders(DefaultContext.createOpenApiContext("openapi: 3.0.1")!!)
 
         assertThat(violations).isEmpty()
     }
@@ -81,7 +82,7 @@ class ProprietaryHeadersRuleTest {
                     - name: $header
                       in: header
         """.trimIndent()
-        return Context.createOpenApiContext(content)!!
+        return DefaultContext.createOpenApiContext(content)!!
     }
 
     private fun withResponseHttpHeader(header: String): Context {
@@ -97,6 +98,6 @@ class ProprietaryHeadersRuleTest {
                         $header:
                           description: header in test
         """.trimIndent()
-        return Context.createOpenApiContext(content)!!
+        return DefaultContext.createOpenApiContext(content)!!
     }
 }

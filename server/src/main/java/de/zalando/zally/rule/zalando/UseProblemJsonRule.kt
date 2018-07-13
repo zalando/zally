@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.io.Resources
-import de.zalando.zally.rule.Context
 import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation

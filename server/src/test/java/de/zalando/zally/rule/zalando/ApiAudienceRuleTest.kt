@@ -1,7 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.testConfig
 import org.junit.Test
 
@@ -47,6 +48,6 @@ class ApiAudienceRuleTest {
             paths: {}
             """.trimIndent()
 
-        return Context.createOpenApiContext(content)!!
+        return DefaultContext.createOpenApiContext(content)!!
     }
 }

@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getResourceContent
-import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.DefaultContext
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -46,7 +46,7 @@ class UseProblemJsonRuleTest {
                         "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
             """.trimIndent()
 
-        val context = Context.createOpenApiContext(content)!!
+        val context = DefaultContext.createOpenApiContext(content)!!
         val violations = rule.validate(context)
 
         assertThat(violations.map { it.pointer.toString() }).containsExactlyInAnyOrder(
@@ -58,14 +58,14 @@ class UseProblemJsonRuleTest {
     @Test
     fun shouldReturnNoViolationsWhenErrorsReferencingToProblemJson() {
         val content = getResourceContent("problem_json.yaml")
-        val context = Context.createSwaggerContext(content)!!
+        val context = DefaultContext.createSwaggerContext(content)!!
         assertThat(rule.validate(context)).isEmpty()
     }
 
     @Test
     fun shouldReturnViolationsWhenErrorsReferencingToProblemJsonButNotProducingJson() {
         val content = getResourceContent("problem_json_not_produces_json.yaml")
-        val context = Context.createSwaggerContext(content)!!
+        val context = DefaultContext.createSwaggerContext(content)!!
         val violations = rule.validate(context)
         assertThat(violations).allMatch {
             it.description.endsWith("application/json.") &&
@@ -78,7 +78,7 @@ class UseProblemJsonRuleTest {
     @Test
     fun shouldReturnNoViolationsWhenOperationsAreProducingJson() {
         val content = getResourceContent("problem_json_operations_produce_json.yaml")
-        val context = Context.createSwaggerContext(content)!!
+        val context = DefaultContext.createSwaggerContext(content)!!
         val violations = rule.validate(context)
         assertThat(violations).isEmpty()
     }
@@ -86,7 +86,7 @@ class UseProblemJsonRuleTest {
     @Test
     fun shouldReturnNoViolationsWhenCustomReferenceIsUsed() {
         val content = getResourceContent("api_tinbox.yaml")
-        val context = Context.createSwaggerContext(content)!!
+        val context = DefaultContext.createSwaggerContext(content)!!
         val violations = rule.validate(context)
         assertThat(violations).isEmpty()
     }
@@ -94,7 +94,7 @@ class UseProblemJsonRuleTest {
     @Test
     fun shouldReturnViolationsWhenNoReferenceIsUsed() {
         val content = getResourceContent("api_spp.json")
-        val context = Context.createSwaggerContext(content)!!
+        val context = DefaultContext.createSwaggerContext(content)!!
         val violations = rule.validate(context)
         assertThat(violations).isNotEmpty
     }
@@ -102,7 +102,7 @@ class UseProblemJsonRuleTest {
     @Test
     fun shouldNotThrowExOnSchemasWithReferencesToEmptyDefinitions() {
         val content = getResourceContent("missing_definitions.yaml")
-        val context = Context.createSwaggerContext(content)!!
+        val context = DefaultContext.createSwaggerContext(content)!!
         val violations = rule.validate(context)
         assertThat(violations).isNotEmpty
     }

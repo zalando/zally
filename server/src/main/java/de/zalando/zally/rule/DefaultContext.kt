@@ -1,6 +1,7 @@
 package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.ast.JsonPointers
 import de.zalando.zally.util.ast.MethodCallRecorder
@@ -17,12 +18,12 @@ import io.swagger.v3.parser.core.models.ParseOptions
 import io.swagger.v3.parser.util.ResolverFully
 import org.slf4j.LoggerFactory
 
-class Context(openApi: OpenAPI, swagger: Swagger? = null) {
+class DefaultContext(openApi: OpenAPI, swagger: Swagger? = null) : Context {
     private val recorder = MethodCallRecorder(openApi).skipMethods(*extensionNames)
     private val openApiAst = ReverseAst.fromObject(openApi).withExtensionMethodNames(*extensionNames).build()
     private val swaggerAst = swagger?.let { ReverseAst.fromObject(it).withExtensionMethodNames(*extensionNames).build() }
 
-    val api = recorder.proxy
+    override val api = recorder.proxy
 
     /**
      * Convenience method for filtering and iterating over the paths in order to create Violations.
@@ -30,8 +31,8 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @param action the action to perform on filtered items
      * @return a list of Violations and/or nulls where no violations are necessary
      */
-    fun validatePaths(
-        pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
+    override fun validatePaths(
+        pathFilter: (Map.Entry<String, PathItem>) -> Boolean,
         action: (Map.Entry<String, PathItem>) -> List<Violation?>
     ): List<Violation> = api.paths
             .orEmpty()
@@ -46,9 +47,9 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @param action the action to perform on filtered items
      * @return a list of Violations and/or nulls where no violations are necessary
      */
-    fun validateOperations(
-        pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
-        operationFilter: (Map.Entry<HttpMethod, Operation>) -> Boolean = { true },
+    override fun validateOperations(
+        pathFilter: (Map.Entry<String, PathItem>) -> Boolean,
+        operationFilter: (Map.Entry<HttpMethod, Operation>) -> Boolean,
         action: (Map.Entry<HttpMethod, Operation>) -> List<Violation?>
     ): List<Violation> = validatePaths(pathFilter) { (_, path) ->
         path.readOperationsMap()
@@ -65,7 +66,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @param value the OpenAPI or Swagger model node
      * @return the new Violation
      */
-    fun violations(description: String, value: Any): List<Violation> =
+    override fun violations(description: String, value: Any): List<Violation> =
         listOf(violation(description, value))
 
     /**
@@ -74,7 +75,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @param pointer an existing pointer or null
      * @return the new Violation
      */
-    fun violations(description: String, pointer: JsonPointer?): List<Violation> =
+    override fun violations(description: String, pointer: JsonPointer?): List<Violation> =
         listOf(violation(description, pointer))
 
     /**
@@ -84,7 +85,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @param value the OpenAPI or Swagger model node
      * @return the new Violation
      */
-    fun violation(description: String, value: Any): Violation =
+    override fun violation(description: String, value: Any): Violation =
         violation(description, pointerForValue(value))
 
     /**
@@ -93,7 +94,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @param pointer an existing pointer or null
      * @return the new Violation
      */
-    fun violation(description: String, pointer: JsonPointer? = null): Violation =
+    override fun violation(description: String, pointer: JsonPointer?): Violation =
         Violation(description, pointer ?: recorder.pointer)
 
     /**
@@ -102,7 +103,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
      * @param ruleId the rule id to check
      * @return true if the location should be ignored for this rule
      */
-    fun isIgnored(pointer: JsonPointer, ruleId: String): Boolean =
+    override fun isIgnored(pointer: JsonPointer, ruleId: String): Boolean =
         swaggerAst?.isIgnored(pointer, ruleId) ?: openApiAst.isIgnored(pointer, ruleId)
 
     private fun pointerForValue(value: Any): JsonPointer? = if (swaggerAst != null) {
@@ -119,7 +120,7 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(Context::class.java)
+        private val log = LoggerFactory.getLogger(DefaultContext::class.java)
         val extensionNames = arrayOf("getVendorExtensions", "getExtensions")
 
         fun createOpenApiContext(content: String, failOnParseErrors: Boolean = false): Context? {
@@ -135,33 +136,32 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
             }
             return parseResult?.openAPI?.let {
                 ResolverFully(true).resolveFully(it) // workaround for NPE bug in swagger-parser
-                Context(it)
+                DefaultContext(it)
             }
         }
 
         fun createSwaggerContext(content: String, failOnParseErrors: Boolean = false): Context? =
-            SwaggerParser().readWithInfo(content, true)?.let { parseResult ->
+                SwaggerParser().readWithInfo(content, true)?.let { parseResult ->
                 if (failOnParseErrors && parseResult.messages.orEmpty().isNotEmpty()) {
                     val sep = "\n  - "
                     val messageBulletList = parseResult.messages.joinToString(sep)
                     throw RuntimeException("Swagger parsing failed with those errors:$sep$messageBulletList")
                 }
-                val swagger = parseResult.swagger ?: return null
-                val convertResult = SwaggerConverter().convert(parseResult)
+                    val swagger = parseResult.swagger ?: return null
+                    val convertResult = SwaggerConverter().convert(parseResult)
                 if (failOnParseErrors && convertResult.messages.orEmpty().isNotEmpty()) {
                     val sep = "\n  - "
                     val messageBulletList = parseResult.messages.joinToString(sep)
                     throw RuntimeException("Swagger conversion to OpenAPI 3 failed with those errors:$sep$messageBulletList")
-                }
-                convertResult?.openAPI?.let {
-                    try {
-                        ResolverFully(true).resolveFully(it)
-                    } catch (e: NullPointerException) {
-                        log.warn("Failed to fully resolve Swagger schema.", e)
-                        if (failOnParseErrors) throw e
+}
+                    convertResult?.openAPI?.let {
+                        try {
+                            ResolverFully(true).resolveFully(it)
+                        } catch (e: NullPointerException) {
+                            log.warn("Failed to fully resolve Swagger schema.", e)
+                        if (failOnParseErrors) throw e }
+                        DefaultContext(it, swagger)
                     }
-                    Context(it, swagger)
                 }
-            }
     }
 }

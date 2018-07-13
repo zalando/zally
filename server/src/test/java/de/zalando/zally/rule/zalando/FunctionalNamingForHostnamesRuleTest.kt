@@ -1,8 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.Context
-import org.junit.Test
+import de.zalando.zally.rule.DefaultContext
+import de.zalando.zally.rule.api.Context
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
 
 class FunctionalNamingForHostnamesRuleTest {
 
@@ -63,7 +64,7 @@ class FunctionalNamingForHostnamesRuleTest {
 
     @Test
     fun `(must|should|may)FollowFunctionalNaming should return no violations if audience is not set`() {
-        val context = Context.createOpenApiContext("openapi: 3.0.1")!!
+        val context = DefaultContext.createOpenApiContext("openapi: 3.0.1")!!
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
         assertThat(rule.shouldFollowFunctionalNaming(context)).isEmpty()
@@ -79,6 +80,6 @@ class FunctionalNamingForHostnamesRuleTest {
               - url: $url
             """.trimIndent()
 
-        return Context.createOpenApiContext(content)!!
+        return DefaultContext.createOpenApiContext(content)!!
     }
 }
