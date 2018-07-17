@@ -39,6 +39,13 @@ class Context(openApi: OpenAPI, swagger: Swagger? = null) {
             .flatMap(action)
             .filterNotNull()
 
+    /**
+     * Convenience method for filtering and iterating over the operations in order to create Violations.
+     * @param pathFilter a filter selecting the paths to validate
+     * @param operationFilter a filter selecting the operations to validate
+     * @param action the action to perform on filtered items
+     * @return a list of Violations and/or nulls where no violations are necessary
+     */
     fun validateOperations(
         pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
         operationFilter: (Map.Entry<HttpMethod, Operation>) -> Boolean = { true },
