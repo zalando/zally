@@ -9,10 +9,10 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"net/http"
-	"path/filepath"
 	"io"
+	"net/http"
 	"net/http/httptest"
+	"path/filepath"
 )
 
 type callable func() error
@@ -100,13 +100,13 @@ func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 		defer ts.Close()
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", ts.URL + "/api_spa.yaml"})
 
-		assert.Contains(t, out, "MUST violations: 7")
-		assert.Contains(t, out, "SHOULD violations: 3")
+		assert.Contains(t, out, "MUST violations: 5")
+		assert.Contains(t, out, "SHOULD violations: 2")
 		assert.Contains(t, out, "MAY violations: 0")
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, "Failing because: 7 must violation(s) found", e.Error())
+		assert.Equal(t, "Failing because: 5 must violation(s) found", e.Error())
 	})
 }
 
@@ -117,13 +117,13 @@ func TestIntegrationWithRemoteJsonFile(t *testing.T) {
 		defer ts.Close()
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", ts.URL + "/api_spp.json"})
 
-		assert.Contains(t, out, "MUST violations: 2")
-		assert.Contains(t, out, "SHOULD violations: 4")
+		assert.Contains(t, out, "MUST violations: 7")
+		assert.Contains(t, out, "SHOULD violations: 9")
 		assert.Contains(t, out, "MAY violations: 1")
 		assert.Contains(t, out, "HINT violations: 1")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, "Failing because: 2 must violation(s) found", e.Error())
+		assert.Equal(t, "Failing because: 7 must violation(s) found", e.Error())
 	})
 }
 
