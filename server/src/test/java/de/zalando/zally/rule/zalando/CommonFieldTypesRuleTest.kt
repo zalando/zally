@@ -33,16 +33,6 @@ class CommonFieldTypesRuleTest {
     }
 
     @Test
-    fun `checkField matching should be case insensitive`() {
-        assertThat(rule.checkField("iD", createSchema(INTEGER_TYPE, null))).isNotNull()
-        assertThat(rule.checkField("CREATED", createSchema(INTEGER_TYPE, null))).isNotNull()
-        assertThat(rule.checkField("tYpE", createSchema(null, null))).isNotNull()
-        assertThat(rule.checkField("CREated", createSchema(STRING_TYPE, "time"))).isNotNull()
-        assertThat(rule.checkField("ID", createSchema(STRING_TYPE, UUID_FORMAT))).isNull()
-        assertThat(rule.checkField("Id", createSchema(STRING_TYPE, null))).isNull()
-    }
-
-    @Test
     fun `checkField should return violation description for invalid type`() {
         assertThat(rule.checkField("id", createSchema(INTEGER_TYPE, null))).isNotNull()
     }
@@ -172,6 +162,28 @@ class CommonFieldTypesRuleTest {
         assertThat(violations).hasSize(1)
         assertThat(violations[0].description).containsPattern(".*expected type 'string'.*")
         assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1pets/get/responses/200/content/application~1json/schema/properties/id")
+    }
+
+    @Test
+    fun `checkTypesOfCommonFields should return a violation for invalid common field in nested objects`() {
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.1
+            components:
+              schemas:
+                Pet:
+                  properties:
+                    address:
+                      properties:
+                        modified:
+                          type: number
+        """.trimIndent())!!
+
+        val violations = rule.checkTypesOfCommonFields(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations).hasSize(1)
+        assertThat(violations[0].description).containsPattern(".*expected type 'string'.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/components/schemas/Pet/properties/address/properties/modified")
     }
 
     @Test
