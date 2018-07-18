@@ -1,13 +1,13 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
+import de.zalando.zally.rule.Context
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.getAllJsonObjects
-import io.swagger.models.Swagger
-import io.swagger.models.properties.Property
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.media.Schema
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
@@ -20,29 +20,58 @@ class CommonFieldTypesRule(@Autowired rulesConfig: Config) {
 
     @Suppress("UNCHECKED_CAST")
     private val commonFields = rulesConfig.getConfig("${javaClass.simpleName}.common_types").entrySet()
-        .map { (key, config) -> key to config.unwrapped() as List<String?> }.toMap()
-
-    fun checkField(name: String, property: Property): String? =
-        commonFields[name.toLowerCase()]?.let { (type, format) ->
-            if (property.type != type)
-                "field '$name' has type '${property.type}' (expected type '$type')"
-            else if (property.format != format && format != null)
-                "field '$name' has type '${property.type}' with format '${property.format}' (expected format '$format')"
-            else null
-        }
+            .map { (key, config) -> key to config.unwrapped() as List<String?> }.toMap()
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
-        val res = swagger.getAllJsonObjects().map { (def, path) ->
-            val badProps = def.entries.map { checkField(it.key, it.value) }.filterNotNull()
-            if (badProps.isNotEmpty())
-                (path + ": " + badProps.joinToString(", ")) to path
-            else null
-        }.filterNotNull()
+    fun checkTypesOfCommonFields(context: Context): List<Violation> =
+            allSchemas(context.api).flatMap {
+                checkAllPropertiesOf(it, check = { name, schema ->
+                    val violationDesc = checkField(name, schema)
+                    if (violationDesc != null) {
+                        context.violations(violationDesc, schema)
+                    } else {
+                        emptyList()
+                    }
+                })
+            }
 
-        return if (res.isNotEmpty()) {
-            val (desc, paths) = res.unzip()
-            Violation(desc.joinToString(", "), paths)
-        } else null
+    private fun checkAllPropertiesOf(
+        objectSchema: Schema<Any>,
+        check: (name: String, schema: Schema<Any>) -> Collection<Violation>
+    ): Collection<Violation> {
+
+        fun traverse(oSchema: Schema<Any>): List<Violation?> = oSchema.properties.orEmpty().flatMap { (name, schema) ->
+            if (schema.properties == null || schema.properties.isEmpty()) {
+                check(name, schema)
+            } else {
+                traverse(schema)
+            }
+        }
+
+        return traverse(objectSchema).filterNotNull()
     }
+
+    internal fun checkField(name: String, property: Schema<Any>): String? =
+            commonFields[name]?.let { (type, format) ->
+                if (property.type != type)
+                    "field '$name' has type '${property.type}' (expected type '$type')"
+                else if (property.format != format && format != null)
+                    "field '$name' has type '${property.type}' with format '${property.format}' (expected format '$format')"
+                else null
+            }
+
+    private fun allSchemas(api: OpenAPI): Collection<Schema<Any>> = api.components.schemas.orEmpty().values +
+            api.components.responses.values.flatMap { it.content.values.map { it.schema } } +
+            api.components.requestBodies.values.flatMap { it.content.values.map { it.schema } } +
+            api.paths.orEmpty().flatMap {
+                it.value.readOperations().flatMap { it.parameters.orEmpty().map { it.schema } }
+            } +
+            api.paths.orEmpty().flatMap {
+                it.value.readOperations().flatMap {
+                    it.responses.orEmpty().flatMap { it.value.content.orEmpty().values.map { it.schema } }
+                }
+            } +
+            api.paths.orEmpty().flatMap {
+                it.value.readOperations().flatMap { it.requestBody?.content.orEmpty().values.map { it.schema } }
+            }
 }

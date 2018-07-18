@@ -1,93 +1,218 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getFixture
+import de.zalando.zally.rule.Context
 import de.zalando.zally.testConfig
-import io.swagger.models.Swagger
-import io.swagger.models.properties.AbstractProperty
-import io.swagger.models.properties.IntegerProperty
-import io.swagger.models.properties.StringProperty
+import io.swagger.v3.parser.util.SchemaTypeUtil.STRING_TYPE
+import io.swagger.v3.parser.util.SchemaTypeUtil.INTEGER_TYPE
+import io.swagger.v3.parser.util.SchemaTypeUtil.UUID_FORMAT
+import io.swagger.v3.parser.util.SchemaTypeUtil.DATE_TIME_FORMAT
+import io.swagger.v3.parser.util.SchemaTypeUtil.createSchema
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class CommonFieldTypesRuleTest {
     private val rule = CommonFieldTypesRule(testConfig)
 
-    object PropertyWithNullType : AbstractProperty() {
-        override fun getType(): String? {
-            return null
-        }
+    @Test
+    fun `checkField should allow empty type`() {
+        assertThat(rule.checkField("", createSchema(STRING_TYPE, null))).isNull()
     }
 
     @Test
-    fun matchesCommonFieldsTypeEmpty() {
-        assertThat(rule.checkField("", StringProperty())).isNull()
+    fun `checkField should allow non-common type`() {
+        assertThat(rule.checkField("unknown", createSchema(STRING_TYPE, null))).isNull()
     }
 
     @Test
-    fun matchesCommonFieldsTypeNotCommon() {
-        assertThat(rule.checkField("unknown", StringProperty())).isNull()
+    fun `checkField should allow valid values of common field types`() {
+        assertThat(rule.checkField("id", createSchema(STRING_TYPE, null))).isNull()
+        assertThat(rule.checkField("id", createSchema(STRING_TYPE, UUID_FORMAT))).isNull()
+        assertThat(rule.checkField("created", createSchema(STRING_TYPE, DATE_TIME_FORMAT))).isNull()
+        assertThat(rule.checkField("modified", createSchema(STRING_TYPE, DATE_TIME_FORMAT))).isNull()
+        assertThat(rule.checkField("type", createSchema(STRING_TYPE, null))).isNull()
     }
 
     @Test
-    fun matchesCommonFieldsType() {
-        assertThat(rule.checkField("id", StringProperty())).isNull()
-        assertThat(rule.checkField("id", StringProperty("UUID"))).isNull()
-        assertThat(rule.checkField("created", StringProperty("date-time"))).isNull()
-        assertThat(rule.checkField("modified", StringProperty("date-time"))).isNull()
-        assertThat(rule.checkField("type", StringProperty())).isNull()
+    fun `checkField should return violation description for invalid type`() {
+        assertThat(rule.checkField("id", createSchema(INTEGER_TYPE, null))).isNotNull()
     }
 
     @Test
-    fun matchingShouldBeCaseInsensitive() {
-        assertThat(rule.checkField("iD", IntegerProperty())).isNotNull()
-        assertThat(rule.checkField("CREATED", IntegerProperty())).isNotNull()
-        assertThat(rule.checkField("tYpE", PropertyWithNullType)).isNotNull()
-        assertThat(rule.checkField("CREated", StringProperty("time"))).isNotNull()
-        assertThat(rule.checkField("ID", StringProperty("uuid"))).isNull()
-        assertThat(rule.checkField("Id", StringProperty())).isNull()
+    fun `checkField should allow type with format not set`() {
+        assertThat(rule.checkField("", createSchema(STRING_TYPE, null))).isNull()
     }
 
     @Test
-    fun matchesCommonFieldsTypeInvalid() {
-        assertThat(rule.checkField("id", IntegerProperty())).isNotNull()
+    fun `checkField should allow non-common field with no format set`() {
+        assertThat(rule.checkField("unknown", createSchema(STRING_TYPE, null))).isNull()
     }
 
     @Test
-    fun matchesCommonFieldsFormatEmpty() {
-        assertThat(rule.checkField("", StringProperty())).isNull()
+    fun `checkField should allow valid formats of common fields`() {
+        assertThat(rule.checkField("id", createSchema(STRING_TYPE, UUID_FORMAT))).isNull()
+        assertThat(rule.checkField("created", createSchema(STRING_TYPE, DATE_TIME_FORMAT))).isNull()
+        assertThat(rule.checkField("modified", createSchema(STRING_TYPE, DATE_TIME_FORMAT))).isNull()
     }
 
     @Test
-    fun matchesCommonFieldsFormatNotCommon() {
-        assertThat(rule.checkField("unknown", StringProperty())).isNull()
+    fun `checkField should return a violation description if field type has invalid format`() {
+        assertThat(rule.checkField("id", createSchema(INTEGER_TYPE, null))).isNotNull()
     }
 
     @Test
-    fun matchesCommonFieldsFormat() {
-        assertThat(rule.checkField("id", StringProperty("UUID"))).isNull()
-        assertThat(rule.checkField("created", StringProperty("date-time"))).isNull()
-        assertThat(rule.checkField("modified", StringProperty("date-time"))).isNull()
+    fun `checkTypesOfCommonFields should not return any violations for a minimal api`() {
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.1
+        """.trimIndent())!!
+
+        assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
     }
 
     @Test
-    fun matchesCommonFieldFormatInvalid() {
-        assertThat(rule.checkField("id", IntegerProperty())).isNotNull()
+    fun `checkTypesOfCommonFields should not return any violations for a specification with non-common fields`() {
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.1
+            components:
+              schemas:
+                Pet:
+                  properties:
+                    name:
+                      type: string
+        """.trimIndent())!!
+
+        assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
     }
 
     @Test
-    fun validateEmpty() {
-        assertThat(rule.validate(Swagger())).isNull()
+    fun `checkTypesOfCommonFields should not return any violations for a specification with valid common fields`() {
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.1
+            components:
+              schemas:
+                Pet:
+                  properties:
+                    id:
+                      type: string
+        """.trimIndent())!!
+
+        assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
     }
 
     @Test
-    fun positiveCase() {
-        assertThat(rule.validate(getFixture("common_fields.yaml"))).isNull()
+    fun `checkTypesOfCommonFields should return a violation for a specification with invalid common field in a schema`() {
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.1
+            components:
+              schemas:
+                Pet:
+                  properties:
+                    id:
+                      type: integer
+        """.trimIndent())!!
+
+        val violations = rule.checkTypesOfCommonFields(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations).hasSize(1)
+        assertThat(violations[0].description).containsPattern(".*expected type 'string'.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/components/schemas/Pet/properties/id")
     }
 
     @Test
-    fun negativeCase() {
-        val result = rule.validate(getFixture("common_fields_invalid.yaml"))!!
-        assertThat(result.paths).hasSameElementsAs(listOf("/definitions/Partner", "/definitions/JobSummary"))
-        assertThat(result.description).contains(listOf("'id'", "'created'", "'modified'", "'type"))
+    fun `checkTypesOfCommonFields should return a violation if common field has a valid type but invalid format`() {
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.1
+            components:
+              schemas:
+                Pet:
+                  properties:
+                    modified:
+                      type: string
+                      format: uuid
+        """.trimIndent())!!
+
+        val violations = rule.checkTypesOfCommonFields(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations).hasSize(1)
+        assertThat(violations[0].description).containsPattern(".*expected format 'date-time'.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/components/schemas/Pet/properties/modified")
+    }
+
+    @Test
+    fun `checkTypesOfCommonFields should return a violation for invalid common field embedded in path segment as response`() {
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.1
+            paths:
+              /pets:
+                get:
+                  responses:
+                    200:
+                      content:
+                        application/json:
+                          schema:
+                            properties:
+                              id:
+                                type: integer
+        """.trimIndent())!!
+
+        val violations = rule.checkTypesOfCommonFields(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations).hasSize(1)
+        assertThat(violations[0].description).containsPattern(".*expected type 'string'.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1pets/get/responses/200/content/application~1json/schema/properties/id")
+    }
+
+    @Test
+    fun `checkTypesOfCommonFields should return a violation for invalid common field in nested objects`() {
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.1
+            components:
+              schemas:
+                Pet:
+                  properties:
+                    address:
+                      properties:
+                        modified:
+                          type: number
+        """.trimIndent())!!
+
+        val violations = rule.checkTypesOfCommonFields(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations).hasSize(1)
+        assertThat(violations[0].description).containsPattern(".*expected type 'string'.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/components/schemas/Pet/properties/address/properties/modified")
+    }
+
+    @Test
+    fun `checkTypesOfCommonFields should also test references`() {
+        val context = Context.createOpenApiContext("""
+            openapi: 3.0.1
+            paths:
+              /pets:
+                get:
+                  responses:
+                    200:
+                      content:
+                        application/json:
+                          schema:
+                            properties:
+                              id:
+                                "${'$'}ref": "#/components/schemas/CustomId"
+            components:
+              schemas:
+                CustomId:
+                  type: integer
+                  format: int64
+        """.trimIndent())!!
+
+        val violations = rule.checkTypesOfCommonFields(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations).hasSize(1)
+        assertThat(violations[0].description).containsPattern(".*expected type 'string'.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1pets/get/responses/200/content/application~1json/schema/properties/id")
     }
 }
