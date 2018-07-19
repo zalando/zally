@@ -6,8 +6,9 @@
     "version" : "1.0.0",
     "x-audience": "external-public",
     "contact" : {
-      "name" : "Buffalo",
-      "email" : "team-buffalo@zalando.ie"
+      "name" : "Awesome team",
+      "email" : "awesome-team@company.com",
+      "url": "http://example.com"
     }
   },
   "externalDocs" : {

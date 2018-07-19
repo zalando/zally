@@ -14,12 +14,13 @@ info:
          the number of linting requests and the number of checked endpoints. Additionally, all
          linting results and the linted API specifications can be retrieved.
 
- version: "1.4.1"
+ version: "1.4.2"
  x-api-id: 48aa0090-25ef-11e8-b467-0ed5f89f718b
  x-audience: company-internal
  contact:
    name: Team API Management
    email: team-api-management@zalando.de
+   url: "http://tech.zalando.de"
 
 externalDocs:
   description: Open Source project's page
@@ -30,7 +31,7 @@ host: "zally.overarching.zalan.do"
 schemes:
   - https
 
-basePath: /
+basePath: "/"
 
 securityDefinitions:
   oauth2:
