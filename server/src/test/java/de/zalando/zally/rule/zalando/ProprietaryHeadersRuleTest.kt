@@ -4,6 +4,7 @@ import de.zalando.zally.rule.Context
 import de.zalando.zally.testConfig
 import org.junit.Test
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 
 class ProprietaryHeadersRuleTest {
 
@@ -70,6 +71,7 @@ class ProprietaryHeadersRuleTest {
     }
 
     private fun withRequestHttpHeader(header: String): Context {
+        @Language("YAML")
         val content = """
             openapi: 3.0.1
             paths:
@@ -83,6 +85,7 @@ class ProprietaryHeadersRuleTest {
     }
 
     private fun withResponseHttpHeader(header: String): Context {
+        @Language("YAML")
         val content = """
             openapi: 3.0.1
             paths:
