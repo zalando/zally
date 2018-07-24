@@ -56,8 +56,8 @@ func TestIntegrationWithLocalYamlFile(t *testing.T) {
 
 		assert.Contains(t, out, "MUST violations: 5")
 		assert.Contains(t, out, "SHOULD violations: 2")
-		assert.Contains(t, out, "MAY violations: 0")
-		assert.Contains(t, out, "HINT violations: 1")
+		assert.Contains(t, out, "MAY violations: 6")
+		assert.Contains(t, out, "HINT violations: 0")
 
 		assert.NotNil(t, e)
 		assert.Equal(t, "Failing because: 5 must violation(s) found", e.Error())
@@ -71,8 +71,8 @@ func TestIntegrationWithSomeOtherLocalYamlFile(t *testing.T) {
 		assert.Contains(t, out, "Provide API Specification using OpenAPI")
 		assert.Contains(t, out, "MUST violations: 31")
 		assert.Contains(t, out, "SHOULD violations: 3")
-		assert.Contains(t, out, "MAY violations: 0")
-		assert.Contains(t, out, "HINT violations: 1")
+		assert.Contains(t, out, "MAY violations: 11")
+		assert.Contains(t, out, "HINT violations: 0")
 
 		assert.NotNil(t, e)
 		assert.Equal(t, "Failing because: 31 must violation(s) found", e.Error())
@@ -87,7 +87,7 @@ func TestIntegrationWithLocalJsonFile(t *testing.T) {
 		assert.Contains(t, out, "MUST violations: 10")
 		assert.Contains(t, out, "SHOULD violations: 9")
 		assert.Contains(t, out, "MAY violations: 1")
-		assert.Contains(t, out, "HINT violations: 1")
+		assert.Contains(t, out, "HINT violations: 0")
 
 		assert.NotNil(t, e)
 		assert.Equal(t, e.Error(), "Failing because: 10 must violation(s) found")
@@ -102,8 +102,8 @@ func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 
 		assert.Contains(t, out, "MUST violations: 5")
 		assert.Contains(t, out, "SHOULD violations: 2")
-		assert.Contains(t, out, "MAY violations: 0")
-		assert.Contains(t, out, "HINT violations: 1")
+		assert.Contains(t, out, "MAY violations: 6")
+		assert.Contains(t, out, "HINT violations: 0")
 
 		assert.NotNil(t, e)
 		assert.Equal(t, "Failing because: 5 must violation(s) found", e.Error())
@@ -120,7 +120,7 @@ func TestIntegrationWithRemoteJsonFile(t *testing.T) {
 		assert.Contains(t, out, "MUST violations: 10")
 		assert.Contains(t, out, "SHOULD violations: 9")
 		assert.Contains(t, out, "MAY violations: 1")
-		assert.Contains(t, out, "HINT violations: 1")
+		assert.Contains(t, out, "HINT violations: 0")
 
 		assert.NotNil(t, e)
 		assert.Equal(t, "Failing because: 10 must violation(s) found", e.Error())
