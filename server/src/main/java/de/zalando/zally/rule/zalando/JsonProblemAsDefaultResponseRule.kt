@@ -31,6 +31,8 @@ class JsonProblemAsDefaultResponseRule {
 
     private fun responsesPerOperation(context: Context): Collection<Pair<Operation, Map<String, ApiResponse>>> =
             context.api.paths.values
-                    .flatMap { it.readOperations().orEmpty()
-                                .map { operation -> Pair(operation, operation.responses.orEmpty()) } }
+                    .flatMap {
+                        it.readOperations().orEmpty()
+                                .map { operation -> Pair(operation, operation.responses.orEmpty()) }
+                    }
 }
