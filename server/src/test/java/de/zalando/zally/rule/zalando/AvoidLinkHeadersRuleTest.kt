@@ -1,6 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getFixture
+import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.getContextFromFixture
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -11,21 +13,30 @@ class AvoidLinkHeadersRuleTest {
 
     @Test
     fun positiveCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        assertThat(rule.validate(swagger)).isNull()
+        val context = getContextFromFixture("api_spp.json")
+        val violations = rule.validate(context)
+        assertThat(violations).isEmpty()
     }
 
     @Test
     fun positiveCaseSpa() {
-        val swagger = getFixture("api_spa.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+        val context = getContextFromFixture("api_spa.yaml")
+        val violations = rule.validate(context)
+        assertThat(violations).isEmpty()
     }
 
     @Test
     fun negativeCase() {
-        val swagger = getFixture("avoidLinkHeaderRuleInvalid.json")
-        val violation = rule.validate(swagger)!!
-        assertThat(violation.paths).hasSameElementsAs(
-            listOf("/product-put-requests/{product_path} Link", "/products Link"))
+        val context = getContextFromFixture("avoidLinkHeaderRuleInvalid.json")
+        val violations = rule.validate(context)
+        assertThat(violations).hasSameElementsAs(listOf(
+            v("/paths/~1products/get/parameters/4"),
+            v("/paths/~1product-put-requests~1{product_path}/post/responses/202/headers/Link")
+        ))
     }
+
+    private fun v(pointer: String) = Violation(
+        description = "Do Not Use Link Headers with JSON entities",
+        pointer = JsonPointer.compile(pointer)
+    )
 }
