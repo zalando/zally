@@ -21,6 +21,10 @@ info:
     recent crawling of an API Version then the API Version becomes ACTIVE. A typical transition of the status is
     ACTIVE -> INACTIVE -> DECOMMISSIONED. For the time being, the lifecycle status is based on crawling information
     only.
+  contact:
+    name: Team API Management
+    email: team-api-management@zalando.de
+    url: http://tech.zalando.de
 
 externalDocs:
   description: API Infrastructure Solution Documentation

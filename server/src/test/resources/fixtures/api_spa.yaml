@@ -8,6 +8,7 @@ info:
   contact:
     name: Merchant Core - Article (codename ARTMC)
     email: team-artmc@zalando.de
+    url: http://example.com
 host: psa.artmc.zalan.do
 basePath: /
 schemes:
