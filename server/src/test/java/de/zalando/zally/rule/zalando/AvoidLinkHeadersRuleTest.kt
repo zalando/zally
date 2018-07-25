@@ -1,10 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.Context
-import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
 import de.zalando.zally.testConfig
-import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
@@ -27,25 +25,22 @@ class AvoidLinkHeadersRuleTest {
                     202:
                       description: Lorem Ipsum
                       headers:
-                        Location:
+                        Location: # should not violate since not called `Link`
                           type: string
                           format: url
             parameters:
-              FlowId:
+              FlowId: # should not violate since not named `Link`
                 name: X-Flow-Id
                 in: header
                 type: string
-                required: false
-              Authorization:
-                name: Authorization
-                in: header
+              Link: # should not violate since not a header
+                name: Link
+                in: query
                 type: string
-                required: true
-              ProductId:
+              ProductId: # should not violate since not a header nor named `Link`
                 name: product_id
                 in: path
                 type: string
-                required: true
         """.trimIndent(), failOnParseErrors = true)!!
         val violations = rule.validate(context)
         assertThat(violations).isEmpty()
@@ -130,14 +125,11 @@ class AvoidLinkHeadersRuleTest {
                           format: url
         """.trimIndent(), failOnParseErrors = true)!!
         val violations = rule.validate(context)
-        assertThat(violations).hasSameElementsAs(listOf(
-            v("/paths/~1foo/get/parameters/1"),
-            v("/paths/~1foo/post/responses/202/headers/Link")
-        ))
+        assertThat(violations)
+            .descriptionsAllEqualTo("Do Not Use Link Headers with JSON entities")
+            .pointersEqualTo(
+                "/paths/~1foo/get/parameters/1",
+                "/paths/~1foo/post/responses/202/headers/Link"
+            )
     }
-
-    private fun v(pointer: String) = Violation(
-        description = "Do Not Use Link Headers with JSON entities",
-        pointer = JsonPointer.compile(pointer)
-    )
 }
