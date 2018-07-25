@@ -6,10 +6,12 @@ import de.zalando.zally.util.ResourceUtil.resourceToString
 import io.swagger.parser.OpenAPIParser
 import io.swagger.parser.SwaggerParser
 import io.swagger.util.Json
+import io.swagger.v3.parser.OpenAPIResolver
 import io.swagger.v3.parser.core.models.ParseOptions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
+@Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "StringLiteralDuplication")
 class ReverseAstTest {
     @Test
     fun `create JSON pointers from Swagger 2 object`() {
@@ -141,5 +143,52 @@ class ReverseAstTest {
         pointer = JsonPointer.compile("/paths/others")
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
         assertThat(ast.getIgnoreValues(pointer)).isEmpty()
+    }
+
+    @Test
+    @Suppress("UnsafeCallOnNullableType")
+    fun `ast prefers pointers to shared locations`() {
+        val content = """
+            openapi: '3.0.0'
+            info:
+              title: Things API
+              version: 1.0.0
+            paths:
+              /things:
+                post:
+                  description: Description of /things
+                  parameters:
+                    - "${'$'}ref": "#/components/parameters/SharedParam"
+                  responses:
+                    200:
+                      description: Description of 200 response
+            components:
+              parameters:
+                SharedParam:
+                  name: p
+                  in: query
+                  description: Parameter p
+                  required: true
+                  schema:
+                    type: string
+                    format: uuid
+                    default: "SchemaDefault!!"
+                    example: "SchemaExample!!"
+                  example: "ParameterExample!!"
+            """.trimIndent()
+
+        val parsed = OpenAPIParser().readContents(content, null, null).openAPI
+        val resolved = OpenAPIResolver(parsed).resolve()
+        val ast = ReverseAst.fromObject(resolved).build()
+
+        val pathParam = resolved.paths["/things"]!!.post.parameters[0]
+        val sharedParam = resolved.components.parameters["SharedParam"]!!
+
+        val pathParamPointer = ast.getPointer(pathParam)
+        val sharedParamPointer = ast.getPointer(sharedParam)
+
+        assertThat(pathParamPointer)
+                .isSameAs(sharedParamPointer)
+                .hasToString("/components/parameters/SharedParam")
     }
 }

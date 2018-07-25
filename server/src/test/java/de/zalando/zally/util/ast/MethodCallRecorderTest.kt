@@ -112,4 +112,21 @@ class MethodCallRecorderTest {
         val apiId = specProxy.info?.vendorExtensions?.get("x-api-id")
         assertThat(apiId).isNull()
     }
+
+    @Test
+    fun `ignores non-traversal method`() {
+        val content = """
+            swagger: '2.0'
+            info:
+              title: Things API
+            """.trimIndent()
+        val spec = SwaggerParser().parse(content)
+        val recorder = MethodCallRecorder(spec)
+
+        recorder.proxy.info
+        assertThat(recorder.pointer).hasToString("/info")
+
+        recorder.proxy.info.toString()
+        assertThat(recorder.pointer).hasToString("/info")
+    }
 }

@@ -71,12 +71,14 @@ public final class JsonPointers {
 
     protected static JsonPointer escape(final Method method, Object... arguments) {
         String name = method.getName();
-        if (arguments.length > 0) {
-            name = name.concat(Objects.toString(arguments[0]));
-        }
         if (name.startsWith("get")) {
             name = name.substring(3);
+        }
+        if (name.length() > 0) {
             name = name.substring(0, 1).toLowerCase().concat(name.substring(1));
+        }
+        if (arguments.length > 0) {
+            name = name.concat(Objects.toString(arguments[0]));
         }
         return escape(name);
     }
