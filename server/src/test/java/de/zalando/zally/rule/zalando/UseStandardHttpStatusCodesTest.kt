@@ -63,7 +63,7 @@ class UseStandardHttpStatusCodesTest {
     }
 
     @Test
-    fun `allowOnlyStandardizedResponseCodes should return no violation if standardized response code are used`() {
+    fun `checkIfOnlyStandardizedResponseCodesAreUsed should return no violation if standardized response code are used`() {
         val context = withResponseCode("200")
 
         val violations = rule.checkIfOnlyStandardizedResponseCodesAreUsed(context)
@@ -72,7 +72,7 @@ class UseStandardHttpStatusCodesTest {
     }
 
     @Test
-    fun `allowOnlyStandardizedResponseCodes should return violation if non-standardized response code is used`() {
+    fun `checkIfOnlyStandardizedResponseCodesAreUsed should return violation if non-standardized response code is used`() {
         val context = withResponseCode("666")
 
         val violations = rule.checkIfOnlyStandardizedResponseCodesAreUsed(context)
@@ -100,6 +100,14 @@ class UseStandardHttpStatusCodesTest {
         assertThat(violations).isNotEmpty
         assertThat(violations[0].description).containsPattern(".*417 is not a well-understood response code.*")
         assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1pets/get/responses/417")
+    }
+
+    @Test
+    fun `(checkIfOnlyWellUnderstoodResponseCodesAreUsed|checkIfOnlyStandardizedResponseCodesAreUsed) should return no violation for default response`() {
+        val context = withResponseCode("default")
+
+        assertThat(rule.checkIfOnlyWellUnderstoodResponseCodesAreUsed(context)).isEmpty()
+        assertThat(rule.checkIfOnlyStandardizedResponseCodesAreUsed(context)).isEmpty()
     }
 
     private fun withResponseCode(responseCode: String): Context {

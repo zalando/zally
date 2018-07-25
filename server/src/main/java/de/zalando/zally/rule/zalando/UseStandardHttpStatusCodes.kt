@@ -31,7 +31,7 @@ class UseStandardHttpStatusCodes(@Autowired rulesConfig: Config) {
 
     private val wellUnderstoodResponseCode = wellUnderstoodResponseCodesAndVerbs.keys
 
-    private val standardResponseCodes = rulesConfig.getStringList("${javaClass.simpleName}.standard")
+    private val standardResponseCodes = rulesConfig.getStringList("${javaClass.simpleName}.standard") + "default"
 
     /**
      * Validate that well-understood HTTP response codes are used properly
