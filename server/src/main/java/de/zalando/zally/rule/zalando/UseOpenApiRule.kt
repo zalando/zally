@@ -8,6 +8,7 @@ import com.typesafe.config.Config
 import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
@@ -17,10 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.net.URL
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
-    id = "101",
-    severity = Severity.MUST,
-    title = "Provide API Specification using OpenAPI"
+        ruleSet = ZalandoRuleSet::class,
+        id = "101",
+        severity = Severity.MUST,
+        title = "Provide API Specification using OpenAPI"
 )
 open class UseOpenApiRule(@Autowired rulesConfig: Config) {
 
@@ -31,8 +32,8 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
     private val jsonSchemaValidators: List<JsonSchemaValidator>
 
     private val defaultSchemas = listOf(
-        Pair("Swagger 2.0", "schemas/openapi-2-schema.json"),
-        Pair("OpenAPI 3", "schemas/openapi-3-schema.json")
+            Pair("Swagger 2.0", "schemas/openapi-2-schema.json"),
+            Pair("OpenAPI 3", "schemas/openapi-3-schema.json")
     )
 
     init {
@@ -55,6 +56,19 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
             }
         }
         return violations
+    }
+
+    @Check(severity = Severity.MUST)
+    fun checkIfTheFormatIsYAML(context: Context): Violation? {
+        // at this point the api specification has been already parsed successfully
+        // -> the source is either a valid YAML or JSON format
+        // -> JSON must start with '{' and end with '}'
+        val cleanedUpSource = context.source.trim()
+        return if (cleanedUpSource.startsWith("{") && cleanedUpSource.endsWith("}")) {
+            context.violation("must use YAML format")
+        } else {
+            null
+        }
     }
 
     private fun getSchemaValidators(ruleConfig: Config): List<JsonSchemaValidator> {

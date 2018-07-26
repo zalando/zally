@@ -6,8 +6,22 @@ import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.PathItem
 
 interface Context {
+
+    /**
+     * Parsed OpenAPI 3 object represents either the OpenAPI 3 specification or converted OpenAPI 2 (Swagger) spec.
+     */
     val api: OpenAPI
+
+    /**
+     * @return `true` if the source is a OpenAPI 3 specification.
+     */
     fun isOpenAPI3(): Boolean
+
+    /**
+     * Original API specification content as `String`.
+     */
+    val source: String
+
     /**
      * Convenience method for filtering and iterating over the paths in order to create Violations.
      * @param pathFilter a filter selecting the paths to validate

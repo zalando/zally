@@ -2,8 +2,10 @@ package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.ConfigFactory
 import de.zalando.zally.getResourceJson
+import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.testConfig
+import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -61,5 +63,27 @@ class UseOpenApiRuleTest {
         val json = ObjectTreeReader().read("foo: bar")
         val validations = UseOpenApiRule(config).validate(json)
         assertThat(validations).isNotEmpty
+    }
+
+    @Test
+    fun `checkIfTheFormatIsYaml should return a violation if JSON is used`() {
+        val context = DefaultContext("""
+            {
+              "openapi": "3.0.1"
+            } """.trimIndent(), OpenAPI(), null)
+
+        val violation = rule.checkIfTheFormatIsYAML(context)
+
+        assertThat(violation).isNotNull
+        assertThat(violation!!.description).containsPattern(".*must use YAML format.*")
+    }
+
+    @Test
+    fun `checkIfTheFormatIsYaml should return no violation if YAML is used`() {
+        val context = DefaultContext("openapi: 3.0.1", OpenAPI(), null)
+
+        val violation = rule.checkIfTheFormatIsYAML(context)
+
+        assertThat(violation).isNull()
     }
 }

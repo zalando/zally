@@ -18,7 +18,7 @@ import io.swagger.v3.parser.core.models.ParseOptions
 import io.swagger.v3.parser.util.ResolverFully
 import org.slf4j.LoggerFactory
 
-class DefaultContext(openApi: OpenAPI, swagger: Swagger? = null) : Context {
+class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swagger? = null) : Context {
     private val recorder = MethodCallRecorder(openApi).skipMethods(*extensionNames)
     private val openApiAst = ReverseAst.fromObject(openApi).withExtensionMethodNames(*extensionNames).build()
     private val swaggerAst = swagger?.let { ReverseAst.fromObject(it).withExtensionMethodNames(*extensionNames).build() }
@@ -137,7 +137,7 @@ class DefaultContext(openApi: OpenAPI, swagger: Swagger? = null) : Context {
             }
             return parseResult?.openAPI?.let {
                 ResolverFully(true).resolveFully(it) // workaround for NPE bug in swagger-parser
-                DefaultContext(it)
+                DefaultContext(content, it, null)
             }
         }
 
@@ -161,7 +161,7 @@ class DefaultContext(openApi: OpenAPI, swagger: Swagger? = null) : Context {
                         } catch (e: NullPointerException) {
                             log.warn("Failed to fully resolve Swagger schema.", e)
                         if (failOnParseErrors) throw e }
-                        DefaultContext(it, swagger)
+                        DefaultContext(content, it, swagger)
                     }
                 }
     }

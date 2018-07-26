@@ -26,7 +26,7 @@ class UseStandardHttpStatusCodesTest {
         )
 
         val openApi = openApiWithOperations(operations)
-        val context = DefaultContext(openApi)
+        val context = DefaultContext("", openApi)
 
         assertThat(rule.checkWellUnderstoodResponseCodesUsage(context)).isEmpty()
     }
@@ -53,13 +53,11 @@ class UseStandardHttpStatusCodesTest {
         }
 
         val openApi = openApiWithOperations(operations)
-        val context = DefaultContext(openApi)
-
+        val context = DefaultContext("", openApi)
         val violations = rule.checkWellUnderstoodResponseCodesUsage(context)
 
         assertThat(violations).isNotEmpty
-        assertThat(violations.map { it.pointer.toString() })
-            .containsExactlyInAnyOrder(*expectedPointers.toTypedArray())
+        assertThat(violations.map { it.pointer.toString() }).containsExactlyInAnyOrder(*expectedPointers.toTypedArray())
     }
 
     @Test
