@@ -26,9 +26,11 @@ val testConfig: Config by lazy {
 
 fun getFixture(fileName: String): Swagger = SwaggerParser().read("fixtures/$fileName")
 
-fun getContextFromFixture(fileName: String): Context? {
+fun getContextFromFixture(fileName: String): Context {
     val content = getResourceContent(fileName)
-    return Context.createOpenApiContext(content) ?: Context.createSwaggerContext(content)
+    return Context.createOpenApiContext(content)
+        ?: Context.createSwaggerContext(content)
+        ?: throw RuntimeException("Unable to create context.")
 }
 
 fun getResourceContent(fileName: String): String = ClasspathHelper.loadFileFromClasspath("fixtures/$fileName")

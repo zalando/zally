@@ -120,7 +120,7 @@ class MediaTypesRuleTest {
 
     @Test
     fun `the SPP API generates violations`() {
-        val context = getContextFromFixture("api_spp.json")!!
+        val context = getContextFromFixture("api_spp.json")
         val result = rule.validate(context)
         assertThat(result).hasSameElementsAs(listOf(
             // --- consumes ---
@@ -137,7 +137,7 @@ class MediaTypesRuleTest {
 
     @Test
     fun `the SPA API generates no violations`() {
-        val context = getContextFromFixture("api_spa.yaml")!!
+        val context = getContextFromFixture("api_spa.yaml")
         assertThat(rule.validate(context)).isEmpty()
     }
 
