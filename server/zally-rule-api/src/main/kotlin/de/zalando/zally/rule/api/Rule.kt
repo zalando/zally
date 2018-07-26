@@ -1,6 +1,5 @@
 package de.zalando.zally.rule.api
 
-import org.springframework.stereotype.Component
 import kotlin.reflect.KClass
 
 /**
@@ -9,7 +8,6 @@ import kotlin.reflect.KClass
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.CLASS)
-@Component
 annotation class Rule(
     /** The RuleSet this rule belongs to  */
     val ruleSet: KClass<out RuleSet>,

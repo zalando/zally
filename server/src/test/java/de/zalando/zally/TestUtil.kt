@@ -3,8 +3,9 @@ package de.zalando.zally
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
-import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ObjectTreeReader
+import de.zalando.zally.rule.api.Context
 import io.swagger.models.ModelImpl
 import io.swagger.models.Operation
 import io.swagger.models.Path
@@ -28,8 +29,8 @@ fun getFixture(fileName: String): Swagger = SwaggerParser().read("fixtures/$file
 
 fun getContextFromFixture(fileName: String): Context {
     val content = getResourceContent(fileName)
-    return Context.createOpenApiContext(content)
-        ?: Context.createSwaggerContext(content)
+    return DefaultContext.createOpenApiContext(content)
+        ?: DefaultContext.createSwaggerContext(content)
         ?: throw RuntimeException("Unable to create context.")
 }
 

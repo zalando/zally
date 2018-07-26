@@ -1,0 +1,4 @@
+dependencies {
+  compile("io.swagger.core.v3:swagger-models:2.0.1")
+  compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9+")
+}

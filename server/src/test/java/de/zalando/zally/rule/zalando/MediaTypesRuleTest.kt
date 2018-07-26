@@ -2,7 +2,7 @@ package de.zalando.zally.rule.zalando
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.getContextFromFixture
-import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
 import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
@@ -45,14 +45,14 @@ class MediaTypesRuleTest {
 
     @Test
     fun `empty specification causes no violation`() {
-        val context = Context(OpenAPI())
+        val context = DefaultContext(OpenAPI())
         assertThat(rule.validate(context)).isEmpty()
     }
 
     @Test
     fun `versioned custom media type causes no violation`() {
         @Language("YAML")
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: 3.0.0
             paths:
               "/shipment-order/{shipment_order_id}":
@@ -69,7 +69,7 @@ class MediaTypesRuleTest {
     @Test
     fun `custom media type without versioning causes violation`() {
         @Language("YAML")
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: 3.0.0
             paths:
               "/shipment-order/{shipment_order_id}":
@@ -88,7 +88,7 @@ class MediaTypesRuleTest {
     @Test
     fun `only some of multiple paths without versioning causes violation`() {
         @Language("YAML")
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: 3.0.0
             paths:
               "/path1":

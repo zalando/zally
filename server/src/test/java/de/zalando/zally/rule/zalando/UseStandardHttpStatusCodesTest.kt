@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.openApiWithOperations
-import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -25,7 +25,7 @@ class UseStandardHttpStatusCodesTest {
         )
 
         val openApi = openApiWithOperations(operations)
-        val context = Context(openApi)
+        val context = DefaultContext(openApi)
 
         assertThat(codes.allowOnlyStandardStatusCodes(context)).isEmpty()
     }
@@ -52,7 +52,7 @@ class UseStandardHttpStatusCodesTest {
         }
 
         val openApi = openApiWithOperations(operations)
-        val context = Context(openApi)
+        val context = DefaultContext(openApi)
         val violations = codes.allowOnlyStandardStatusCodes(context)
 
         assertThat(violations).isNotEmpty

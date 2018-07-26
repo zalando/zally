@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
 import org.junit.Test
 
@@ -11,7 +11,7 @@ class AvoidTrailingSlashesRuleTest {
 
     @Test
     fun emptySwagger() {
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: '3.0.0'
             """.trimIndent())!!
 
@@ -22,7 +22,7 @@ class AvoidTrailingSlashesRuleTest {
 
     @Test
     fun positiveCase() {
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: '3.0.0'
             paths:
               /api/test-api: {}
@@ -35,7 +35,7 @@ class AvoidTrailingSlashesRuleTest {
 
     @Test
     fun negativeCase() {
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: '3.0.0'
             paths:
               /api/test-api/: {}

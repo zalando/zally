@@ -1,11 +1,11 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.testConfig
-import io.swagger.v3.parser.util.SchemaTypeUtil.STRING_TYPE
-import io.swagger.v3.parser.util.SchemaTypeUtil.INTEGER_TYPE
-import io.swagger.v3.parser.util.SchemaTypeUtil.UUID_FORMAT
 import io.swagger.v3.parser.util.SchemaTypeUtil.DATE_TIME_FORMAT
+import io.swagger.v3.parser.util.SchemaTypeUtil.INTEGER_TYPE
+import io.swagger.v3.parser.util.SchemaTypeUtil.STRING_TYPE
+import io.swagger.v3.parser.util.SchemaTypeUtil.UUID_FORMAT
 import io.swagger.v3.parser.util.SchemaTypeUtil.createSchema
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -61,7 +61,7 @@ class CommonFieldTypesRuleTest {
 
     @Test
     fun `checkTypesOfCommonFields should not return any violations for a minimal api`() {
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: 3.0.1
         """.trimIndent())!!
 
@@ -70,7 +70,7 @@ class CommonFieldTypesRuleTest {
 
     @Test
     fun `checkTypesOfCommonFields should not return any violations for a specification with non-common fields`() {
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: 3.0.1
             components:
               schemas:
@@ -85,7 +85,7 @@ class CommonFieldTypesRuleTest {
 
     @Test
     fun `checkTypesOfCommonFields should not return any violations for a specification with valid common fields`() {
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: 3.0.1
             components:
               schemas:
@@ -100,7 +100,7 @@ class CommonFieldTypesRuleTest {
 
     @Test
     fun `checkTypesOfCommonFields should return a violation for a specification with invalid common field in a schema`() {
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: 3.0.1
             components:
               schemas:
@@ -120,7 +120,7 @@ class CommonFieldTypesRuleTest {
 
     @Test
     fun `checkTypesOfCommonFields should return a violation if common field has a valid type but invalid format`() {
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: 3.0.1
             components:
               schemas:
@@ -141,7 +141,7 @@ class CommonFieldTypesRuleTest {
 
     @Test
     fun `checkTypesOfCommonFields should return a violation for invalid common field embedded in path segment as response`() {
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: 3.0.1
             paths:
               /pets:
@@ -166,7 +166,7 @@ class CommonFieldTypesRuleTest {
 
     @Test
     fun `checkTypesOfCommonFields should return a violation for invalid common field in nested objects`() {
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: 3.0.1
             components:
               schemas:
@@ -188,7 +188,7 @@ class CommonFieldTypesRuleTest {
 
     @Test
     fun `checkTypesOfCommonFields should also test references`() {
-        val context = Context.createOpenApiContext("""
+        val context = DefaultContext.createOpenApiContext("""
             openapi: 3.0.1
             paths:
               /pets:

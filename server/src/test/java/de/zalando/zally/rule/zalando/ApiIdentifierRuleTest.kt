@@ -1,7 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.Context
+import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
+import de.zalando.zally.rule.api.Context
 import org.junit.Test
 
 class ApiIdentifierRuleTest {
@@ -46,6 +47,6 @@ class ApiIdentifierRuleTest {
             paths: {}
             """.trimIndent()
 
-        return Context.createOpenApiContext(content)!!
+        return DefaultContext.createOpenApiContext(content)!!
     }
 }
