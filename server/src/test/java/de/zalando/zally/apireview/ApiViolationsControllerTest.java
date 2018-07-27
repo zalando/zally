@@ -29,7 +29,7 @@ public class ApiViolationsControllerTest {
         mvc.perform(
                 post("/api-violations")
                         .contentType("application/json")
-                        .content("{\"api_definition\":\"\"}"))
+                        .content("{\"api_definition_raw\":\"\"}"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("https://zalando.github.io/restful-api-guidelines")));
     }

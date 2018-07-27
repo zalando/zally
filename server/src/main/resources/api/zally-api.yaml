@@ -14,7 +14,7 @@ info:
          the number of linting requests and the number of checked endpoints. Additionally, all
          linting results and the linted API specifications can be retrieved.
 
- version: "1.4.2"
+ version: "1.5.0"
  x-api-id: 48aa0090-25ef-11e8-b467-0ed5f89f718b
  x-audience: company-internal
  contact:
@@ -195,11 +195,16 @@ paths:
 definitions:
   LintingRequest:
     type: object
-    description: Request containing a swagger definition file
+    description: |
+      Request containing a swagger definition file. One of the following fields must be provided:
+      api_definition, api_definition_raw, or api_definition_url.
     properties:
       api_definition:
         type: object
         description: Specification object in OpenAPI format
+      api_definition_raw:
+        type: string
+        description: Raw API Specification string in OpenAPI format
       api_definition_url:
         type: string
         description: Link to the specification in OpenAPI format
