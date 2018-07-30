@@ -15,7 +15,6 @@ import (
 
 	"github.com/urfave/cli"
 	"github.com/zalando/zally/cli/zally/domain"
-	"github.com/zalando/zally/cli/zally/readers"
 	"github.com/zalando/zally/cli/zally/utils"
 	"github.com/zalando/zally/cli/zally/utils/formatters"
 )
@@ -71,7 +70,7 @@ func lintFile(path string, requestBuilder *utils.RequestBuilder, formatter forma
 	return err
 }
 
-func readFile(path string) (json.RawMessage, error) {
+func readFile(path string) (string, error) {
 	var contents []byte
 	var err error
 
@@ -82,10 +81,10 @@ func readFile(path string) (json.RawMessage, error) {
 	}
 
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return getReader(path, contents).Read()
+	return string(contents), nil
 }
 
 func readLocalFile(path string) ([]byte, error) {
@@ -107,9 +106,9 @@ func readRemoteFile(url string) ([]byte, error) {
 	return ioutil.ReadAll(response.Body)
 }
 
-func doRequest(requestBuilder *utils.RequestBuilder, data json.RawMessage) (*domain.Violations, error) {
+func doRequest(requestBuilder *utils.RequestBuilder, data string) (*domain.Violations, error) {
 	var apiViolationsRequest domain.APIViolationsRequest
-	apiViolationsRequest.APIDefinition = &data
+	apiViolationsRequest.APIDefinitionRaw = data
 	requestBody, err := json.MarshalIndent(apiViolationsRequest, "", "  ")
 	if err != nil {
 		return nil, err
@@ -141,12 +140,4 @@ func doRequest(requestBuilder *utils.RequestBuilder, data json.RawMessage) (*dom
 	}
 
 	return &violations, nil
-}
-
-func getReader(path string, contents []byte) readers.SpecsReader {
-	extension := strings.ToLower(filepath.Ext(path))
-	if extension == ".yml" || extension == ".yaml" {
-		return readers.NewYAMLReader(contents)
-	}
-	return readers.NewJSONReader(contents)
 }
