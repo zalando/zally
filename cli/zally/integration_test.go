@@ -70,7 +70,7 @@ func TestIntegrationWithSomeOtherLocalYamlFile(t *testing.T) {
 
 		assert.Contains(t, out, "Provide API Specification using OpenAPI")
 		assert.Contains(t, out, "MUST violations: 31")
-		assert.Contains(t, out, "SHOULD violations: 3")
+		assert.Contains(t, out, "SHOULD violations: 25")
 		assert.Contains(t, out, "MAY violations: 11")
 		assert.Contains(t, out, "HINT violations: 0")
 
@@ -84,13 +84,13 @@ func TestIntegrationWithLocalJsonFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spp.json"})
 
 		fmt.Println(out)
-		assert.Contains(t, out, "MUST violations: 10")
-		assert.Contains(t, out, "SHOULD violations: 9")
+		assert.Contains(t, out, "MUST violations: 13")
+		assert.Contains(t, out, "SHOULD violations: 13")
 		assert.Contains(t, out, "MAY violations: 1")
 		assert.Contains(t, out, "HINT violations: 0")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, e.Error(), "Failing because: 10 must violation(s) found")
+		assert.Equal(t, e.Error(), "Failing because: 13 must violation(s) found")
 	})
 }
 
@@ -117,13 +117,13 @@ func TestIntegrationWithRemoteJsonFile(t *testing.T) {
 		defer ts.Close()
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", ts.URL + "/api_spp.json"})
 
-		assert.Contains(t, out, "MUST violations: 10")
-		assert.Contains(t, out, "SHOULD violations: 9")
+		assert.Contains(t, out, "MUST violations: 13")
+		assert.Contains(t, out, "SHOULD violations: 13")
 		assert.Contains(t, out, "MAY violations: 1")
 		assert.Contains(t, out, "HINT violations: 0")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, "Failing because: 10 must violation(s) found", e.Error())
+		assert.Equal(t, "Failing because: 13 must violation(s) found", e.Error())
 	})
 }
 
