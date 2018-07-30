@@ -8,6 +8,9 @@ package-lock.json
 scm-source.json
 out/
 **/classes/
+**/.settings/
+**/.classpath
+**/.project
 
 *node_modules
 *.env*
