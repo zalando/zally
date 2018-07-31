@@ -29,6 +29,25 @@ class UseProblemJsonRuleTest {
                         properties:
                           status:
                             type: string
+        """.trimIndent()
+
+        val context = DefaultContext.createOpenApiContext(content)!!
+        val violations = rule.validate(context)
+
+        assertThat(violations.map { it.pointer.toString() }).containsExactlyInAnyOrder(
+            "/paths/~1bad/get/responses/default/content/application~1json/schema/properties/status",
+            "/paths/~1bad/get/responses/default/content/application~1json/schema/properties/status/type"
+        )
+    }
+
+    @Test
+    fun shouldReturnNoViolationsWhenProblemTypeIsUsedAsDefaultResponse() {
+        val content = """
+        openapi: 3.0.0
+        info:
+          version: 1.0.0
+          title: Test
+        paths:
           "/good":
             get:
               responses:
@@ -44,15 +63,12 @@ class UseProblemJsonRuleTest {
                     application/json:
                       schema:
                         "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContext.createOpenApiContext(content)!!
         val violations = rule.validate(context)
 
-        assertThat(violations.map { it.pointer.toString() }).containsExactlyInAnyOrder(
-            "/paths/~1bad/get/responses/default/content/application~1json/schema/properties/status",
-            "/paths/~1bad/get/responses/default/content/application~1json/schema/properties/status/type"
-        )
+        assertThat(violations).isEmpty()
     }
 
     @Test
@@ -78,7 +94,7 @@ class UseProblemJsonRuleTest {
                     application/problem+json:
                       schema:
                         "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContext.createOpenApiContext(content)!!
         val violations = rule.validate(context)

@@ -22,8 +22,8 @@ import io.swagger.v3.oas.models.responses.ApiResponse
     title = "Use Problem JSON"
 )
 class UseProblemJsonRule {
-    private val description = "Operations Should Return Problem JSON When Any Problem Occurs During Processing " +
-        "Whether Caused by Client Or Server."
+    private val description = "Operations should return problem JSON when any problem occurs during processing " +
+        "whether caused by client or server."
     private val allowedContentTypes = listOf("application/json", "application/problem+json")
 
     private val objectMapper by lazy { ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL) }
