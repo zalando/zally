@@ -24,6 +24,7 @@ import io.swagger.v3.oas.models.responses.ApiResponse
 class UseProblemJsonRule {
     private val description = "Operations Should Return Problem JSON When Any Problem Occurs During Processing " +
         "Whether Caused by Client Or Server."
+    private val allowedContentTypes = listOf("application/json", "application/problem+json")
 
     private val objectMapper by lazy { ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL) }
 
@@ -48,8 +49,9 @@ class UseProblemJsonRule {
                         context.violation(description, schema)
                             .let {
                                 Violation(
-                                        "${it.description} ${validation.description}",
-                                        it.pointer?.append(validation.pointer ?: JsonPointers.empty()) ?: JsonPointers.empty()
+                                    "${it.description} ${validation.description}",
+                                    it.pointer?.append(validation.pointer ?: JsonPointers.empty())
+                                        ?: JsonPointers.empty()
                                 )
                             }
                     }
@@ -59,8 +61,8 @@ class UseProblemJsonRule {
 
     private fun testForProblemSchema(response: ApiResponse): List<Pair<Schema<*>, Violation>> =
         response.content?.flatMap { (type, mediaType) ->
-            if (!type.startsWith("application/json")) {
-                val message = Violation("Media type must be application/json.")
+            if (allowedContentTypes.none { type.startsWith(it) }) {
+                val message = Violation("Media type must be one of $allowedContentTypes.")
                 return listOf(Pair(mediaType.schema, message))
             }
             val node = objectMapper.convertValue(mediaType.schema, JsonNode::class.java)

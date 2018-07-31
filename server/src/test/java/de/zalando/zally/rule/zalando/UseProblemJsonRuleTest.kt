@@ -56,6 +56,37 @@ class UseProblemJsonRuleTest {
     }
 
     @Test
+    fun shouldReportNoViolationWhenApplicationProblemJSONContentTypeIsUsed() {
+        val content = """
+        openapi: 3.0.0
+        info:
+          version: 1.0.0
+          title: Test
+        paths:
+          "/good":
+            get:
+              responses:
+                "200":
+                  description: Good response.
+                  content:
+                    application/json:
+                      schema:
+                        type: object
+                default:
+                  description: Good default response.
+                  content:
+                    application/problem+json:
+                      schema:
+                        "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
+            """.trimIndent()
+
+        val context = DefaultContext.createOpenApiContext(content)!!
+        val violations = rule.validate(context)
+
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
     fun shouldReturnNoViolationsWhenErrorsReferencingToProblemJson() {
         val content = getResourceContent("problem_json.yaml")
         val context = DefaultContext.createSwaggerContext(content)!!
@@ -68,7 +99,7 @@ class UseProblemJsonRuleTest {
         val context = DefaultContext.createSwaggerContext(content)!!
         val violations = rule.validate(context)
         assertThat(violations).allMatch {
-            it.description.endsWith("application/json.") &&
+            it.description.contains("Media type must be one of") &&
                 it.pointer?.toString()?.endsWith("/schema")?.or(
                     it.pointer?.toString()?.matches(Regex("^/definitions/.*Problem$")) ?: false
                 ) ?: false
