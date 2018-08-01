@@ -47,10 +47,10 @@ class OAuthConfiguration extends ResourceServerConfigurerAdapter {
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .regexMatchers("/health/?").permitAll()
             .regexMatchers(
-                "/metrics/?",
+                "/metrics/?(\\?.*)?",
                 "/api-violations/?",
-                "/supported-rules/?",
-                "/review-statistics/?")
+                "/supported-rules/?(\\?.*)?",
+                "/review-statistics/?(\\?.*)?")
             .access("#oauth2.hasScope('uid')")
             .antMatchers("**").denyAll();
 
