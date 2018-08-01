@@ -19,7 +19,12 @@ twintip:
   mapping: /api
   yaml: "classpath:/api/zally-api.yaml"
 
-management.server.port: 8080
+server:
+  port: 8000
+
+management:
+  server:
+    port: 8080
 
 zally:
   ignoreRules: S010, H001
