@@ -39,6 +39,19 @@ class PathMatchersTest {
     }
 
     @Test
+    fun `regex matcher matches allows query parameters`() {
+        val matcher = RegexRequestMatcher("/metrics/?(\\?.*)?", null)
+        assertThat(matcher.matches(request("/metrics"))).isTrue()
+        assertThat(matcher.matches(request("/metrics?"))).isTrue()
+        assertThat(matcher.matches(request("/metrics/"))).isTrue()
+        assertThat(matcher.matches(request("/metrics/?"))).isTrue()
+        assertThat(matcher.matches(request("/metrics/?"))).isTrue()
+        assertThat(matcher.matches(request("/metrics?parameter=value"))).isTrue()
+        assertThat(matcher.matches(request("/metrics/?parameter=value"))).isTrue()
+        assertThat(matcher.matches(request("/metrics-resource/?parameter=value"))).isFalse()
+    }
+
+    @Test
     @Ignore("The outcome of this test does not match the behaviour explained in the documentation. Probably cause: unable to correctly mock the `HttpServletRequest`.")
     fun `mvcMatcher matches requests with and without trailing slash but also unwanted deeper paths`() {
         val matcher = MvcRequestMatcher(null, "/metrics/")
