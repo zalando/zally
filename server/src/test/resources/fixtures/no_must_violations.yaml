@@ -33,6 +33,7 @@ externalDocs:
 basePath: /
 produces:
 - application/json
+- application/problem+json
 consumes:
 - application/json
 

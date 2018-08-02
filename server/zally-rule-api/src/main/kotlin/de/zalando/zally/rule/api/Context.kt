@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.PathItem
 
 interface Context {
     val api: OpenAPI
+    fun isOpenAPI3(): Boolean
     /**
      * Convenience method for filtering and iterating over the paths in order to create Violations.
      * @param pathFilter a filter selecting the paths to validate
