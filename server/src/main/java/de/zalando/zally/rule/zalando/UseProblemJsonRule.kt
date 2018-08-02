@@ -42,7 +42,7 @@ class UseProblemJsonRule {
                         code.toIntOrNull() in 400..599 || code == "default"
                     }
                     .flatMap { (_, response) ->
-                        testForProblemSchema(response, context.isOpenAPI3)
+                        testForProblemSchema(response, context.isOpenAPI3())
                     }
                     .map { (schema, validation) ->
                         context.violation(description, schema)

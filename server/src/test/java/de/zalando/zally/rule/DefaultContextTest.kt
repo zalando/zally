@@ -41,7 +41,7 @@ class DefaultContextTest {
         paths: {}
         """.trimIndent())!!
 
-        assertThat(openapi3Context.isOpenAPI3).isFalse()
+        assertThat(openapi3Context.isOpenAPI3()).isFalse()
     }
 
     @Test
@@ -54,6 +54,6 @@ class DefaultContextTest {
         paths: {}
         """.trimIndent())!!
 
-        assertThat(openapi3Context.isOpenAPI3).isTrue()
+        assertThat(openapi3Context.isOpenAPI3()).isTrue()
     }
 }
