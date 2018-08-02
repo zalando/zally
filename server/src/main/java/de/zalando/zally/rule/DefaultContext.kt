@@ -124,45 +124,53 @@ class DefaultContext(openApi: OpenAPI, swagger: Swagger? = null) : Context {
         private val log = LoggerFactory.getLogger(DefaultContext::class.java)
         val extensionNames = arrayOf("getVendorExtensions", "getExtensions")
 
-        fun createOpenApiContext(content: String, failOnParseErrors: Boolean = false): Context? {
-            val parseOptions = ParseOptions()
-            parseOptions.isResolve = true
-            // parseOptions.isResolveFully = true // https://github.com/swagger-api/swagger-parser/issues/682
+        fun createOpenApiContext(content: String, failOnParseErrors: Boolean = false): Context? =
+            try {
+                val parseOptions = ParseOptions()
+                parseOptions.isResolve = true
+                // parseOptions.isResolveFully = true // https://github.com/swagger-api/swagger-parser/issues/682
 
-            val parseResult = OpenAPIV3Parser().readContents(content, null, parseOptions)
-            if (failOnParseErrors && parseResult.messages.orEmpty().isNotEmpty()) {
-                val sep = "\n  - "
-                val messageBulletList = parseResult.messages.joinToString(sep)
-                throw RuntimeException("Swagger parsing failed with those errors:$sep$messageBulletList")
-            }
-            return parseResult?.openAPI?.let {
-                ResolverFully(true).resolveFully(it) // workaround for NPE bug in swagger-parser
-                DefaultContext(it)
-            }
-        }
-
-        fun createSwaggerContext(content: String, failOnParseErrors: Boolean = false): Context? =
-                SwaggerParser().readWithInfo(content, true)?.let { parseResult ->
+                val parseResult = OpenAPIV3Parser().readContents(content, null, parseOptions)
                 if (failOnParseErrors && parseResult.messages.orEmpty().isNotEmpty()) {
                     val sep = "\n  - "
                     val messageBulletList = parseResult.messages.joinToString(sep)
                     throw RuntimeException("Swagger parsing failed with those errors:$sep$messageBulletList")
                 }
+                parseResult?.openAPI?.let {
+                    ResolverFully(true).resolveFully(it) // workaround for NPE bug in swagger-parser
+                    DefaultContext(it)
+                }
+            } catch (t: Throwable) {
+                null
+            }
+
+        fun createSwaggerContext(content: String, failOnParseErrors: Boolean = false): Context? =
+            try {
+                SwaggerParser().readWithInfo(content, true)?.let { parseResult ->
+                    if (failOnParseErrors && parseResult.messages.orEmpty().isNotEmpty()) {
+                        val sep = "\n  - "
+                        val messageBulletList = parseResult.messages.joinToString(sep)
+                        throw RuntimeException("Swagger parsing failed with those errors:$sep$messageBulletList")
+                    }
                     val swagger = parseResult.swagger ?: return null
                     val convertResult = SwaggerConverter().convert(parseResult)
-                if (failOnParseErrors && convertResult.messages.orEmpty().isNotEmpty()) {
-                    val sep = "\n  - "
-                    val messageBulletList = parseResult.messages.joinToString(sep)
-                    throw RuntimeException("Swagger conversion to OpenAPI 3 failed with those errors:$sep$messageBulletList")
-}
+                    if (failOnParseErrors && convertResult.messages.orEmpty().isNotEmpty()) {
+                        val sep = "\n  - "
+                        val messageBulletList = parseResult.messages.joinToString(sep)
+                        throw RuntimeException("Swagger conversion to OpenAPI 3 failed with those errors:$sep$messageBulletList")
+                    }
                     convertResult?.openAPI?.let {
                         try {
                             ResolverFully(true).resolveFully(it)
                         } catch (e: NullPointerException) {
                             log.warn("Failed to fully resolve Swagger schema.", e)
-                        if (failOnParseErrors) throw e }
+                            if (failOnParseErrors) throw e
+                        }
                         DefaultContext(it, swagger)
                     }
                 }
+            } catch (t: Throwable) {
+                null
+            }
     }
 }
