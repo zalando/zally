@@ -24,6 +24,7 @@ class DefaultContext(openApi: OpenAPI, swagger: Swagger? = null) : Context {
     private val swaggerAst = swagger?.let { ReverseAst.fromObject(it).withExtensionMethodNames(*extensionNames).build() }
 
     override val api = recorder.proxy
+    override val isOpenAPI3 = swagger == null
 
     /**
      * Convenience method for filtering and iterating over the paths in order to create Violations.

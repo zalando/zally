@@ -12,7 +12,6 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.ast.JsonPointers
-import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
@@ -43,7 +42,7 @@ class UseProblemJsonRule {
                         code.toIntOrNull() in 400..599 || code == "default"
                     }
                     .flatMap { (_, response) ->
-                        testForProblemSchema(response)
+                        testForProblemSchema(response, context.isOpenAPI3)
                     }
                     .map { (schema, validation) ->
                         context.violation(description, schema)
@@ -59,10 +58,10 @@ class UseProblemJsonRule {
         }
     }
 
-    private fun testForProblemSchema(response: ApiResponse): List<Pair<Any, Violation>> =
+    private fun testForProblemSchema(response: ApiResponse, isOpenAPI3: Boolean): List<Pair<Any, Violation>> =
         response.content?.flatMap { (type, mediaType) ->
-            System.out.println("TYPE: $type")
-            if (!type.startsWith(problemDetailsObjectMediaType)) {
+            // doesn't check media type in OpenAPI2 (Swagger) specifications because of converting issues
+            if (isOpenAPI3 && !type.startsWith(problemDetailsObjectMediaType)) {
                 val message = Violation("Media type have to be 'application/problem+json'")
                 return listOf(Pair(mediaType, message))
             }

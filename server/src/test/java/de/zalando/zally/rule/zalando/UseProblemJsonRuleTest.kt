@@ -35,33 +35,6 @@ class UseProblemJsonRuleTest {
     }
 
     @Test
-    fun `should return violation if wrong media type is used as the default response (OpenAPI 2)`() {
-        val content = """
-        swagger: '2.0'
-        info:
-          version: 1.0.0
-          title: Pets API
-        paths:
-          "/pets":
-            get:
-              produces:
-                - application/json
-              responses:
-                default:
-                  description: Error object
-                  schema:
-                    ${'$'}ref: https://opensource.zalando.com/problem/schema.yaml#/Problem
-        """.trimIndent()
-
-        val context = DefaultContext.createSwaggerContext(content)!!
-        val violations = rule.validate(context)
-
-        assertThat(violations.size).isEqualTo(1)
-        assertThat(violations[0].pointer.toString())
-            .isEqualTo("/paths/~1pets/get/responses/default")
-    }
-
-    @Test
     fun `should return violation if a wrong schema is used for Problem Details Object`() {
         val content = """
         openapi: 3.0.1
