@@ -44,7 +44,7 @@ public class ApiDefinitionReaderTest {
 
     @Test
     public void shouldReturnStringWhenApiDefinitionIsFound() {
-        ApiDefinitionRequest request = new ApiDefinitionRequest(contentInJson, "http://zalando.de", emptyList());
+        ApiDefinitionRequest request = new ApiDefinitionRequest(contentInJson, null, "http://zalando.de", emptyList());
         String result = reader.read(request);
         assertEquals(contentInJson, result);
     }
@@ -63,6 +63,14 @@ public class ApiDefinitionReaderTest {
         String result = reader.read(ApiDefinitionRequest.Factory.fromUrl(url));
 
         assertEquals(contentInYaml, result);
+    }
+
+    @Test
+    public void shouldPreferRawSpecification () {
+        String rawYaml = "raw: yaml";
+        ApiDefinitionRequest request = new ApiDefinitionRequest("{\"some\": \"json\"", rawYaml, "http://zalando.de", emptyList());
+        String result = reader.read(request);
+        assertEquals(rawYaml, result);
     }
 
     @Test
