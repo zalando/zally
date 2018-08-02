@@ -33,6 +33,7 @@ externalDocs:
 basePath: /
 produces:
 - application/json
+- application/problem+json
 consumes:
 - application/json
 
@@ -100,6 +101,9 @@ paths:
         - uid
       parameters:
       - $ref: "#/parameters/LifecycleState"
+      produces:
+      - application/json
+      - application/problem+json
       responses:
         200:
           description: List of APIs
@@ -125,6 +129,9 @@ paths:
         - uid
       parameters:
       - $ref: "#/parameters/ApiId"
+      produces:
+      - application/json
+      - application/problem+json
       responses:
         200:
           description: API's details
@@ -147,6 +154,9 @@ paths:
       parameters:
       - $ref: "#/parameters/ApiId"
       - $ref: "#/parameters/LifecycleState"
+      produces:
+      - application/json
+      - application/problem+json
       responses:
         200:
           description: List of API's versions
@@ -174,6 +184,9 @@ paths:
       parameters:
       - $ref: "#/parameters/ApiId"
       - $ref: "#/parameters/VersionId"
+      produces:
+      - application/json
+      - application/problem+json
       responses:
         200:
           description: Version of the API
@@ -198,6 +211,9 @@ paths:
       - $ref: "#/parameters/ApiId"
       - $ref: "#/parameters/VersionId"
       - $ref: "#/parameters/DefinitionId"
+      produces:
+      - application/json
+      - application/problem+json
       responses:
         200:
           description: Swagger Definition of the API
@@ -219,6 +235,9 @@ paths:
         - uid
       parameters:
       - $ref: "#/parameters/ApiId"
+      produces:
+      - application/json
+      - application/problem+json
       responses:
         200:
           description: List of API's Deployments
@@ -242,6 +261,9 @@ paths:
       security:
       - oauth2:
         - uid
+      produces:
+      - application/json
+      - application/problem+json
       responses:
         200:
           description: List of Applications
@@ -267,6 +289,9 @@ paths:
         - uid
       parameters:
       - $ref: '#/parameters/ApplicationName'
+      produces:
+      - application/json
+      - application/problem+json
       responses:
         200:
           description: Application details
@@ -287,6 +312,9 @@ paths:
         - uid
       parameters:
       - $ref: "#/parameters/CrawledAPIDefinition"
+      produces:
+      - application/json
+      - application/problem+json
       responses:
         200:
           description: API definition has been saved

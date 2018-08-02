@@ -12,7 +12,7 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.ast.JsonPointers
-import io.swagger.v3.oas.models.media.Schema
+import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
@@ -22,9 +22,9 @@ import io.swagger.v3.oas.models.responses.ApiResponse
     title = "Use Problem JSON"
 )
 class UseProblemJsonRule {
+    private val problemDetailsObjectMediaType = "application/problem+json"
     private val description = "Operations should return problem JSON when any problem occurs during processing " +
         "whether caused by client or server."
-    private val allowedContentTypes = listOf("application/json", "application/problem+json")
 
     private val objectMapper by lazy { ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL) }
 
@@ -59,11 +59,12 @@ class UseProblemJsonRule {
         }
     }
 
-    private fun testForProblemSchema(response: ApiResponse): List<Pair<Schema<*>, Violation>> =
+    private fun testForProblemSchema(response: ApiResponse): List<Pair<Any, Violation>> =
         response.content?.flatMap { (type, mediaType) ->
-            if (allowedContentTypes.none { type.startsWith(it) }) {
-                val message = Violation("Media type must be one of $allowedContentTypes.")
-                return listOf(Pair(mediaType.schema, message))
+            System.out.println("TYPE: $type")
+            if (!type.startsWith(problemDetailsObjectMediaType)) {
+                val message = Violation("Media type have to be 'application/problem+json'")
+                return listOf(Pair(mediaType, message))
             }
             val node = objectMapper.convertValue(mediaType.schema, JsonNode::class.java)
             val result = problemSchemaValidator.validate(node)
