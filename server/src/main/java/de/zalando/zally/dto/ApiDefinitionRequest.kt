@@ -10,7 +10,7 @@ data class ApiDefinitionRequest (
     @JsonDeserialize(using = JsonRawValueDeserializer::class)
     var apiDefinition: String? = null,
 
-    var apiDefinitionRaw: String? = null,
+    var apiDefinitionString: String? = null,
 
     var apiDefinitionUrl: String? = null,
 

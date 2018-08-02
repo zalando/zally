@@ -197,12 +197,12 @@ definitions:
     type: object
     description: |
       Request containing a swagger definition file. One of the following fields must be provided:
-      api_definition, api_definition_raw, or api_definition_url.
+      api_definition, api_definition_string, or api_definition_url.
     properties:
       api_definition:
         type: object
         description: Specification object in OpenAPI format
-      api_definition_raw:
+      api_definition_string:
         type: string
         description: Raw API Specification string in OpenAPI format
       api_definition_url:

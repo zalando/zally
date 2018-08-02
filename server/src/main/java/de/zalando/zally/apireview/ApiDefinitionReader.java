@@ -56,8 +56,8 @@ public class ApiDefinitionReader {
     }
 
     public String read(ApiDefinitionRequest request) throws MissingApiDefinitionException, UnaccessibleResourceUrlException {
-        if (request.getApiDefinitionRaw() != null) {
-            return request.getApiDefinitionRaw();
+        if (request.getApiDefinitionString() != null) {
+            return request.getApiDefinitionString();
         } else if (request.getApiDefinition() != null) {
             return request.getApiDefinition();
         } else if (request.getApiDefinitionUrl() != null) {

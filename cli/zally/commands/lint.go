@@ -108,7 +108,7 @@ func readRemoteFile(url string) ([]byte, error) {
 
 func doRequest(requestBuilder *utils.RequestBuilder, data string) (*domain.Violations, error) {
 	var apiViolationsRequest domain.APIViolationsRequest
-	apiViolationsRequest.APIDefinitionRaw = data
+	apiViolationsRequest.APIDefinitionString = data
 	requestBody, err := json.MarshalIndent(apiViolationsRequest, "", "  ")
 	if err != nil {
 		return nil, err

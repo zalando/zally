@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-		"net/http"
+	"net/http"
 	"net/http/httptest"
 
 	"io"
@@ -18,7 +18,7 @@ import (
 	"github.com/zalando/zally/cli/zally/tests"
 	"github.com/zalando/zally/cli/zally/utils"
 	"github.com/zalando/zally/cli/zally/utils/formatters"
-	)
+)
 
 var app = cli.NewApp()
 
