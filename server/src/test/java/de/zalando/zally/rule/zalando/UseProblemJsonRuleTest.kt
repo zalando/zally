@@ -1,6 +1,5 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getResourceContent
 import de.zalando.zally.rule.DefaultContext
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -10,100 +9,218 @@ class UseProblemJsonRuleTest {
     private val rule = UseProblemJsonRule()
 
     @Test
-    fun shouldReportDefaultResponsesWithoutProblemType() {
+    fun `should return violation if wrong media type is used as the default response`() {
         val content = """
-        openapi: 3.0.0
+        openapi: 3.0.1
         info:
           version: 1.0.0
           title: Test
         paths:
-          "/bad":
+          /pets:
             get:
               responses:
                 default:
-                  description: Bad default response.
                   content:
                     application/json:
+                      schema:
+                        ${'$'}ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+        """.trimIndent()
+
+        val context = DefaultContext.createOpenApiContext(content)!!
+        val violations = rule.validate(context)
+
+        assertThat(violations.size).isEqualTo(1)
+        assertThat(violations[0].pointer.toString())
+            .isEqualTo("/paths/~1pets/get/responses/default/content/application~1json")
+    }
+
+    @Test
+    fun `should return violation if a wrong schema is used for Problem Details Object`() {
+        val content = """
+        openapi: 3.0.1
+        info:
+          version: 1.0.0
+          title: Pets API
+        paths:
+          /bad:
+            get:
+              responses:
+                default:
+                  content:
+                    application/problem+json:
                       schema:
                         type: object
                         properties:
                           status:
                             type: string
-          "/good":
-            get:
-              responses:
-                "200":
-                  description: Good response.
-                  content:
-                    application/json:
-                      schema:
-                        type: object
-                default:
-                  description: Good default response.
-                  content:
-                    application/json:
-                      schema:
-                        "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContext.createOpenApiContext(content)!!
         val violations = rule.validate(context)
 
         assertThat(violations.map { it.pointer.toString() }).containsExactlyInAnyOrder(
-            "/paths/~1bad/get/responses/default/content/application~1json/schema/properties/status",
-            "/paths/~1bad/get/responses/default/content/application~1json/schema/properties/status/type"
+            "/paths/~1bad/get/responses/default/content/application~1problem+json/schema/properties/status",
+            "/paths/~1bad/get/responses/default/content/application~1problem+json/schema/properties/status/type"
         )
     }
 
     @Test
-    fun shouldReturnNoViolationsWhenErrorsReferencingToProblemJson() {
-        val content = getResourceContent("problem_json.yaml")
+    fun `should return violation if a incorrect schema is used for Problem Details Object (OpenAPI 2)`() {
+        val content = """
+        swagger: '2.0'
+        info:
+          version: 1.0.0
+          title: Pets API
+        paths:
+          /pets:
+            get:
+              produces:
+                - application/problem+json
+              responses:
+                default:
+                  description: Error object
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+        """.trimIndent()
+
         val context = DefaultContext.createSwaggerContext(content)!!
-        assertThat(rule.validate(context)).isEmpty()
+        val violations = rule.validate(context)
+
+        assertThat(violations.map { it.pointer.toString() }).containsExactlyInAnyOrder(
+            "/paths/~1pets/get/responses/default/schema/properties/status",
+            "/paths/~1pets/get/responses/default/schema/properties/status/type"
+        )
     }
 
     @Test
-    fun shouldReturnViolationsWhenErrorsReferencingToProblemJsonButNotProducingJson() {
-        val content = getResourceContent("problem_json_not_produces_json.yaml")
-        val context = DefaultContext.createSwaggerContext(content)!!
-        val violations = rule.validate(context)
-        assertThat(violations).allMatch {
-            it.description.endsWith("application/json.") &&
-                it.pointer?.toString()?.endsWith("/schema")?.or(
-                    it.pointer?.toString()?.matches(Regex("^/definitions/.*Problem$")) ?: false
-                ) ?: false
-        }
-    }
+    fun `should return no violation if Problem Details Object is properly used as default response`() {
+        val content = """
+        openapi: 3.0.1
+        info:
+          title: Pets API
+          version: 1.0.0
+        paths:
+          "/pets":
+            get:
+              responses:
+                default:
+                  description: Good default response.
+                  content:
+                    application/problem+json:
+                      schema:
+                        "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
+        """.trimIndent()
 
-    @Test
-    fun shouldReturnNoViolationsWhenOperationsAreProducingJson() {
-        val content = getResourceContent("problem_json_operations_produce_json.yaml")
-        val context = DefaultContext.createSwaggerContext(content)!!
+        val context = DefaultContext.createOpenApiContext(content)!!
         val violations = rule.validate(context)
+
         assertThat(violations).isEmpty()
     }
 
     @Test
-    fun shouldReturnNoViolationsWhenCustomReferenceIsUsed() {
-        val content = getResourceContent("api_tinbox.yaml")
+    fun `should return no violation if Problem Details Object is properly used as default response (OpenAPI 2)`() {
+        val content = """
+        swagger: '2.0'
+        info:
+          version: 1.0.0
+          title: Pets API
+        paths:
+          /pets:
+            get:
+              produces:
+                - application/json
+                - application/problem+json
+              responses:
+                default:
+                  description: Error object
+                  schema:
+                    "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
+        """.trimIndent()
+
         val context = DefaultContext.createSwaggerContext(content)!!
         val violations = rule.validate(context)
+
         assertThat(violations).isEmpty()
     }
 
     @Test
-    fun shouldReturnViolationsWhenNoReferenceIsUsed() {
-        val content = getResourceContent("api_spp.json")
-        val context = DefaultContext.createSwaggerContext(content)!!
+    fun `should return no violation when custom reference is used`() {
+        val content = """
+        openapi: 3.0.1
+        info:
+          title: Pets API
+          version: 1.0.0
+        paths:
+          "/pets":
+            get:
+              responses:
+                default:
+                  description: Good default response.
+                  content:
+                    application/problem+json:
+                      schema:
+                        "${'$'}ref": "#/components/schemas/Errors"
+        components:
+          schemas:
+            Errors:
+              required:
+                - error
+              properties:
+                error:
+                  ${'$'}ref: "#/components/schemas/Error"
+            Error:
+              required:
+                - code
+                - title
+              properties:
+                title:
+                  type: "string"
+                code:
+                  type: "string"
+        """.trimIndent()
+
+        val context = DefaultContext.createOpenApiContext(content)!!
         val violations = rule.validate(context)
-        assertThat(violations).isNotEmpty
+
+        assertThat(violations).isEmpty()
     }
 
     @Test
-    fun shouldNotThrowExOnSchemasWithReferencesToEmptyDefinitions() {
-        val content = getResourceContent("missing_definitions.yaml")
-        val context = DefaultContext.createSwaggerContext(content)!!
+    fun `should return violations when wrong reference is used`() {
+        val content = """
+        openapi: 3.0.1
+        info:
+          title: Pets API
+          version: 1.0.0
+        paths:
+          "/pets":
+            get:
+              responses:
+                default:
+                  description: Good default response.
+                  content:
+                    application/problem+json:
+                      schema:
+                        ${'$'}ref: "#/components/schemas/Problem"
+        components:
+          schemas:
+            Problem:
+              description: not a problem detail object as defined in RFC 7807
+              properties:
+                instance:
+                  type: number
+                  example: 99
+                description:
+                  type: string
+                  example: many many problems
+        """.trimIndent()
+
+        val context = DefaultContext.createOpenApiContext(content)!!
         val violations = rule.validate(context)
+
         assertThat(violations).isNotEmpty
     }
 }
