@@ -18,10 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.net.URL
 
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = "101",
-        severity = Severity.MUST,
-        title = "Provide API Specification using OpenAPI"
+    ruleSet = ZalandoRuleSet::class,
+    id = "101",
+    severity = Severity.MUST,
+    title = "Provide API Specification using OpenAPI"
 )
 open class UseOpenApiRule(@Autowired rulesConfig: Config) {
 
@@ -32,8 +32,8 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
     private val jsonSchemaValidators: List<JsonSchemaValidator>
 
     private val defaultSchemas = listOf(
-            Pair("Swagger 2.0", "schemas/openapi-2-schema.json"),
-            Pair("OpenAPI 3", "schemas/openapi-3-schema.json")
+        Pair("Swagger 2.0", "schemas/openapi-2-schema.json"),
+        Pair("OpenAPI 3", "schemas/openapi-3-schema.json")
     )
 
     init {
