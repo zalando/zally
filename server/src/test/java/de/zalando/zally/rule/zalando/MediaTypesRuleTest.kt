@@ -45,7 +45,7 @@ class MediaTypesRuleTest {
 
     @Test
     fun `empty specification causes no violation`() {
-        val context = DefaultContext(OpenAPI())
+        val context = DefaultContext("", OpenAPI())
         assertThat(rule.validate(context)).isEmpty()
     }
 
