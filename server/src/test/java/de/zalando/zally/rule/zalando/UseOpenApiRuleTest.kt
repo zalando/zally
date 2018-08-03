@@ -67,10 +67,7 @@ class UseOpenApiRuleTest {
 
     @Test
     fun `checkIfTheFormatIsYaml should return a violation if JSON is used`() {
-        val context = DefaultContext("""
-            {
-              "openapi": "3.0.1"
-            } """.trimIndent(), OpenAPI(), null)
+        val context = DefaultContext("\t\r\n{\"openapi\": \"3.0.1\"}\t\r\n", OpenAPI(), null)
 
         val violation = rule.checkIfTheFormatIsYAML(context)
 

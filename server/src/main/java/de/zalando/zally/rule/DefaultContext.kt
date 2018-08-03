@@ -137,7 +137,7 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
             }
             return parseResult?.openAPI?.let {
                 ResolverFully(true).resolveFully(it) // workaround for NPE bug in swagger-parser
-                DefaultContext(content, it, null)
+                DefaultContext(content, it)
             }
         }
 
