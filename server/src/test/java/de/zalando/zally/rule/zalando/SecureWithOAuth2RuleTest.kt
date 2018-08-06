@@ -164,26 +164,4 @@ class SecureWithOAuth2RuleTest {
         }
         assertThat(rule.checkPasswordFlow(swagger)).isEqualTo(checkPasswordFlowExpectedViolation)
     }
-
-    @Test
-    fun `converted spec without OAUTH scopes should not crash`() {
-        // Specific case where converting from Swagger to OpenAPI 3 (using the `Context`
-        // object) would throw an exception. New behaviour tested here: the returned `Context`
-        // is null because the file was not parsed (convertible, here).
-        @Language("YAML")
-        val s = """
-            swagger: 2.0
-            info:
-              title: Bleh
-            securityDefinitions:
-              oa:
-                type: oauth2
-                flow: application
-                # scopes:
-                #   foo: Description of 'foo'
-            paths: {}
-        """.trimIndent()
-        val context = DefaultContext.createSwaggerContext(s, true)
-        assertThat(context).isNull()
-    }
 }

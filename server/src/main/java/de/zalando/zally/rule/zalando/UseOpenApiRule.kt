@@ -19,7 +19,7 @@ import java.net.URL
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
-    id = "101",
+    id = UseOpenApiRule.id,
     severity = Severity.MUST,
     title = "Provide API Specification using OpenAPI"
 )
@@ -95,5 +95,9 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
             val schema = ObjectTreeReader().read(schemaUrl)
             JsonSchemaValidator(name, schema, schemaRedirects = mapOf(referencedOnlineSchema to localResource))
         }
+    }
+
+    companion object {
+        const val id: String = "101"
     }
 }

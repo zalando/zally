@@ -8,6 +8,7 @@ import de.zalando.zally.util.ast.MethodCallRecorder
 import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
+import io.swagger.parser.util.SwaggerDeserializationResult
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.PathItem
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.models.PathItem.HttpMethod
 import io.swagger.v3.parser.OpenAPIV3Parser
 import io.swagger.v3.parser.converter.SwaggerConverter
 import io.swagger.v3.parser.core.models.ParseOptions
+import io.swagger.v3.parser.core.models.SwaggerParseResult
 import io.swagger.v3.parser.util.ResolverFully
 import org.slf4j.LoggerFactory
 
@@ -36,10 +38,10 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
         pathFilter: (Map.Entry<String, PathItem>) -> Boolean,
         action: (Map.Entry<String, PathItem>) -> List<Violation?>
     ): List<Violation> = api.paths
-            .orEmpty()
-            .filter(pathFilter)
-            .flatMap(action)
-            .filterNotNull()
+        .orEmpty()
+        .filter(pathFilter)
+        .flatMap(action)
+        .filterNotNull()
 
     /**
      * Convenience method for filtering and iterating over the operations in order to create Violations.
@@ -54,10 +56,10 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
         action: (Map.Entry<HttpMethod, Operation>) -> List<Violation?>
     ): List<Violation> = validatePaths(pathFilter) { (_, path) ->
         path.readOperationsMap()
-                .orEmpty()
-                .filter(operationFilter)
-                .flatMap(action)
-                .filterNotNull()
+            .orEmpty()
+            .filter(operationFilter)
+            .flatMap(action)
+            .filterNotNull()
     }
 
     /**
@@ -124,53 +126,94 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
         private val log = LoggerFactory.getLogger(DefaultContext::class.java)
         val extensionNames = arrayOf("getVendorExtensions", "getExtensions")
 
-        fun createOpenApiContext(content: String, failOnParseErrors: Boolean = false): Context? =
-            try {
-                val parseOptions = ParseOptions()
-                parseOptions.isResolve = true
-                // parseOptions.isResolveFully = true // https://github.com/swagger-api/swagger-parser/issues/682
+        fun createOpenApiContext(content: String, failOnParseErrors: Boolean = false): Context? {
+            val parseOptions = ParseOptions()
+            parseOptions.isResolve = true
+            // parseOptions.isResolveFully = true // https://github.com/swagger-api/swagger-parser/issues/682
 
-                val parseResult = OpenAPIV3Parser().readContents(content, null, parseOptions)
+            val parseResult = OpenAPIV3Parser().readContents(content, null, parseOptions)
+            // todo #773 : Some pre-checks are already done by OpenAPI
+            /*
+                Logic should be:
+
+                If "attribute swagger is missing" is in the messages, than it is not a `Swagger` doc
+                and should return `null`.
+
+                Otherwise, if the `swagger` is null, all messages should be considered pre-check failures.
+
+            */
+            if (failOnParseErrors && parseResult.messages.orEmpty().isNotEmpty()) {
+                val sep = "\n  - "
+                val messageBulletList = parseResult.messages.joinToString(sep)
+                throw RuntimeException("Swagger parsing failed with those errors:$sep$messageBulletList")
+            }
+            return parseResult?.openAPI?.let {
+                ResolverFully(true).resolveFully(it) // workaround for NPE bug in swagger-parser
+                DefaultContext(content, it)
+            }
+        }
+
+        fun createSwaggerContext(content: String, failOnParseErrors: Boolean = false): Context? =
+            SwaggerParser().readWithInfo(content, true)?.let { parseResult ->
+
+                // todo #773 : Some pre-checks are already done by Swagger
+                /*
+                    Logic should be:
+
+                    If "attribute swagger is missing" is in the messages, than it is not a `Swagger` doc
+                    and should return `null`.
+
+                    Otherwise, if the `swagger` is null, all messages should be considered pre-check failures.
+
+                */
                 if (failOnParseErrors && parseResult.messages.orEmpty().isNotEmpty()) {
                     val sep = "\n  - "
                     val messageBulletList = parseResult.messages.joinToString(sep)
                     throw RuntimeException("Swagger parsing failed with those errors:$sep$messageBulletList")
                 }
-                parseResult?.openAPI?.let {
-                    ResolverFully(true).resolveFully(it) // workaround for NPE bug in swagger-parser
-                DefaultContext(content, it)
+                val swagger = parseResult.swagger ?: return null
+                val convertResult = convertWithPreChecks(parseResult)
+                if (failOnParseErrors && convertResult?.messages.orEmpty().isNotEmpty()) {
+                    val sep = "\n  - "
+                    val messageBulletList = parseResult.messages.joinToString(sep)
+                    throw RuntimeException("Swagger conversion to OpenAPI 3 failed with those errors:$sep$messageBulletList")
                 }
-            } catch (t: Throwable) {
-                null
+                convertResult?.openAPI?.let {
+                    try {
+                        ResolverFully(true).resolveFully(it)
+                    } catch (e: NullPointerException) {
+                        log.warn("Failed to fully resolve Swagger schema.", e)
+                        if (failOnParseErrors) throw e
+                    }
+                    DefaultContext(content, it, swagger)
+                }
             }
 
-        fun createSwaggerContext(content: String, failOnParseErrors: Boolean = false): Context? =
-            try {
-                SwaggerParser().readWithInfo(content, true)?.let { parseResult ->
-                    if (failOnParseErrors && parseResult.messages.orEmpty().isNotEmpty()) {
-                        val sep = "\n  - "
-                        val messageBulletList = parseResult.messages.joinToString(sep)
-                        throw RuntimeException("Swagger parsing failed with those errors:$sep$messageBulletList")
-                    }
-                    val swagger = parseResult.swagger ?: return null
-                    val convertResult = SwaggerConverter().convert(parseResult)
-                    if (failOnParseErrors && convertResult.messages.orEmpty().isNotEmpty()) {
-                        val sep = "\n  - "
-                        val messageBulletList = parseResult.messages.joinToString(sep)
-                        throw RuntimeException("Swagger conversion to OpenAPI 3 failed with those errors:$sep$messageBulletList")
-                    }
-                    convertResult?.openAPI?.let {
-                        try {
-                            ResolverFully(true).resolveFully(it)
-                        } catch (e: NullPointerException) {
-                            log.warn("Failed to fully resolve Swagger schema.", e)
-                            if (failOnParseErrors) throw e
-                        }
-                        DefaultContext(content, it, swagger)
-                    }
-                }
-            } catch (t: Throwable) {
-                null
+        /**
+         * @throws PreCheckViolationsException when one of the check fails, including the appropriate list of [Violation].
+         */
+        private fun convertWithPreChecks(swaggerDeserializationResult: SwaggerDeserializationResult): SwaggerParseResult? {
+            val swagger = swaggerDeserializationResult.swagger
+            val violations = mutableListOf<Violation>()
+
+//            if (swagger.info === null) {
+//                violations += Violation("""An "info" block must be specified.""", rootJsonPointer)
+//            }
+            // todo #773
+
+            if (violations.isNotEmpty()) {
+                throw PreCheckViolationsException(violations)
             }
+
+            return try {
+                SwaggerConverter().convert(swaggerDeserializationResult)
+            } catch (t: Throwable) {
+                log.warn("Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. Error not covered by pre-checks.", t)
+                val violation = Violation("Unable to parse specification", rootJsonPointer)
+                throw PreCheckViolationsException(listOf(violation))
+            }
+        }
+
+        private val rootJsonPointer = JsonPointer.compile("/")
     }
 }

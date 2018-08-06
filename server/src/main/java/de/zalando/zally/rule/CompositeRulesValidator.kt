@@ -10,8 +10,8 @@ class CompositeRulesValidator(
     @Autowired private val jsonRulesValidator: JsonRulesValidator
 ) : ApiValidator {
 
-    override fun validate(content: String, requestPolicy: RulesPolicy): List<Result> =
-        contextRulesValidator.validate(content, requestPolicy) +
-            swaggerRulesValidator.validate(content, requestPolicy) +
-            jsonRulesValidator.validate(content, requestPolicy)
+    override fun validate(content: String, policy: RulesPolicy): List<Result> =
+        contextRulesValidator.validate(content, policy) +
+            swaggerRulesValidator.validate(content, policy) +
+            jsonRulesValidator.validate(content, policy)
 }

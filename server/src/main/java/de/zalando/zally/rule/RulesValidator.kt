@@ -2,17 +2,29 @@ package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.zalando.UseOpenApiRule
 import de.zalando.zally.util.ast.JsonPointers
 import org.slf4j.LoggerFactory
 
-abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
+abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidator {
 
     private val log = LoggerFactory.getLogger(RulesValidator::class.java)
     private val reader = ObjectTreeReader()
+    private val useOpenApiRule by lazy { rules.rules.first { it.rule.id == UseOpenApiRule.id } }
 
     override fun validate(content: String, policy: RulesPolicy): List<Result> {
-        val root = parse(content) ?: return emptyList()
-
+        val root = try {
+            parse(content) ?: return emptyList()
+        } catch (e: PreCheckViolationsException) {
+            return e.violations.map { v ->
+                Result(
+                    ruleSet = useOpenApiRule.ruleSet,
+                    rule = useOpenApiRule.rule,
+                    description = v.description,
+                    violationType = useOpenApiRule.rule.severity,
+                    pointer = v.pointer)
+            }
+        }
         return rules
             .checks(policy)
             .filter { details -> isCheckMethod(details, root) }
