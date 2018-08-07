@@ -123,76 +123,54 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(DefaultContext::class.java)
-        val extensionNames = arrayOf("getVendorExtensions", "getExtensions")
 
-        fun createOpenApiContext(content: String, failOnParseErrors: Boolean = false): Context? {
+        private val log = LoggerFactory.getLogger(DefaultContext::class.java)
+        private val extensionNames = arrayOf("getVendorExtensions", "getExtensions")
+
+        fun createOpenApiContext(content: String): ContentParseResult<Context> {
             val parseOptions = ParseOptions()
             parseOptions.isResolve = true
             // parseOptions.isResolveFully = true // https://github.com/swagger-api/swagger-parser/issues/682
-
             val parseResult = OpenAPIV3Parser().readContents(content, null, parseOptions)
-            // todo #773 : Some pre-checks are already done by OpenAPI
-            /*
-                Logic should be:
-
-                If "attribute swagger is missing" is in the messages, than it is not a `Swagger` doc
-                and should return `null`.
-
-                Otherwise, if the `swagger` is null, all messages should be considered pre-check failures.
-
-            */
-            if (failOnParseErrors && parseResult.messages.orEmpty().isNotEmpty()) {
-                val sep = "\n  - "
-                val messageBulletList = parseResult.messages.joinToString(sep)
-                throw RuntimeException("Swagger parsing failed with those errors:$sep$messageBulletList")
+            if (parseResult.messages.isNotEmpty()) {
+                return if (parseResult.messages.contains("attribute openapi is missing")) {
+                    ContentParseResult.NotApplicable()
+                } else {
+                    ContentParseResult.ParsedWithErrors(parseResult.messages)
+                }
             }
-            return parseResult?.openAPI?.let {
+
+            val context = parseResult.openAPI.let {
                 ResolverFully(true).resolveFully(it) // workaround for NPE bug in swagger-parser
                 DefaultContext(content, it)
             }
+            return ContentParseResult.Success(context)
         }
 
-        fun createSwaggerContext(content: String, failOnParseErrors: Boolean = false): Context? =
-            SwaggerParser().readWithInfo(content, true)?.let { parseResult ->
-
-                // todo #773 : Some pre-checks are already done by Swagger
-                /*
-                    Logic should be:
-
-                    If "attribute swagger is missing" is in the messages, than it is not a `Swagger` doc
-                    and should return `null`.
-
-                    Otherwise, if the `swagger` is null, all messages should be considered pre-check failures.
-
-                */
-                if (failOnParseErrors && parseResult.messages.orEmpty().isNotEmpty()) {
-                    val sep = "\n  - "
-                    val messageBulletList = parseResult.messages.joinToString(sep)
-                    throw RuntimeException("Swagger parsing failed with those errors:$sep$messageBulletList")
-                }
-                val swagger = parseResult.swagger ?: return null
-                val convertResult = convertWithPreChecks(parseResult)
-                if (failOnParseErrors && convertResult?.messages.orEmpty().isNotEmpty()) {
-                    val sep = "\n  - "
-                    val messageBulletList = parseResult.messages.joinToString(sep)
-                    throw RuntimeException("Swagger conversion to OpenAPI 3 failed with those errors:$sep$messageBulletList")
-                }
-                convertResult?.openAPI?.let {
-                    try {
-                        ResolverFully(true).resolveFully(it)
-                    } catch (e: NullPointerException) {
-                        log.warn("Failed to fully resolve Swagger schema.", e)
-                        if (failOnParseErrors) throw e
-                    }
-                    DefaultContext(content, it, swagger)
+        fun createSwaggerContext(content: String): ContentParseResult<Context> {
+            val parseResult = SwaggerParser().readWithInfo(content, true)
+            if (parseResult.messages.isNotEmpty()) {
+                return if (parseResult.messages.contains("attribute swagger is missing")) {
+                    ContentParseResult.NotApplicable()
+                } else {
+                    ContentParseResult.ParsedWithErrors(parseResult.messages)
                 }
             }
+
+            val convertResult = convertWithPreChecks(parseResult)
+            if (convertResult.openAPI === null) {
+                return ContentParseResult.ParsedWithErrors(convertResult.messages)
+            }
+
+            ResolverFully(true).resolveFully(convertResult.openAPI)
+            val context = DefaultContext(content, convertResult.openAPI, parseResult.swagger)
+            return ContentParseResult.Success(context)
+        }
 
         /**
          * @throws PreCheckViolationsException when one of the check fails, including the appropriate list of [Violation].
          */
-        private fun convertWithPreChecks(swaggerDeserializationResult: SwaggerDeserializationResult): SwaggerParseResult? {
+        private fun convertWithPreChecks(swaggerDeserializationResult: SwaggerDeserializationResult): SwaggerParseResult {
             val swagger = swaggerDeserializationResult.swagger
             val violations = mutableListOf<Violation>()
 

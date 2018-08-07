@@ -1,8 +1,10 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.api.Context
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class FunctionalNamingForHostnamesRuleTest {
@@ -64,7 +66,10 @@ class FunctionalNamingForHostnamesRuleTest {
 
     @Test
     fun `(must|should|may)FollowFunctionalNaming should return no violations if audience is not set`() {
-        val context = DefaultContext.createOpenApiContext("openapi: 3.0.1")!!
+        @Language("YAML")
+        val context = getOpenApiContextFromContent("""
+            openapi: 3.0.1
+        """)
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
         assertThat(rule.shouldFollowFunctionalNaming(context)).isEmpty()
@@ -72,14 +77,15 @@ class FunctionalNamingForHostnamesRuleTest {
     }
 
     private fun withAudienceAndHostname(audience: String, url: String): Context {
+        @Language("YAML")
         val content = """
             openapi: 3.0.1
             info:
               x-audience: $audience
             servers:
               - url: $url
-            """.trimIndent()
+        """.trimIndent()
 
-        return DefaultContext.createOpenApiContext(content)!!
+        return getOpenApiContextFromContent(content)
     }
 }

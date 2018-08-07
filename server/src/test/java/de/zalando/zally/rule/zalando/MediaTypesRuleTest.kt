@@ -2,6 +2,7 @@ package de.zalando.zally.rule.zalando
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.getContextFromFixture
+import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
@@ -52,7 +53,7 @@ class MediaTypesRuleTest {
     @Test
     fun `versioned custom media type causes no violation`() {
         @Language("YAML")
-        val context = DefaultContext.createOpenApiContext("""
+        val context = getOpenApiContextFromContent("""
             openapi: 3.0.0
             paths:
               "/shipment-order/{shipment_order_id}":
@@ -62,14 +63,14 @@ class MediaTypesRuleTest {
                       content:
                         "application/x.zalando.contract+json;v=123": {}
                         "application/vnd.api+json;version=3": {}
-        """.trimIndent())!!
+        """.trimIndent())
         assertThat(rule.validate(context)).isEmpty()
     }
 
     @Test
     fun `custom media type without versioning causes violation`() {
         @Language("YAML")
-        val context = DefaultContext.createOpenApiContext("""
+        val context = getOpenApiContextFromContent("""
             openapi: 3.0.0
             paths:
               "/shipment-order/{shipment_order_id}":
@@ -79,7 +80,7 @@ class MediaTypesRuleTest {
                       content:
                         "application/json": {}
                         "application/vnd.api+json": {}
-        """.trimIndent())!!
+        """.trimIndent())
         assertThat(rule.validate(context)).hasSameElementsAs(listOf(
             v("/paths/~1shipment-order~1{shipment_order_id}/get/responses/200/content/application~1vnd.api+json")
         ))
@@ -88,7 +89,7 @@ class MediaTypesRuleTest {
     @Test
     fun `only some of multiple paths without versioning causes violation`() {
         @Language("YAML")
-        val context = DefaultContext.createOpenApiContext("""
+        val context = getOpenApiContextFromContent("""
             openapi: 3.0.0
             paths:
               "/path1":
@@ -110,7 +111,7 @@ class MediaTypesRuleTest {
                     200:
                       content:
                         "application/x.zalando.contract+json;v=123": {}
-        """.trimIndent())!!
+        """.trimIndent())
         val result = rule.validate(context)
         assertThat(result).hasSameElementsAs(listOf(
             v("/paths/~1path1/get/responses/200/content/application~1vnd.api+json"),

@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.DefaultContext
+import de.zalando.zally.getOpenApiContextFromContent
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -26,7 +26,7 @@ class UseProblemJsonRuleTest {
                         ${'$'}ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
         """.trimIndent()
 
-        val context = DefaultContext.createOpenApiContext(content)!!
+        val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations.size).isEqualTo(1)
@@ -55,7 +55,7 @@ class UseProblemJsonRuleTest {
                             type: string
         """.trimIndent()
 
-        val context = DefaultContext.createOpenApiContext(content)!!
+        val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations.map { it.pointer.toString() }).containsExactlyInAnyOrder(
@@ -86,7 +86,7 @@ class UseProblemJsonRuleTest {
                         type: string
         """.trimIndent()
 
-        val context = DefaultContext.createSwaggerContext(content)!!
+        val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations.map { it.pointer.toString() }).containsExactlyInAnyOrder(
@@ -114,7 +114,7 @@ class UseProblemJsonRuleTest {
                         "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
         """.trimIndent()
 
-        val context = DefaultContext.createOpenApiContext(content)!!
+        val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations).isEmpty()
@@ -140,7 +140,7 @@ class UseProblemJsonRuleTest {
                     "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
         """.trimIndent()
 
-        val context = DefaultContext.createSwaggerContext(content)!!
+        val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations).isEmpty()
@@ -182,7 +182,7 @@ class UseProblemJsonRuleTest {
                   type: "string"
         """.trimIndent()
 
-        val context = DefaultContext.createOpenApiContext(content)!!
+        val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations).isEmpty()
@@ -218,7 +218,7 @@ class UseProblemJsonRuleTest {
                   example: many many problems
         """.trimIndent()
 
-        val context = DefaultContext.createOpenApiContext(content)!!
+        val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations).isNotEmpty
