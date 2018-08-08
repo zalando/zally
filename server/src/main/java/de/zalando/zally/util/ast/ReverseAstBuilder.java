@@ -15,7 +15,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -26,7 +25,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static de.zalando.zally.util.ast.Util.PRIMITIVES;
-import static java.util.Collections.reverse;
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.naturalOrder;
 import static java.util.stream.Collectors.toList;

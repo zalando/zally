@@ -61,6 +61,7 @@ class DefaultContextTest {
     }
 
     @Test
+    @Suppress("UnsafeCallOnNullableType")
     fun `recursive-model-extension`() {
         @Language("yaml")
         val content = """
@@ -98,8 +99,8 @@ class DefaultContextTest {
                         items:
                           ${'$'}ref: '#/definitions/ReadNode'
             """.trimIndent()
-        val openapi3Context = DefaultContext.createSwaggerContext(content)!!
+        val context = DefaultContext.createSwaggerContext(content)!!
 
-        assertThat(openapi3Context.isOpenAPI3()).isFalse()
+        assertThat(context.isOpenAPI3()).isFalse()
     }
 }
