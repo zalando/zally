@@ -1,5 +1,8 @@
 package de.zalando.zally.rule
 
+
+import de.zalando.zally.rule.api.Violation
+
 /**
  * Possible results of the `parse` operation.
  */
@@ -12,11 +15,11 @@ sealed class ContentParseResult<RootT : Any> {
     class NotApplicable<RootT : Any> : ContentParseResult<RootT>()
 
     /**
-     * The content was of a recognised type, but some results (errors) are already
+     * The content was of a recognised type, but some results (violations) are already
      * available after parsing.
      * Example: some required parts of an OpenAPI specification are missing.
      */
-    data class ParsedWithErrors<RootT : Any>(val errors: List<String>) : ContentParseResult<RootT>()
+    data class ParsedWithErrors<RootT : Any>(val violations: List<Violation>) : ContentParseResult<RootT>()
 
     /**
      * The content was of a recognised type and the parsing was successful.

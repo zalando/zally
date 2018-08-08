@@ -45,6 +45,8 @@ class ApiAudienceRuleTest {
             openapi: '3.0.0'
             info:
               x-audience: $apiAudience
+              title: Lorem Ipsum
+              version: 1.0.0
             paths: {}
             """.trimIndent()
 

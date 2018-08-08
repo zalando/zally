@@ -35,8 +35,8 @@ fun getContextFromFixture(fileName: String): Context {
         is ContentParseResult.Success ->
             openApiResult.root
         is ContentParseResult.ParsedWithErrors -> {
-            val errors = openApiResult.errors.joinToString("\n  -", "\n  -", "\n")
-            throw RuntimeException("Parsed with errors:$errors")
+            val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n") { "${it.description} (${it.pointer})" }
+            throw RuntimeException("Parsed with violations:$errors")
         }
         is ContentParseResult.NotApplicable -> {
             val swaggerResult = DefaultContext.createSwaggerContext(content)
@@ -44,8 +44,8 @@ fun getContextFromFixture(fileName: String): Context {
                 is ContentParseResult.Success ->
                     swaggerResult.root
                 is ContentParseResult.ParsedWithErrors -> {
-                    val errors = swaggerResult.errors.joinToString("\n  -", "\n  -", "\n")
-                    throw RuntimeException("Parsed with errors:$errors")
+                    val errors = swaggerResult.violations.joinToString("\n  -", "\n  -", "\n") { "${it.description} (${it.pointer})" }
+                    throw RuntimeException("Parsed with violations:$errors")
                 }
                 is ContentParseResult.NotApplicable -> {
                     throw RuntimeException("Content was neither an OpenAPI nor a Swagger specification")
@@ -61,8 +61,8 @@ fun getOpenApiContextFromContent(content: String): Context {
         is ContentParseResult.Success ->
             openApiResult.root
         is ContentParseResult.ParsedWithErrors -> {
-            val errors = openApiResult.errors.joinToString("\n  -", "\n  -", "\n")
-            throw RuntimeException("Parsed with errors:$errors")
+            val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n")
+            throw RuntimeException("Parsed with violations:$errors")
         }
         is ContentParseResult.NotApplicable -> {
             throw RuntimeException("Missing the 'OpenAPI' property.")
@@ -76,8 +76,8 @@ fun getSwaggerContextFromContent(content: String): Context {
         is ContentParseResult.Success ->
             openApiResult.root
         is ContentParseResult.ParsedWithErrors -> {
-            val errors = openApiResult.errors.joinToString("\n  -", "\n  -", "\n")
-            throw RuntimeException("Parsed with errors:$errors")
+            val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n")
+            throw RuntimeException("Parsed with violations:$errors")
         }
         is ContentParseResult.NotApplicable -> {
             throw RuntimeException("Missing the 'swagger' property.")

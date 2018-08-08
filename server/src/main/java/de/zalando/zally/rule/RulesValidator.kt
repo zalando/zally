@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.ContentParseResult.NotApplicable
 import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
 import de.zalando.zally.rule.ContentParseResult.Success
+import de.zalando.zally.rule.api.RuleSet
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.zalando.UseOpenApiRule
 import de.zalando.zally.util.ast.JsonPointers
@@ -14,8 +15,9 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
     private val log = LoggerFactory.getLogger(RulesValidator::class.java)
     private val reader = ObjectTreeReader()
 
-    private val useOpenApiRule by lazy { rules.rules.first { it.rule.id == UseOpenApiRule.id } }
-    private val rootPointer = JsonPointer.compile("/")
+    private val useOpenApiRule by lazy {
+        rules.rules.first { it.rule.id == UseOpenApiRule.id }
+    }
 
     override fun validate(content: String, policy: RulesPolicy): List<Result> {
         val parseResult = parse(content)
@@ -23,13 +25,13 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
             is NotApplicable ->
                 emptyList()
             is ParsedWithErrors ->
-                parseResult.errors.map { err ->
+                parseResult.violations.map { violation ->
                     Result(
                         ruleSet = useOpenApiRule.ruleSet,
                         rule = useOpenApiRule.rule,
-                        description = err,
+                        description = violation.description,
                         violationType = useOpenApiRule.rule.severity,
-                        pointer = rootPointer)
+                        pointer = violation.pointer)
                 }
             is Success ->
                 rules

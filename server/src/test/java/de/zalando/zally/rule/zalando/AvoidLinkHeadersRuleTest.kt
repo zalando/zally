@@ -1,5 +1,6 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.getSwaggerContextFromContent
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
@@ -50,7 +51,7 @@ class AvoidLinkHeadersRuleTest {
     @Test
     fun `an OpenAPI 3 API with no header called Link produces no violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getOpenApiContextFromContent("""
             openapi: 3.0.0
             info:
               title: Clean Swagger API

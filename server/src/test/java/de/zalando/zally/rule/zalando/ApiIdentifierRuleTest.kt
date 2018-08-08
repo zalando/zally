@@ -45,6 +45,8 @@ class ApiIdentifierRuleTest {
             openapi: '3.0.0'
             info:
               x-api-id: $apiId
+              title: Lorem Ipsum
+              version: 1.0.0
             paths: {}
             """.trimIndent()
 

@@ -15,6 +15,8 @@ class AvoidTrailingSlashesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: '3.0.0'
+            info: {title: "Lorem Ipsum", version: "1.0.0"}
+            paths: {}
         """.trimIndent())
 
         val violations = rule.validate(context)
@@ -27,6 +29,7 @@ class AvoidTrailingSlashesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: '3.0.0'
+            info: {title: "Lorem Ipsum", version: "1.0.0"}
             paths:
               /api/test-api: {}
         """.trimIndent())
@@ -41,6 +44,7 @@ class AvoidTrailingSlashesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: '3.0.0'
+            info: {title: "Lorem Ipsum", version: "1.0.0"}
             paths:
               /api/test-api/: {}
               /api/test: {}

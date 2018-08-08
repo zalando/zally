@@ -7,6 +7,7 @@ import de.zalando.zally.util.ast.JsonPointers
 import de.zalando.zally.util.ast.MethodCallRecorder
 import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.models.Swagger
+import io.swagger.models.auth.OAuth2Definition
 import io.swagger.parser.SwaggerParser
 import io.swagger.parser.util.SwaggerDeserializationResult
 import io.swagger.v3.oas.models.OpenAPI
@@ -16,7 +17,6 @@ import io.swagger.v3.oas.models.PathItem.HttpMethod
 import io.swagger.v3.parser.OpenAPIV3Parser
 import io.swagger.v3.parser.converter.SwaggerConverter
 import io.swagger.v3.parser.core.models.ParseOptions
-import io.swagger.v3.parser.core.models.SwaggerParseResult
 import io.swagger.v3.parser.util.ResolverFully
 import org.slf4j.LoggerFactory
 
@@ -132,18 +132,21 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
             parseOptions.isResolve = true
             // parseOptions.isResolveFully = true // https://github.com/swagger-api/swagger-parser/issues/682
             val parseResult = OpenAPIV3Parser().readContents(content, null, parseOptions)
-            if (parseResult.messages.isNotEmpty()) {
+            if (parseResult.messages.orEmpty().isNotEmpty()) {
                 return if (parseResult.messages.contains("attribute openapi is missing")) {
                     ContentParseResult.NotApplicable()
                 } else {
-                    ContentParseResult.ParsedWithErrors(parseResult.messages)
+                    ContentParseResult.ParsedWithErrors(parseResult.messages.map(::parseErrorToViolation))
                 }
             }
 
-            val context = parseResult.openAPI.let {
-                ResolverFully(true).resolveFully(it) // workaround for NPE bug in swagger-parser
-                DefaultContext(content, it)
+            try {
+                ResolverFully(true).resolveFully(parseResult.openAPI) // workaround for NPE bug in swagger-parser
+            } catch (e: NullPointerException) {
+                log.warn("Failed to fully resolve OpenAPI schema.", e)
             }
+
+            val context = DefaultContext(content, parseResult.openAPI)
             return ContentParseResult.Success(context)
         }
 
@@ -153,45 +156,71 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
                 return if (parseResult.messages.contains("attribute swagger is missing")) {
                     ContentParseResult.NotApplicable()
                 } else {
-                    ContentParseResult.ParsedWithErrors(parseResult.messages)
+                    ContentParseResult.ParsedWithErrors(parseResult.messages.map(::parseErrorToViolation))
                 }
             }
 
-            val convertResult = convertWithPreChecks(parseResult)
-            if (convertResult.openAPI === null) {
-                return ContentParseResult.ParsedWithErrors(convertResult.messages)
+            val preConvertViolations = preConvertChecks(parseResult)
+            if (preConvertViolations.isNotEmpty()) {
+                return ContentParseResult.ParsedWithErrors(preConvertViolations)
             }
 
-            ResolverFully(true).resolveFully(convertResult.openAPI)
+            val convertResult = try {
+                SwaggerConverter().convert(parseResult)
+            } catch (t: Throwable) {
+                log.warn("Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. Error not covered by pre-checks.", t)
+                val violation = Violation("Unable to parse specification", JsonPointers.root)
+                return ContentParseResult.ParsedWithErrors(listOf(violation))
+            }
+
+            if (convertResult.messages.orEmpty().isNotEmpty()) {
+                return ContentParseResult.ParsedWithErrors(convertResult.messages.map(::parseErrorToViolation))
+            }
+
+            try {
+                ResolverFully(true).resolveFully(convertResult.openAPI)
+            } catch (e: NullPointerException) {
+                log.warn("Failed to fully resolve Swagger schema.", e)
+            }
+
             val context = DefaultContext(content, convertResult.openAPI, parseResult.swagger)
             return ContentParseResult.Success(context)
         }
 
-        /**
-         * @throws PreCheckViolationsException when one of the check fails, including the appropriate list of [Violation].
-         */
-        private fun convertWithPreChecks(swaggerDeserializationResult: SwaggerDeserializationResult): SwaggerParseResult {
+        private val attributeIsMissingRegEx = Regex("attribute [^ ]* is missing")
+
+        private fun parseErrorToViolation(error: String): Violation {
+            if (error.matches(attributeIsMissingRegEx)) {
+                val words = error.split(' ')
+                if (words.size > 1) {
+                    val pathInError = words[1]
+                    val pathParts = pathInError.split('.')
+                    val pathWithoutLast = pathParts.take(pathParts.size - 1).joinToString("/")
+                    val path = JsonPointer.compile("/$pathWithoutLast")
+                    return Violation(error, path)
+                }
+            }
+            return Violation(error, JsonPointers.root)
+        }
+
+        private fun preConvertChecks(swaggerDeserializationResult: SwaggerDeserializationResult): List<Violation> {
             val swagger = swaggerDeserializationResult.swagger
             val violations = mutableListOf<Violation>()
 
-//            if (swagger.info === null) {
-//                violations += Violation("""An "info" block must be specified.""", rootJsonPointer)
-//            }
-            // todo #773
+            // OAUTH2 security definitions
+            swagger.securityDefinitions.orEmpty()
+                .filter { (_, def) -> def.type == "oauth2" }
+                .map { (name, def) -> name to (def as OAuth2Definition) }
+                .forEach { (name, def) ->
+                    if (def.flow == null) {
+                        violations += Violation("attribute flow is missing", JsonPointer.compile("/securityDefinitions/$name"))
+                    }
+                    if (def.scopes == null) {
+                        violations += Violation("attribute scopes is missing", JsonPointer.compile("/securityDefinitions/$name"))
+                    }
+                }
 
-            if (violations.isNotEmpty()) {
-                throw PreCheckViolationsException(violations)
-            }
-
-            return try {
-                SwaggerConverter().convert(swaggerDeserializationResult)
-            } catch (t: Throwable) {
-                log.warn("Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. Error not covered by pre-checks.", t)
-                val violation = Violation("Unable to parse specification", rootJsonPointer)
-                throw PreCheckViolationsException(listOf(violation))
-            }
+            return violations
         }
-
-        private val rootJsonPointer = JsonPointer.compile("/")
     }
 }

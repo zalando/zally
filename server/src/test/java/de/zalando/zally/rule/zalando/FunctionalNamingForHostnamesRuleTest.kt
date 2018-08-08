@@ -69,6 +69,8 @@ class FunctionalNamingForHostnamesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.1
+            info: {title: "Lorem Ipsum", version: "1.0.0"}
+            paths: {}
         """)
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
@@ -81,9 +83,12 @@ class FunctionalNamingForHostnamesRuleTest {
         val content = """
             openapi: 3.0.1
             info:
+              title: Lorem Ipsum
+              version: 1.0.0
               x-audience: $audience
             servers:
               - url: $url
+            paths: {}
         """.trimIndent()
 
         return getOpenApiContextFromContent(content)

@@ -55,11 +55,13 @@ class MediaTypesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.0
+            info: {title: "Lorem Ipsum", version: "1.0.0"}
             paths:
               "/shipment-order/{shipment_order_id}":
                 get:
                   responses:
                     200:
+                      description: Lorem Ipsum
                       content:
                         "application/x.zalando.contract+json;v=123": {}
                         "application/vnd.api+json;version=3": {}
@@ -72,11 +74,13 @@ class MediaTypesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.0
+            info: {title: "Lorem Ipsum", version: "1.0.0"}
             paths:
               "/shipment-order/{shipment_order_id}":
                 get:
                   responses:
                     200:
+                      description: Lorem Ipsum
                       content:
                         "application/json": {}
                         "application/vnd.api+json": {}
@@ -91,11 +95,13 @@ class MediaTypesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.0
+            info: {title: "Lorem Ipsum", version: "1.0.0"}
             paths:
               "/path1":
                 get:
                   responses:
                     200:
+                      description: Lorem Ipsum
                       content:
                         "application/json": {}
                         "application/vnd.api+json": {}
@@ -103,12 +109,14 @@ class MediaTypesRuleTest {
                 get:
                   responses:
                     200:
+                      description: Lorem Ipsum
                       content:
                         "application/x.zalando.contract+json": {}
               "/path3":
                 get:
                   responses:
                     200:
+                      description: Lorem Ipsum
                       content:
                         "application/x.zalando.contract+json;v=123": {}
         """.trimIndent())
