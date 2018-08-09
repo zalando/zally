@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getFixture
+import de.zalando.zally.getContextFromFixture
+import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
 import de.zalando.zally.testConfig
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class PluralizeResourceNamesRuleTest {
@@ -11,43 +11,59 @@ class PluralizeResourceNamesRuleTest {
 
     @Test
     fun positiveCase() {
-        val swagger = getFixture("pluralizeResourcesValid.json")
-        assertThat(rule.validate(swagger)).isNull()
+        val context = getContextFromFixture("pluralizeResourcesValid.json")
+        val violations = rule.validate2(context)
+        assertThat(violations).isEmpty()
     }
 
     @Test
     fun negativeCase() {
-        val swagger = getFixture("pluralizeResourcesInvalid.json")
-        val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("/pet/cats", "/pets/cats/{cat-id}/tail/{tail-id}/strands"))
+        val context = getContextFromFixture("pluralizeResourcesInvalid.json")
+        val violations = rule.validate2(context)
+        assertThat(violations)
+                .descriptionsEqualTo(
+                        "Resource 'pet' appears to be singular (but we are not sure)",
+                        "Resource 'tail' appears to be singular (but we are not sure)")
+                .pointersEqualTo(
+                        "/paths/~1pet~1cats",
+                        "/paths/~1pets~1cats~1{cat-id}~1tail~1{tail-id}~1strands")
     }
 
     @Test
     fun positiveCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        assertThat(rule.validate(swagger)).isNull()
+        val context = getContextFromFixture("api_spp.json")
+        val violations = rule.validate2(context)
+        assertThat(violations).isEmpty()
     }
 
     @Test
     fun positiveCasePathsWithTheApiPrefix() {
-        val swagger = getFixture("spp_with_paths_having_api_prefix.json")
-        assertThat(rule.validate(swagger)).isNull()
+        val context = getContextFromFixture("spp_with_paths_having_api_prefix.json")
+        val violations = rule.validate2(context)
+        assertThat(violations).isEmpty()
     }
 
     @Test
     fun positiveCaseNoMustViolations() {
-        val swagger = getFixture("no_must_violations.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+        val context = getContextFromFixture("no_must_violations.yaml")
+        val violations = rule.validate2(context)
+        assertThat(violations).isEmpty()
     }
 
     @Test
     fun negativeCaseTinbox() {
-        val swagger = getFixture("api_tinbox.yaml")
-        val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf(
-                // meta is singular!
-                "/meta/article_domains", "/meta/colors", "/meta/commodity_groups", "/meta/size_grids", "/meta/tags",
-                // queue is singular!
-                "/queue/configs/{config-id}", "/queue/models", "/queue/models/{model-id}", "/queue/summaries"))
+        val context = getContextFromFixture("api_tinbox.yaml")
+        val violations = rule.validate2(context)
+        assertThat(violations)
+                .pointersEqualTo(
+                        "/paths/~1meta~1article_domains",
+                        "/paths/~1meta~1colors",
+                        "/paths/~1meta~1commodity_groups",
+                        "/paths/~1meta~1size_grids",
+                        "/paths/~1meta~1tags",
+                        "/paths/~1queue~1configs~1{config-id}",
+                        "/paths/~1queue~1models",
+                        "/paths/~1queue~1models~1{model-id}",
+                        "/paths/~1queue~1summaries")
     }
 }
