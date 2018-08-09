@@ -48,7 +48,7 @@ class OAuthConfiguration extends ResourceServerConfigurerAdapter {
             .regexMatchers("/health/?").permitAll()
             .regexMatchers(
                 "/metrics/?(\\?.*)?",
-                "/api-violations/?",
+                "/api-violations/?(\\?)?",
                 "/supported-rules/?(\\?.*)?",
                 "/review-statistics/?(\\?.*)?")
             .access("#oauth2.hasScope('uid')")
