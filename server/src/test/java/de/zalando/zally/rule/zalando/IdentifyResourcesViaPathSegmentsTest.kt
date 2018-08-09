@@ -84,9 +84,6 @@ class IdentifyResourcesViaPathSegmentsTest {
         @Language("YAML")
         val content = """
             openapi: 3.0.0
-            info:
-              title: Lorem Ipsum
-              version: 1.0.0
             paths:
               $path: {}
         """.trimIndent()

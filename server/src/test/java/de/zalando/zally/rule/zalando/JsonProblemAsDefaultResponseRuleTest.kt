@@ -14,13 +14,10 @@ class JsonProblemAsDefaultResponseRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
             paths:
               '/pets':
                 get:
                   responses:
-                    200:
-                      description: Lorem Ipsum
         """.trimIndent())
 
         val violations = rule.checkContainsDefaultResponse(context)
@@ -35,7 +32,6 @@ class JsonProblemAsDefaultResponseRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
             paths:
               '/pets':
                 get:
@@ -56,7 +52,6 @@ class JsonProblemAsDefaultResponseRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
             paths:
               '/pets':
                 get:
@@ -75,8 +70,6 @@ class JsonProblemAsDefaultResponseRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
-            paths: {}
         """)
 
         assertThat(rule.checkContainsDefaultResponse(context)).isEmpty()

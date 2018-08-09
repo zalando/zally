@@ -11,6 +11,11 @@ class ContentParseResultAssert<T : Any>(actual: ContentParseResult<T>?)
 
     fun resultsInSuccess() {
         failIfNot<ContentParseResult.Success<T>>()
+        @Suppress("UNCHECKED_CAST")
+        val resultContext = actual as? ContentParseResult.Success<Context>
+        if (resultContext !== null) {
+            Assertions.assertThat(resultContext.root.parsingMessages).isEmpty()
+        }
     }
 
     fun resultsInSuccessWithContext(vararg expectedMessages: ParsingMessage) {

@@ -67,11 +67,7 @@ class ProprietaryHeadersRuleTest {
     @Test
     fun `validate(Request|Response)Headers should return no violation for empty API`() {
         @Language("YAML")
-        val violations = rule.validateRequestHeaders(getOpenApiContextFromContent("""
-            openapi: 3.0.1"
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
-            paths: {}
-        """))
+        val violations = rule.validateRequestHeaders(getOpenApiContextFromContent("openapi: 3.0.1"))
 
         assertThat(violations).isEmpty()
     }
@@ -80,14 +76,12 @@ class ProprietaryHeadersRuleTest {
         @Language("YAML")
         val content = """
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
             paths:
               /pets:
                 get:
                   parameters:
                     - name: $header
                       in: header
-                  responses: {}
         """.trimIndent()
         return getOpenApiContextFromContent(content)
     }
@@ -96,13 +90,11 @@ class ProprietaryHeadersRuleTest {
         @Language("YAML")
         val content = """
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
             paths:
               '/pets':
                 get:
                   responses:
                     200:
-                      description: Lorem Ipsum
                       headers:
                         $header:
                           description: header in test

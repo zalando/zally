@@ -114,13 +114,11 @@ class UseStandardHttpStatusCodesTest {
         @Language("YAML")
         val content = """
             openapi: '3.0.1'
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
             paths:
               /pets:
                 get:
                   responses:
-                    $responseCode:
-                      description: Lorem Ipsum
+                    $responseCode: {}
         """.trimIndent()
 
         return getOpenApiContextFromContent(content)

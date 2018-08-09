@@ -65,8 +65,6 @@ class CommonFieldTypesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
-            paths: {}
         """.trimIndent())
 
         assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
@@ -77,14 +75,12 @@ class CommonFieldTypesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
             components:
               schemas:
                 Pet:
                   properties:
                     name:
                       type: string
-            paths: {}
         """.trimIndent())
 
         assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
@@ -95,14 +91,12 @@ class CommonFieldTypesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
             components:
               schemas:
                 Pet:
                   properties:
                     id:
                       type: string
-            paths: {}
         """.trimIndent())
 
         assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
@@ -113,14 +107,12 @@ class CommonFieldTypesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
             components:
               schemas:
                 Pet:
                   properties:
                     id:
                       type: integer
-            paths: {}
         """.trimIndent())
 
         val violations = rule.checkTypesOfCommonFields(context)
@@ -136,7 +128,6 @@ class CommonFieldTypesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
             components:
               schemas:
                 Pet:
@@ -144,7 +135,6 @@ class CommonFieldTypesRuleTest {
                     modified:
                       type: string
                       format: uuid
-            paths: {}
         """.trimIndent())
 
         val violations = rule.checkTypesOfCommonFields(context)
@@ -160,13 +150,11 @@ class CommonFieldTypesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
             paths:
               /pets:
                 get:
                   responses:
                     200:
-                      description: Lorem Ipsum
                       content:
                         application/json:
                           schema:
@@ -188,7 +176,6 @@ class CommonFieldTypesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
             components:
               schemas:
                 Pet:
@@ -197,7 +184,6 @@ class CommonFieldTypesRuleTest {
                       properties:
                         modified:
                           type: number
-            paths: {}
         """.trimIndent())
 
         val violations = rule.checkTypesOfCommonFields(context)
@@ -213,13 +199,11 @@ class CommonFieldTypesRuleTest {
         @Language("YAML")
         val context = getOpenApiContextFromContent("""
             openapi: 3.0.1
-            info: {title: "Lorem Ipsum", version: "1.0.0"}
             paths:
               /pets:
                 get:
                   responses:
                     200:
-                      description: Lorem Ipsum
                       content:
                         application/json:
                           schema:
