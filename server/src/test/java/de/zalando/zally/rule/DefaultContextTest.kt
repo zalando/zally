@@ -3,6 +3,7 @@ package de.zalando.zally.rule
 import de.zalando.zally.util.ResourceUtil.resourceToString
 import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class DefaultContextTest {
@@ -55,5 +56,22 @@ class DefaultContextTest {
         """.trimIndent())!!
 
         assertThat(openapi3Context.isOpenAPI3()).isTrue()
+    }
+
+    @Test
+    fun `swagger with OAuth2 but no scopes parses`() {
+        @Language("yaml")
+        val content = """
+                swagger: 2.0
+                info:
+                  title: OAuth2 Definition Without Scopes
+                securityDefinitions:
+                  oauth2:
+                    type: oauth2
+                    flow: implicit
+                paths: {}
+            """.trimIndent()
+
+        assertThat(DefaultContext.createSwaggerContext(content)).isNotNull
     }
 }
