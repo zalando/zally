@@ -1,12 +1,16 @@
 package de.zalando.zally.rule.zalando
 
+import com.fasterxml.jackson.core.JsonPointer
 import com.typesafe.config.ConfigFactory
 import de.zalando.zally.getResourceJson
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ObjectTreeReader
+import de.zalando.zally.rule.api.ParsingMessage
+import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.testConfig
 import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class UseOpenApiRuleTest {
@@ -82,5 +86,26 @@ class UseOpenApiRuleTest {
         val violation = rule.checkIfTheFormatIsYAML(context)
 
         assertThat(violation).isNull()
+    }
+
+    @Test
+    fun `reportParsingMessagesAsHints should return no violation if no parsing message are present`() {
+        val context = DefaultContext("openapi: 3.0.1", OpenAPI(), null, emptyList())
+        val violations = rule.reportParsingMessagesAsHints(context)
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `reportParsingMessagesAsHints should return violations representing the parsing messages`() {
+        val parsingMessages = listOf(
+            ParsingMessage("Foo", JsonPointer.compile("/paths/foo")),
+            ParsingMessage("Bar", JsonPointer.compile("/paths/bar"))
+        )
+        val context = DefaultContext("openapi: 3.0.1", OpenAPI(), null, parsingMessages)
+        val violations = rule.reportParsingMessagesAsHints(context)
+        assertThat(violations).hasSameElementsAs(listOf(
+            Violation("Foo", JsonPointer.compile("/paths/foo")),
+            Violation("Bar", JsonPointer.compile("/paths/bar"))
+        ))
     }
 }

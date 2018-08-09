@@ -2,10 +2,12 @@ package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.api.Context
+import de.zalando.zally.rule.api.ParsingMessage
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.ast.JsonPointers
 import de.zalando.zally.util.ast.MethodCallRecorder
 import de.zalando.zally.util.ast.ReverseAst
+import io.swagger.models.Info
 import io.swagger.models.Swagger
 import io.swagger.models.auth.OAuth2Definition
 import io.swagger.parser.SwaggerParser
@@ -20,7 +22,12 @@ import io.swagger.v3.parser.core.models.ParseOptions
 import io.swagger.v3.parser.util.ResolverFully
 import org.slf4j.LoggerFactory
 
-class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swagger? = null) : Context {
+class DefaultContext(
+    override val source: String,
+    openApi: OpenAPI,
+    swagger: Swagger? = null,
+    override val parsingMessages: List<ParsingMessage> = emptyList()
+) : Context {
     private val recorder = MethodCallRecorder(openApi).skipMethods(*extensionNames)
     private val openApiAst = ReverseAst.fromObject(openApi).withExtensionMethodNames(*extensionNames).build()
     private val swaggerAst = swagger?.let { ReverseAst.fromObject(it).withExtensionMethodNames(*extensionNames).build() }
@@ -128,49 +135,59 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
         private val extensionNames = arrayOf("getVendorExtensions", "getExtensions")
 
         fun createOpenApiContext(content: String): ContentParseResult<Context> {
+            //
+            // Parse
+            //
             val parseOptions = ParseOptions()
             parseOptions.isResolve = true
             // parseOptions.isResolveFully = true // https://github.com/swagger-api/swagger-parser/issues/682
             val parseResult = OpenAPIV3Parser().readContents(content, null, parseOptions)
-            if (parseResult.messages.orEmpty().isNotEmpty()) {
-                return if (parseResult.messages.contains("attribute openapi is missing")) {
+            if (parseResult.openAPI === null) {
+                return if (parseResult.messages.isEmpty() || parseResult.messages.contains("attribute openapi is missing")) {
                     ContentParseResult.NotApplicable()
                 } else {
-                    ContentParseResult.ParsedWithErrors(parseResult.messages.map(::parseErrorToViolation))
+                    ContentParseResult.ParsedWithErrors(parseResult.messages.filterNotNull().map(::errorToViolation))
                 }
             }
+            val parsingMessages = parseResult.messages.filterNotNull().map(::errorToParsingMessage).toMutableList()
 
+            //
+            // Resolve
+            //
             try {
                 ResolverFully(true).resolveFully(parseResult.openAPI) // workaround for NPE bug in swagger-parser
             } catch (e: NullPointerException) {
                 log.warn("Failed to fully resolve OpenAPI schema.", e)
             }
 
-            val context = DefaultContext(content, parseResult.openAPI)
+            val context = DefaultContext(content, parseResult.openAPI, null, parsingMessages)
             return ContentParseResult.Success(context)
         }
 
         fun createSwaggerContext(content: String): ContentParseResult<Context> {
+            //
+            // Parse
+            //
             val parseResult = SwaggerParser().readWithInfo(content, true)
-            if (parseResult.messages.isNotEmpty()) {
-                return if (parseResult.messages.contains("attribute swagger is missing")) {
+            val didParse = parseResult !== null
+            val swaggerIsMissing = parseResult.messages.contains("attribute swagger is missing")
+            if (!didParse || swaggerIsMissing) {
+                return if (parseResult.messages.isEmpty() || swaggerIsMissing) {
                     ContentParseResult.NotApplicable()
                 } else {
-                    ContentParseResult.ParsedWithErrors(parseResult.messages.map(::parseErrorToViolation))
+                    ContentParseResult.ParsedWithErrors(parseResult.messages.mapNotNull(::errorToViolation))
                 }
             }
+            val parsingMessages = parseResult.messages.filterNotNull().map(::errorToParsingMessage).toMutableList()
 
-            val preConvertViolations = preConvertChecks(parseResult)
+            //
+            // Convert
+            //
+            val (preConvertMessages, preConvertViolations) = preConvertChecks(parseResult)
             if (preConvertViolations.isNotEmpty()) {
                 return ContentParseResult.ParsedWithErrors(preConvertViolations)
             }
-
-	        // hack to allow OAuth2 definition with no scopes
-            parseResult.swagger?.securityDefinitions?.values?.filterIsInstance(OAuth2Definition::class.java)?.forEach {
-	            if (it.scopes == null) {
-	                it.scopes = LinkedHashMap()
-	            }
-	        }
+            parsingMessages += preConvertMessages
 
             val convertResult = try {
                 SwaggerConverter().convert(parseResult)
@@ -179,40 +196,39 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
                 val violation = Violation("Unable to parse specification", JsonPointers.root)
                 return ContentParseResult.ParsedWithErrors(listOf(violation))
             }
-
-            if (convertResult.messages.orEmpty().isNotEmpty()) {
-                return ContentParseResult.ParsedWithErrors(convertResult.messages.map(::parseErrorToViolation))
+            if (convertResult.openAPI === null) {
+                return if (convertResult.messages.orEmpty().isNotEmpty()) {
+                    ContentParseResult.ParsedWithErrors(convertResult.messages.mapNotNull(::errorToViolation))
+                } else {
+                    log.warn("Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. No error specified, but 'openAPI' is null.")
+                    val violation = Violation("Unable to parse specification", JsonPointers.root)
+                    ContentParseResult.ParsedWithErrors(listOf(violation))
+                }
             }
+            parsingMessages += convertResult.messages.orEmpty().filterNotNull().map(::errorToParsingMessage)
 
+            //
+            // Resolve
+            //
             try {
                 ResolverFully(true).resolveFully(convertResult.openAPI)
-                        } catch (e: NullPointerException) {
-                            log.warn("Failed to fully resolve Swagger schema.", e)
+            } catch (e: NullPointerException) {
+                log.warn("Failed to fully resolve Swagger schema.", e)
             }
 
-            val context = DefaultContext(content, convertResult.openAPI, parseResult.swagger)
+            val context = DefaultContext(content, convertResult.openAPI, parseResult.swagger, parsingMessages)
             return ContentParseResult.Success(context)
         }
 
-        private val attributeIsMissingRegEx = Regex("attribute [^ ]* is missing")
-
-        private fun parseErrorToViolation(error: String): Violation {
-            if (error.matches(attributeIsMissingRegEx)) {
-                val words = error.split(' ')
-                if (words.size > 1) {
-                    val pathInError = words[1]
-                    val pathParts = pathInError.split('.')
-                    val pathWithoutLast = pathParts.take(pathParts.size - 1).joinToString("/")
-                    val path = JsonPointer.compile("/$pathWithoutLast")
-                    return Violation(error, path)
-                }
-            }
-            return Violation(error, JsonPointers.root)
-        }
-
-        private fun preConvertChecks(swaggerDeserializationResult: SwaggerDeserializationResult): List<Violation> {
+        private fun preConvertChecks(swaggerDeserializationResult: SwaggerDeserializationResult): Pair<List<ParsingMessage>, List<Violation>> {
             val swagger = swaggerDeserializationResult.swagger
+            val messages = mutableListOf<ParsingMessage>()
             val violations = mutableListOf<Violation>()
+
+            // INFO
+            if (swagger.info === null) {
+                swagger.info = Info()
+            }
 
             // OAUTH2 security definitions
             swagger.securityDefinitions.orEmpty()
@@ -220,14 +236,37 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
                 .map { (name, def) -> name to (def as OAuth2Definition) }
                 .forEach { (name, def) ->
                     if (def.flow == null) {
-                        violations += Violation("attribute flow is missing", JsonPointer.compile("/securityDefinitions/$name"))
+                        messages += ParsingMessage("attribute flow is missing", JsonPointer.compile("/securityDefinitions/$name"))
+                        def.flow = ""
                     }
                     if (def.scopes == null) {
-                        violations += Violation("attribute scopes is missing", JsonPointer.compile("/securityDefinitions/$name"))
+                        messages += ParsingMessage("attribute scopes is missing", JsonPointer.compile("/securityDefinitions/$name"))
+                        def.scopes = LinkedHashMap()
                     }
-            }
+                }
 
-            return violations
+            return messages to violations
+        }
+
+        private fun errorToParsingMessage(error: String): ParsingMessage =
+            ParsingMessage(error, errorToJsonPointer(error))
+
+        private fun errorToViolation(error: String): Violation =
+            Violation(error, errorToJsonPointer(error))
+
+        private val attributeIsMissingRegEx = Regex("attribute [^ ]* is missing")
+
+        private fun errorToJsonPointer(error: String): JsonPointer {
+            if (error.matches(attributeIsMissingRegEx)) {
+                val words = error.split(' ')
+                if (words.size > 1) {
+                    val pathInError = words[1]
+                    val pathParts = pathInError.split('.')
+                    val pathWithoutLast = pathParts.take(pathParts.size - 1).joinToString("/")
+                    return JsonPointer.compile("/$pathWithoutLast")
+                }
+            }
+            return JsonPointers.root
         }
     }
 }

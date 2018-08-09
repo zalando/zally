@@ -2,6 +2,7 @@ package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.ContentParseResultAssert.Companion.assertThat
+import de.zalando.zally.rule.api.ParsingMessage
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.ast.JsonPointers.root
 import org.assertj.core.api.Assertions.assertThat
@@ -27,7 +28,7 @@ class DefaultContextTest {
     }
 
     @Test
-    fun `OPEN API -- openapi specification must contain info and paths`() {
+    fun `OPEN API -- openapi specification without info and paths succeeds with messages`() {
         // The parsing results in a valid OpenAPI 3 object model, but
         // with messages that `info` and `paths` are missing. Let the
         // rules check that out.
@@ -36,9 +37,9 @@ class DefaultContextTest {
                 openapi: 3.0.0
             """
         val result = DefaultContext.createOpenApiContext(content)
-        assertThat(result).resultsInErrors(
-            Violation("attribute info is missing", root),
-            Violation("attribute paths is missing", root)
+        assertThat(result).resultsInSuccessWithContext(
+            ParsingMessage("attribute info is missing", root),
+            ParsingMessage("attribute paths is missing", root)
         )
     }
 
@@ -113,9 +114,9 @@ class DefaultContextTest {
               swagger: 2.0
             """
         val result = DefaultContext.createSwaggerContext(content)
-        assertThat(result).resultsInErrors(
-            Violation("attribute info is missing", root),
-            Violation("attribute paths is missing", root)
+        assertThat(result).resultsInSuccessWithContext(
+            ParsingMessage("attribute info is missing", root),
+            ParsingMessage("attribute paths is missing", root)
         )
     }
 
@@ -132,8 +133,8 @@ class DefaultContextTest {
                 paths: {}
             """.trimIndent()
         val result = DefaultContext.createSwaggerContext(content)
-        assertThat(result).resultsInErrors(
-            Violation("attribute securityDefinitions.oa.type is missing", JsonPointer.compile("/securityDefinitions/oa"))
+        assertThat(result).resultsInSuccessWithContext(
+            ParsingMessage("attribute securityDefinitions.oa.type is missing", JsonPointer.compile("/securityDefinitions/oa"))
         )
     }
 
@@ -156,9 +157,9 @@ class DefaultContextTest {
                 paths: {}
             """.trimIndent()
         val result = DefaultContext.createSwaggerContext(content)
-        assertThat(result).resultsInErrors(
-            Violation("attribute flow is missing", JsonPointer.compile("/securityDefinitions/oa")),
-            Violation("attribute scopes is missing", JsonPointer.compile("/securityDefinitions/oa"))
+        assertThat(result).resultsInSuccessWithContext(
+            ParsingMessage("attribute flow is missing", JsonPointer.compile("/securityDefinitions/oa")),
+            ParsingMessage("attribute scopes is missing", JsonPointer.compile("/securityDefinitions/oa"))
         )
     }
 
@@ -176,22 +177,5 @@ class DefaultContextTest {
         assertThat(result).resultsInSuccess()
         val success = result as ContentParseResult.Success
         assertThat(success.root.isOpenAPI3()).isFalse()
-    }
-
-    @Test
-    fun `swagger with OAuth2 but no scopes parses`() {
-        @Language("yaml")
-        val content = """
-                swagger: 2.0
-                info:
-                  title: OAuth2 Definition Without Scopes
-                securityDefinitions:
-                  oauth2:
-                    type: oauth2
-                    flow: implicit
-                paths: {}
-            """.trimIndent()
-
-        assertThat(DefaultContext.createSwaggerContext(content)).isNotNull
     }
 }

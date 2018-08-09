@@ -1,6 +1,7 @@
 package de.zalando.zally.rule
 
 import de.zalando.zally.rule.api.Context
+import de.zalando.zally.rule.api.ParsingMessage
 import de.zalando.zally.rule.api.Violation
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.Assertions
@@ -10,6 +11,13 @@ class ContentParseResultAssert<T : Any>(actual: ContentParseResult<T>?)
 
     fun resultsInSuccess() {
         failIfNot<ContentParseResult.Success<T>>()
+    }
+
+    fun resultsInSuccessWithContext(vararg expectedMessages: ParsingMessage) {
+        failIfNot<ContentParseResult.Success<Context>>()
+        @Suppress("UNCHECKED_CAST")
+        val result = actual as ContentParseResult.Success<Context>
+        Assertions.assertThat(result.root.parsingMessages).hasSameElementsAs(expectedMessages.toList())
     }
 
     fun resultsInNotApplicable() {

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.ContentParseResult.NotApplicable
 import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
 import de.zalando.zally.rule.ContentParseResult.Success
-import de.zalando.zally.rule.api.RuleSet
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.zalando.UseOpenApiRule
 import de.zalando.zally.util.ast.JsonPointers
@@ -15,8 +14,9 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
     private val log = LoggerFactory.getLogger(RulesValidator::class.java)
     private val reader = ObjectTreeReader()
 
-    private val useOpenApiRule by lazy {
-        rules.rules.first { it.rule.id == UseOpenApiRule.id }
+    private val useOpenApiRule: RuleDetails by lazy {
+        rules.rules.firstOrNull { it.rule.id == UseOpenApiRule.id }
+            ?: throw IllegalStateException("Rule 'UseOpenApi' with ID ${UseOpenApiRule.id} must be registered in 'RulesManager'.")
     }
 
     override fun validate(content: String, policy: RulesPolicy): List<Result> {
