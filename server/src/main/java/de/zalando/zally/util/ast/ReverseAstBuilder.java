@@ -66,7 +66,7 @@ public class ReverseAstBuilder<T> {
                 continue;
             }
             if (!PRIMITIVES.contains(node.object.getClass())) {
-                List<Node> children;
+                Collection<Node> children;
                 if (node.object instanceof Map) {
                     children = handleMap((Map<?, ?>) node.object, node.pointer, node.marker);
                 } else if (node.object instanceof List) {
@@ -78,8 +78,8 @@ public class ReverseAstBuilder<T> {
                 } else {
                     children = handleObject(node.object, node.pointer, node.marker);
                 }
-                for(final ListIterator<Node> i = children.listIterator(children.size());i.hasPrevious();) {
-                    nodes.push(i.previous());
+                for (Node child : children) {
+                    nodes.push(child);
                 }
                 node.setChildren(children);
             }
@@ -91,8 +91,8 @@ public class ReverseAstBuilder<T> {
         return new ReverseAst(objectsToNodes, pointersToNodes);
     }
 
-    private List<Node> handleMap(Map<?, ?> map, JsonPointer pointer, Marker defaultMarker) {
-        final List<Node> nodes = new LinkedList<>();
+    private Deque<Node> handleMap(Map<?, ?> map, JsonPointer pointer, Marker defaultMarker) {
+        final Deque<Node> nodes = new LinkedList<>();
         final Marker marker = getMarker(map).orElse(defaultMarker);
 
         for (Map.Entry<?, ?> entry : map.entrySet()) {
@@ -100,35 +100,35 @@ public class ReverseAstBuilder<T> {
             Object value = entry.getValue();
             if (key instanceof String && value != null) {
                 JsonPointer newPointer = pointer.append(JsonPointers.escape((String) key));
-                nodes.add(new Node(value, newPointer, marker));
+                nodes.push(new Node(value, newPointer, marker));
             }
         }
         return nodes;
     }
 
-    private List<Node> handleList(List<?> list, JsonPointer pointer, Marker marker) {
+    private Deque<Node> handleList(List<?> list, JsonPointer pointer, Marker marker) {
         return handleArray(list.toArray(), pointer, marker);
     }
 
-    private List<Node> handleSet(Set<?> set, JsonPointer pointer, Marker marker) {
+    private Deque<Node> handleSet(Set<?> set, JsonPointer pointer, Marker marker) {
         return handleArray(set.toArray(), pointer, marker);
     }
 
-    private List<Node> handleArray(Object[] objects, JsonPointer pointer, Marker marker) {
-        final List<Node> nodes = new LinkedList<>();
+    private Deque<Node> handleArray(Object[] objects, JsonPointer pointer, Marker marker) {
+        final Deque<Node> nodes = new LinkedList<>();
 
         for (int i = 0; i < objects.length; i++) {
             Object value = objects[i];
             if (value != null) {
                 JsonPointer newPointer = pointer.append(JsonPointers.escape(String.valueOf(i)));
-                nodes.add(new Node(value, newPointer, marker));
+                nodes.push(new Node(value, newPointer, marker));
             }
         }
         return nodes;
     }
 
-    private List<Node> handleObject(Object object, JsonPointer pointer, Marker defaultMarker) throws ReverseAstException {
-        final List<Node> nodes = new LinkedList<>();
+    private Deque<Node> handleObject(Object object, JsonPointer pointer, Marker defaultMarker) throws ReverseAstException {
+        final Deque<Node> nodes = new LinkedList<>();
         final Marker marker = getMarker(object).orElse(defaultMarker);
 
         for (Method m : traversalMethods(object.getClass())) {
@@ -139,10 +139,10 @@ public class ReverseAstBuilder<T> {
                     if (m.isAnnotationPresent(JsonAnyGetter.class)) {
                         // A `JsonAnyGetter` method is simply a wrapper for nested properties.
                         // We must not use the method name but re-use the current pointer.
-                        nodes.add(new Node(value, pointer, marker, /* skip */true));
+                        nodes.push(new Node(value, pointer, marker, /* skip */true));
                     } else {
                         JsonPointer newPointer = pointer.append(JsonPointers.escape(m));
-                        nodes.add(new Node(value, newPointer, marker));
+                        nodes.push(new Node(value, newPointer, marker));
                     }
                 }
             } catch (ReflectiveOperationException e) {
