@@ -11,7 +11,7 @@ const DEFAULT_OPTIONS = {
   windowEnv: {
     OAUTH_ENABLED: false,
     DEBUG: true,
-    ZALLY_API_URL: 'http://localhost:8000',
+    ZALLY_API_URL: 'http://localhost:8080',
   },
   env: {
     HEAD_TITLE: 'Zally API Linter WEB UI',

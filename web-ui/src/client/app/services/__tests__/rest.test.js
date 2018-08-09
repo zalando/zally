@@ -87,9 +87,7 @@ describe('RestService', () => {
         expect(client.fetch).toHaveBeenCalledWith(jasmine.any(String), {
           method: 'POST',
           headers: jasmine.any(Object),
-          body: JSON.stringify({
-            api_definition_url: apiDefinitionURL,
-          }),
+          body: JSON.stringify({ api_definition_url: apiDefinitionURL }),
         });
       }
     );
@@ -98,7 +96,7 @@ describe('RestService', () => {
   test('getApiViolationsBySchema send expected body', () => {
     const mockViolations = [];
     const violationsResponse = { json: () => mockViolations };
-    const apiDefinitionSchema = { schema: '2.0' };
+    const apiDefinitionSchema = '{"openapi": "3.0.1"}';
     client.fetch.mockReturnValueOnce(Promise.resolve(violationsResponse));
 
     return RestService.getApiViolationsBySchema(apiDefinitionSchema).then(
@@ -107,9 +105,7 @@ describe('RestService', () => {
         expect(client.fetch).toHaveBeenCalledWith(jasmine.any(String), {
           method: 'POST',
           headers: jasmine.any(Object),
-          body: JSON.stringify({
-            api_definition: apiDefinitionSchema,
-          }),
+          body: JSON.stringify({ api_definition_string: apiDefinitionSchema }),
         });
       }
     );
