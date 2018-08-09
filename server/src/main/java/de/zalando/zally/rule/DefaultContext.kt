@@ -165,6 +165,13 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
                 return ContentParseResult.ParsedWithErrors(preConvertViolations)
             }
 
+	        // hack to allow OAuth2 definition with no scopes
+            parseResult.swagger?.securityDefinitions?.values?.filterIsInstance(OAuth2Definition::class.java)?.forEach {
+	            if (it.scopes == null) {
+	                it.scopes = LinkedHashMap()
+	            }
+	        }
+
             val convertResult = try {
                 SwaggerConverter().convert(parseResult)
             } catch (t: Throwable) {
@@ -179,8 +186,8 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
 
             try {
                 ResolverFully(true).resolveFully(convertResult.openAPI)
-            } catch (e: NullPointerException) {
-                log.warn("Failed to fully resolve Swagger schema.", e)
+                        } catch (e: NullPointerException) {
+                            log.warn("Failed to fully resolve Swagger schema.", e)
             }
 
             val context = DefaultContext(content, convertResult.openAPI, parseResult.swagger)
@@ -218,7 +225,7 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
                     if (def.scopes == null) {
                         violations += Violation("attribute scopes is missing", JsonPointer.compile("/securityDefinitions/$name"))
                     }
-                }
+            }
 
             return violations
         }
