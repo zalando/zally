@@ -61,6 +61,23 @@ class DefaultContextTest {
     }
 
     @Test
+    fun `swagger with OAuth2 but no scopes parses`() {
+        @Language("yaml")
+        val content = """
+                swagger: 2.0
+                info:
+                  title: OAuth2 Definition Without Scopes
+                securityDefinitions:
+                  oauth2:
+                    type: oauth2
+                    flow: implicit
+                paths: {}
+            """.trimIndent()
+
+        assertThat(DefaultContext.createSwaggerContext(content)).isNotNull
+    }
+
+    @Test
     @Suppress("UnsafeCallOnNullableType")
     fun `recursive-model-extension`() {
         @Language("yaml")

@@ -7,6 +7,7 @@ import de.zalando.zally.util.ast.JsonPointers
 import de.zalando.zally.util.ast.MethodCallRecorder
 import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.models.Swagger
+import io.swagger.models.auth.OAuth2Definition
 import io.swagger.parser.SwaggerParser
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
@@ -142,27 +143,37 @@ class DefaultContext(override val source: String, openApi: OpenAPI, swagger: Swa
         }
 
         fun createSwaggerContext(content: String, failOnParseErrors: Boolean = false): Context? =
-                SwaggerParser().readWithInfo(content, true)?.let { parseResult ->
+            SwaggerParser().readWithInfo(content, true)?.let { parseResult ->
                 if (failOnParseErrors && parseResult.messages.orEmpty().isNotEmpty()) {
                     val sep = "\n  - "
                     val messageBulletList = parseResult.messages.joinToString(sep)
                     throw RuntimeException("Swagger parsing failed with those errors:$sep$messageBulletList")
                 }
-                    val swagger = parseResult.swagger ?: return null
-                    val convertResult = SwaggerConverter().convert(parseResult)
+
+                val swagger = parseResult.swagger ?: return null
+
+                // hack to allow OAuth2 definition with no scopes
+                swagger.securityDefinitions?.values?.filterIsInstance(OAuth2Definition::class.java)?.forEach {
+                    if (it.scopes == null) {
+                        it.scopes = LinkedHashMap()
+                    }
+                }
+
+                val convertResult = SwaggerConverter().convert(parseResult)
                 if (failOnParseErrors && convertResult.messages.orEmpty().isNotEmpty()) {
                     val sep = "\n  - "
                     val messageBulletList = parseResult.messages.joinToString(sep)
                     throw RuntimeException("Swagger conversion to OpenAPI 3 failed with those errors:$sep$messageBulletList")
-}
-                    convertResult?.openAPI?.let {
-                        try {
-                            ResolverFully(true).resolveFully(it)
-                        } catch (e: NullPointerException) {
-                            log.warn("Failed to fully resolve Swagger schema.", e)
-                        if (failOnParseErrors) throw e }
-                        DefaultContext(content, it, swagger)
-                    }
                 }
+                convertResult?.openAPI?.let {
+                    try {
+                        ResolverFully(true).resolveFully(it)
+                    } catch (e: NullPointerException) {
+                        log.warn("Failed to fully resolve Swagger schema.", e)
+                        if (failOnParseErrors) throw e
+                    }
+                    DefaultContext(content, it, swagger)
+                }
+            }
     }
 }
