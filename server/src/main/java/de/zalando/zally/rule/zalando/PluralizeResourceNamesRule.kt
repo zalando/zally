@@ -38,7 +38,7 @@ class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) {
     fun components(path: String): List<String> {
         var filtered = "/$path/"
         "//+".toRegex().let { filtered = filtered.replace(it, "/") }
-        whitelist.forEach {filtered = filtered.replace(it, "/") }
+        whitelist.forEach { filtered = filtered.replace(it, "/") }
         return filtered.split("/+".toRegex()).filter { !it.isEmpty() }
     }
 
