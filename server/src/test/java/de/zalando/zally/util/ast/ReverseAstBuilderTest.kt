@@ -59,12 +59,11 @@ class ReverseAstBuilderTest {
     }
 
     @Test
-    fun `traversalMethods with Swagger returns getPaths first`() {
+    fun `traversalMethods with Swagger returns getPaths last`() {
 
         val methods = traversalMethods(Swagger::class.java).map { it.name }
 
         assertThat(methods).containsExactly(
-                "getPaths",
                 "getBasePath",
                 "getConsumes",
                 "getDefinitions",
@@ -79,16 +78,16 @@ class ReverseAstBuilderTest {
                 "getSecurityDefinitions",
                 "getSwagger",
                 "getTags",
-                "getVendorExtensions")
+                "getVendorExtensions",
+                "getPaths")
     }
 
     @Test
-    fun `traversalMethods with OpenAPI returns leaves returns getPaths first`() {
+    fun `traversalMethods with OpenAPI returns leaves returns getPaths last`() {
 
         val methods = traversalMethods(OpenAPI::class.java).map { it.name }
 
         assertThat(methods).containsExactly(
-                "getPaths",
                 "getComponents",
                 "getExtensions",
                 "getExternalDocs",
@@ -96,6 +95,7 @@ class ReverseAstBuilderTest {
                 "getOpenapi",
                 "getSecurity",
                 "getServers",
-                "getTags")
+                "getTags",
+                "getPaths")
     }
 }
