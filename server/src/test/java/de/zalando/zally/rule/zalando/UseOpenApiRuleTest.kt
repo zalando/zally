@@ -1,16 +1,12 @@
 package de.zalando.zally.rule.zalando
 
-import com.fasterxml.jackson.core.JsonPointer
 import com.typesafe.config.ConfigFactory
 import de.zalando.zally.getResourceJson
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ObjectTreeReader
-import de.zalando.zally.rule.api.ParsingMessage
-import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.testConfig
 import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
-import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class UseOpenApiRuleTest {

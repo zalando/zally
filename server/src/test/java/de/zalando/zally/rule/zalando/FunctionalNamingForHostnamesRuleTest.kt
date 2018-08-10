@@ -67,7 +67,9 @@ class FunctionalNamingForHostnamesRuleTest {
     @Test
     fun `(must|should|may)FollowFunctionalNaming should return no violations if audience is not set`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("openapi: 3.0.1")
+        val context = getOpenApiContextFromContent("""
+            openapi: 3.0.1
+        """)
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
         assertThat(rule.shouldFollowFunctionalNaming(context)).isEmpty()
