@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getOpenApiContextFromContent
-import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
 import de.zalando.zally.rule.api.Context
 import org.junit.Test

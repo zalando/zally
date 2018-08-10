@@ -1,6 +1,5 @@
 package de.zalando.zally.rule
 
-
 import de.zalando.zally.rule.api.Violation
 
 /**

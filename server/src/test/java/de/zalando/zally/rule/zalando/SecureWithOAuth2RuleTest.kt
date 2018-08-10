@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getFixture
-import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Scheme
 import io.swagger.models.Swagger
@@ -9,7 +8,6 @@ import io.swagger.models.auth.ApiKeyAuthDefinition
 import io.swagger.models.auth.BasicAuthDefinition
 import io.swagger.models.auth.OAuth2Definition
 import org.assertj.core.api.Assertions.assertThat
-import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class SecureWithOAuth2RuleTest {
