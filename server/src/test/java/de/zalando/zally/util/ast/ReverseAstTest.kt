@@ -9,12 +9,14 @@ import io.swagger.util.Json
 import io.swagger.v3.parser.OpenAPIResolver
 import io.swagger.v3.parser.core.models.ParseOptions
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "StringLiteralDuplication")
 class ReverseAstTest {
     @Test
     fun `create JSON pointers from Swagger 2 object`() {
+        @Language("yaml")
         val content = """
             swagger: '2.0'
             info:
@@ -38,6 +40,7 @@ class ReverseAstTest {
 
     @Test
     fun `create ignore marker from Swagger 2 object`() {
+        @Language("yaml")
         val content = """
             swagger: '2.0'
             info:
@@ -100,6 +103,7 @@ class ReverseAstTest {
 
     @Test
     fun `create ignore marker from Swagger 2 JSON Node`() {
+        @Language("yaml")
         val content = """
             swagger: '2.0'
             info:
@@ -148,6 +152,7 @@ class ReverseAstTest {
     @Test
     @Suppress("UnsafeCallOnNullableType")
     fun `ast prefers pointers to shared locations`() {
+        @Language("yaml")
         val content = """
             openapi: '3.0.0'
             info:
