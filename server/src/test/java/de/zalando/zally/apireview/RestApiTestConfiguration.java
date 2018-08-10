@@ -4,15 +4,19 @@ import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.zalando.zally.rule.TestRuleSet;
 import de.zalando.zally.rule.api.Check;
+import de.zalando.zally.rule.api.Context;
 import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.api.Violation;
+import de.zalando.zally.rule.zalando.UseOpenApiRule;
 import de.zalando.zally.util.ast.JsonPointers;
+import org.assertj.core.util.Lists;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -25,7 +29,8 @@ public class RestApiTestConfiguration {
     public Collection<Object> rules() {
         return Arrays.asList(
                 new TestCheckIsOpenApi3(),
-                new TestCheckAlwaysReport3MustViolations()
+                new TestCheckAlwaysReport3MustViolations(),
+                new TestUseOpenApiRule()
         );
     }
 
@@ -63,6 +68,20 @@ public class RestApiTestConfiguration {
                     new Violation("TestCheckAlwaysReport3MustViolations #2", JsonPointers.empty()),
                     new Violation("TestCheckAlwaysReport3MustViolations #3", JsonPointers.empty())
             );
+        }
+    }
+
+    @Rule(
+        ruleSet = TestRuleSet.class,
+        id = UseOpenApiRule.id,
+        severity = Severity.MUST,
+        title = "TestUseOpenApiRule"
+    )
+    public static class TestUseOpenApiRule {
+
+        @Check(severity = Severity.HINT)
+        public Iterable<Violation> validate(Context context) {
+            return Lists.emptyList();
         }
     }
 }

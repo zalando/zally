@@ -19,7 +19,12 @@ twintip:
   mapping: /api
   yaml: "classpath:/api/zally-api.yaml"
 
-management.server.port: 8080
+server:
+  port: 8000 # using the same port as the web-ui expects (see `docker-compose.yaml`)
+
+management:
+  server:
+    port: 8000 # listening on the same port (`server` and `management.server`)
 
 zally:
   ignoreRules: S010, H001

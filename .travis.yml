@@ -50,7 +50,7 @@ script:
   - go build
   - cd $TRAVIS_BUILD_DIR
 
-  # Kill Zally server instace
+  # Kill Zally server instance
   - kill -9 `cat /tmp/zally_server.pid`
 
   # Unit-test web UI

@@ -15,7 +15,7 @@ services:
     links:
     - postgres:postgres.local
     ports:
-    - "8000:8080"
+    - "8000:8000"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7979/health"]
       interval: 5s
