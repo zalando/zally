@@ -2,7 +2,6 @@ package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.api.Context
-import de.zalando.zally.rule.api.ParsingMessage
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.ast.JsonPointers
 import de.zalando.zally.util.ast.MethodCallRecorder
@@ -25,8 +24,7 @@ import org.slf4j.LoggerFactory
 class DefaultContext(
     override val source: String,
     openApi: OpenAPI,
-    swagger: Swagger? = null,
-    override val parsingMessages: List<ParsingMessage> = emptyList()
+    swagger: Swagger? = null
 ) : Context {
     private val recorder = MethodCallRecorder(openApi).skipMethods(*extensionNames)
     private val openApiAst = ReverseAst.fromObject(openApi).withExtensionMethodNames(*extensionNames).build()
@@ -149,7 +147,6 @@ class DefaultContext(
                     ContentParseResult.ParsedWithErrors(parseResult.messages.filterNotNull().map(::errorToViolation))
                 }
             }
-            val parsingMessages = parseResult.messages.filterNotNull().map(::errorToParsingMessage).toMutableList()
 
             //
             // Resolve
@@ -160,7 +157,7 @@ class DefaultContext(
                 log.warn("Failed to fully resolve OpenAPI schema.", e)
             }
 
-            val context = DefaultContext(content, parseResult.openAPI, null, parsingMessages)
+            val context = DefaultContext(content, parseResult.openAPI)
             return ContentParseResult.Success(context)
         }
 
@@ -178,16 +175,14 @@ class DefaultContext(
                     ContentParseResult.ParsedWithErrors(parseResult.messages.mapNotNull(::errorToViolation))
                 }
             }
-            val parsingMessages = parseResult.messages.filterNotNull().map(::errorToParsingMessage).toMutableList()
 
             //
             // Convert
             //
-            val (preConvertMessages, preConvertViolations) = preConvertChecks(parseResult)
+            val preConvertViolations = preConvertChecks(parseResult)
             if (preConvertViolations.isNotEmpty()) {
                 return ContentParseResult.ParsedWithErrors(preConvertViolations)
             }
-            parsingMessages += preConvertMessages
 
             val convertResult = try {
                 SwaggerConverter().convert(parseResult)
@@ -205,7 +200,6 @@ class DefaultContext(
                     ContentParseResult.ParsedWithErrors(listOf(violation))
                 }
             }
-            parsingMessages += convertResult.messages.orEmpty().filterNotNull().map(::errorToParsingMessage)
 
             //
             // Resolve
@@ -216,13 +210,17 @@ class DefaultContext(
                 log.warn("Failed to fully resolve Swagger schema.", e)
             }
 
-            val context = DefaultContext(content, convertResult.openAPI, parseResult.swagger, parsingMessages)
+            val context = DefaultContext(content, convertResult.openAPI, parseResult.swagger)
             return ContentParseResult.Success(context)
         }
 
-        private fun preConvertChecks(swaggerDeserializationResult: SwaggerDeserializationResult): Pair<List<ParsingMessage>, List<Violation>> {
+        /**
+         * This serves two goals:
+         * - Fixing the parsed Swagger object before automatic conversion to OpenAPI
+         * - Detecting cases where a violation should be automatically returned in the result.
+         */
+        private fun preConvertChecks(swaggerDeserializationResult: SwaggerDeserializationResult): List<Violation> {
             val swagger = swaggerDeserializationResult.swagger
-            val messages = mutableListOf<ParsingMessage>()
             val violations = mutableListOf<Violation>()
 
             // INFO
@@ -231,25 +229,20 @@ class DefaultContext(
             }
 
             // OAUTH2 security definitions
-            swagger.securityDefinitions.orEmpty()
-                .filter { (_, def) -> def.type == "oauth2" }
-                .map { (name, def) -> name to (def as OAuth2Definition) }
-                .forEach { (name, def) ->
-                    if (def.flow == null) {
-                        messages += ParsingMessage("attribute flow is missing", JsonPointer.compile("/securityDefinitions/$name"))
-                        def.flow = ""
+            swagger.securityDefinitions.orEmpty().values
+                .filter { it.type == "oauth2" }
+                .map { it as OAuth2Definition }
+                .forEach {
+                    if (it.flow == null) {
+                        it.flow = ""
                     }
-                    if (def.scopes == null) {
-                        messages += ParsingMessage("attribute scopes is missing", JsonPointer.compile("/securityDefinitions/$name"))
-                        def.scopes = LinkedHashMap()
+                    if (it.scopes == null) {
+                        it.scopes = LinkedHashMap()
                     }
                 }
 
-            return messages to violations
+            return violations
         }
-
-        private fun errorToParsingMessage(error: String): ParsingMessage =
-            ParsingMessage(error, errorToJsonPointer(error))
 
         private fun errorToViolation(error: String): Violation =
             Violation(error, errorToJsonPointer(error))

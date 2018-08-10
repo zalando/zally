@@ -1,10 +1,6 @@
 package de.zalando.zally.rule
 
-import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.ContentParseResultAssert.Companion.assertThat
-import de.zalando.zally.rule.api.ParsingMessage
-import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.ast.JsonPointers.root
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -37,10 +33,7 @@ class DefaultContextTest {
                 openapi: 3.0.0
             """
         val result = DefaultContext.createOpenApiContext(content)
-        assertThat(result).resultsInSuccessWithContext(
-            ParsingMessage("attribute info is missing", root),
-            ParsingMessage("attribute paths is missing", root)
-        )
+        assertThat(result).resultsInSuccess()
     }
 
     @Test
@@ -114,10 +107,7 @@ class DefaultContextTest {
               swagger: 2.0
             """
         val result = DefaultContext.createSwaggerContext(content)
-        assertThat(result).resultsInSuccessWithContext(
-            ParsingMessage("attribute info is missing", root),
-            ParsingMessage("attribute paths is missing", root)
-        )
+        assertThat(result).resultsInSuccess()
     }
 
     @Test
@@ -133,9 +123,7 @@ class DefaultContextTest {
                 paths: {}
             """.trimIndent()
         val result = DefaultContext.createSwaggerContext(content)
-        assertThat(result).resultsInSuccessWithContext(
-            ParsingMessage("attribute securityDefinitions.oa.type is missing", JsonPointer.compile("/securityDefinitions/oa"))
-        )
+        assertThat(result).resultsInSuccess()
     }
 
     @Test
@@ -157,10 +145,7 @@ class DefaultContextTest {
                 paths: {}
             """.trimIndent()
         val result = DefaultContext.createSwaggerContext(content)
-        assertThat(result).resultsInSuccessWithContext(
-            ParsingMessage("attribute flow is missing", JsonPointer.compile("/securityDefinitions/oa")),
-            ParsingMessage("attribute scopes is missing", JsonPointer.compile("/securityDefinitions/oa"))
-        )
+        assertThat(result).resultsInSuccess()
     }
 
     @Test

@@ -87,25 +87,4 @@ class UseOpenApiRuleTest {
 
         assertThat(violation).isNull()
     }
-
-    @Test
-    fun `reportParsingMessagesAsHints should return no violation if no parsing message are present`() {
-        val context = DefaultContext("openapi: 3.0.1", OpenAPI(), null, emptyList())
-        val violations = rule.reportParsingMessagesAsHints(context)
-        assertThat(violations).isEmpty()
-    }
-
-    @Test
-    fun `reportParsingMessagesAsHints should return violations representing the parsing messages`() {
-        val parsingMessages = listOf(
-            ParsingMessage("Foo", JsonPointer.compile("/paths/foo")),
-            ParsingMessage("Bar", JsonPointer.compile("/paths/bar"))
-        )
-        val context = DefaultContext("openapi: 3.0.1", OpenAPI(), null, parsingMessages)
-        val violations = rule.reportParsingMessagesAsHints(context)
-        assertThat(violations).hasSameElementsAs(listOf(
-            Violation("Foo", JsonPointer.compile("/paths/foo")),
-            Violation("Bar", JsonPointer.compile("/paths/bar"))
-        ))
-    }
 }

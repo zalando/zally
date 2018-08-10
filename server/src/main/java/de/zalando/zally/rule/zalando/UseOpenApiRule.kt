@@ -71,11 +71,6 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
         }
     }
 
-    @Check(severity = Severity.HINT)
-    fun reportParsingMessagesAsHints(context: Context): List<Violation> =
-        context.parsingMessages.map { Violation(it.message, it.pointer) }
-
-
     private fun getSchemaValidators(ruleConfig: Config): List<JsonSchemaValidator> {
         return try {
             ruleConfig.getStringList("swagger_schema_urls").map {

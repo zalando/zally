@@ -23,11 +23,6 @@ interface Context {
     val source: String
 
     /**
-     * Messages the parser returned as hints (could parse, but had messages).
-     */
-    val parsingMessages: List<ParsingMessage>
-
-    /**
      * Convenience method for filtering and iterating over the paths in order to create Violations.
      * @param pathFilter a filter selecting the paths to validate
      * @param action the action to perform on filtered items
