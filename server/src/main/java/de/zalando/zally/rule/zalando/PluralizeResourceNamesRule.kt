@@ -19,6 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired
 )
 class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) {
 
+    private val slash = "/"
+
+    private val slashes = "/+".toRegex()
+
     internal val whitelist = mutableListOf(
             *rulesConfig
                     .getConfig(javaClass.simpleName)
@@ -29,17 +33,21 @@ class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) {
     @Check(severity = Severity.MUST)
     fun validate(context: Context): List<Violation> {
         return context.validatePaths { (path, definition) ->
-            components(path)
+            val sanitized = sanitize(path, whitelist)
+            components(sanitized)
                     .filter { violatingComponent(it) }
                     .map { violation(context, it, definition) }
         }
     }
 
-    fun components(path: String): List<String> {
-        var filtered = "/$path/"
-        "//+".toRegex().let { filtered = filtered.replace(it, "/") }
-        whitelist.forEach { filtered = filtered.replace(it, "/") }
-        return filtered.split("/+".toRegex()).filter { !it.isEmpty() }
+    private fun components(path: String): List<String> {
+        return path.split(slashes).filter { !it.isEmpty() }
+    }
+
+    private fun sanitize(path: String, regexList: List<Regex>): String {
+        return regexList.fold("/$path/".replace(slashes, slash)) { updated, regex ->
+            updated.replace(regex, slash)
+        }
     }
 
     private fun violatingComponent(it: String) =
