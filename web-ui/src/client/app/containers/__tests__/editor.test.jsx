@@ -28,7 +28,7 @@ describe('Editor container component', () => {
     MockStorage.getItem.mockReturnValueOnce(editorValue);
     const component = shallow(<Editor Storage={MockStorage} />);
     component.instance().componentDidMount();
-    expect(component.state().inputValue).toEqual({ prop: 'foo' });
+    expect(component.state().inputValue).toEqual(editorValue);
   });
 
   test('on input value change save new value in the Storage and update the state accordingly', () => {
@@ -45,23 +45,13 @@ describe('Editor container component', () => {
     );
 
     expect(component.state().editorValue).toBe(newEditorValue);
-    expect(component.state().inputValue).toEqual({ foo: 'prop' });
+    expect(component.state().inputValue).toEqual(newEditorValue);
   });
 
   test("should use an empty string as editor value and input value if Storage doesn't contain an item", () => {
     const component = shallow(<Editor Storage={MockStorage} />);
 
     expect(component.state().editorValue).toBe('');
-    expect(component.state().inputValue).toBe(undefined);
-  });
-
-  test('should show an en error if schema parsing fails', () => {
-    MockStorage.getItem.mockReturnValueOnce("invalidyaml: '2");
-    const component = shallow(<Editor Storage={MockStorage} />);
-
-    component.instance().componentDidMount();
-
-    expect(component.state().editorError).toBeDefined();
-    expect(component.state().editorError.name).toEqual('YAMLException');
+    expect(component.state().inputValue).toBe('');
   });
 });

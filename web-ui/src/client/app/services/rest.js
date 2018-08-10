@@ -30,7 +30,7 @@ export const RestService = {
 
   getApiViolationsBySchema(schema) {
     return this.getApiViolations({
-      api_definition: schema,
+      api_definition_string: schema,
     });
   },
 
