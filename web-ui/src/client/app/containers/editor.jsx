@@ -1,5 +1,4 @@
 import React from 'react';
-import yaml from 'js-yaml';
 import { Msg } from '../components/msg.jsx';
 import { Violations } from './violations.jsx';
 import { ViolationsResult } from '../components/violations.jsx';
@@ -48,22 +47,12 @@ export class Editor extends Violations {
   }
 
   updateInputValue(value) {
-    try {
-      const inputValue = yaml.load(value);
-      this.setState({
-        inputValue: inputValue,
-        editorDirty: true,
-        editorError: null,
-        editorAnnotations: [],
-      });
-    } catch (e) {
-      console.warn(e); // eslint-disable-line no-console
-      this.setState({
-        inputValue: null,
-        editorError: e,
-        editorAnnotations: editorErrorToAnnotations(e),
-      });
-    }
+    this.setState({
+      inputValue: value,
+      editorDirty: true,
+      editorError: null,
+      editorAnnotations: [],
+    });
   }
 
   handleOnInputValueChange(value) {
