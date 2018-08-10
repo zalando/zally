@@ -1,8 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.DefaultContext
+import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.rule.api.Context
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class IdentifyResourcesViaPathSegmentsTest {
@@ -36,7 +37,7 @@ class IdentifyResourcesViaPathSegmentsTest {
     @Test
     fun `should return a violation if path contains successive parameters`() {
         val violations = rule
-                .pathDoesNotContainSuccessiveParameters(withPath("/merchants/{merchant-id}/{address-id}"))
+            .pathDoesNotContainSuccessiveParameters(withPath("/merchants/{merchant-id}/{address-id}"))
 
         assertThat(violations).isNotEmpty
         assertThat(violations[0].description).containsPattern(".*must not contain successive parameters*")
@@ -48,13 +49,13 @@ class IdentifyResourcesViaPathSegmentsTest {
         assertThat(rule.pathDoesNotContainSuccessiveParameters(withPath("/customers"))).isEmpty()
         assertThat(rule.pathDoesNotContainSuccessiveParameters(withPath("/customers/{customer-id}"))).isEmpty()
         assertThat(rule.pathDoesNotContainSuccessiveParameters(
-                withPath("/customers/{customer-id}/addresses/primary"))).isEmpty()
+            withPath("/customers/{customer-id}/addresses/primary"))).isEmpty()
     }
 
     @Test
     fun `should return a violation if path parameter contains prefix`() {
         val violations = rule.pathParameterDoesNotContainPrefixAndSuffix(
-                withPath("/orders/de-{order-id}"))
+            withPath("/orders/de-{order-id}"))
 
         assertThat(violations).isNotEmpty
         assertThat(violations[0].description).containsPattern(".*must not contain prefixes and suffixes*")
@@ -64,7 +65,7 @@ class IdentifyResourcesViaPathSegmentsTest {
     @Test
     fun `should return a violation if path parameter contains suffix`() {
         val violations = rule.pathParameterDoesNotContainPrefixAndSuffix(
-                withPath("/orders/{order-id}-de"))
+            withPath("/orders/{order-id}-de"))
 
         assertThat(violations).isNotEmpty
         assertThat(violations[0].description).containsPattern(".*must not contain prefixes and suffixes*")
@@ -80,12 +81,13 @@ class IdentifyResourcesViaPathSegmentsTest {
     }
 
     private fun withPath(path: String): Context {
+        @Language("YAML")
         val content = """
             openapi: 3.0.0
             paths:
               $path: {}
-            """.trimIndent()
+        """.trimIndent()
 
-        return DefaultContext.createOpenApiContext(content)!!
+        return getOpenApiContextFromContent(content)
     }
 }

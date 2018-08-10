@@ -127,8 +127,13 @@ public class RestApiViolationsTest extends RestApiBaseTest {
                 ApiDefinitionRequest.Factory.fromJson("\"no swagger definition\"")
         );
 
-        assertThat(response.getViolations()).hasSize(4);
-        assertThat(response.getViolations().get(0).getTitle()).isEqualTo("TestCheckIsOpenApi3");
+        assertThat(response.getViolations()).hasSize(5);
+
+        final ViolationDTO v0 = response.getViolations().get(0);
+        assertThat(v0.getTitle()).isEqualTo("TestUseOpenApiRule");
+        assertThat(v0.getDescription()).isEqualTo("attribute openapi is not of type `object`");
+
+        assertThat(response.getViolations().get(1).getTitle()).isEqualTo("TestCheckIsOpenApi3");
     }
 
     @Test

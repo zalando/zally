@@ -1,7 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.DefaultContext
+import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.getSwaggerContextFromContent
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class UseProblemJsonRuleTest {
@@ -10,23 +12,24 @@ class UseProblemJsonRuleTest {
 
     @Test
     fun `should return violation if wrong media type is used as the default response`() {
+        @Language("YAML")
         val content = """
-        openapi: 3.0.1
-        info:
-          version: 1.0.0
-          title: Test
-        paths:
-          /pets:
-            get:
-              responses:
-                default:
-                  content:
-                    application/json:
-                      schema:
-                        ${'$'}ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+            openapi: 3.0.1
+            info:
+              version: 1.0.0
+              title: Test
+            paths:
+              /pets:
+                get:
+                  responses:
+                    default:
+                      content:
+                        application/json:
+                          schema:
+                            ${'$'}ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
         """.trimIndent()
 
-        val context = DefaultContext.createOpenApiContext(content)!!
+        val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations.size).isEqualTo(1)
@@ -36,26 +39,28 @@ class UseProblemJsonRuleTest {
 
     @Test
     fun `should return violation if a wrong schema is used for Problem Details Object`() {
+        @Language("YAML")
         val content = """
-        openapi: 3.0.1
-        info:
-          version: 1.0.0
-          title: Pets API
-        paths:
-          /bad:
-            get:
-              responses:
-                default:
-                  content:
-                    application/problem+json:
-                      schema:
-                        type: object
-                        properties:
-                          status:
-                            type: string
+            openapi: 3.0.1
+            info:
+              version: 1.0.0
+              title: Pets API
+            paths:
+              /bad:
+                get:
+                  responses:
+                    default:
+                      description: Lorem Ipsum
+                      content:
+                        application/problem+json:
+                          schema:
+                            type: object
+                            properties:
+                              status:
+                                type: string
         """.trimIndent()
 
-        val context = DefaultContext.createOpenApiContext(content)!!
+        val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations.map { it.pointer.toString() }).containsExactlyInAnyOrder(
@@ -66,27 +71,28 @@ class UseProblemJsonRuleTest {
 
     @Test
     fun `should return violation if a incorrect schema is used for Problem Details Object (OpenAPI 2)`() {
+        @Language("YAML")
         val content = """
-        swagger: '2.0'
-        info:
-          version: 1.0.0
-          title: Pets API
-        paths:
-          /pets:
-            get:
-              produces:
-                - application/problem+json
-              responses:
-                default:
-                  description: Error object
-                  schema:
-                    type: object
-                    properties:
-                      status:
-                        type: string
+            swagger: '2.0'
+            info:
+              version: 1.0.0
+              title: Pets API
+            paths:
+              /pets:
+                get:
+                  produces:
+                    - application/problem+json
+                  responses:
+                    default:
+                      description: Error object
+                      schema:
+                        type: object
+                        properties:
+                          status:
+                            type: string
         """.trimIndent()
 
-        val context = DefaultContext.createSwaggerContext(content)!!
+        val context = getSwaggerContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations.map { it.pointer.toString() }).containsExactlyInAnyOrder(
@@ -97,24 +103,25 @@ class UseProblemJsonRuleTest {
 
     @Test
     fun `should return no violation if Problem Details Object is properly used as default response`() {
+        @Language("YAML")
         val content = """
-        openapi: 3.0.1
-        info:
-          title: Pets API
-          version: 1.0.0
-        paths:
-          "/pets":
-            get:
-              responses:
-                default:
-                  description: Good default response.
-                  content:
-                    application/problem+json:
-                      schema:
-                        "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
+            openapi: 3.0.1
+            info:
+              title: Pets API
+              version: 1.0.0
+            paths:
+              "/pets":
+                get:
+                  responses:
+                    default:
+                      description: Good default response.
+                      content:
+                        application/problem+json:
+                          schema:
+                            "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
         """.trimIndent()
 
-        val context = DefaultContext.createOpenApiContext(content)!!
+        val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations).isEmpty()
@@ -122,25 +129,26 @@ class UseProblemJsonRuleTest {
 
     @Test
     fun `should return no violation if Problem Details Object is properly used as default response (OpenAPI 2)`() {
+        @Language("YAML")
         val content = """
-        swagger: '2.0'
-        info:
-          version: 1.0.0
-          title: Pets API
-        paths:
-          /pets:
-            get:
-              produces:
-                - application/json
-                - application/problem+json
-              responses:
-                default:
-                  description: Error object
-                  schema:
-                    "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
+            swagger: '2.0'
+            info:
+              version: 1.0.0
+              title: Pets API
+            paths:
+              /pets:
+                get:
+                  produces:
+                    - application/json
+                    - application/problem+json
+                  responses:
+                    default:
+                      description: Error object
+                      schema:
+                        "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
         """.trimIndent()
 
-        val context = DefaultContext.createSwaggerContext(content)!!
+        val context = getSwaggerContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations).isEmpty()
@@ -148,41 +156,42 @@ class UseProblemJsonRuleTest {
 
     @Test
     fun `should return no violation when custom reference is used`() {
+        @Language("YAML")
         val content = """
-        openapi: 3.0.1
-        info:
-          title: Pets API
-          version: 1.0.0
-        paths:
-          "/pets":
-            get:
-              responses:
-                default:
-                  description: Good default response.
-                  content:
-                    application/problem+json:
-                      schema:
-                        "${'$'}ref": "#/components/schemas/Errors"
-        components:
-          schemas:
-            Errors:
-              required:
-                - error
-              properties:
-                error:
-                  ${'$'}ref: "#/components/schemas/Error"
-            Error:
-              required:
-                - code
-                - title
-              properties:
-                title:
-                  type: "string"
-                code:
-                  type: "string"
+            openapi: 3.0.1
+            info:
+              title: Pets API
+              version: 1.0.0
+            paths:
+              "/pets":
+                get:
+                  responses:
+                    default:
+                      description: Good default response.
+                      content:
+                        application/problem+json:
+                          schema:
+                            "${'$'}ref": "#/components/schemas/Errors"
+            components:
+              schemas:
+                Errors:
+                  required:
+                    - error
+                  properties:
+                    error:
+                      ${'$'}ref: "#/components/schemas/Error"
+                Error:
+                  required:
+                    - code
+                    - title
+                  properties:
+                    title:
+                      type: "string"
+                    code:
+                      type: "string"
         """.trimIndent()
 
-        val context = DefaultContext.createOpenApiContext(content)!!
+        val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations).isEmpty()
@@ -190,35 +199,36 @@ class UseProblemJsonRuleTest {
 
     @Test
     fun `should return violations when wrong reference is used`() {
+        @Language("YAML")
         val content = """
-        openapi: 3.0.1
-        info:
-          title: Pets API
-          version: 1.0.0
-        paths:
-          "/pets":
-            get:
-              responses:
-                default:
-                  description: Good default response.
-                  content:
-                    application/problem+json:
-                      schema:
-                        ${'$'}ref: "#/components/schemas/Problem"
-        components:
-          schemas:
-            Problem:
-              description: not a problem detail object as defined in RFC 7807
-              properties:
-                instance:
-                  type: number
-                  example: 99
-                description:
-                  type: string
-                  example: many many problems
+            openapi: 3.0.1
+            info:
+              title: Pets API
+              version: 1.0.0
+            paths:
+              "/pets":
+                get:
+                  responses:
+                    default:
+                      description: Good default response.
+                      content:
+                        application/problem+json:
+                          schema:
+                            ${'$'}ref: "#/components/schemas/Problem"
+            components:
+              schemas:
+                Problem:
+                  description: not a problem detail object as defined in RFC 7807
+                  properties:
+                    instance:
+                      type: number
+                      example: 99
+                    description:
+                      type: string
+                      example: many many problems
         """.trimIndent()
 
-        val context = DefaultContext.createOpenApiContext(content)!!
+        val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
         assertThat(violations).isNotEmpty

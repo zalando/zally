@@ -17,8 +17,11 @@ import static java.util.regex.Pattern.compile;
  * Utility to convert OpenAPI 3 JSON pointers to Swagger 2 pointers.
  */
 public final class JsonPointers {
+
     private JsonPointers() {
     }
+
+    public static final JsonPointer root = JsonPointer.compile("/");
 
     private static final List<Function<String, String>> POINTER_FUNCTIONS = Arrays.asList(
         createFn(compile("^/servers/.*$"), "/basePath"),
@@ -33,7 +36,7 @@ public final class JsonPointers {
         createFn(compile("^/paths/(.+/responses/.+)/content/[^/]*$"), "/paths/%s"),
 
         // VERB/requestBody/content/MEDIA_TYPE --> VERB/consumes
-        createFn(compile("^/paths/(.*)/requestBody/content/[^/]*$"),"/paths/%s/consumes")
+        createFn(compile("^/paths/(.*)/requestBody/content/[^/]*$"), "/paths/%s/consumes")
     );
 
     private static Function<String, String> createFn(Pattern pattern, String pointerOut) {

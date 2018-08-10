@@ -1,26 +1,48 @@
 package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.rule.ContentParseResult.NotApplicable
+import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
+import de.zalando.zally.rule.ContentParseResult.Success
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.zalando.UseOpenApiRule
 import de.zalando.zally.util.ast.JsonPointers
 import org.slf4j.LoggerFactory
 
-abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
+abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidator {
 
     private val log = LoggerFactory.getLogger(RulesValidator::class.java)
     private val reader = ObjectTreeReader()
 
-    override fun validate(content: String, policy: RulesPolicy): List<Result> {
-        val root = parse(content) ?: return emptyList()
-
-        return rules
-            .checks(policy)
-            .filter { details -> isCheckMethod(details, root) }
-            .flatMap { details -> invoke(details, root) }
-            .sortedBy(Result::violationType)
+    private val useOpenApiRule: RuleDetails by lazy {
+        rules.rules.firstOrNull { it.rule.id == UseOpenApiRule.id }
+            ?: throw IllegalStateException("Rule 'UseOpenApi' with ID ${UseOpenApiRule.id} must be registered in 'RulesManager'.")
     }
 
-    abstract fun parse(content: String): RootT?
+    override fun validate(content: String, policy: RulesPolicy): List<Result> {
+        val parseResult = parse(content)
+        return when (parseResult) {
+            is NotApplicable ->
+                emptyList()
+            is ParsedWithErrors ->
+                parseResult.violations.map { violation ->
+                    Result(
+                        ruleSet = useOpenApiRule.ruleSet,
+                        rule = useOpenApiRule.rule,
+                        description = violation.description,
+                        violationType = useOpenApiRule.rule.severity,
+                        pointer = violation.pointer)
+                }
+            is Success ->
+                rules
+                    .checks(policy)
+                    .filter { details -> isCheckMethod(details, parseResult.root) }
+                    .flatMap { details -> invoke(details, parseResult.root) }
+                    .sortedBy(Result::violationType)
+        }
+    }
+
+    abstract fun parse(content: String): ContentParseResult<RootT>
 
     private fun isCheckMethod(details: CheckDetails, root: Any) =
         when (details.method.parameters.size) {
