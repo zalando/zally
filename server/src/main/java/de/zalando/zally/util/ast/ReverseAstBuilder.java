@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static de.zalando.zally.util.ast.Util.PRIMITIVES;
@@ -60,7 +61,9 @@ public class ReverseAstBuilder<T> {
     public ReverseAst build() throws ReverseAstException {
         while (!nodes.isEmpty()) {
             Node node = nodes.pop();
-
+            if (objectsToNodes.containsKey(node.object)) {
+                continue;
+            }
             if (!PRIMITIVES.contains(node.object.getClass())) {
                 Collection<Node> children;
                 if (node.object instanceof Map) {
@@ -200,7 +203,7 @@ public class ReverseAstBuilder<T> {
                 .stream(clazz.getMethods())
                 .filter(ReverseAstBuilder::isPublicGetterMethod)
                 .sorted(comparing(Method::getName,
-                        comparing( (String name) -> !"getPaths".equals(name))
+                        comparing((Function<String, Boolean>) "getPaths"::equals)
                                 .thenComparing(naturalOrder())))
                 .collect(toList());
     }

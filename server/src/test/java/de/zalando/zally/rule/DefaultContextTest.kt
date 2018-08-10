@@ -67,7 +67,7 @@ class DefaultContextTest {
         val result = DefaultContext.createOpenApiContext(content)
         assertThat(result).resultsInSuccess()
         val success = result as ContentParseResult.Success
-        assertThat(success.root.isOpenAPI3())
+        assertThat(success.root.isOpenAPI3()).isTrue()
     }
 
     @Test
@@ -157,6 +157,50 @@ class DefaultContextTest {
                   title: Bleh
                   version: 1.0.0
                 paths: {}
+            """.trimIndent()
+        val result = DefaultContext.createSwaggerContext(content)
+        assertThat(result).resultsInSuccess()
+        val success = result as ContentParseResult.Success
+        assertThat(success.root.isOpenAPI3()).isFalse()
+    }
+
+    @Test
+    fun `SWAGGER -- recursive-model-extension`() {
+        @Language("YAML")
+        val content = """
+            swagger: '2.0'
+            info:
+              title: Tree API
+              version: 1.0.0
+            paths:
+              '/tree':
+                get:
+                  responses:
+                    200:
+                      description: List of nodes.
+                      schema:
+                        ${'$'}ref: '#/definitions/ReadNode'
+            definitions:
+              WriteNode:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  children:
+                    type: array
+                    items:
+                      ${'$'}ref: '#/definitions/WriteNode'
+              ReadNode:
+                allOf:
+                  - ${'$'}ref: '#/definitions/WriteNode'
+                  - type: object
+                    properties:
+                      extra: # property that WriteNode doesn't have
+                        type: string
+                      children: # children redefined to be ReadNode rather than WriteNode
+                        type: array
+                        items:
+                          ${'$'}ref: '#/definitions/ReadNode'
             """.trimIndent()
         val result = DefaultContext.createSwaggerContext(content)
         assertThat(result).resultsInSuccess()
