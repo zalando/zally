@@ -3,7 +3,7 @@ package de.zalando.zally.statistic;
 import de.zalando.zally.apireview.ApiReview;
 import de.zalando.zally.apireview.ApiReviewRepository;
 import de.zalando.zally.exception.TimeParameterIsInTheFutureException;
-import de.zalando.zally.exception.UnsufficientTimeIntervalParameterException;
+import de.zalando.zally.exception.InsufficientTimeIntervalParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class ReviewStatisticsController {
         }
 
         if (to != null && from == null) {
-            throw new UnsufficientTimeIntervalParameterException();
+            throw new InsufficientTimeIntervalParameterException();
         }
 
         final Collection<ApiReview> apiReviews = from != null
