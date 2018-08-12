@@ -157,9 +157,10 @@ class PluralizeResourceNamesRuleTest {
                         "/paths/~1prefix~1whitelisted~1suffix")
     }
 
+    @Suppress("UnsafeCallOnNullableType")
     private fun openApiContextWithPath(path: String): Context {
         val content = """
-                openapi: '3.0.0'
+                openapi: 3.0.0
                 paths:
                   $path: {}
                 """.trimIndent()

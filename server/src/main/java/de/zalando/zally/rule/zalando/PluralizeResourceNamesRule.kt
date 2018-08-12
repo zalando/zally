@@ -23,6 +23,7 @@ class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) {
 
     private val slashes = "/+".toRegex()
 
+    @Suppress("SpreadOperator")
     internal val whitelist = mutableListOf(
             *rulesConfig
                     .getConfig(javaClass.simpleName)
