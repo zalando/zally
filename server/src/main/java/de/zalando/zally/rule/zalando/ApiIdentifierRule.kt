@@ -9,7 +9,7 @@ import de.zalando.zally.rule.api.Violation
 @Rule(
     ruleSet = ZalandoRuleSet::class,
     id = "215",
-    severity = Severity.SHOULD,
+    severity = Severity.MUST,
     title = "Provide API Identifier"
 )
 class ApiIdentifierRule {
@@ -20,7 +20,7 @@ class ApiIdentifierRule {
 
     private val extensionName = "x-api-id"
 
-    @Check(severity = Severity.SHOULD)
+    @Check(severity = Severity.MUST)
     fun validate(context: Context): Violation? {
         val apiId = context.api.info?.extensions?.get(extensionName)
 
