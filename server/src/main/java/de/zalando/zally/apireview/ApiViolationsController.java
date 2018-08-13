@@ -5,7 +5,7 @@ import de.zalando.zally.dto.ApiDefinitionResponse;
 import de.zalando.zally.dto.ViolationDTO;
 import de.zalando.zally.dto.ViolationsCounter;
 import de.zalando.zally.exception.MissingApiDefinitionException;
-import de.zalando.zally.exception.UnaccessibleResourceUrlException;
+import de.zalando.zally.exception.InaccessibleResourceUrlException;
 import de.zalando.zally.rule.ApiValidator;
 import de.zalando.zally.rule.Result;
 import de.zalando.zally.rule.RulesPolicy;
@@ -75,7 +75,7 @@ public class ApiViolationsController {
     private String retrieveApiDefinition(ApiDefinitionRequest request) {
         try {
             return apiDefinitionReader.read(request);
-        } catch (MissingApiDefinitionException | UnaccessibleResourceUrlException e) {
+        } catch (MissingApiDefinitionException | InaccessibleResourceUrlException e) {
             apiReviewRepository.save(new ApiReview(request));
             throw e;
         }
