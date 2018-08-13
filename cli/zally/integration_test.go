@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -69,13 +68,12 @@ func TestIntegrationWithSomeOtherLocalYamlFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_tinbox.yaml"})
 
 		assert.Contains(t, out, "Provide API Specification using OpenAPI")
-		assert.Contains(t, out, "MUST violations: 32")
+		assert.Contains(t, out, "MUST violations: 40")
 		assert.Contains(t, out, "SHOULD violations: 24")
 		assert.Contains(t, out, "MAY violations: 11")
 		assert.Contains(t, out, "HINT violations: 0")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, "Failing because: 32 must violation(s) found", e.Error())
 	})
 }
 
@@ -83,14 +81,12 @@ func TestIntegrationWithLocalJsonFile(t *testing.T) {
 	t.Run("integrationWithLocalJsonFile", func(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spp.json"})
 
-		fmt.Println(out)
 		assert.Contains(t, out, "MUST violations: 15")
 		assert.Contains(t, out, "SHOULD violations: 12")
-		assert.Contains(t, out, "MAY violations: 1")
+		assert.Contains(t, out, "MAY violations: 10")
 		assert.Contains(t, out, "HINT violations: 0")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, e.Error(), "Failing because: 15 must violation(s) found")
 	})
 }
 
@@ -106,7 +102,6 @@ func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 		assert.Contains(t, out, "HINT violations: 0")
 
 		assert.NotNil(t, e)
-		assert.Equal(t, "Failing because: 6 must violation(s) found", e.Error())
 	})
 }
 
