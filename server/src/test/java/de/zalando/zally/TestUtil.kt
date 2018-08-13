@@ -33,7 +33,7 @@ fun getContextFromFixture(fileName: String): Context {
     val openApiResult = DefaultContext.createOpenApiContext(content)
     return when (openApiResult) {
         is ContentParseResult.Success ->
-            openApiResult.root
+            openApiResult.result
         is ContentParseResult.ParsedWithErrors -> {
             val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n") { "${it.description} (${it.pointer})" }
             throw RuntimeException("Parsed with violations:$errors")
@@ -42,7 +42,7 @@ fun getContextFromFixture(fileName: String): Context {
             val swaggerResult = DefaultContext.createSwaggerContext(content)
             when (swaggerResult) {
                 is ContentParseResult.Success ->
-                    swaggerResult.root
+                    swaggerResult.result
                 is ContentParseResult.ParsedWithErrors -> {
                     val errors = swaggerResult.violations.joinToString("\n  -", "\n  -", "\n") { "${it.description} (${it.pointer})" }
                     throw RuntimeException("Parsed with violations:$errors")
@@ -59,7 +59,7 @@ fun getOpenApiContextFromContent(content: String): Context {
     val openApiResult = DefaultContext.createOpenApiContext(content)
     return when (openApiResult) {
         is ContentParseResult.Success ->
-            openApiResult.root
+            openApiResult.result
         is ContentParseResult.ParsedWithErrors -> {
             val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n")
             throw RuntimeException("Parsed with violations:$errors")
@@ -74,7 +74,7 @@ fun getSwaggerContextFromContent(content: String): Context {
     val openApiResult = DefaultContext.createSwaggerContext(content)
     return when (openApiResult) {
         is ContentParseResult.Success ->
-            openApiResult.root
+            openApiResult.result
         is ContentParseResult.ParsedWithErrors -> {
             val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n")
             throw RuntimeException("Parsed with violations:$errors")

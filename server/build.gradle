@@ -8,8 +8,10 @@ def versions = [
 
 buildscript {
 
-    ext.kotlin_version = '1.2.60'
-    ext.spring_boot_version = '2.0.0.RELEASE'
+    ext {
+        kotlin_version = '1.2.60'
+        spring_boot_version = '2.0.0.RELEASE'
+    }
 
     repositories {
         mavenCentral()

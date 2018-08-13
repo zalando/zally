@@ -16,7 +16,7 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
 
     private val useOpenApiRule: RuleDetails by lazy {
         rules.rules.firstOrNull { it.rule.id == UseOpenApiRule.id }
-            ?: throw IllegalStateException("Rule 'UseOpenApi' with ID ${UseOpenApiRule.id} must be registered in 'RulesManager'.")
+            ?: throw IllegalStateException("""Rule "${UseOpenApiRule::class.simpleName}" must be registered in "${RulesManager::class.simpleName}".""")
     }
 
     override fun validate(content: String, policy: RulesPolicy): List<Result> {
@@ -36,8 +36,8 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
             is Success ->
                 rules
                     .checks(policy)
-                    .filter { details -> isCheckMethod(details, parseResult.root) }
-                    .flatMap { details -> invoke(details, parseResult.root) }
+                    .filter { details -> isCheckMethod(details, parseResult.result) }
+                    .flatMap { details -> invoke(details, parseResult.result) }
                     .sortedBy(Result::violationType)
         }
     }
