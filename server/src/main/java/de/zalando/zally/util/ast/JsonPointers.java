@@ -18,10 +18,10 @@ import static java.util.regex.Pattern.compile;
  */
 public final class JsonPointers {
 
+    public static final JsonPointer root = JsonPointer.compile("/");
+
     private JsonPointers() {
     }
-
-    public static final JsonPointer root = JsonPointer.compile("/");
 
     private static final List<Function<String, String>> POINTER_FUNCTIONS = Arrays.asList(
         createFn(compile("^/servers/.*$"), "/basePath"),
