@@ -1,6 +1,6 @@
 package de.zalando.zally.util.ast
 
-import de.zalando.zally.util.ast.ReverseAstBuilder.traversalMethods
+import de.zalando.zally.util.ast.ReverseAstBuilder.Companion.traversalMethods
 import io.swagger.models.Swagger
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.PathItem

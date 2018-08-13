@@ -59,9 +59,9 @@ public class RestApiTestConfiguration {
         @Check(severity = Severity.MUST)
         public Iterable<Violation> validate(JsonNode json) {
             return Arrays.asList(
-                    new Violation("TestCheckAlwaysReport3MustViolations #1", JsonPointers.empty()),
-                    new Violation("TestCheckAlwaysReport3MustViolations #2", JsonPointers.empty()),
-                    new Violation("TestCheckAlwaysReport3MustViolations #3", JsonPointers.empty())
+                    new Violation("TestCheckAlwaysReport3MustViolations #1", JsonPointers.INSTANCE.empty()),
+                    new Violation("TestCheckAlwaysReport3MustViolations #2", JsonPointers.INSTANCE.empty()),
+                    new Violation("TestCheckAlwaysReport3MustViolations #3", JsonPointers.INSTANCE.empty())
             );
         }
     }

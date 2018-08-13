@@ -35,7 +35,7 @@ class ReverseAstTest {
         val ast = ReverseAst.fromObject(spec).build()
 
         val description = spec.paths?.get("/tests")?.get?.responses?.get("200")?.description
-        assertThat(ast.getPointer(description)).hasToString("/paths/~1tests/get/responses/200/description")
+        assertThat(ast.getPointer(description!!)).hasToString("/paths/~1tests/get/responses/200/description")
     }
 
     @Test
