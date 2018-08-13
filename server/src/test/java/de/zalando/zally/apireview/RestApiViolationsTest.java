@@ -201,7 +201,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
     public void shouldAcceptYamlAndRespondWithJson() throws Exception {
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api-violations")
-                .contentType(WebMvcConfiguration.MEDIA_TYPE_APP_XYAML)
+                .contentType(WebMvcConfiguration.Companion.getMEDIA_TYPE_APP_XYAML())
                 .accept(MediaType.APPLICATION_JSON)
                 .content(ResourceUtil.resourceToString("fixtures/api_violations_request.yaml"));
 
