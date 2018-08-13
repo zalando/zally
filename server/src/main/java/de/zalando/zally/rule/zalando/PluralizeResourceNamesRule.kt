@@ -34,24 +34,23 @@ class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) {
     @Check(severity = Severity.MUST)
     fun validate(context: Context): List<Violation> {
         return context.validatePaths { (path, definition) ->
-            val sanitized = sanitize(path, whitelist)
-            components(sanitized)
-                    .filter { violatingComponent(it) }
+            pathSegments(sanitizedPath(path, whitelist))
+                    .filter { isNonViolating(it) }
                     .map { violation(context, it, definition) }
         }
     }
 
-    private fun components(path: String): List<String> {
-        return path.split(slashes).filter { !it.isEmpty() }
-    }
-
-    private fun sanitize(path: String, regexList: List<Regex>): String {
+    private fun sanitizedPath(path: String, regexList: List<Regex>): String {
         return regexList.fold("/$path/".replace(slashes, slash)) { updated, regex ->
             updated.replace(regex, slash)
         }
     }
 
-    private fun violatingComponent(it: String) =
+    private fun pathSegments(path: String): List<String> {
+        return path.split(slashes).filter { !it.isEmpty() }
+    }
+
+    private fun isNonViolating(it: String) =
             !PatternUtil.isPathVariable(it) && !isPlural(it)
 
     private fun violation(context: Context, term: String, definition: PathItem) =
