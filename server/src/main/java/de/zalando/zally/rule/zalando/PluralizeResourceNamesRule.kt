@@ -2,12 +2,13 @@ package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
 import de.zalando.zally.util.WordUtil.isPlural
-import io.swagger.models.Swagger
+import io.swagger.v3.oas.models.PathItem
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
@@ -17,23 +18,41 @@ import org.springframework.beans.factory.annotation.Autowired
         title = "Pluralize Resource Names"
 )
 class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) {
-    private val description = "Resource '%s' appears to be singular (but we are not sure)"
-    private val allowedPrefixes = rulesConfig.getConfig(javaClass.simpleName).getStringList("whitelist_prefixes")
+
+    private val slash = "/"
+
+    private val slashes = "/+".toRegex()
+
+    @Suppress("SpreadOperator")
+    internal val whitelist = mutableListOf(
+            *rulesConfig
+                    .getConfig(javaClass.simpleName)
+                    .getStringList("whitelist")
+                    .map { it.toRegex() }
+                    .toTypedArray())
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
-        val res = swagger.paths?.keys?.flatMap { path ->
-            val allParts = path.split("/".toRegex())
-            val partsToCheck = if (allParts.size > 1 && allowedPrefixes.contains(allParts.first())) allParts.drop(1)
-            else allParts
-
-            partsToCheck.filter { s -> !s.isEmpty() && !PatternUtil.isPathVariable(s) && !isPlural(s) }
-                .map { it to path }
+    fun validate(context: Context): List<Violation> {
+        return context.validatePaths { (path, definition) ->
+            pathSegments(sanitizedPath(path, whitelist))
+                    .filter { isNonViolating(it) }
+                    .map { violation(context, it, definition) }
         }
-        return if (res != null && res.isNotEmpty()) {
-            val desc = res.map { "'${it.first}'" }.toSet().joinToString(", ")
-            val paths = res.map { it.second }
-            Violation(String.format(description, desc), paths)
-        } else null
     }
+
+    private fun sanitizedPath(path: String, regexList: List<Regex>): String {
+        return regexList.fold("/$path/".replace(slashes, slash)) { updated, regex ->
+            updated.replace(regex, slash)
+        }
+    }
+
+    private fun pathSegments(path: String): List<String> {
+        return path.split(slashes).filter { !it.isEmpty() }
+    }
+
+    private fun isNonViolating(it: String) =
+            !PatternUtil.isPathVariable(it) && !isPlural(it)
+
+    private fun violation(context: Context, term: String, definition: PathItem) =
+            context.violation("Resource '$term' appears to be singular", definition)
 }
