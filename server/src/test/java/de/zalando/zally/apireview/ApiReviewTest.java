@@ -3,16 +3,15 @@ package de.zalando.zally.apireview;
 import de.zalando.zally.dto.ApiDefinitionRequest;
 import de.zalando.zally.rule.Result;
 import de.zalando.zally.rule.TestRuleSet;
-import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.api.Rule;
+import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.zalando.UseOpenApiRule;
-import de.zalando.zally.util.ResourceUtil;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.List;
 
+import static de.zalando.zally.util.ResourceUtilKt.resourceToString;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +37,7 @@ public class ApiReviewTest {
         Result violation1 = result(Severity.MUST, "/pointer1");
         Result violation2 = result(Severity.MUST, "/pointer2");
 
-        String apiDefinition = ResourceUtil.resourceToString("fixtures/limitNumberOfResourcesValid.json");
+        String apiDefinition = resourceToString("fixtures/limitNumberOfResourcesValid.json");
 
         ApiReview apiReview = new ApiReview(new ApiDefinitionRequest(), null, apiDefinition, asList(violation1, violation2));
 
@@ -47,7 +46,7 @@ public class ApiReviewTest {
 
     @Test
     public void shouldParseApiNameFromApiDefinition() throws IOException {
-        String apiDefinition = ResourceUtil.resourceToString("fixtures/limitNumberOfResourcesValid.json");
+        String apiDefinition = resourceToString("fixtures/limitNumberOfResourcesValid.json");
         ApiReview apiReview = new ApiReview(new ApiDefinitionRequest(), null, apiDefinition, emptyList());
         assertThat(apiReview.getName()).isEqualTo("Test Service");
     }

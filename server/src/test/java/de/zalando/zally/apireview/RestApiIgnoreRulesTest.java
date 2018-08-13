@@ -1,15 +1,12 @@
 package de.zalando.zally.apireview;
 
 import de.zalando.zally.dto.ApiDefinitionResponse;
-import de.zalando.zally.dto.ViolationDTO;
 import org.junit.Test;
 import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
-import static de.zalando.zally.util.ResourceUtil.readApiDefinition;
+import static de.zalando.zally.util.ResourceUtilKt.readApiDefinition;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = "zally.ignoreRules=TestCheckAlwaysReport3MustViolations")

@@ -1,6 +1,6 @@
 package de.zalando.zally.rule
 
-import de.zalando.zally.util.ResourceUtil.resourceToString
+import de.zalando.zally.util.resourceToString
 import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language

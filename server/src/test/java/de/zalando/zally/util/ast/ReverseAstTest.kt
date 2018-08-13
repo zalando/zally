@@ -2,7 +2,7 @@ package de.zalando.zally.util.ast
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.ObjectTreeReader
-import de.zalando.zally.util.ResourceUtil.resourceToString
+import de.zalando.zally.util.resourceToString
 import io.swagger.parser.OpenAPIParser
 import io.swagger.parser.SwaggerParser
 import io.swagger.util.Json
