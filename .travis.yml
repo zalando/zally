@@ -38,7 +38,7 @@ script:
   - cd ..
 
   # Wait until Spring Boot will start
-  - while ! echo "GET / HTTP/1.0\n" | nc localhost 8080; do sleep 1; done
+  - while ! echo "GET / HTTP/1.0\n" | nc localhost 8000; do sleep 1; done
 
   # Test and build CLI
   - export ZALLY_GO_PATH="$GOPATH/src/github.com/zalando/zally"
