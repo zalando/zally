@@ -2,7 +2,7 @@ package de.zalando.zally.apireview;
 
 import de.zalando.zally.dto.ApiDefinitionRequest;
 import de.zalando.zally.exception.MissingApiDefinitionException;
-import de.zalando.zally.exception.UnaccessibleResourceUrlException;
+import de.zalando.zally.exception.InaccessibleResourceUrlException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -55,7 +55,7 @@ public class ApiDefinitionReader {
         this.client = client;
     }
 
-    public String read(ApiDefinitionRequest request) throws MissingApiDefinitionException, UnaccessibleResourceUrlException {
+    public String read(ApiDefinitionRequest request) throws MissingApiDefinitionException, InaccessibleResourceUrlException {
         if (request.getApiDefinitionString() != null) {
             return request.getApiDefinitionString();
         } else if (request.getApiDefinition() != null) {
@@ -67,7 +67,7 @@ public class ApiDefinitionReader {
         }
     }
 
-    private String readFromUrl(String url) throws UnaccessibleResourceUrlException {
+    private String readFromUrl(String url) throws InaccessibleResourceUrlException {
         try {
             final HttpHeaders headers = new HttpHeaders();
             headers.setAccept(MEDIA_TYPE_WHITELIST);
@@ -78,14 +78,14 @@ public class ApiDefinitionReader {
 
             final MediaType contentType = response.getHeaders().getContentType();
             if (MEDIA_TYPE_WHITELIST.stream().noneMatch(contentType::isCompatibleWith)) {
-                throw new UnaccessibleResourceUrlException("Unexpected content type while retrieving api definition url: " + contentType, UNSUPPORTED_MEDIA_TYPE);
+                throw new InaccessibleResourceUrlException("Unexpected content type while retrieving api definition url: " + contentType, UNSUPPORTED_MEDIA_TYPE);
             }
 
             return response.getBody();
         } catch (HttpClientErrorException exception) {
-            throw new UnaccessibleResourceUrlException(exception.getMessage() + " while retrieving api definition url", exception.getStatusCode());
+            throw new InaccessibleResourceUrlException(exception.getMessage() + " while retrieving api definition url", exception.getStatusCode());
         } catch (ResourceAccessException exception) {
-            throw new UnaccessibleResourceUrlException("Unknown host while retrieving api definition url: " + exception.getCause().getMessage(), HttpStatus.NOT_FOUND);
+            throw new InaccessibleResourceUrlException("Unknown host while retrieving api definition url: " + exception.getCause().getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 

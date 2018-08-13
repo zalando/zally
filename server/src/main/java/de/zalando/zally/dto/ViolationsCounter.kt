@@ -1,0 +1,11 @@
+package de.zalando.zally.dto
+
+import de.zalando.zally.rule.Result
+import de.zalando.zally.rule.api.Severity
+
+class ViolationsCounter(violations: List<Result>) {
+
+    private val counters = violations.groupingBy { it.violationType }.eachCount()
+
+    fun getCounter(violationType: Severity): Int? = counters[violationType] ?: 0
+}
