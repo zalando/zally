@@ -136,19 +136,28 @@ class DefaultContext(
         private val log = LoggerFactory.getLogger(DefaultContext::class.java)
         private val extensionNames = arrayOf("getVendorExtensions", "getExtensions")
 
-        fun createOpenApiContext(content: String): ContentParseResult<Context> =
-            parseOpenApi(content)
-                .flatMap { resolveOpenApi(it) }
-                .map { DefaultContext(content, it.openAPI) }
+        fun createOpenApiContext(content: String): ContentParseResult<Context> {
+            val parseResult = parseOpenApi(content)
+            if (parseResult !is Success) return parseResult.of()
 
-        fun createSwaggerContext(content: String): ContentParseResult<Context> =
-            parseSwagger(content).flatMap { parseResult ->
-                convertSwaggerToOpenAPI(parseResult)
-                    .flatMap { resolveSwagger(it) }
-                    .map { convertResult ->
-                        DefaultContext(content, convertResult.openAPI, parseResult.swagger)
-                    }
-            }
+            val resolveResult = resolveOpenApi(parseResult.result)
+            if (resolveResult !is Success) return resolveResult.of()
+
+            return Success(DefaultContext(content, parseResult.result.openAPI))
+        }
+
+        fun createSwaggerContext(content: String): ContentParseResult<Context> {
+            val parseResult = parseSwagger(content)
+            if (parseResult !is Success) return parseResult.of()
+
+            val convertResult = convertSwaggerToOpenAPI(parseResult.result)
+            if (convertResult !is Success) return convertResult.of()
+
+            val resolveResult = resolveSwagger(convertResult.result)
+            if (resolveResult !is Success) return resolveResult.of()
+
+            return Success(DefaultContext(content, convertResult.result.openAPI, parseResult.result.swagger))
+        }
 
         private fun parseOpenApi(content: String): ContentParseResult<SwaggerParseResult> {
             val parseOptions = ParseOptions()

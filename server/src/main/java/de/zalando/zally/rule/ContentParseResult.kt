@@ -26,19 +26,13 @@ sealed class ContentParseResult<out RootT : Any> {
      */
     data class Success<RootT : Any>(val result: RootT) : ContentParseResult<RootT>()
 
-    /**
-     * Transforms a [Success] of [RootT] into another [ContentParseResult], of type [T].
-     * Any other value will be converted an equivalent [ContentParseResult] of type [T].
-     */
-    fun <T : Any> flatMap(f: (RootT) -> ContentParseResult<T>): ContentParseResult<T> = when (this) {
+    inline fun <reified T : Any> of(): ContentParseResult<T> = when (this) {
         is ContentParseResult.NotApplicable -> ContentParseResult.NotApplicable()
         is ContentParseResult.ParsedWithErrors -> ContentParseResult.ParsedWithErrors(violations)
-        is ContentParseResult.Success -> f(this.result)
+        is ContentParseResult.Success -> {
+            val resultT = result as? T
+            if (resultT == null) throw IllegalStateException("Cannot change the type of a Success")
+            else Success(resultT)
+        }
     }
-
-    /**
-     * Transforms a [Success] of [RootT] into another [Success], or type [T].
-     * Any other value will be converted an equivalent [ContentParseResult] of type [T].
-     */
-    fun <T : Any> map(f: (RootT) -> T): ContentParseResult<T> = flatMap { Success(f(it)) }
 }
