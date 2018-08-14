@@ -207,4 +207,53 @@ class DefaultContextTest {
         val success = result as ContentParseResult.Success
         assertThat(success.result.isOpenAPI3()).isFalse()
     }
+
+    @Test
+    fun `OpenAPI Resolve NPE workaround is avoided when converted Swagger has components with null schemas`() {
+        // This Swagger, after being converted, causes the `components` property to exist (not
+        // null), but having a null `schemas`, which causes the NPE.
+        val ref = "\$ref"
+        @Language("YAML")
+        val content = """
+          swagger: '2.0'
+          info:
+            version: 1.0.0
+            title: Swagger Petstore
+            description: A sample API that uses a petstore as an example to demonstrate features
+              in the swagger-2.0 specification
+            termsOfService: http://swagger.io/terms/
+            contact:
+              name: Swagger API Team
+            license:
+              name: MIT
+          paths:
+            /identifier-types/{identifier_type}/source-ids/{source_identifier}:
+              get:
+                tags:
+                  - id-mappings
+                description: List of identifiers associated with the source id.
+                parameters:
+                  - $ref: '#/parameters/identifier_type'
+                  - $ref: '#/parameters/source_identifier'
+                  - $ref: '#/parameters/target_identifier_type'
+                responses:
+                  200:
+                    description: The identifiers associated with the source id.
+                    schema:
+                      $ref: '#/definitions/IdMappingResults'
+                  401:
+                    description: User is not authenticated
+                  403:
+                    description: User is not authorized
+                  404:
+                    description: Identifier is not found
+                    schema:
+                      $ref: '#definitions/Problem'
+                security:
+                  - oauth2:
+                    - 'cross-device-graph-service.read'
+        """.trimIndent()
+        val result = DefaultContext.createSwaggerContext(content)
+        ContentParseResultAssert.assertThat(result).resultsInSuccess()
+    }
 }

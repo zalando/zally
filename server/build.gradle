@@ -115,8 +115,8 @@ task ktlint(type: JavaExec) {
     args "src/**/*.kt"
 }
 
-check.dependsOn jacocoTestReport
 check.dependsOn ktlint
+check.dependsOn jacocoTestReport
 
 bootRun {
     jvmArgs = ["-Dspring.profiles.active=dev"]

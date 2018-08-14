@@ -153,7 +153,7 @@ class DefaultContext(
             val convertResult = convertSwaggerToOpenAPI(parseResult.result)
             if (convertResult !is Success) return convertResult.of()
 
-            val resolveResult = resolveSwagger(convertResult.result)
+            val resolveResult = resolveOpenApi(convertResult.result)
             if (resolveResult !is Success) return resolveResult.of()
 
             return Success(DefaultContext(content, convertResult.result.openAPI, parseResult.result.swagger))
@@ -176,12 +176,38 @@ class DefaultContext(
         }
 
         private fun resolveOpenApi(parseResult: SwaggerParseResult): ContentParseResult<SwaggerParseResult> {
+            val preResolveViolations = preResolveCheck(parseResult)
+            if (preResolveViolations.isNotEmpty()) {
+                return ParsedWithErrors(preResolveViolations)
+            }
+
             try {
-                ResolverFully(true).resolveFully(parseResult.openAPI) // workaround for NPE bug in swagger-parser
+                ResolverFully(true).resolveFully(parseResult.openAPI)
             } catch (e: NullPointerException) {
-                log.warn("Failed to fully resolve OpenAPI schema.", e)
+                log.warn("Failed to fully resolve OpenAPI schema. Error not covered by pre-resolve checks.", e)
             }
             return Success(parseResult)
+        }
+
+        /**
+         * This serves two goals:
+         * - Fixing the parsed OpenAPI object before applying resolving on it.
+         * - Detecting cases where a violation should be automatically returned in the result.
+         */
+        private fun preResolveCheck(parseResult: SwaggerParseResult): List<Violation> {
+            val api = parseResult.openAPI
+
+            // COMPONENTS
+            // If it is null, it does not cause problems (so far). If not, he potentially does.
+            api.components?.also {
+
+                // SCHEMAS
+                if (it.schemas === null) {
+                    it.schemas = emptyMap()
+                }
+            }
+
+            return emptyList()
         }
 
         private fun parseSwagger(content: String): ContentParseResult<SwaggerDeserializationResult> {
@@ -206,7 +232,6 @@ class DefaultContext(
          */
         private fun preConvertChecks(swaggerDeserializationResult: SwaggerDeserializationResult): List<Violation> {
             val swagger = swaggerDeserializationResult.swagger
-            val violations = mutableListOf<Violation>()
 
             // INFO
             if (swagger.info === null) {
@@ -226,7 +251,7 @@ class DefaultContext(
                     }
                 }
 
-            return violations
+            return emptyList()
         }
 
         private fun convertSwaggerToOpenAPI(parseResult: SwaggerDeserializationResult): ContentParseResult<SwaggerParseResult> {
@@ -238,7 +263,7 @@ class DefaultContext(
             val convertResult = try {
                 SwaggerConverter().convert(parseResult)
             } catch (t: Throwable) {
-                log.warn("Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. Error not covered by pre-checks.", t)
+                log.warn("Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. Error not covered by pre-convert checks.", t)
                 val violation = Violation("Unable to parse specification", JsonPointers.root)
                 return ParsedWithErrors(listOf(violation))
             }
@@ -253,15 +278,6 @@ class DefaultContext(
             } else {
                 Success(convertResult)
             }
-        }
-
-        private fun resolveSwagger(convertResult: SwaggerParseResult): ContentParseResult<SwaggerParseResult> {
-            try {
-                ResolverFully(true).resolveFully(convertResult.openAPI)
-            } catch (e: NullPointerException) {
-                log.warn("Failed to fully resolve Swagger schema.", e)
-            }
-            return Success(convertResult)
         }
 
         private fun errorToViolation(error: String): Violation =
