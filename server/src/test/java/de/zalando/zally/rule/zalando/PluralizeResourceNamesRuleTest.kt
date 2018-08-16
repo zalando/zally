@@ -168,6 +168,6 @@ class PluralizeResourceNamesRuleTest {
                 """.trimIndent()
         val result = DefaultContext.createOpenApiContext(content)
         assertThat(result).resultsInSuccess()
-        return (result as ContentParseResult.Success).result
+        return (result as ContentParseResult.ParsedSuccessfully).result
     }
 }

@@ -3,7 +3,7 @@ package de.zalando.zally.rule
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.ContentParseResult.NotApplicable
 import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
-import de.zalando.zally.rule.ContentParseResult.Success
+import de.zalando.zally.rule.ContentParseResult.ParsedSuccessfully
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.zalando.UseOpenApiRule
 import de.zalando.zally.util.ast.JsonPointers
@@ -33,7 +33,7 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
                         violationType = useOpenApiRule.rule.severity,
                         pointer = violation.pointer)
                 }
-            is Success ->
+            is ParsedSuccessfully ->
                 rules
                     .checks(policy)
                     .filter { details -> isCheckMethod(details, parseResult.result) }

@@ -22,7 +22,7 @@ class SwaggerRulesValidator(@Autowired rules: RulesManager) : RulesValidator<Swa
                 ContentParseResult.NotApplicable()
             } else {
                 ast = ReverseAst.fromObject(swagger).withExtensionMethodNames("getVendorExtensions").build()
-                ContentParseResult.Success(swagger)
+                ContentParseResult.ParsedSuccessfully(swagger)
             }
         } catch (e: Exception) {
             ContentParseResult.NotApplicable()

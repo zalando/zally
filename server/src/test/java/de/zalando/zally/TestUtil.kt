@@ -32,7 +32,7 @@ fun getContextFromFixture(fileName: String): Context {
     val content = getResourceContent(fileName)
     val openApiResult = DefaultContext.createOpenApiContext(content)
     return when (openApiResult) {
-        is ContentParseResult.Success ->
+        is ContentParseResult.ParsedSuccessfully ->
             openApiResult.result
         is ContentParseResult.ParsedWithErrors -> {
             val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n") { "${it.description} (${it.pointer})" }
@@ -41,7 +41,7 @@ fun getContextFromFixture(fileName: String): Context {
         is ContentParseResult.NotApplicable -> {
             val swaggerResult = DefaultContext.createSwaggerContext(content)
             when (swaggerResult) {
-                is ContentParseResult.Success ->
+                is ContentParseResult.ParsedSuccessfully ->
                     swaggerResult.result
                 is ContentParseResult.ParsedWithErrors -> {
                     val errors = swaggerResult.violations.joinToString("\n  -", "\n  -", "\n") { "${it.description} (${it.pointer})" }
@@ -58,7 +58,7 @@ fun getContextFromFixture(fileName: String): Context {
 fun getOpenApiContextFromContent(content: String): Context {
     val openApiResult = DefaultContext.createOpenApiContext(content)
     return when (openApiResult) {
-        is ContentParseResult.Success ->
+        is ContentParseResult.ParsedSuccessfully ->
             openApiResult.result
         is ContentParseResult.ParsedWithErrors -> {
             val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n")
@@ -73,7 +73,7 @@ fun getOpenApiContextFromContent(content: String): Context {
 fun getSwaggerContextFromContent(content: String): Context {
     val openApiResult = DefaultContext.createSwaggerContext(content)
     return when (openApiResult) {
-        is ContentParseResult.Success ->
+        is ContentParseResult.ParsedSuccessfully ->
             openApiResult.result
         is ContentParseResult.ParsedWithErrors -> {
             val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n")

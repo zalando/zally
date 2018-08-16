@@ -24,15 +24,15 @@ sealed class ContentParseResult<out RootT : Any> {
     /**
      * The content was of a recognised type and the parsing was successful.
      */
-    data class Success<RootT : Any>(val result: RootT) : ContentParseResult<RootT>()
+    data class ParsedSuccessfully<RootT : Any>(val result: RootT) : ContentParseResult<RootT>()
 
     inline fun <reified T : Any> of(): ContentParseResult<T> = when (this) {
         is ContentParseResult.NotApplicable -> ContentParseResult.NotApplicable()
         is ContentParseResult.ParsedWithErrors -> ContentParseResult.ParsedWithErrors(violations)
-        is ContentParseResult.Success -> {
+        is ContentParseResult.ParsedSuccessfully -> {
             val resultT = result as? T
-            if (resultT == null) throw IllegalStateException("Cannot change the type of a Success")
-            else Success(resultT)
+            if (resultT == null) throw IllegalStateException("Cannot change the type of a ParsedSuccessfully")
+            else ParsedSuccessfully(resultT)
         }
     }
 }

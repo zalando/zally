@@ -15,7 +15,7 @@ class JsonRulesValidator(@Autowired rules: RulesManager) : RulesValidator<JsonNo
         return try {
             val json = ObjectTreeReader().read(content)
             ast = createAst(json)
-            ContentParseResult.Success(json)
+            ContentParseResult.ParsedSuccessfully(json)
         } catch (e: Exception) {
             ContentParseResult.NotApplicable()
         }

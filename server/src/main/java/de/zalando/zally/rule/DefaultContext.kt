@@ -3,7 +3,7 @@ package de.zalando.zally.rule
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.ContentParseResult.NotApplicable
 import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
-import de.zalando.zally.rule.ContentParseResult.Success
+import de.zalando.zally.rule.ContentParseResult.ParsedSuccessfully
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.ast.JsonPointers
@@ -138,25 +138,25 @@ class DefaultContext(
 
         fun createOpenApiContext(content: String): ContentParseResult<Context> {
             val parseResult = parseOpenApi(content)
-            if (parseResult !is Success) return parseResult.of()
+            if (parseResult !is ParsedSuccessfully) return parseResult.of()
 
             val resolveResult = resolveOpenApi(parseResult.result)
-            if (resolveResult !is Success) return resolveResult.of()
+            if (resolveResult !is ParsedSuccessfully) return resolveResult.of()
 
-            return Success(DefaultContext(content, parseResult.result.openAPI))
+            return ParsedSuccessfully(DefaultContext(content, parseResult.result.openAPI))
         }
 
         fun createSwaggerContext(content: String): ContentParseResult<Context> {
             val parseResult = parseSwagger(content)
-            if (parseResult !is Success) return parseResult.of()
+            if (parseResult !is ParsedSuccessfully) return parseResult.of()
 
             val convertResult = convertSwaggerToOpenAPI(parseResult.result)
-            if (convertResult !is Success) return convertResult.of()
+            if (convertResult !is ParsedSuccessfully) return convertResult.of()
 
             val resolveResult = resolveOpenApi(convertResult.result)
-            if (resolveResult !is Success) return resolveResult.of()
+            if (resolveResult !is ParsedSuccessfully) return resolveResult.of()
 
-            return Success(DefaultContext(content, convertResult.result.openAPI, parseResult.result.swagger))
+            return ParsedSuccessfully(DefaultContext(content, convertResult.result.openAPI, parseResult.result.swagger))
         }
 
         private fun parseOpenApi(content: String): ContentParseResult<SwaggerParseResult> {
@@ -171,7 +171,7 @@ class DefaultContext(
                     ParsedWithErrors(parseResult.messages.filterNotNull().map(::errorToViolation))
                 }
             } else {
-                Success(parseResult)
+                ParsedSuccessfully(parseResult)
             }
         }
 
@@ -186,7 +186,7 @@ class DefaultContext(
             } catch (e: NullPointerException) {
                 log.warn("Failed to fully resolve OpenAPI schema. Error not covered by pre-resolve checks.", e)
             }
-            return Success(parseResult)
+            return ParsedSuccessfully(parseResult)
         }
 
         /**
@@ -221,7 +221,7 @@ class DefaultContext(
                     ParsedWithErrors(parseResult.messages.mapNotNull(::errorToViolation))
                 }
             } else {
-                Success(parseResult)
+                ParsedSuccessfully(parseResult)
             }
         }
 
@@ -276,7 +276,7 @@ class DefaultContext(
                     ParsedWithErrors(listOf(violation))
                 }
             } else {
-                Success(convertResult)
+                ParsedSuccessfully(convertResult)
             }
         }
 

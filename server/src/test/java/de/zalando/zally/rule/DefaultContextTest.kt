@@ -66,7 +66,7 @@ class DefaultContextTest {
             """
         val result = DefaultContext.createOpenApiContext(content)
         assertThat(result).resultsInSuccess()
-        val success = result as ContentParseResult.Success
+        val success = result as ContentParseResult.ParsedSuccessfully
         assertThat(success.result.isOpenAPI3()).isTrue()
     }
 
@@ -160,7 +160,7 @@ class DefaultContextTest {
             """.trimIndent()
         val result = DefaultContext.createSwaggerContext(content)
         assertThat(result).resultsInSuccess()
-        val success = result as ContentParseResult.Success
+        val success = result as ContentParseResult.ParsedSuccessfully
         assertThat(success.result.isOpenAPI3()).isFalse()
     }
 
@@ -204,7 +204,7 @@ class DefaultContextTest {
             """.trimIndent()
         val result = DefaultContext.createSwaggerContext(content)
         assertThat(result).resultsInSuccess()
-        val success = result as ContentParseResult.Success
+        val success = result as ContentParseResult.ParsedSuccessfully
         assertThat(success.result.isOpenAPI3()).isFalse()
     }
 

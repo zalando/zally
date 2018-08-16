@@ -9,7 +9,7 @@ class ContentParseResultAssert<T : Any>(actual: ContentParseResult<T>?)
     : AbstractAssert<ContentParseResultAssert<T>, ContentParseResult<T>?>(actual, ContentParseResultAssert::class.java) {
 
     fun resultsInSuccess() {
-        failIfNot<ContentParseResult.Success<T>>()
+        failIfNot<ContentParseResult.ParsedSuccessfully<T>>()
     }
 
     fun resultsInNotApplicable() {
@@ -33,7 +33,7 @@ class ContentParseResultAssert<T : Any>(actual: ContentParseResult<T>?)
                     val violations = actual.violations.joinToString(sep, sep, "\n")
                     "Expected result to be '$type'. Was 'ParsedWithErrors' instead with those violations: $violations"
                 }
-                is ContentParseResult.Success -> "Expected result to be '$type'. Was 'Success' instead."
+                is ContentParseResult.ParsedSuccessfully -> "Expected result to be '$type'. Was 'ParsedSuccessfully' instead."
             })
         }
     }
