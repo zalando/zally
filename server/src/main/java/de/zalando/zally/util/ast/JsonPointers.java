@@ -18,7 +18,7 @@ import static java.util.regex.Pattern.compile;
  */
 public final class JsonPointers {
 
-    public static final JsonPointer root = JsonPointer.compile("/");
+    public static final JsonPointer EMPTY = JsonPointer.compile("");
 
     private JsonPointers() {
     }
@@ -92,9 +92,5 @@ public final class JsonPointers {
             .replace("~", "~0")
             .replace("/", "~1");
         return JsonPointer.compile(escaped);
-    }
-
-    public static JsonPointer empty() {
-        return JsonPointer.compile("");
     }
 }

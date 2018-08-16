@@ -264,7 +264,7 @@ class DefaultContext(
                 SwaggerConverter().convert(parseResult)
             } catch (t: Throwable) {
                 log.warn("Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. Error not covered by pre-convert checks.", t)
-                val violation = Violation("Unable to parse specification", JsonPointers.root)
+                val violation = Violation("Unable to parse specification", JsonPointers.EMPTY)
                 return ParsedWithErrors(listOf(violation))
             }
             return if (convertResult.openAPI === null) {
@@ -272,7 +272,7 @@ class DefaultContext(
                     ParsedWithErrors(convertResult.messages.mapNotNull(::errorToViolation))
                 } else {
                     log.warn("Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. No error specified, but 'openAPI' is null.")
-                    val violation = Violation("Unable to parse specification", JsonPointers.root)
+                    val violation = Violation("Unable to parse specification", JsonPointers.EMPTY)
                     ParsedWithErrors(listOf(violation))
                 }
             } else {
@@ -281,21 +281,6 @@ class DefaultContext(
         }
 
         private fun errorToViolation(error: String): Violation =
-            Violation(error, errorToJsonPointer(error))
-
-        private val attributeIsMissingRegEx = Regex("attribute [^ ]* is missing")
-
-        private fun errorToJsonPointer(error: String): JsonPointer {
-            if (error.matches(attributeIsMissingRegEx)) {
-                val words = error.split(' ')
-                if (words.size > 1) {
-                    val pathInError = words[1]
-                    val pathParts = pathInError.split('.')
-                    val pathWithoutLast = pathParts.take(pathParts.size - 1).joinToString("/")
-                    return JsonPointer.compile("/$pathWithoutLast")
-                }
-            }
-            return JsonPointers.root
-        }
+            Violation(error, JsonPointers.EMPTY)
     }
 }

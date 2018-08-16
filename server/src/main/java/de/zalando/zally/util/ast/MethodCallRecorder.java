@@ -93,7 +93,7 @@ public final class MethodCallRecorder<T> {
     }
 
     public MethodCallRecorder(T object) {
-        this.currentPointer = JsonPointers.empty();
+        this.currentPointer = JsonPointers.EMPTY;
         this.proxy = createProxy(object, null);
     }
 

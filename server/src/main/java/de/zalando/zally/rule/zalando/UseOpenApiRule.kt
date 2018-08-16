@@ -51,7 +51,7 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
             }
             if (violations.isEmpty()) {
                 violations += result.map {
-                    Violation("Does not match ${validator.name}: ${it.description}", it.pointer ?: JsonPointers.empty())
+                    Violation("Does not match ${validator.name}: ${it.description}", it.pointer ?: JsonPointers.EMPTY)
                 }
             }
         }

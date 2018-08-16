@@ -70,7 +70,7 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
         // TODO: make pointer not-null and remove usage of `paths`
         return violations
             .filterNot {
-                ignore(root, it.pointer ?: JsonPointers.empty(), details.rule.id)
+                ignore(root, it.pointer ?: JsonPointers.EMPTY, details.rule.id)
             }
             .map {
                 if (it.pointer != null) {
