@@ -23,7 +23,7 @@ func TestApp(t *testing.T) {
 	t.Run("default_linter_service_url", func(t *testing.T) {
 		app := CreateApp()
 		app.Before = func(c *cli.Context) error {
-			tests.AssertEquals(t, "http://localhost:8080", c.String("linter-service"))
+			tests.AssertEquals(t, "http://localhost:8000", c.String("linter-service"))
 			return nil
 		}
 		app.Run([]string{""})

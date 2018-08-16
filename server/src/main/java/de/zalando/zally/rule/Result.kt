@@ -15,6 +15,15 @@ data class Result(
     @Deprecated("Use `pointer` instead.") val paths: List<String>,
     val pointer: JsonPointer? = null
 ) {
+
+    constructor(
+        ruleSet: RuleSet,
+        rule: Rule,
+        description: String,
+        violationType: Severity,
+        pointer: JsonPointer?
+    ) : this(ruleSet, rule, description, violationType, emptyList(), pointer)
+
     constructor(
         ruleSet: RuleSet,
         rule: Rule,

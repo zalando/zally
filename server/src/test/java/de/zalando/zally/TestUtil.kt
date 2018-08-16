@@ -3,6 +3,7 @@ package de.zalando.zally
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+import de.zalando.zally.rule.ContentParseResult
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.rule.api.Context
@@ -29,9 +30,59 @@ fun getFixture(fileName: String): Swagger = SwaggerParser().read("fixtures/$file
 
 fun getContextFromFixture(fileName: String): Context {
     val content = getResourceContent(fileName)
-    return DefaultContext.createOpenApiContext(content)
-        ?: DefaultContext.createSwaggerContext(content)
-        ?: throw RuntimeException("Unable to create context.")
+    val openApiResult = DefaultContext.createOpenApiContext(content)
+    return when (openApiResult) {
+        is ContentParseResult.ParsedSuccessfully ->
+            openApiResult.result
+        is ContentParseResult.ParsedWithErrors -> {
+            val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n") { "${it.description} (${it.pointer})" }
+            throw RuntimeException("Parsed with violations:$errors")
+        }
+        is ContentParseResult.NotApplicable -> {
+            val swaggerResult = DefaultContext.createSwaggerContext(content)
+            when (swaggerResult) {
+                is ContentParseResult.ParsedSuccessfully ->
+                    swaggerResult.result
+                is ContentParseResult.ParsedWithErrors -> {
+                    val errors = swaggerResult.violations.joinToString("\n  -", "\n  -", "\n") { "${it.description} (${it.pointer})" }
+                    throw RuntimeException("Parsed with violations:$errors")
+                }
+                is ContentParseResult.NotApplicable -> {
+                    throw RuntimeException("Content was neither an OpenAPI nor a Swagger specification")
+                }
+            }
+        }
+    }
+}
+
+fun getOpenApiContextFromContent(content: String): Context {
+    val openApiResult = DefaultContext.createOpenApiContext(content)
+    return when (openApiResult) {
+        is ContentParseResult.ParsedSuccessfully ->
+            openApiResult.result
+        is ContentParseResult.ParsedWithErrors -> {
+            val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n")
+            throw RuntimeException("Parsed with violations:$errors")
+        }
+        is ContentParseResult.NotApplicable -> {
+            throw RuntimeException("Missing the 'OpenAPI' property.")
+        }
+    }
+}
+
+fun getSwaggerContextFromContent(content: String): Context {
+    val openApiResult = DefaultContext.createSwaggerContext(content)
+    return when (openApiResult) {
+        is ContentParseResult.ParsedSuccessfully ->
+            openApiResult.result
+        is ContentParseResult.ParsedWithErrors -> {
+            val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n")
+            throw RuntimeException("Parsed with violations:$errors")
+        }
+        is ContentParseResult.NotApplicable -> {
+            throw RuntimeException("Missing the 'swagger' property.")
+        }
+    }
 }
 
 fun getResourceContent(fileName: String): String = ClasspathHelper.loadFileFromClasspath("fixtures/$fileName")

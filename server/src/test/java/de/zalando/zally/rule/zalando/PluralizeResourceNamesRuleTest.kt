@@ -1,6 +1,8 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getContextFromFixture
+import de.zalando.zally.rule.ContentParseResult
+import de.zalando.zally.rule.ContentParseResultAssert.Companion.assertThat
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
 import de.zalando.zally.rule.api.Context
@@ -164,6 +166,8 @@ class PluralizeResourceNamesRuleTest {
                 paths:
                   $path: {}
                 """.trimIndent()
-        return DefaultContext.createOpenApiContext(content)!!
+        val result = DefaultContext.createOpenApiContext(content)
+        assertThat(result).resultsInSuccess()
+        return (result as ContentParseResult.ParsedSuccessfully).result
     }
 }

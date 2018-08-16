@@ -15,13 +15,17 @@ import org.springframework.stereotype.Component
 class SwaggerRulesValidator(@Autowired rules: RulesManager) : RulesValidator<Swagger>(rules) {
     private var ast: ReverseAst? = null
 
-    override fun parse(content: String): Swagger? {
+    override fun parse(content: String): ContentParseResult<Swagger> {
         return try {
-            val swagger = SwaggerParser().parse(content)!!
-            ast = ReverseAst.fromObject(swagger).withExtensionMethodNames("getVendorExtensions").build()
-            swagger
+            val swagger = SwaggerParser().parse(content)
+            if (swagger === null) {
+                ContentParseResult.NotApplicable()
+            } else {
+                ast = ReverseAst.fromObject(swagger).withExtensionMethodNames("getVendorExtensions").build()
+                ContentParseResult.ParsedSuccessfully(swagger)
+            }
         } catch (e: Exception) {
-            null
+            ContentParseResult.NotApplicable()
         }
     }
 

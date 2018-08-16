@@ -12,8 +12,17 @@ import org.springframework.stereotype.Component
 @Component
 class ContextRulesValidator(@Autowired rules: RulesManager) : RulesValidator<Context>(rules) {
 
-    override fun parse(content: String): Context? =
-            DefaultContext.createOpenApiContext(content) ?: DefaultContext.createSwaggerContext(content)
+    override fun parse(content: String): ContentParseResult<Context> {
+        // first try to parse an OpenAPI (version 3+)
+        val parsedAsOpenApi = DefaultContext.createOpenApiContext(content)
+        return when (parsedAsOpenApi) {
+            is ContentParseResult.NotApplicable ->
+                // if content was no OpenAPI, try to parse a Swagger (version 2)
+                DefaultContext.createSwaggerContext(content)
+            else ->
+                parsedAsOpenApi
+        }
+    }
 
     override fun ignore(root: Context, pointer: JsonPointer, ruleId: String) = root.isIgnored(pointer, ruleId)
 }

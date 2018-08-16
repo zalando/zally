@@ -8,8 +8,10 @@ def versions = [
 
 buildscript {
 
-    ext.kotlin_version = '1.2.51'
-    ext.spring_boot_version = '2.0.0.RELEASE'
+    ext {
+        kotlin_version = '1.2.60'
+        spring_boot_version = '2.0.0.RELEASE'
+    }
 
     repositories {
         mavenCentral()
@@ -113,8 +115,8 @@ task ktlint(type: JavaExec) {
     args "src/**/*.kt"
 }
 
-check.dependsOn jacocoTestReport
 check.dependsOn ktlint
+check.dependsOn jacocoTestReport
 
 bootRun {
     jvmArgs = ["-Dspring.profiles.active=dev"]

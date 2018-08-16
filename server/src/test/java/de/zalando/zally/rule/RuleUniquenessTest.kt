@@ -19,6 +19,7 @@ class RuleUniquenessTest {
     @Test
     fun ruleIdsShouldBeUnique() {
         val duplicatedCodes = rules.rules
+                .filterNot { it.rule.title == "TestUseOpenApiRule" }
                 .groupBy { it.rule.id }
                 .filterValues { it.size > 1 }
 
@@ -29,6 +30,7 @@ class RuleUniquenessTest {
     @Test
     fun ruleTitlesShouldBeUnique() {
         val duplicatedCodes = rules.rules
+                .filterNot { it.rule.title == "TestUseOpenApiRule" }
                 .groupBy { it.rule.title }
                 .filterValues { it.size > 1 }
 
