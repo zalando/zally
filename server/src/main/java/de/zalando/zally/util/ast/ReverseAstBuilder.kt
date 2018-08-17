@@ -25,7 +25,7 @@ class ReverseAstBuilder<T> internal constructor(root: T) {
     class ReverseAstException internal constructor(message: String, cause: Throwable) : Exception(message, cause)
 
     init {
-        nodes.push(Node(root as Any, JsonPointers.empty(), null))
+        nodes.push(Node(root as Any, JsonPointers.EMPTY, null))
     }
 
     fun withExtensionMethodNames(vararg names: String): ReverseAstBuilder<T> {

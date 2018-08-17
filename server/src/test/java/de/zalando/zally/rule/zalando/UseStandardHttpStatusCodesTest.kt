@@ -1,10 +1,12 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.openApiWithOperations
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 @Suppress("UndocumentedPublicClass")
@@ -109,6 +111,7 @@ class UseStandardHttpStatusCodesTest {
     }
 
     private fun withResponseCode(responseCode: String): Context {
+        @Language("YAML")
         val content = """
             openapi: '3.0.1'
             paths:
@@ -116,8 +119,8 @@ class UseStandardHttpStatusCodesTest {
                 get:
                   responses:
                     $responseCode: {}
-            """.trimIndent()
+        """.trimIndent()
 
-        return DefaultContext.createOpenApiContext(content)!!
+        return getOpenApiContextFromContent(content)
     }
 }

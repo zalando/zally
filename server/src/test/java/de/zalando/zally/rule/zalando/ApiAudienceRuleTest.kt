@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.DefaultContext
+import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.testConfig
@@ -45,9 +45,11 @@ class ApiAudienceRuleTest {
             openapi: '3.0.0'
             info:
               x-audience: $apiAudience
+              title: Lorem Ipsum
+              version: 1.0.0
             paths: {}
             """.trimIndent()
 
-        return DefaultContext.createOpenApiContext(content)!!
+        return getOpenApiContextFromContent(content)
     }
 }

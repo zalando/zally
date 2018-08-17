@@ -4,10 +4,13 @@ import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.zalando.zally.rule.TestRuleSet;
 import de.zalando.zally.rule.api.Check;
+import de.zalando.zally.rule.api.Context;
 import de.zalando.zally.rule.api.Rule;
 import de.zalando.zally.rule.api.Severity;
 import de.zalando.zally.rule.api.Violation;
+import de.zalando.zally.rule.zalando.UseOpenApiRule;
 import de.zalando.zally.util.ast.JsonPointers;
+import org.assertj.core.util.Lists;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -25,7 +28,8 @@ public class RestApiTestConfiguration {
     public Collection<Object> rules() {
         return Arrays.asList(
                 new TestCheckIsOpenApi3(),
-                new TestCheckAlwaysReport3MustViolations()
+                new TestCheckAlwaysReport3MustViolations(),
+                new TestUseOpenApiRule()
         );
     }
 
@@ -59,10 +63,24 @@ public class RestApiTestConfiguration {
         @Check(severity = Severity.MUST)
         public Iterable<Violation> validate(JsonNode json) {
             return Arrays.asList(
-                    new Violation("TestCheckAlwaysReport3MustViolations #1", JsonPointers.INSTANCE.empty()),
-                    new Violation("TestCheckAlwaysReport3MustViolations #2", JsonPointers.INSTANCE.empty()),
-                    new Violation("TestCheckAlwaysReport3MustViolations #3", JsonPointers.INSTANCE.empty())
+                    new Violation("TestCheckAlwaysReport3MustViolations #1", JsonPointers.INSTANCE.getEMPTY()),
+                    new Violation("TestCheckAlwaysReport3MustViolations #2", JsonPointers.INSTANCE.getEMPTY()),
+                    new Violation("TestCheckAlwaysReport3MustViolations #3", JsonPointers.INSTANCE.getEMPTY())
             );
+        }
+    }
+
+    @Rule(
+        ruleSet = TestRuleSet.class,
+        id = UseOpenApiRule.id,
+        severity = Severity.MUST,
+        title = "TestUseOpenApiRule"
+    )
+    public static class TestUseOpenApiRule {
+
+        @Check(severity = Severity.HINT)
+        public Iterable<Violation> validate(Context context) {
+            return Lists.emptyList();
         }
     }
 }

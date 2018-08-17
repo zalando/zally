@@ -9,6 +9,8 @@ import java.util.Objects
  */
 object JsonPointers {
 
+    val EMPTY: JsonPointer = JsonPointer.compile("")
+
     private val regexToReplacement = listOf(
             "^/servers/.*$" to "/basePath",
             "^/components/schemas/(.*)$" to "/definitions/$1",
@@ -65,9 +67,5 @@ object JsonPointers {
                 .replace("~", "~0")
                 .replace("/", "~1")
         return JsonPointer.compile(escaped)
-    }
-
-    fun empty(): JsonPointer {
-        return JsonPointer.compile("")
     }
 }

@@ -1,7 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.DefaultContext
+import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.rule.ZallyAssertions.Companion.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 @Suppress("StringLiteralDuplication", "UndocumentedPublicClass", "UnsafeCallOnNullableType")
@@ -11,9 +12,10 @@ class AvoidTrailingSlashesRuleTest {
 
     @Test
     fun emptySwagger() {
-        val context = DefaultContext.createOpenApiContext("""
+        @Language("YAML")
+        val context = getOpenApiContextFromContent("""
             openapi: '3.0.0'
-            """.trimIndent())!!
+        """.trimIndent())
 
         val violations = rule.validate(context)
 
@@ -22,11 +24,12 @@ class AvoidTrailingSlashesRuleTest {
 
     @Test
     fun positiveCase() {
-        val context = DefaultContext.createOpenApiContext("""
+        @Language("YAML")
+        val context = getOpenApiContextFromContent("""
             openapi: '3.0.0'
             paths:
               /api/test-api: {}
-            """.trimIndent())!!
+        """.trimIndent())
 
         val violations = rule.validate(context)
 
@@ -35,14 +38,15 @@ class AvoidTrailingSlashesRuleTest {
 
     @Test
     fun negativeCase() {
-        val context = DefaultContext.createOpenApiContext("""
+        @Language("YAML")
+        val context = getOpenApiContextFromContent("""
             openapi: '3.0.0'
             paths:
               /api/test-api/: {}
               /api/test: {}
               /some/other/path: {}
               /long/bad/path/with/slash/: {}
-            """.trimIndent())!!
+        """.trimIndent())
 
         val violations = rule.validate(context)
 

@@ -22,7 +22,7 @@ import kotlin.collections.set
 class MethodCallRecorder<T>(`object`: T) {
 
     val proxy: T = createProxy(`object`, null)
-    var pointer: JsonPointer = JsonPointers.empty()
+    var pointer: JsonPointer = JsonPointers.EMPTY
 
     private val skipMethods = HashSet<String>()
     private val objectPointerCache = IdentityHashMap<Any, JsonPointer>()

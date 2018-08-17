@@ -1,26 +1,48 @@
 package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.rule.ContentParseResult.NotApplicable
+import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
+import de.zalando.zally.rule.ContentParseResult.ParsedSuccessfully
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.rule.zalando.UseOpenApiRule
 import de.zalando.zally.util.ast.JsonPointers
 import org.slf4j.LoggerFactory
 
-abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
+abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidator {
 
     private val log = LoggerFactory.getLogger(RulesValidator::class.java)
     private val reader = ObjectTreeReader()
 
-    override fun validate(content: String, policy: RulesPolicy): List<Result> {
-        val root = parse(content) ?: return emptyList()
-
-        return rules
-            .checks(policy)
-            .filter { details -> isCheckMethod(details, root) }
-            .flatMap { details -> invoke(details, root) }
-            .sortedBy(Result::violationType)
+    private val useOpenApiRule: RuleDetails by lazy {
+        rules.rules.firstOrNull { it.rule.id == UseOpenApiRule.id }
+            ?: throw IllegalStateException("""Rule "${UseOpenApiRule::class.simpleName}" must be registered in "${RulesManager::class.simpleName}".""")
     }
 
-    abstract fun parse(content: String): RootT?
+    override fun validate(content: String, policy: RulesPolicy): List<Result> {
+        val parseResult = parse(content)
+        return when (parseResult) {
+            is NotApplicable ->
+                emptyList()
+            is ParsedWithErrors ->
+                parseResult.violations.map { violation ->
+                    Result(
+                        ruleSet = useOpenApiRule.ruleSet,
+                        rule = useOpenApiRule.rule,
+                        description = violation.description,
+                        violationType = useOpenApiRule.rule.severity,
+                        pointer = violation.pointer)
+                }
+            is ParsedSuccessfully ->
+                rules
+                    .checks(policy)
+                    .filter { details -> isCheckMethod(details, parseResult.result) }
+                    .flatMap { details -> invoke(details, parseResult.result) }
+                    .sortedBy(Result::violationType)
+        }
+    }
+
+    abstract fun parse(content: String): ContentParseResult<RootT>
 
     private fun isCheckMethod(details: CheckDetails, root: Any) =
         when (details.method.parameters.size) {
@@ -48,7 +70,7 @@ abstract class RulesValidator<RootT>(val rules: RulesManager) : ApiValidator {
         // TODO: make pointer not-null and remove usage of `paths`
         return violations
             .filterNot {
-                ignore(root, it.pointer ?: JsonPointers.empty(), details.rule.id)
+                ignore(root, it.pointer ?: JsonPointers.EMPTY, details.rule.id)
             }
             .map {
                 if (it.pointer != null) {

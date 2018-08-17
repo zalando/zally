@@ -1,86 +1,172 @@
 package de.zalando.zally.rule
 
-import de.zalando.zally.util.resourceToString
-import io.swagger.v3.oas.models.OpenAPI
+import de.zalando.zally.rule.ContentParseResultAssert.Companion.assertThat
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class DefaultContextTest {
+
+    //
+    // OPEN API
+    //
+
     @Test
-    fun createSwaggerContextFromSwaggerJson() {
-        val content = resourceToString("fixtures/swagger2_petstore_expanded.yaml")
-        val context = DefaultContext.createSwaggerContext(content)
-        assertThat(context).isNotNull
-        assertThat(context?.api).isInstanceOf(OpenAPI::class.java)
-        assertThat(context?.violation("", context.api.info.title)?.pointer).hasToString("/info/title")
+    fun `OPEN API -- not applicable when content does not contain the openapi property`() {
+        @Language("YAML")
+        val content = """
+                some: properties
+                but: no
+                property: called OpenAPI
+            """
+        val result = DefaultContext.createOpenApiContext(content)
+        assertThat(result).resultsInNotApplicable()
     }
 
     @Test
-    fun createOpenApiContextFromSwaggerJson() {
-        val content = resourceToString("fixtures/swagger2_petstore_expanded.yaml")
-        val context = DefaultContext.createOpenApiContext(content)
-        assertThat(context).isNull()
+    fun `OPEN API -- openapi specification without info and paths succeeds with messages`() {
+        // The parsing results in a valid OpenAPI 3 object model, but
+        // with messages that `info` and `paths` are missing. Let the
+        // rules check that out.
+        @Language("YAML")
+        val content = """
+                openapi: 3.0.0
+            """
+        val result = DefaultContext.createOpenApiContext(content)
+        assertThat(result).resultsInSuccess()
     }
 
     @Test
-    fun createOpenApiContextFromOpenApiJson() {
-        val content = resourceToString("fixtures/openapi3_petstore_expanded.json")
-        val context = DefaultContext.createOpenApiContext(content)
-        assertThat(context).isNotNull
-        assertThat(context?.api).isInstanceOf(OpenAPI::class.java)
-        assertThat(context?.violation("", context.api.info.title)?.pointer).hasToString("/info/title")
+    fun `OPEN API -- oauth without scopes succeeds`() {
+        @Language("YAML")
+        val content = """
+                openapi: 3.0.0
+                info:
+                  title: Foo
+                  version: 1.0.0
+                security:
+                  - type: oauth2
+                    flow: implicit
+                    authorizationUrl: https://identity.some-server/auth
+                paths: {}
+            """
+        val result = DefaultContext.createOpenApiContext(content)
+        assertThat(result).resultsInSuccess()
     }
 
     @Test
-    fun `should recognize the used OpenAPI 2 (aka Swagger)`() {
-        @Language("yaml")
-        val openapi3Context = DefaultContext.createSwaggerContext("""
-        swagger: '2.0'
-        info:
-          version: 1.0.0
-          title: Pets API
-        paths: {}
-        """.trimIndent())!!
-
-        assertThat(openapi3Context.isOpenAPI3()).isFalse()
+    fun `OPEN API -- OpenAPI is recognised as an OpenAPI3 spec`() {
+        @Language("YAML")
+        val content = """
+                openapi: 3.0.0
+                info:
+                  title: Foo
+                  version: 1.0.0
+                paths: {}
+            """
+        val result = DefaultContext.createOpenApiContext(content)
+        assertThat(result).resultsInSuccess()
+        val success = result as ContentParseResult.ParsedSuccessfully
+        assertThat(success.result.isOpenAPI3()).isTrue()
     }
 
     @Test
-    fun `should recognize the used OpenAPI 3`() {
-        @Language("yaml")
-        val openapi3Context = DefaultContext.createOpenApiContext("""
-        openapi: 3.0.1
-        info:
-          title: Pets API
-          version: 1.0.0
-        paths: {}
-        """.trimIndent())!!
+    fun `OPEN API -- does not recognize a Swagger file`() {
+        @Language("YAML")
+        val content = """
+                swagger: '2.0'
+                info:
+                  version: 1.0.0
+                  title: Pets API
+                paths: {}
+            """.trimIndent()
+        val result = DefaultContext.createOpenApiContext(content)
+        assertThat(result).resultsInNotApplicable()
+    }
 
-        assertThat(openapi3Context.isOpenAPI3()).isTrue()
+    //
+    // SWAGGER
+    //
+
+    @Test
+    fun `SWAGGER -- not applicable when content does not contain the swagger property`() {
+        @Language("YAML")
+        val content = """
+                some: properties
+                but: no
+                property: called OpenAPI
+            """
+        val result = DefaultContext.createSwaggerContext(content)
+        assertThat(result).resultsInNotApplicable()
     }
 
     @Test
-    fun `swagger with OAuth2 but no scopes parses`() {
-        @Language("yaml")
+    fun `SWAGGER -- error when info and path objects are missing`() {
+        @Language("YAML")
+        val content = """
+              swagger: 2.0
+            """
+        val result = DefaultContext.createSwaggerContext(content)
+        assertThat(result).resultsInSuccess()
+    }
+
+    @Test
+    fun `SWAGGER -- error when securityDefinition type is missing`() {
+        @Language("YAML")
         val content = """
                 swagger: 2.0
                 info:
-                  title: OAuth2 Definition Without Scopes
+                  title: Bleh
                 securityDefinitions:
-                  oauth2:
-                    type: oauth2
-                    flow: implicit
+                  oa: {}
+                    # type: oauth2
                 paths: {}
             """.trimIndent()
-
-        assertThat(DefaultContext.createSwaggerContext(content)).isNotNull
+        val result = DefaultContext.createSwaggerContext(content)
+        assertThat(result).resultsInSuccess()
     }
 
     @Test
-    @Suppress("UnsafeCallOnNullableType")
-    fun `recursive-model-extension`() {
-        @Language("yaml")
+    fun `SWAGGER -- error when oauth elements are missing`() {
+        // Specific case where converting from Swagger to OpenAPI 3 (using the `Context`
+        // object) would throw an exception. New behaviour tested here: the returned `Context`
+        // is null because the file was not parsed (convertible, here).
+        @Language("YAML")
+        val content = """
+                swagger: 2.0
+                info:
+                  title: Bleh
+                securityDefinitions:
+                  oa:
+                    type: oauth2
+                    # flow: application
+                    # scopes:
+                    #   foo: Description of 'foo'
+                paths: {}
+            """.trimIndent()
+        val result = DefaultContext.createSwaggerContext(content)
+        assertThat(result).resultsInSuccess()
+    }
+
+    @Test
+    fun `SWAGGER -- minimal Swagger API is not recognized as an OpenAPI3 spec`() {
+        @Language("YAML")
+        val content = """
+                swagger: 2.0
+                info:
+                  title: Bleh
+                  version: 1.0.0
+                paths: {}
+            """.trimIndent()
+        val result = DefaultContext.createSwaggerContext(content)
+        assertThat(result).resultsInSuccess()
+        val success = result as ContentParseResult.ParsedSuccessfully
+        assertThat(success.result.isOpenAPI3()).isFalse()
+    }
+
+    @Test
+    fun `SWAGGER -- recursive-model-extension`() {
+        @Language("YAML")
         val content = """
             swagger: '2.0'
             info:
@@ -116,8 +202,58 @@ class DefaultContextTest {
                         items:
                           ${'$'}ref: '#/definitions/ReadNode'
             """.trimIndent()
-        val context = DefaultContext.createSwaggerContext(content)!!
+        val result = DefaultContext.createSwaggerContext(content)
+        assertThat(result).resultsInSuccess()
+        val success = result as ContentParseResult.ParsedSuccessfully
+        assertThat(success.result.isOpenAPI3()).isFalse()
+    }
 
-        assertThat(context.isOpenAPI3()).isFalse()
+    @Test
+    fun `OpenAPI Resolve NPE workaround is avoided when converted Swagger has components with null schemas`() {
+        // This Swagger, after being converted, causes the `components` property to exist (not
+        // null), but having a null `schemas`, which causes the NPE.
+        val ref = "\$ref"
+        @Language("YAML")
+        val content = """
+          swagger: '2.0'
+          info:
+            version: 1.0.0
+            title: Swagger Petstore
+            description: A sample API that uses a petstore as an example to demonstrate features
+              in the swagger-2.0 specification
+            termsOfService: http://swagger.io/terms/
+            contact:
+              name: Swagger API Team
+            license:
+              name: MIT
+          paths:
+            /identifier-types/{identifier_type}/source-ids/{source_identifier}:
+              get:
+                tags:
+                  - id-mappings
+                description: List of identifiers associated with the source id.
+                parameters:
+                  - $ref: '#/parameters/identifier_type'
+                  - $ref: '#/parameters/source_identifier'
+                  - $ref: '#/parameters/target_identifier_type'
+                responses:
+                  200:
+                    description: The identifiers associated with the source id.
+                    schema:
+                      $ref: '#/definitions/IdMappingResults'
+                  401:
+                    description: User is not authenticated
+                  403:
+                    description: User is not authorized
+                  404:
+                    description: Identifier is not found
+                    schema:
+                      $ref: '#definitions/Problem'
+                security:
+                  - oauth2:
+                    - 'cross-device-graph-service.read'
+        """.trimIndent()
+        val result = DefaultContext.createSwaggerContext(content)
+        ContentParseResultAssert.assertThat(result).resultsInSuccess()
     }
 }
