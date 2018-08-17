@@ -1,8 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getFixture
+import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class FormatForNumbersRuleTest {
@@ -10,28 +11,71 @@ class FormatForNumbersRuleTest {
     private val rule = FormatForNumbersRule(testConfig)
 
     @Test
-    fun positiveCase() {
-        val swagger = getFixture("formatForNumbersValid.json")
-        assertThat(rule.validate(swagger)).isNull()
+    fun `should not return a violation if number format is set`() {
+        @Language("YAML")
+        val content = """
+            openapi: '3.0.1'
+            info:
+              title: Awesome API
+              version: 1.0.0
+            components:
+              schemas:
+                Pet:
+                  properties:
+                    age:
+                      type: number
+                      format: decimal
+            """.trimIndent()
+
+        val violations = rule.checkNumberFormat(getOpenApiContextFromContent(content))
+
+        assertThat(violations).isEmpty()
     }
 
     @Test
-    fun negativeCase() {
-        val swagger = getFixture("formatForNumbersInvalid.json")
-        val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("/parameters/PetFullPrice", "/definitions/Pet", "/pets"))
-        assertThat(result.description).contains("other_price", "full_price", "number_of_legs")
+    fun `should return a violation if number format is not set`() {
+        @Language("YAML")
+        val content = """
+            openapi: '3.0.1'
+            info:
+              title: Bad API
+              version: 1.0.0
+            components:
+              schemas:
+                Pet:
+                  properties:
+                    age:
+                      type: number
+            """.trimIndent()
+
+        val violations = rule.checkNumberFormat(getOpenApiContextFromContent(content))
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations[0].description).matches(".*Numeric properties must have valid format.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/components/schemas/Pet/properties/age")
     }
 
     @Test
-    fun positiveCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        assertThat(rule.validate(swagger)).isNull()
-    }
+    fun `should return a violation if invalid number format is set`() {
+        @Language("YAML")
+        val content = """
+            openapi: '3.0.1'
+            info:
+              title: Weird API
+              version: 1.0.0
+            components:
+              schemas:
+                Pet:
+                  properties:
+                    age:
+                      type: number
+                      format: weird_number_format
+            """.trimIndent()
 
-    @Test
-    fun positiveCaseTinbox() {
-        val swagger = getFixture("api_tinbox.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+        val violations = rule.checkNumberFormat(getOpenApiContextFromContent(content))
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations[0].description).matches(".*Numeric properties must have valid format.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/components/schemas/Pet/properties/age")
     }
 }
