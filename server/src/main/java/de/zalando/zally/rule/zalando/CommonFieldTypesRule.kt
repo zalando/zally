@@ -6,7 +6,7 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.v3.oas.models.OpenAPI
+import de.zalando.zally.util.allSchemas
 import io.swagger.v3.oas.models.media.Schema
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -58,20 +58,5 @@ class CommonFieldTypesRule(@Autowired rulesConfig: Config) {
                 else if (property.format != format && format != null)
                     "field '$name' has type '${property.type}' with format '${property.format}' (expected format '$format')"
                 else null
-            }
-
-    private fun allSchemas(api: OpenAPI): Collection<Schema<Any>> = api.components.schemas.orEmpty().values +
-            api.components.responses.values.flatMap { it.content.values.map { it.schema } } +
-            api.components.requestBodies.values.flatMap { it.content.values.map { it.schema } } +
-            api.paths.orEmpty().flatMap {
-                it.value.readOperations().flatMap { it.parameters.orEmpty().map { it.schema } }
-            } +
-            api.paths.orEmpty().flatMap {
-                it.value.readOperations().flatMap {
-                    it.responses.orEmpty().flatMap { it.value.content.orEmpty().values.map { it.schema } }
-                }
-            } +
-            api.paths.orEmpty().flatMap {
-                it.value.readOperations().flatMap { it.requestBody?.content.orEmpty().values.map { it.schema } }
             }
 }
