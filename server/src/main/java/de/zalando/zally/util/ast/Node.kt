@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonPointer
  * A stack node for tree-traversal.
  */
 data class Node(
-    val `object`: Any,
+    val obj: Any,
     val pointer: JsonPointer,
     val marker: Marker?,
     val skip: Boolean = false,

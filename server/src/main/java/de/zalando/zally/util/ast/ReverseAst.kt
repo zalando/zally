@@ -12,43 +12,37 @@ class ReverseAst internal constructor(private val objectsToNodes: Map<Any, Node>
         return node?.pointer
     }
 
-    fun isIgnored(pointer: JsonPointer, ignoreValue: String): Boolean {
-        return isIgnored(this.pointersToNodes[pointer.toString()], ignoreValue)
-    }
+    fun isIgnored(pointer: JsonPointer, ignoreValue: String): Boolean =
+        isIgnored(this.pointersToNodes[pointer.toString()], ignoreValue)
 
     private fun isIgnored(node: Node?, ignoreValue: String): Boolean {
-        if (node == null) {
-            return false
+        return when {
+            node != null && isIgnored(node.marker, ignoreValue) -> true
+            node != null && node.hasChildren() && node.children.all { c -> isIgnored(c.marker, ignoreValue) } -> true
+            else -> false
         }
-        val ignored = isIgnored(node.marker, ignoreValue)
-        return ignored || node.hasChildren() && node.children.parallelStream().allMatch { c -> isIgnored(c.marker, ignoreValue) }
     }
 
-    private fun isIgnored(marker: Marker?, ignoreValue: String): Boolean {
-        return marker != null && Marker.TYPE_X_ZALLY_IGNORE == marker.type && marker.values.contains(ignoreValue)
-    }
+    private fun isIgnored(marker: Marker?, ignoreValue: String): Boolean =
+        marker != null &&
+        Marker.TYPE_X_ZALLY_IGNORE == marker.type &&
+        marker.values.contains(ignoreValue)
 
-    fun getIgnoreValues(pointer: JsonPointer): Collection<String> {
-        return getIgnoreValues(this.pointersToNodes[pointer.toString()])
-    }
+    fun getIgnoreValues(pointer: JsonPointer): Collection<String> =
+        getIgnoreValues(this.pointersToNodes[pointer.toString()])
 
     private fun getIgnoreValues(node: Node?): Collection<String> {
-        if (node == null) {
-            return emptySet()
+        val markers = node?.let { getIgnoreValues(node.marker) } ?: emptySet()
+        return when {
+            node == null -> emptySet()
+            markers.isNotEmpty() -> markers
+            else -> node.children.flatMap { getIgnoreValues(it.marker) }.toSet()
         }
-        val markers = getIgnoreValues(node.marker)
-        return if (!markers.isEmpty()) {
-            markers
-        } else node
-                .children
-                .flatMap { child -> getIgnoreValues(child.marker) }
-                .toSet()
     }
 
-    private fun getIgnoreValues(marker: Marker?): Collection<String> {
-        return if (marker != null && Marker.TYPE_X_ZALLY_IGNORE == marker.type) {
-            marker.values
-        } else emptySet()
+    private fun getIgnoreValues(marker: Marker?): Collection<String> = when {
+        marker != null && Marker.TYPE_X_ZALLY_IGNORE == marker.type -> marker.values
+        else -> emptySet()
     }
 
     companion object {
@@ -58,7 +52,7 @@ class ReverseAst internal constructor(private val objectsToNodes: Map<Any, Node>
          * @param root Swagger or OpenApi instance.
          * @return ReverseAstBuilder instance.
          */
-        fun <T> fromObject(root: T): ReverseAstBuilder<T> {
+        fun <T : Any> fromObject(root: T): ReverseAstBuilder<T> {
             return ReverseAstBuilder(root)
         }
     }

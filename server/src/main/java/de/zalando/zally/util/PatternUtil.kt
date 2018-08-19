@@ -18,59 +18,33 @@ object PatternUtil {
     private const val PATTERN_APPLICATION_PROBLEM_JSON = "^application/(problem\\+)?json$"
     private const val PATTERN_CUSTOM_WITH_VERSIONING = "^\\w+/[-+.\\w]+;v(ersion)?=\\d+$"
 
-    fun hasTrailingSlash(input: String): Boolean {
-        return input.trim { it <= ' ' }.endsWith("/")
-    }
+    fun hasTrailingSlash(input: String): Boolean = input.trim { it <= ' ' }.endsWith("/")
 
-    fun isLowerCaseAndHyphens(input: String): Boolean {
-        return input.matches(LOWER_CASE_HYPHENS_PATTERN.toRegex())
-    }
+    fun isLowerCaseAndHyphens(input: String): Boolean = input.matches(LOWER_CASE_HYPHENS_PATTERN.toRegex())
 
-    fun isPathVariable(input: String): Boolean {
-        return input.matches(PATH_VARIABLE_PATTERN.toRegex())
-    }
+    fun isPathVariable(input: String): Boolean = input.matches(PATH_VARIABLE_PATTERN.toRegex())
 
-    fun isCamelCase(input: String): Boolean {
-        return input.matches(CAMEL_CASE_PATTERN.toRegex())
-    }
+    fun isCamelCase(input: String): Boolean = input.matches(CAMEL_CASE_PATTERN.toRegex())
 
-    fun isPascalCase(input: String): Boolean {
-        return input.matches(PASCAL_CASE_PATTERN.toRegex())
-    }
+    fun isPascalCase(input: String): Boolean = input.matches(PASCAL_CASE_PATTERN.toRegex())
 
-    fun isHyphenatedCamelCase(input: String): Boolean {
-        return input.matches(HYPHENATED_CAMEL_CASE_PATTERN.toRegex())
-    }
+    fun isHyphenatedCamelCase(input: String): Boolean = input.matches(HYPHENATED_CAMEL_CASE_PATTERN.toRegex())
 
-    fun isHyphenatedPascalCase(input: String): Boolean {
-        return input.matches(HYPHENATED_PASCAL_CASE_PATTERN.toRegex())
-    }
+    fun isHyphenatedPascalCase(input: String): Boolean = input.matches(HYPHENATED_PASCAL_CASE_PATTERN.toRegex())
 
-    fun isSnakeCase(input: String): Boolean {
-        return input.matches(SNAKE_CASE_PATTERN.toRegex())
-    }
+    fun isSnakeCase(input: String): Boolean = input.matches(SNAKE_CASE_PATTERN.toRegex())
 
-    fun isKebabCase(input: String): Boolean {
-        return input.matches(KEBAB_CASE_PATTERN.toRegex())
-    }
+    fun isKebabCase(input: String): Boolean = input.matches(KEBAB_CASE_PATTERN.toRegex())
 
-    fun isHyphenated(input: String): Boolean {
-        return input.matches("^[A-Za-z0-9.]+(-[A-Za-z0-9.]+)*$".toRegex())
-    }
+    fun isHyphenated(input: String): Boolean = input.matches("^[A-Za-z0-9.]+(-[A-Za-z0-9.]+)*$".toRegex())
 
-    fun hasVersionInUrl(input: String): Boolean {
-        return input.matches(VERSION_IN_URL_PATTERN.toRegex())
-    }
+    fun hasVersionInUrl(input: String): Boolean = input.matches(VERSION_IN_URL_PATTERN.toRegex())
 
-    fun isVersion(input: String): Boolean {
-        return input.matches(GENERIC_VERSION_PATTERN.toRegex())
-    }
+    fun isVersion(input: String): Boolean = input.matches(GENERIC_VERSION_PATTERN.toRegex())
 
-    fun isApplicationJsonOrProblemJson(mediaType: String): Boolean {
-        return mediaType.matches(PATTERN_APPLICATION_PROBLEM_JSON.toRegex())
-    }
+    fun isApplicationJsonOrProblemJson(mediaType: String): Boolean =
+        mediaType.matches(PATTERN_APPLICATION_PROBLEM_JSON.toRegex())
 
-    fun isCustomMediaTypeWithVersioning(mediaType: String): Boolean {
-        return mediaType.matches(PATTERN_CUSTOM_WITH_VERSIONING.toRegex())
-    }
+    fun isCustomMediaTypeWithVersioning(mediaType: String): Boolean =
+        mediaType.matches(PATTERN_CUSTOM_WITH_VERSIONING.toRegex())
 }

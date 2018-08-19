@@ -10,7 +10,6 @@ import java.io.IOException
 class JsonRawValueDeserializer : JsonDeserializer<String>() {
 
     @Throws(IOException::class)
-    override fun deserialize(jp: JsonParser, context: DeserializationContext): String {
-        return jp.readValueAsTree<TreeNode>().toString()
-    }
+    override fun deserialize(jp: JsonParser, context: DeserializationContext): String =
+        jp.readValueAsTree<TreeNode>().toString()
 }
