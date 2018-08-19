@@ -59,7 +59,7 @@ class MethodCallRecorder<T : Any>(obj: T) {
         ?: throw MethodCallRecorderException(m.returnType.toString())
 
     fun skipMethods(vararg methodNames: String): MethodCallRecorder<T> {
-        this.skipMethods += listOf(*methodNames)
+        skipMethods += methodNames
         return this
     }
 
@@ -88,9 +88,9 @@ class MethodCallRecorder<T : Any>(obj: T) {
         // called as keys.
         // methodPointerCache is a nested map that holds "method" pointers with the objects and the
         // called methods as keys.
-        val objectPointer: JsonPointer? = objectPointerCache.getOrPut(obj) { pointer }
+        val objectPointer: JsonPointer = objectPointerCache.getOrPut(obj) { pointer }
         val methodMap = methodPointerCache.getOrPut(obj) { IdentityHashMap() }
-        pointer = methodMap.getOrPut(method) { objectPointer!!.append(JsonPointers.escape(method, *arguments)) }
+        pointer = methodMap.getOrPut(method) { objectPointer.append(JsonPointers.escape(method, *arguments)) }
     }
 
     private inner class MethodCallInterceptor(private val obj: Any, private val parent: Method?) : MethodInterceptor {

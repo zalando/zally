@@ -84,16 +84,10 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
     private fun handleSet(set: Set<*>, pointer: JsonPointer, marker: Marker?): Deque<Node> =
         handleArray(set.toTypedArray(), pointer, marker)
 
-    private fun handleArray(objects: Array<*>, pointer: JsonPointer, marker: Marker?): Deque<Node> {
-        val nodes = ArrayDeque<Node>()
-        for (i in objects.indices) {
-            val value = objects[i]
-            if (value != null) {
-                nodes.push(Node(value, pointer.append(JsonPointers.escape(i.toString())), marker))
-            }
-        }
-        return nodes
-    }
+    private fun handleArray(objects: Array<*>, pointer: JsonPointer, marker: Marker?): Deque<Node> =
+        ArrayDeque(objects.filterNotNull().mapIndexed { i, value ->
+            Node(value, pointer.append(JsonPointers.escape(i.toString())), marker)
+        })
 
     @Throws(ReverseAstException::class)
     private fun handleObject(obj: Any, pointer: JsonPointer, defaultMarker: Marker?): Deque<Node> {
@@ -150,8 +144,7 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
     }
 
     private fun getVendorExtensions(map: Map<*, *>, extensionName: String): Collection<String>? =
-        map[extensionName]?.let {
-            val value = map[extensionName]
+        map[extensionName]?.let { value ->
             when (value) {
                 is String -> return setOf(value)
                 is Collection<*> -> return value.map { it.toString() }.toSet()

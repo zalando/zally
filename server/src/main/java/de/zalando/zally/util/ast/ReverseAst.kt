@@ -7,10 +7,7 @@ import com.fasterxml.jackson.core.JsonPointer
  */
 class ReverseAst internal constructor(private val objectsToNodes: Map<Any, Node>, private val pointersToNodes: Map<String, Node>) {
 
-    fun getPointer(key: Any): JsonPointer? {
-        val node = this.objectsToNodes[key]
-        return node?.pointer
-    }
+    fun getPointer(key: Any): JsonPointer? = objectsToNodes[key]?.pointer
 
     fun isIgnored(pointer: JsonPointer, ignoreValue: String): Boolean =
         isIgnored(this.pointersToNodes[pointer.toString()], ignoreValue)
@@ -32,7 +29,7 @@ class ReverseAst internal constructor(private val objectsToNodes: Map<Any, Node>
         getIgnoreValues(this.pointersToNodes[pointer.toString()])
 
     private fun getIgnoreValues(node: Node?): Collection<String> {
-        val markers = node?.let { getIgnoreValues(node.marker) } ?: emptySet()
+        val markers = node?.let { getIgnoreValues(node.marker) }.orEmpty()
         return when {
             node == null -> emptySet()
             markers.isNotEmpty() -> markers
