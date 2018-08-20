@@ -1,34 +1,28 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.WordUtil.isPlural
-import de.zalando.zally.util.getAllJsonObjects
-import io.swagger.models.Swagger
+import de.zalando.zally.util.allSchemas
 
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = "120",
-        severity = Severity.SHOULD,
-        title = "Array names should be pluralized"
+    ruleSet = ZalandoRuleSet::class,
+    id = "120",
+    severity = Severity.SHOULD,
+    title = "Array names should be pluralized"
 )
 class PluralizeNamesForArraysRule {
 
-    @Check(severity = Severity.SHOULD)
-    fun validate(swagger: Swagger): Violation? {
-        val res = swagger.getAllJsonObjects().map { (def, path) ->
-            val badProps = def.entries.filter { "array" == it.value.type && !isPlural(it.key) }
-            if (badProps.isNotEmpty()) {
-                val propsDesc = badProps.map { "'${it.key}'" }.joinToString(",")
-                "$path: $propsDesc" to path
-            } else null
-        }.filterNotNull()
+    val description = "Array property names has to be pluralized"
 
-        return if (res.isNotEmpty()) {
-            val (desc, paths) = res.unzip()
-            Violation(desc.joinToString("\n"), paths)
-        } else null
-    }
+    @Check(severity = Severity.SHOULD)
+    fun checkArrayPropertyNamesArePlural(context: Context): List<Violation> =
+        allSchemas(context.api)
+            .flatMap { it.properties.orEmpty().entries }
+            .filter { "array" == it.value.type }
+            .filterNot { isPlural(it.key) }
+            .map { context.violation("$description: ${it.key} ", it.value) }
 }
