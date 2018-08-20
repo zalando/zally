@@ -1,6 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.getSwaggerContextFromContent
 import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
@@ -77,5 +78,47 @@ class FormatForNumbersRuleTest {
         assertThat(violations).isNotEmpty
         assertThat(violations[0].description).matches(".*Numeric properties must have valid format.*")
         assertThat(violations[0].pointer.toString()).isEqualTo("/components/schemas/Pet/properties/age")
+    }
+
+    @Test
+    fun `should not explode when no schemas are present`() {
+        @Language("YAML")
+        val yaml = """
+            swagger: '2.0'
+            info:
+              title: Empty API
+            """.trimIndent()
+
+        val context = getSwaggerContextFromContent(yaml)
+
+        val violations = rule.checkNumberFormat(context)
+
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `should not explode when schemas is null`() {
+        @Language("YAML")
+        val yaml = """
+            swagger: '2.0'
+            info:
+              title: Minimal API
+              version: 1.0.0
+            paths:
+              /handlers:
+                get:
+                  responses:
+                    200:
+                      description: OK
+                      examples:
+                        application/json:
+                          - name: Named thing
+            """.trimIndent()
+
+        val context = getSwaggerContextFromContent(yaml)
+
+        val violations = rule.checkNumberFormat(context)
+
+        assertThat(violations).isEmpty()
     }
 }

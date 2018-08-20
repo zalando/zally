@@ -153,6 +153,16 @@ public final class MethodCallRecorder<T> {
             if (isPrimitive(result)) {
                 return result;
             }
+
+            // Empty collections are not wrapped in Proxies
+            if (result instanceof Collection && ((Collection) result).isEmpty()) {
+                return result;
+            }
+            if (result instanceof Map && ((Map) result).isEmpty()) {
+                return result;
+            }
+
+
             return createProxy(result, m);
         };
     }
