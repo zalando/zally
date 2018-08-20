@@ -1,7 +1,8 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getFixture
+import de.zalando.zally.getOpenApiContextFromContent
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class PluralizeNamesForArraysRuleTest {
@@ -9,34 +10,46 @@ class PluralizeNamesForArraysRuleTest {
     private val rule = PluralizeNamesForArraysRule()
 
     @Test
-    fun positiveCase() {
-        val swagger = getFixture("pluralizeArrayNamesValid.json")
-        assertThat(rule.validate(swagger)).isNull()
+    fun `checkArrayPropertyNamesArePlural should return violations for array property names which are not pluralized`() {
+        @Language("YAML")
+        val content = """
+            openapi: 3.0.1
+            components:
+              schemas:
+                car:
+                  properties:
+                    feature: # name is not pluralized
+                      type: array
+                      items:
+                        type: string
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
+
+        val violations = rule.checkArrayPropertyNamesArePlural(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations[0].description).containsPattern(".*Array property names has to be pluralized.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/components/schemas/car/properties/feature")
     }
 
     @Test
-    fun negativeCase() {
-        val swagger = getFixture("pluralizeArrayNamesInvalid.json")
-        val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("/definitions/Pet"))
-        assertThat(result.description).contains("name", "tag")
-    }
+    fun `checkArrayPropertyNamesArePlural should not return violations for array property names which are pluralized`() {
+        @Language("YAML")
+        val content = """
+            openapi: 3.0.1
+            components:
+              schemas:
+                car:
+                  properties:
+                    features: # name is pluralized
+                      type: array
+                      items:
+                        type: string
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
 
-    @Test
-    fun positiveCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        assertThat(rule.validate(swagger)).isNull()
-    }
+        val violations = rule.checkArrayPropertyNamesArePlural(context)
 
-    @Test
-    fun positiveCaseTinbox() {
-        val swagger = getFixture("api_tinbox.yaml")
-        assertThat(rule.validate(swagger)).isNull()
-    }
-
-    @Test
-    fun positiveCaseNoMustViolations() {
-        val swagger = getFixture("no_must_violations.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(violations).isEmpty()
     }
 }

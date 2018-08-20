@@ -2,29 +2,29 @@ package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isPathVariable
-import io.swagger.models.Swagger
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = "146",
-        severity = Severity.SHOULD,
-        title = "Limit number of resource types"
+    ruleSet = ZalandoRuleSet::class,
+    id = "146",
+    severity = Severity.SHOULD,
+    title = "Limit number of resource types"
 )
 class LimitNumberOfResourcesRule(@Autowired rulesConfig: Config) {
     private val resourceTypesLimit = rulesConfig.getConfig(javaClass.simpleName).getInt("resource_types_limit")
 
     @Check(severity = Severity.SHOULD)
-    fun validate(swagger: Swagger): Violation? {
-        val resourceTypes = resourceTypes(swagger.paths.orEmpty().keys)
+    fun checkLimitOfResources(context: Context): Violation? {
+        val resourceTypes = resourceTypes(context.api.paths.orEmpty().keys)
         return if (resourceTypes.size > resourceTypesLimit) {
-            Violation("Identified ${resourceTypes.size} resource resource types, " +
-                    "greater than recommended limit of $resourceTypesLimit",
-                    resourceTypes.toList())
+            context.violation("Identified ${resourceTypes.size} resource resource types, " +
+                "greater than recommended limit of $resourceTypesLimit",
+                context.api.paths)
         } else null
     }
 
@@ -34,8 +34,8 @@ class LimitNumberOfResourcesRule(@Autowired rulesConfig: Config) {
 
     internal fun resourceType(path: String): String {
         val components = path
-                .split(Regex("/+"))
-                .filter(String::isNotEmpty)
+            .split(Regex("/+"))
+            .filter(String::isNotEmpty)
         val size = components.size
 
         return when {
