@@ -1,8 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getFixture
+import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class LimitNumberOfResourcesRuleTest {
@@ -10,25 +11,45 @@ class LimitNumberOfResourcesRuleTest {
     private val rule = LimitNumberOfResourcesRule(testConfig)
 
     @Test
-    fun positiveCase() {
-        val swagger = getFixture("limitNumberOfResourcesValid.json")
-        assertThat(rule.validate(swagger)).isNull()
+    fun `checkLimitOfResources should return a violation if the limit is reached`() {
+        @Language("YAML")
+        val content = """
+            openapi: 3.0.1
+            paths:
+              /resource1: {}
+              /resource2: {}
+              /resource3: {}
+              /resource4: {}
+              /resource5: {}
+              /resource5/{resource_5_id}: {}
+              /resource5/{resource_5_id}/resource6: {}
+              /resource5/{resource_5_id}/resource6/{resource_6_id}: {}
+              /resource7: {}
+              /resource8: {}
+              /resource9: {}
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
+
+        val violation = rule.checkLimitOfResources(context)
+
+        assertThat(violation).isNotNull
+        assertThat(violation!!.description).containsPattern(".*greater than recommended limit of.*")
+        assertThat(violation.pointer.toString()).isEqualTo("/paths")
     }
 
     @Test
-    fun negativeCase() {
-        val swagger = getFixture("limitNumberOfResourcesInvalid.json")
-        val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf(
-            "/items",
-            "/items10",
-            "/items3",
-            "/items4",
-            "/items5",
-            "/items6",
-            "/items7",
-            "/items8",
-            "/items9"))
+    fun `checkLimitOfResources should no return violation in case the number is under the limit`() {
+        @Language("YAML")
+        val content = """
+            openapi: 3.0.1
+            paths:
+              /resource: {}
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
+
+        val violation = rule.checkLimitOfResources(context)
+
+        assertThat(violation).isNull()
     }
 
     @Test
@@ -46,32 +67,32 @@ class LimitNumberOfResourcesRuleTest {
 
         val resourceTypes = rule.resourceTypes(paths)
         assertThat(resourceTypes).hasSameElementsAs(listOf(
-                "/",
-                "/customers",
-                "/addresses",
-                "/customers/{id}/addresses"))
+            "/",
+            "/customers",
+            "/addresses",
+            "/customers/{id}/addresses"))
     }
 
     @Test
-    fun resourceTypeWithRootPathReturnsRoot() {
+    fun `resourceType with root path should return root`() {
         val resourceType = rule.resourceType("/")
         assertThat(resourceType).isEqualTo("/")
     }
 
     @Test
-    fun resourceTypeWithOneComponentPathReturnsPathNormalized() {
+    fun `resourceType with one component path should return normalized path`() {
         val resourceType = rule.resourceType("/one")
         assertThat(resourceType).isEqualTo("/one")
     }
 
     @Test
-    fun resourceTypeWithFixedComponentsPathReturnsPathNormalized() {
+    fun `resourceType with fixed components path should return normalized path`() {
         val resourceType = rule.resourceType("one///two/three/four/five/six/")
         assertThat(resourceType).isEqualTo("/one/two/three/four/five/six")
     }
 
     @Test
-    fun resourceTypeWithTrailingParameterPathReturnsPrefix() {
+    fun `resourceType with trailing parameter should return prefix`() {
         val resourceType = rule.resourceType("/one/two/three/{item}/")
         assertThat(resourceType).isEqualTo("/one/two/three")
     }
