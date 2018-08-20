@@ -16,6 +16,7 @@ import io.swagger.models.parameters.QueryParameter
 )
 class QueryParameterCollectionFormatRule {
     private val formatsAllowed = listOf("csv", "multi")
+// TODO    private val violationDescription = "Collection format have to be be one of: $formatsAllowed"
     private val violationDescription = "CollectionFormat should be one of: $formatsAllowed"
 
     @Check(severity = Severity.SHOULD)
