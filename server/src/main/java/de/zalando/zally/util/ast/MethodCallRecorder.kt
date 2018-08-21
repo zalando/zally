@@ -127,9 +127,13 @@ class MethodCallRecorder<T : Any>(obj: T) {
                 // For all other complex obj types we can attempt to simply instantiate them.
                 return createProxy(createInstance(returnType), m)
             }
-            // Primitives are not wrapped in Proxies.
             return when {
+                // Primitives are not wrapped in Proxies.
                 isPrimitive(result) -> result
+                // Empty collections are not wrapped in Proxies.
+                // Specifically important: kotlin's EmptyMap can't be wrapped because it's not open
+                result is Collection<*> && result.isEmpty() -> result
+                result is Map<*, *> && result.isEmpty() -> result
                 else -> createProxy(result, m)
             }
         }
