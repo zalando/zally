@@ -12,7 +12,7 @@ import io.swagger.v3.oas.models.parameters.Parameter
     ruleSet = ZalandoRuleSet::class,
     id = "154",
     severity = Severity.SHOULD,
-    title = "Use `form` Style for Query Collection Parameters" //TODO rephrase after guideline update
+    title = "Use and Specify Explicitly the Form-Style Query Format for Collection Parameters"
 )
 class QueryParameterCollectionFormatRule {
     private val allowedStyle = Parameter.StyleEnum.FORM
@@ -21,9 +21,9 @@ class QueryParameterCollectionFormatRule {
     @Check(severity = Severity.SHOULD)
     fun checkParametersCollectionFormat(context: Context): List<Violation> =
         if (context.isOpenAPI3())
-            context.api.getAllParameters().entries
-                .filter { "query" == it.value.`in` && "array" == it.value.schema.type }
-                .filter { it.value.style == null || allowedStyle != it.value.style }
-                .map { context.violation(description, it.value) }
+            context.api.getAllParameters().values
+                .filter { "query" == it.`in` && "array" == it.schema.type }
+                .filter { it.style == null || allowedStyle != it.style }
+                .map { context.violation(description, it) }
         else emptyList()
 }
