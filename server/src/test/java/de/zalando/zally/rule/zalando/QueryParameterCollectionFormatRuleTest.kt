@@ -1,10 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import io.swagger.models.Operation
-import io.swagger.models.Path
-import io.swagger.models.Swagger
-import io.swagger.models.parameters.QueryParameter
+import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.getSwaggerContextFromContent
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class QueryParameterCollectionFormatRuleTest {
@@ -12,86 +11,68 @@ class QueryParameterCollectionFormatRuleTest {
     private val rule = QueryParameterCollectionFormatRule()
 
     @Test
-    fun negativeCaseCollectionFormatNotSupported() {
-        val swagger = Swagger().apply {
-            parameters = mapOf("test" to QueryParameter().apply { name = "test"; type = "array"; collectionFormat = "notSupported" })
-        }
+    fun `checkParametersCollectionFormat should return violation if invalid collection format is set`() {
+        @Language("YAML")
+        val content = """
+            openapi: 3.0.1
+            components:
+              parameters:
+                filters:
+                  in: query
+                  style: spaceDelimited
+                  schema:
+                    type: array
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
 
-        val result = rule.validate(swagger)!!
-        assertThat(result.description).isEqualTo("CollectionFormat should be one of: [csv, multi]")
-        assertThat(result.paths).isEqualTo(listOf("parameters test"))
+        val violations = rule.checkParametersCollectionFormat(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations.size).isEqualTo(1)
+        assertThat(violations[0].description).isEqualTo("Parameter style have to be `form`")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/components/parameters/filters")
     }
 
     @Test
-    fun negativeCaseCollectionFormatNotSupportedFromPath() {
-        val paramList = listOf(QueryParameter().apply { name = "test"; type = "array"; collectionFormat = "notSupported" })
-        val swagger = Swagger().apply {
-            paths = mapOf("/apis" to Path().apply { get = Operation().apply { parameters = paramList } })
-        }
+    fun `checkParametersCollectionFormat should return no violation if valid collection format is set`() {
+        @Language("YAML")
+        val content = """
+            openapi: 3.0.1
+            components:
+              parameters:
+                filters:
+                  in: query
+                  style: form
+                  schema:
+                    type: array
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
 
-        val result = rule.validate(swagger)!!
-        assertThat(result.description).isEqualTo("CollectionFormat should be one of: [csv, multi]")
-        assertThat(result.paths).isEqualTo(listOf("/apis test"))
+        val violations = rule.checkParametersCollectionFormat(context)
+
+        assertThat(violations).isEmpty()
     }
 
     @Test
-    fun negativeCaseCollectionFormatNull() {
-        val swagger = Swagger().apply {
-            parameters = mapOf("test" to QueryParameter().apply { name = "test"; type = "array"; collectionFormat = null })
-        }
+    fun `checkParametersCollectionFormat should ignore OpenAPI 2 (Swagger) specifications`() {
+        @Language("YAML")
+        val content = """
+            swagger: 2.0
+            info:
+              title: Old API
+              version: 1.0.0
+            parameters:
+              filters:
+                name: filters
+                in: query
+                type: array
+                items:
+                  type: string
+        """.trimIndent()
+        val context = getSwaggerContextFromContent(content)
 
-        val result = rule.validate(swagger)!!
-        assertThat(result.description).isEqualTo("CollectionFormat should be one of: [csv, multi]")
-        assertThat(result.paths).isEqualTo(listOf("parameters test"))
-    }
+        val violations = rule.checkParametersCollectionFormat(context)
 
-    @Test
-    fun negativeCaseCollectionFormatNullFromPath() {
-        val paramList = listOf(QueryParameter().apply { name = "test"; type = "array"; collectionFormat = null })
-        val swagger = Swagger().apply {
-            paths = mapOf("/apis" to Path().apply { get = Operation().apply { parameters = paramList } })
-        }
-
-        val result = rule.validate(swagger)!!
-        assertThat(result.description).isEqualTo("CollectionFormat should be one of: [csv, multi]")
-        assertThat(result.paths).isEqualTo(listOf("/apis test"))
-    }
-
-    @Test
-    fun positiveCaseCsv() {
-        val swagger = Swagger().apply {
-            parameters = mapOf("test" to QueryParameter().apply { name = "test"; type = "array"; collectionFormat = "csv" })
-        }
-
-        assertThat(rule.validate(swagger)).isNull()
-    }
-
-    @Test
-    fun positiveCaseCsvFromPath() {
-        val paramList = listOf(QueryParameter().apply { name = "test"; type = "array"; collectionFormat = "csv" })
-        val swagger = Swagger().apply {
-            paths = mapOf("/apis" to Path().apply { get = Operation().apply { parameters = paramList } })
-        }
-
-        assertThat(rule.validate(swagger)).isNull()
-    }
-
-    @Test
-    fun positiveCaseMulti() {
-        val swagger = Swagger().apply {
-            parameters = mapOf("test" to QueryParameter().apply { name = "test"; type = "array"; collectionFormat = "multi" })
-        }
-
-        assertThat(rule.validate(swagger)).isNull()
-    }
-
-    @Test
-    fun positiveCaseMultiFromPath() {
-        val paramList = listOf(QueryParameter().apply { name = "test"; type = "array"; collectionFormat = "multi" })
-        val swagger = Swagger().apply {
-            paths = mapOf("/apis" to Path().apply { get = Operation().apply { parameters = paramList } })
-        }
-
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(violations).isEmpty()
     }
 }

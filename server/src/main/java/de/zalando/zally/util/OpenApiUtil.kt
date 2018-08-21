@@ -39,20 +39,30 @@ fun OpenAPI.getAllHeaders(): Set<HeaderElement> {
 
 /**
  * Returns all defined schemas of an API specification
- * @param api OpenAPI 3 specification object
  * @return a collection of schemas
  */
 fun OpenAPI.getAllSchemas(): Collection<Schema<Any>> = this.components.schemas.orEmpty().values +
-    this.components.responses.values.flatMap { it.content.values.map { it.schema } } +
-    this.components.requestBodies.values.flatMap { it.content.values.map { it.schema } } +
+    this.components.responses.values.flatMap { it.content.values.mapNotNull { it.schema } } +
+    this.components.requestBodies.values.flatMap { it.content.values.mapNotNull { it.schema } } +
     this.paths.orEmpty().flatMap {
-        it.value.readOperations().flatMap { it.parameters.orEmpty().map { it.schema } }
+        it.value.readOperations().flatMap { it.parameters.orEmpty().mapNotNull { it.schema } }
     } +
     this.paths.orEmpty().flatMap {
         it.value.readOperations().flatMap {
-            it.responses.orEmpty().flatMap { it.value.content.orEmpty().values.map { it.schema } }
+            it.responses.orEmpty().flatMap { it.value.content.orEmpty().values.mapNotNull { it.schema } }
         }
     } +
     this.paths.orEmpty().flatMap {
-        it.value.readOperations().flatMap { it.requestBody?.content.orEmpty().values.map { it.schema } }
+        it.value.readOperations().flatMap { it.requestBody?.content.orEmpty().values.mapNotNull { it.schema } }
+    }
+
+/**
+ * Returns all defined parameters of an API specification
+ * @return a collection of parameters
+ */
+fun OpenAPI.getAllParameters(): Map<String, Parameter> = this.components.parameters.orEmpty() +
+    this.paths.orEmpty().values.flatMap { it.parameters.orEmpty().mapNotNull { it.name to it } } +
+    this.paths.orEmpty().values.flatMap {
+        it.readOperations()
+            .flatMap { it.parameters.orEmpty().mapNotNull { it.name to it } }
     }
