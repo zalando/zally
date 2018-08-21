@@ -86,10 +86,9 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
         val nodes = ArrayDeque<Node>()
         val marker = getMarker(obj) ?: defaultMarker
 
-        var name: String? = null
-        try {
-            for (m in traversalMethods(obj.javaClass)) {
-                name = m.name
+        for (m in traversalMethods(obj.javaClass)) {
+            val name = m.name
+            try {
                 m.invoke(obj)?.let { value ->
                     if (m.isAnnotationPresent(JsonAnyGetter::class.java)) {
                         // A `JsonAnyGetter` method is simply a wrapper for nested properties.
@@ -99,11 +98,11 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
                         nodes.push(Node(value, pointer.append(JsonPointers.escape(m)), marker))
                     }
                 }
+            } catch (e: ReflectiveOperationException) {
+                throw ReverseAstException("Error invoking $name on ${obj.javaClass.name} at path $pointer", e)
             }
-            return nodes
-        } catch (e: ReflectiveOperationException) {
-            throw ReverseAstException("Error invoking $name on ${obj.javaClass.name} at path $pointer", e)
         }
+        return nodes
     }
 
     private fun getMarker(map: Map<*, *>): Marker? =
