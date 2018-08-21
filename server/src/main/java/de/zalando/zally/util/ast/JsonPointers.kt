@@ -10,20 +10,22 @@ object JsonPointers {
 
     val EMPTY: JsonPointer = JsonPointer.compile("")
 
-    private val regexToReplacement = listOf(
-        "^/servers/.*$" to "/basePath",
-        "^/components/schemas/(.*)$" to "/definitions/$1",
-        "^/components/responses/(.*)$" to "/responses/$1",
-        "^/components/parameters/(.*)$" to "/parameters/$1",
-        "^/components/securitySchemes/(.*)$" to "/securityDefinitions/$1",
-        "^/paths/(.+/responses/.+)/content/.+/(schema.*)$" to "/paths/$1/$2",
+    private val regexToReplacement =
+        listOf(
+            "^/servers/.*$" to "/basePath",
+            "^/components/schemas/(.*)$" to "/definitions/$1",
+            "^/components/responses/(.*)$" to "/responses/$1",
+            "^/components/parameters/(.*)$" to "/parameters/$1",
+            "^/components/securitySchemes/(.*)$" to "/securityDefinitions/$1",
+            "^/paths/(.+/responses/.+)/content/.+/(schema.*)$" to "/paths/$1/$2",
 
-        // VERB/responses/STATUS_CODE/content/MEDIA_TYPE --> VERB/responses/STATUS_CODE
-        // Could also be VERB/produces but this information is lost from Swagger 2 to OpenAPI 3 conversion.
-        "^/paths/(.+/responses/.+)/content/[^/]*$" to "/paths/$1",
+            // VERB/responses/STATUS_CODE/content/MEDIA_TYPE --> VERB/responses/STATUS_CODE
+            // Could also be VERB/produces but this information is lost from Swagger 2 to OpenAPI 3 conversion.
+            "^/paths/(.+/responses/.+)/content/[^/]*$" to "/paths/$1",
 
-        // VERB/requestBody/content/MEDIA_TYPE --> VERB/consumes
-        "^/paths/(.*)/requestBody/content/[^/]*$" to "/paths/$1/consumes")
+            // VERB/requestBody/content/MEDIA_TYPE --> VERB/consumes
+            "^/paths/(.*)/requestBody/content/[^/]*$" to "/paths/$1/consumes"
+        )
         .map { it.first.toRegex() to it.second }
 
     /**

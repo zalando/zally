@@ -18,15 +18,11 @@ import kotlin.collections.set
 class ReverseAstBuilder<T : Any> internal constructor(root: T) {
     private val extensionMethodNames = HashSet<String>()
 
-    private val nodes = ArrayDeque<Node>()
+    private val nodes = ArrayDeque<Node>(listOf(Node(root, JsonPointers.EMPTY, null)))
     private val objectsToNodes = IdentityHashMap<Any, Node>()
     private val pointersToNodes = HashMap<String, Node>()
 
     class ReverseAstException internal constructor(message: String, cause: Throwable) : Exception(message, cause)
-
-    init {
-        nodes.push(Node(root, JsonPointers.EMPTY, null))
-    }
 
     fun withExtensionMethodNames(vararg names: String): ReverseAstBuilder<T> {
         this.extensionMethodNames += listOf(*names)
@@ -40,7 +36,6 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
      * @return A new ReverseAst instance.
      * @throws ReverseAstException If an error occurs during reflection.
      */
-    @Throws(ReverseAstException::class)
     fun build(): ReverseAst {
         while (!nodes.isEmpty()) {
             val node = nodes.pop()
@@ -67,15 +62,13 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
     }
 
     private fun handleMap(map: Map<*, *>, pointer: JsonPointer, defaultMarker: Marker?): Deque<Node> {
-        val nodes = ArrayDeque<Node>()
-        val marker = getMarker(map) ?: defaultMarker
-
-        for ((key, value) in map) {
-            if (key is String && value != null) {
-                nodes.push(Node(value, pointer.append(JsonPointers.escape(key)), marker))
+        return ArrayDeque<Node>(
+            map
+            .filter { (key, value) -> key is String && value != null }
+            .map { (key, value) ->
+                Node(value!!, pointer.append(JsonPointers.escape(key as String)), getMarker(map) ?: defaultMarker )
             }
-        }
-        return nodes
+        )
     }
 
     private fun handleList(list: List<*>, pointer: JsonPointer, marker: Marker?): Deque<Node> =
@@ -89,14 +82,14 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
             Node(value, pointer.append(JsonPointers.escape(i.toString())), marker)
         })
 
-    @Throws(ReverseAstException::class)
     private fun handleObject(obj: Any, pointer: JsonPointer, defaultMarker: Marker?): Deque<Node> {
         val nodes = ArrayDeque<Node>()
         val marker = getMarker(obj) ?: defaultMarker
 
-        for (m in traversalMethods(obj.javaClass)) {
-            val name = m.name
-            try {
+        var name: String? = null
+        try {
+            for (m in traversalMethods(obj.javaClass)) {
+                name = m.name
                 m.invoke(obj)?.let { value ->
                     if (m.isAnnotationPresent(JsonAnyGetter::class.java)) {
                         // A `JsonAnyGetter` method is simply a wrapper for nested properties.
@@ -106,24 +99,21 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
                         nodes.push(Node(value, pointer.append(JsonPointers.escape(m)), marker))
                     }
                 }
-            } catch (e: ReflectiveOperationException) {
-                val message = String.format("Error invoking %s on %s at path %s", name, obj.javaClass, pointer)
-                throw ReverseAstException(message, e)
             }
+            return nodes
+        } catch (e: ReflectiveOperationException) {
+            throw ReverseAstException("Error invoking $name on ${obj.javaClass.name} at path $pointer", e)
         }
-        return nodes
     }
 
     private fun getMarker(map: Map<*, *>): Marker? =
         getVendorExtensions(map, Marker.TYPE_X_ZALLY_IGNORE)
             ?.let { Marker(Marker.TYPE_X_ZALLY_IGNORE, it) }
 
-    @Throws(ReverseAstException::class)
     private fun getMarker(obj: Any): Marker? =
         getVendorExtensions(obj, Marker.TYPE_X_ZALLY_IGNORE)
             ?.let { Marker(Marker.TYPE_X_ZALLY_IGNORE, it) }
 
-    @Throws(ReverseAstBuilder.ReverseAstException::class)
     private fun getVendorExtensions(obj: Any, extensionName: String): Collection<String>? {
         if (obj is Map<*, *>) {
             return getVendorExtensions(obj, extensionName)

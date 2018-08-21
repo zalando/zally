@@ -21,6 +21,7 @@ class MethodCallRecorder<T : Any>(obj: T) {
 
     val proxy: T = createProxy(obj)
     var pointer: JsonPointer = JsonPointers.EMPTY
+        private set
 
     private val skipMethods = HashSet<String>()
     private val objectPointerCache = IdentityHashMap<Any, JsonPointer>()
@@ -37,7 +38,6 @@ class MethodCallRecorder<T : Any>(obj: T) {
     private fun isGenericContainer(o: Any): Boolean = o is Collection<*> || o is Map<*, *>
 
     @Suppress("UNCHECKED_CAST")
-    @Throws(MethodCallRecorderException::class)
     private fun <T> createInstance(c: Class<T>): T {
         return when {
             c.isAssignableFrom(Map::class.java) -> HashMap<Any, Any>() as T
@@ -47,12 +47,11 @@ class MethodCallRecorder<T : Any>(obj: T) {
             else -> try {
                 c.getConstructor().newInstance()
             } catch (e: ReflectiveOperationException) {
-                throw MethodCallRecorderException("Cannot create " + c.toString(), e)
+                throw MethodCallRecorderException("Cannot create ${c.name}", e)
             }
         }
     }
 
-    @Throws(MethodCallRecorderException::class)
     private fun getGenericReturnValueType(m: Method): Class<*> =
         (m.genericReturnType as? ParameterizedType)
         ?.let { it.actualTypeArguments.last() as Class<*> }
@@ -95,7 +94,6 @@ class MethodCallRecorder<T : Any>(obj: T) {
 
     private inner class MethodCallInterceptor(private val obj: Any, private val parent: Method?) : MethodInterceptor {
 
-        @Throws(Throwable::class)
         override fun invoke(invocation: MethodInvocation): Any? {
             val m = invocation.method
             if (!isGetterMethod(m)) {

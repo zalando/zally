@@ -13,11 +13,12 @@ class ReverseAst internal constructor(private val objectsToNodes: Map<Any, Node>
         isIgnored(this.pointersToNodes[pointer.toString()], ignoreValue)
 
     private fun isIgnored(node: Node?, ignoreValue: String): Boolean {
-        return when {
-            node != null && isIgnored(node.marker, ignoreValue) -> true
-            node != null && node.hasChildren() && node.children.all { c -> isIgnored(c.marker, ignoreValue) } -> true
-            else -> false
-        }
+        return node
+            ?.let {
+                isIgnored(node.marker, ignoreValue) ||
+                node.hasChildren() && node.children.all { c -> isIgnored(c.marker, ignoreValue) }
+            }
+            ?: false
     }
 
     private fun isIgnored(marker: Marker?, ignoreValue: String): Boolean =
