@@ -2,16 +2,14 @@ package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.ContentParseResult.NotApplicable
-import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
 import de.zalando.zally.rule.ContentParseResult.ParsedSuccessfully
+import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.ast.JsonPointers
 import de.zalando.zally.util.ast.MethodCallRecorder
 import de.zalando.zally.util.ast.ReverseAst
-import io.swagger.models.Info
 import io.swagger.models.Swagger
-import io.swagger.models.auth.OAuth2Definition
 import io.swagger.parser.SwaggerParser
 import io.swagger.parser.util.SwaggerDeserializationResult
 import io.swagger.v3.oas.models.OpenAPI
@@ -225,41 +223,7 @@ class DefaultContext(
             }
         }
 
-        /**
-         * This serves two goals:
-         * - Fixing the parsed Swagger object before automatic conversion to OpenAPI
-         * - Detecting cases where a violation should be automatically returned in the result.
-         */
-        private fun preConvertChecks(swaggerDeserializationResult: SwaggerDeserializationResult): List<Violation> {
-            val swagger = swaggerDeserializationResult.swagger
-
-            // INFO
-            if (swagger.info === null) {
-                swagger.info = Info()
-            }
-
-            // OAUTH2 security definitions
-            swagger.securityDefinitions.orEmpty().values
-                .filter { it.type == "oauth2" }
-                .map { it as OAuth2Definition }
-                .forEach {
-                    if (it.flow == null) {
-                        it.flow = ""
-                    }
-                    if (it.scopes == null) {
-                        it.scopes = LinkedHashMap()
-                    }
-                }
-
-            return emptyList()
-        }
-
         private fun convertSwaggerToOpenAPI(parseResult: SwaggerDeserializationResult): ContentParseResult<SwaggerParseResult> {
-            val preConvertViolations = preConvertChecks(parseResult)
-            if (preConvertViolations.isNotEmpty()) {
-                return ParsedWithErrors(preConvertViolations)
-            }
-
             val convertResult = try {
                 SwaggerConverter().convert(parseResult)
             } catch (t: Throwable) {

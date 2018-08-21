@@ -6,33 +6,33 @@ import org.junit.Test
 
 class SnakeCaseForQueryParamsRuleTest {
 
-    private val validSwagger = getFixture("snakeCaseForQueryParamsValid.json")
-    private val invalidSwaggerWithLocalParam = getFixture("snakeCaseForQueryParamsInvalidLocalParam.json")
-    private val invalidSwaggerWIthInternalRef = getFixture("snakeCaseForQueryParamsInvalidInternalRef.json")
-    private val invalidSwaggerWithExternalRef = getFixture("snakeCaseForQueryParamsInvalidExternalRef.json")
-
     private val rule = SnakeCaseForQueryParamsRule()
 
     @Test
     fun shouldFindNoViolations() {
-        assertThat(rule.validate(validSwagger)).isNull()
+        val swagger = getFixture("snakeCaseForQueryParamsValid.json")
+        val result = rule.validate(swagger)
+        assertThat(result).isNull()
     }
 
     @Test
     fun shouldFindViolationsInLocalRef() {
-        val result = rule.validate(invalidSwaggerWithLocalParam)!!
+        val swagger = getFixture("snakeCaseForQueryParamsInvalidLocalParam.json")
+        val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(listOf("/items GET"))
     }
 
     @Test
     fun shouldFindViolationsInInternalRef() {
-        val result = rule.validate(invalidSwaggerWIthInternalRef)!!
+        val swagger = getFixture("snakeCaseForQueryParamsInvalidInternalRef.json")
+        val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(listOf("/items GET"))
     }
 
     @Test
     fun shouldFindViolationsInExternalRef() {
-        val result = rule.validate(invalidSwaggerWithExternalRef)!!
+        val swagger = getFixture("snakeCaseForQueryParamsInvalidExternalRef.json")
+        val result = rule.validate(swagger)!!
         assertThat(result.paths).hasSameElementsAs(listOf("/items GET"))
     }
 }
