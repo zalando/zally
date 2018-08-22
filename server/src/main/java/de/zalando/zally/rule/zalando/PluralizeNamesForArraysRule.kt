@@ -6,7 +6,7 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.WordUtil.isPlural
-import de.zalando.zally.util.allSchemas
+import de.zalando.zally.util.getAllSchemas
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -20,7 +20,7 @@ class PluralizeNamesForArraysRule {
 
     @Check(severity = Severity.SHOULD)
     fun checkArrayPropertyNamesArePlural(context: Context): List<Violation> =
-        allSchemas(context.api)
+        context.api.getAllSchemas()
             .flatMap { it.properties.orEmpty().entries }
             .filter { "array" == it.value.type }
             .filterNot { isPlural(it.key) }
