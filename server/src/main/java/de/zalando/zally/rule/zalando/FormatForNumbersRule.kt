@@ -6,7 +6,7 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.allSchemas
+import de.zalando.zally.util.getAllSchemas
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
@@ -24,7 +24,7 @@ class FormatForNumbersRule(@Autowired rulesConfig: Config) {
 
     @Check(severity = Severity.MUST)
     fun checkNumberFormat(context: Context): List<Violation> =
-        allSchemas(context.api)
+        context.api.getAllSchemas()
             .flatMap { it.properties.orEmpty().values }
             .filter { it.type in numberTypes }
             .filter { it.format == null || !isValid(it.type, it.format) }

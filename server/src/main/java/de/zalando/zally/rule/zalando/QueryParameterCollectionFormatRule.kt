@@ -1,46 +1,29 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.Swagger
-import io.swagger.models.parameters.Parameter
-import io.swagger.models.parameters.QueryParameter
+import de.zalando.zally.util.getAllParameters
+import io.swagger.v3.oas.models.parameters.Parameter
 
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = "154",
-        severity = Severity.SHOULD,
-        title = "Explicitly define the Collection Format of Query Parameters"
+    ruleSet = ZalandoRuleSet::class,
+    id = "154",
+    severity = Severity.SHOULD,
+    title = "Use and Specify Explicitly the Form-Style Query Format for Collection Parameters"
 )
 class QueryParameterCollectionFormatRule {
-    private val formatsAllowed = listOf("csv", "multi")
-    private val violationDescription = "CollectionFormat should be one of: $formatsAllowed"
+    private val allowedStyle = Parameter.StyleEnum.FORM
+    private val description = "Parameter style have to be `form`"
 
     @Check(severity = Severity.SHOULD)
-    fun validate(swagger: Swagger): Violation? {
-        fun Collection<Parameter>?.extractInvalidQueryParam(path: String) =
-            orEmpty().filterIsInstance<QueryParameter>()
-                .filter { it.`type` == "array" && it.collectionFormat !in formatsAllowed }
-                .map { path to it.name }
-
-        val fromParams = swagger.parameters.orEmpty().values.extractInvalidQueryParam("parameters")
-        val fromPaths = swagger.paths.orEmpty().entries.flatMap { (name, path) ->
-            path.parameters.extractInvalidQueryParam(name) + path.operations.flatMap { operation ->
-                operation.parameters.extractInvalidQueryParam(name)
-            }
-        }
-
-        val allHeaders = fromParams + fromPaths
-        val paths = allHeaders
-            .map { "${it.first} ${it.second}" }
-            .distinct()
-
-        return if (paths.isNotEmpty()) createViolation(paths) else null
-    }
-
-    fun createViolation(paths: List<String>): Violation {
-        return Violation(violationDescription, paths)
-    }
+    fun checkParametersCollectionFormat(context: Context): List<Violation> =
+        if (context.isOpenAPI3())
+            context.api.getAllParameters().values
+                .filter { "query" == it.`in` && "array" == it.schema.type }
+                .filter { it.style == null || allowedStyle != it.style }
+                .map { context.violation(description, it) }
+        else emptyList()
 }
