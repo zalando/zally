@@ -2,7 +2,7 @@ package de.zalando.zally.util.ast
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.ObjectTreeReader
-import de.zalando.zally.util.ResourceUtil.resourceToString
+import de.zalando.zally.util.resourceToString
 import io.swagger.parser.OpenAPIParser
 import io.swagger.parser.SwaggerParser
 import io.swagger.util.Json
@@ -35,7 +35,7 @@ class ReverseAstTest {
         val ast = ReverseAst.fromObject(spec).build()
 
         val description = spec.paths?.get("/tests")?.get?.responses?.get("200")?.description
-        assertThat(ast.getPointer(description)).hasToString("/paths/~1tests/get/responses/200/description")
+        assertThat(ast.getPointer(description!!)).hasToString("/paths/~1tests/get/responses/200/description")
     }
 
     @Test

@@ -8,7 +8,6 @@ import de.zalando.zally.dto.ViolationDTO;
 import de.zalando.zally.exception.MissingApiDefinitionException;
 import de.zalando.zally.util.ErrorResponse;
 import de.zalando.zally.util.JadlerUtil;
-import de.zalando.zally.util.ResourceUtil;
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer;
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static de.zalando.zally.util.ResourceUtil.readApiDefinition;
+import static de.zalando.zally.util.ResourceUtilKt.readApiDefinition;
+import static de.zalando.zally.util.ResourceUtilKt.resourceToString;
 import static net.jadler.Jadler.closeJadler;
 import static net.jadler.Jadler.initJadlerUsing;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -138,7 +138,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
 
     @Test
     public void shouldReadJsonSpecificationFromUrl() throws IOException {
-        String definitionUrl = JadlerUtil.stubResource("fixtures/openapi3_petstore_expanded.json");
+        String definitionUrl = JadlerUtil.INSTANCE.stubResource("fixtures/openapi3_petstore_expanded.json");
 
         List<ViolationDTO> violations = sendApiDefinition(
                 ApiDefinitionRequest.Factory.fromUrl(definitionUrl)
@@ -152,7 +152,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
 
     @Test
     public void shouldReadYamlSpecificationFromUrl() throws IOException {
-        String definitionUrl = JadlerUtil.stubResource("fixtures/openapi3_petstore.yaml");
+        String definitionUrl = JadlerUtil.INSTANCE.stubResource("fixtures/openapi3_petstore.yaml");
 
         List<ViolationDTO> violations = sendApiDefinition(
                 ApiDefinitionRequest.Factory.fromUrl(definitionUrl)
@@ -176,7 +176,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
     @Test
     public void shouldReturn404WhenNotFound() {
         ResponseEntity<ErrorResponse> responseEntity = sendApiDefinition(
-                ApiDefinitionRequest.Factory.fromUrl(JadlerUtil.stubNotFound()),
+                ApiDefinitionRequest.Factory.fromUrl(JadlerUtil.INSTANCE.stubNotFound()),
                 ErrorResponse.class
         );
 
@@ -194,7 +194,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
     @Test
     public void shouldStoreUnsuccessfulApiReviewRequest() {
         sendApiDefinition(
-                ApiDefinitionRequest.Factory.fromUrl(JadlerUtil.stubNotFound()),
+                ApiDefinitionRequest.Factory.fromUrl(JadlerUtil.INSTANCE.stubNotFound()),
                 ErrorResponse.class
         );
 
@@ -208,7 +208,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api-violations")
                 .contentType(WebMvcConfiguration.Companion.getMEDIA_TYPE_APP_XYAML())
                 .accept(MediaType.APPLICATION_JSON)
-                .content(ResourceUtil.resourceToString("fixtures/api_violations_request.yaml"));
+                .content(resourceToString("fixtures/api_violations_request.yaml"));
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 
@@ -222,7 +222,7 @@ public class RestApiViolationsTest extends RestApiBaseTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api-violations")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(ResourceUtil.resourceToString("fixtures/api_violations_request.yaml"));
+                .content(resourceToString("fixtures/api_violations_request.yaml"));
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 
