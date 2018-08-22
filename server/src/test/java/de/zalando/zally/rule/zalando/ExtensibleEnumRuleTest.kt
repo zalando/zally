@@ -1,8 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getFixture
-import de.zalando.zally.rule.api.Violation
-import io.swagger.models.Swagger
+import de.zalando.zally.getOpenApiContextFromContent
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -11,41 +9,68 @@ class ExtensibleEnumRuleTest {
     val rule = ExtensibleEnumRule()
 
     @Test
-    fun returnsNoViolationIfEmptySwagger() {
-        assertThat(rule.validate(Swagger())).isNull()
+    fun `checkForEnums should return violation if an enum is used in schema`() {
+        val content = """
+            openapi: 3.0.1
+            components:
+              schemas:
+                article:
+                  properties:
+                    color:
+                      type: string
+                      enum:
+                        - white
+                        - black
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
+
+        val violations = rule.checkForEnums(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations[0].description).containsPattern("Property is not an extensible enum.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/components/schemas/article/properties/color")
     }
 
     @Test
-    fun returnsViolationIfAnEnumInModelProperty() {
-        val swagger = getFixture("enum_in_model_property.yaml")
-        val expectedViolation = Violation(
-                description = "Properties/Parameters [status] are not extensible enums",
-                paths = listOf("/definitions/CrawledAPIDefinition/properties/status"))
+    fun `checkForEnums should return violation if an enum is used as parameter`() {
+        val content = """
+            openapi: 3.0.1
+            paths:
+              /article:
+                get:
+                  parameters:
+                    - name: country
+                      in: query
+                      schema:
+                        type: string
+                        enum:
+                          - germany
+                          - sweden
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
 
-        val violation = rule.validate(swagger)
+        val violations = rule.checkForEnums(context)
 
-        assertThat(violation).isNotNull()
-        assertThat(violation).isEqualTo(expectedViolation)
+        assertThat(violations).isNotEmpty
+        assertThat(violations[0].description).containsPattern("Property is not an extensible enum.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1article/get/parameters/0/schema")
     }
 
     @Test
-    fun returnsViolationIfAnEnumInRequestParameter() {
-        val swagger = getFixture("enum_in_request_parameter.yaml")
-        val expectedViolation = Violation(
-                description = "Properties/Parameters [lifecycle_state, environment] are not extensible enums",
-                paths = listOf("/paths/apis/{api_id}/versions/GET/parameters/lifecycle_state",
-                        "/paths/apis/GET/parameters/environment"))
+    fun `checkForEnums should return violation if no enums are used`() {
+        val content = """
+            openapi: 3.0.1
+            components:
+              schemas:
+                article:
+                  properties:
+                    color:
+                      type: string
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
 
-        val violation = rule.validate(swagger)
+        val violations = rule.checkForEnums(context)
 
-        assertThat(violation).isNotNull()
-        assertThat(violation).isEqualTo(expectedViolation)
-    }
-
-    @Test
-    fun returnsNoViolationIfNoEnums() {
-        val swagger = getFixture("no_must_violations.yaml")
-
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(violations).isEmpty()
     }
 }
