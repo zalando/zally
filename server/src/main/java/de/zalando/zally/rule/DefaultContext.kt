@@ -174,38 +174,12 @@ class DefaultContext(
         }
 
         private fun resolveOpenApi(parseResult: SwaggerParseResult): ContentParseResult<SwaggerParseResult> {
-            val preResolveViolations = preResolveCheck(parseResult)
-            if (preResolveViolations.isNotEmpty()) {
-                return ParsedWithErrors(preResolveViolations)
-            }
-
             try {
                 ResolverFully(true).resolveFully(parseResult.openAPI)
             } catch (e: NullPointerException) {
                 log.warn("Failed to fully resolve OpenAPI schema. Error not covered by pre-resolve checks.", e)
             }
             return ParsedSuccessfully(parseResult)
-        }
-
-        /**
-         * This serves two goals:
-         * - Fixing the parsed OpenAPI object before applying resolving on it.
-         * - Detecting cases where a violation should be automatically returned in the result.
-         */
-        private fun preResolveCheck(parseResult: SwaggerParseResult): List<Violation> {
-            val api = parseResult.openAPI
-
-            // COMPONENTS
-            // If it is null, it does not cause problems (so far). If not, he potentially does.
-            api.components?.also {
-
-                // SCHEMAS
-                if (it.schemas === null) {
-                    it.schemas = emptyMap()
-                }
-            }
-
-            return emptyList()
         }
 
         private fun parseSwagger(content: String): ContentParseResult<SwaggerDeserializationResult> {
