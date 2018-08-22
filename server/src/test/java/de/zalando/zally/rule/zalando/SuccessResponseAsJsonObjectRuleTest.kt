@@ -1,36 +1,87 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getFixture
+import de.zalando.zally.getOpenApiContextFromContent
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class SuccessResponseAsJsonObjectRuleTest {
 
-    private val validSwagger = getFixture("successResponseAsJsonObjectValid.json")
-    private val invalidSwagger = getFixture("successResponseAsJsonObjectInvalid.json")
-    private val npeSwagger = getFixture("sample_swagger_api.yaml")
-
     private val rule = SuccessResponseAsJsonObjectRule()
 
     @Test
-    fun positiveCase() {
-        assertThat(rule.validate(validSwagger)).isNull()
+    fun `checkJSONObjectIsUsedAsSuccessResponseType should return violation if other then JSON object is specified`() {
+        @Language("YAML")
+        val content = """
+            openapi: 3.0.1
+            paths:
+              /article:
+                get:
+                  responses:
+                    200:
+                      content:
+                        application/json:
+                          schema:
+                            type: array
+                            items:
+                              type: string
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
+
+        val violations = rule.checkJSONObjectIsUsedAsSuccessResponseType(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations[0].description).isEqualTo("Always return JSON objects as top-level data structures to support extensibility")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1article/get/responses/200/content/application~1json/schema")
     }
 
     @Test
-    fun negativeCase() {
-        val result = rule.validate(invalidSwagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("/pets GET 200", "/pets POST 200"))
+    fun `checkJSONObjectIsUsedAsSuccessResponseType should return no violation if only JSON object is specified`() {
+        @Language("YAML")
+        val content = """
+            openapi: 3.0.1
+            paths:
+              /article:
+                get:
+                  responses:
+                    200:
+                      content:
+                        application/json:
+                          schema:
+                            type: object
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
+
+        val violations = rule.checkJSONObjectIsUsedAsSuccessResponseType(context)
+
+        assertThat(violations).isEmpty()
     }
 
     @Test
-    fun positiveCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        assertThat(rule.validate(swagger)).isNull()
-    }
+    fun `checkJSONObjectIsUsedAsSuccessResponseType should support referenced schema`() {
+        @Language("YAML")
+        val content = """
+            openapi: 3.0.1
+            paths:
+              /article:
+                get:
+                  responses:
+                    200:
+                      content:
+                        application/json:
+                          schema:
+                            ${'$'}ref: '#/components/schemas/article'
+            components:
+              schemas:
+                article:
+                  properties:
+                    name:
+                      type: string
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
 
-    @Test
-    fun npeBug() {
-        assertThat(rule.validate(npeSwagger)).isNotNull()
+        val violations = rule.checkJSONObjectIsUsedAsSuccessResponseType(context)
+
+        assertThat(violations).isEmpty()
     }
 }

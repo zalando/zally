@@ -1,15 +1,10 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.ComposedModel
-import io.swagger.models.ModelImpl
-import io.swagger.models.Operation
-import io.swagger.models.Swagger
-import io.swagger.models.properties.Property
-import io.swagger.models.properties.RefProperty
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -18,34 +13,22 @@ import io.swagger.models.properties.RefProperty
     title = "Response As JSON Object"
 )
 class SuccessResponseAsJsonObjectRule {
-    private val description = "Always Return JSON Objects As Top-Level Data Structures To Support Extensibility"
+
+    private val description = "Always return JSON objects as top-level data structures to support extensibility"
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
-        val paths = swagger.paths.orEmpty().flatMap { (key, value) ->
-            value.operationMap.orEmpty().filter { it.value.producesJson }.flatMap { (method, operation) ->
-                operation.responses.orEmpty().filter { (code, response) ->
-                    isSuccess(code) && !response.schema.isObject(swagger)
-                }.map { (code, _) ->
-                    "$key $method $code"
-                }
+    fun checkJSONObjectIsUsedAsSuccessResponseType(context: Context): List<Violation> =
+        context.api.paths.values
+            .flatMap {
+                it.readOperations().orEmpty()
+                    .flatMap { it.responses.filter { (resCode, _) -> isSuccess(resCode) }.values }
             }
-        }
-        return if (paths.isNotEmpty()) Violation(description, paths) else null
-    }
-
-    private val Operation.producesJson get() = produces == null || produces.isEmpty() || produces.any { "json" in it }
+            .flatMap {
+                it.content.entries
+                    .filter { (mediaType, _) -> mediaType.contains("json") }
+            }.map { it.value.schema }
+            .filterNot { schema -> schema.type.isNullOrEmpty() || "object" == schema.type }
+            .map { schema -> context.violation(description, schema) }
 
     private fun isSuccess(codeString: String) = codeString.toIntOrNull() in 200..299
-
-    private fun Property?.isObject(swagger: Swagger) =
-        when {
-            this == null -> true
-            type == "object" -> true
-            this is RefProperty -> {
-                val model = swagger.definitions.orEmpty()[simpleRef]
-                (model is ModelImpl && model.type == "object") || model is ComposedModel
-            }
-            else -> false
-        }
 }
