@@ -31,15 +31,6 @@ class SecureWithOAuth2Rule {
         else null
     }
 
-    @Check(severity = Severity.SHOULD)
-    fun checkClientCredentialsFlowIsUsed(context: Context): List<Violation> =
-        if (context.isOpenAPI3())
-            context.api.components.securitySchemes.values
-                .filter { SecurityScheme.Type.OAUTH2 == it.type }
-                .filter { it.flows != null && it.flows.clientCredentials == null }
-                .map { context.violation("Only client credentials flow is allowed", it.flows) }
-        else emptyList()
-
     @Check(severity = Severity.MUST)
     fun checkUsedScopesAreSpecified(context: Context): List<Violation> {
         if (!context.isOpenAPI3()) return emptyList()
