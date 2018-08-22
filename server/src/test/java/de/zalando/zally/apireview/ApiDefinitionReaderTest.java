@@ -51,7 +51,7 @@ public class ApiDefinitionReaderTest {
 
     @Test
     public void shouldReadJsonSwaggerDefinitionFromUrl() {
-        String url = JadlerUtil.stubResource("test.json", contentInJson);
+        String url = JadlerUtil.INSTANCE.stubResource("test.json", contentInJson);
         String result = reader.read(ApiDefinitionRequest.Factory.fromUrl(url));
         assertEquals(contentInJson, result);
     }
@@ -59,7 +59,7 @@ public class ApiDefinitionReaderTest {
     @Test
     public void shouldReadYamlSwaggerDefinitionFromUrl() {
         String contentInYaml = "swagger: \"2.0\"";
-        String url = JadlerUtil.stubResource("test.yaml", contentInYaml, APPLICATION_X_YAML_VALUE);
+        String url = JadlerUtil.INSTANCE.stubResource("test.yaml", contentInYaml, APPLICATION_X_YAML_VALUE);
         String result = reader.read(ApiDefinitionRequest.Factory.fromUrl(url));
 
         assertEquals(contentInYaml, result);
@@ -75,21 +75,21 @@ public class ApiDefinitionReaderTest {
 
     @Test
     public void shouldRetryLoadingOfUrlIfEndsWithSpecialEncodedCharacters() {
-        String url = JadlerUtil.stubResource("test.json", contentInJson);
+        String url = JadlerUtil.INSTANCE.stubResource("test.json", contentInJson);
         String result = reader.read(ApiDefinitionRequest.Factory.fromUrl(url + "%3D%3D"));
         assertEquals(contentInJson, result);
     }
 
     @Test(expected = InaccessibleResourceUrlException.class)
     public void shouldErrorBadRequestWhenDefinitionFromUrlUnsuccessful() {
-        String url = JadlerUtil.stubResource("test.json", "", HttpStatus.UNAUTHORIZED.value(), APPLICATION_JSON_VALUE);
+        String url = JadlerUtil.INSTANCE.stubResource("test.json", "", HttpStatus.UNAUTHORIZED.value(), APPLICATION_JSON_VALUE);
 
         reader.read(ApiDefinitionRequest.Factory.fromUrl(url));
     }
 
     @Test(expected = InaccessibleResourceUrlException.class)
     public void shouldErrorBadRequestWhenDefinitionFromUrlWrongContentType() {
-        String url = JadlerUtil.stubResource("test.json", "", HttpStatus.OK.value(), TEXT_HTML_VALUE);
+        String url = JadlerUtil.INSTANCE.stubResource("test.json", "", HttpStatus.OK.value(), TEXT_HTML_VALUE);
 
         reader.read(ApiDefinitionRequest.Factory.fromUrl(url));
     }

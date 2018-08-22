@@ -3,23 +3,19 @@ package de.zalando.zally.statistic
 import de.zalando.zally.apireview.ApiReview
 import de.zalando.zally.apireview.RestApiBaseTest
 import de.zalando.zally.dto.ApiDefinitionRequest
-import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.Result
 import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.zalando.AvoidTrailingSlashesRule
 import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import de.zalando.zally.util.ErrorResponse
 import de.zalando.zally.util.TestDateUtil
-import org.junit.Test
-
-import java.time.LocalDate
-import java.util.Arrays
-import java.util.LinkedList
-
-import de.zalando.zally.util.TestDateUtil.now
-import de.zalando.zally.util.TestDateUtil.tomorrow
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
 import org.springframework.http.HttpStatus.BAD_REQUEST
+import java.time.LocalDate
+import java.util.LinkedList
+import java.util.Arrays
 
 class RestReviewStatisticsTest : RestApiBaseTest() {
 
@@ -30,9 +26,9 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
     @Test
     fun shouldReturnAllReviewStatisticsFromLastWeekIfNoIntervalParametersAreSupplied() {
-        val from = now().minusDays(7L).toLocalDate()
+        val from = TestDateUtil.now().minusDays(7L).toLocalDate()
 
-        val reviews = createRandomReviewsInBetween(from, now().toLocalDate())
+        val reviews = createRandomReviewsInBetween(from, TestDateUtil.now().toLocalDate())
 
         val response = reviewStatistics
 
@@ -43,12 +39,12 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
     @Test
     fun shouldReturnAllReviewStatisticsFromIntervalSpecifiedByFromParameterTilNow() {
-        val from = now().minusDays(5L).toLocalDate()
+        val from = TestDateUtil.now().minusDays(5L).toLocalDate()
 
         // this data should not be loaded later
         createRandomReviewsInBetween(from.minusDays(10L), from.minusDays(5L))
 
-        val reviews = createRandomReviewsInBetween(from, now().toLocalDate())
+        val reviews = createRandomReviewsInBetween(from, TestDateUtil.now().toLocalDate())
 
         val response = getReviewStatisticsBetween(from, null)
 
@@ -62,10 +58,10 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
     @Test
     fun shouldReturnAllReviewStatisticsFromIntervalSpecifiedByFromAndToParameters() {
-        val from = now().minusDays(5L).toLocalDate()
+        val from = TestDateUtil.now().minusDays(5L).toLocalDate()
         val to = TestDateUtil.yesterday().minusDays(1L).toLocalDate()
 
-        val reviews = createRandomReviewsInBetween(from, now().toLocalDate())
+        val reviews = createRandomReviewsInBetween(from, TestDateUtil.now().toLocalDate())
 
         val response = getReviewStatisticsBetween(from, to)
         assertThat(response.reviews).hasSize(reviews.size - 1)
@@ -73,12 +69,12 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
     @Test
     fun shouldReturnBadRequestForFromInTheFuture() {
-        assertBadRequestFor(tomorrow().toLocalDate(), null)
+        assertBadRequestFor(TestDateUtil.tomorrow().toLocalDate(), null)
     }
 
     @Test
     fun shouldReturnBadRequestWhenToParameterIsProvidedWithoutFromParameter() {
-        assertBadRequestFor(null, tomorrow().toLocalDate())
+        assertBadRequestFor(null, TestDateUtil.tomorrow().toLocalDate())
     }
 
     @Test
@@ -94,7 +90,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     @Test
     fun shouldReturnApiNameAndId() {
         val reviewsCount = 7
-        createRandomReviewsInBetween(now().minusDays(reviewsCount.toLong()).toLocalDate(), now().toLocalDate())
+        createRandomReviewsInBetween(TestDateUtil.now().minusDays(reviewsCount.toLong()).toLocalDate(), TestDateUtil.now().toLocalDate())
         val response = reviewStatistics
         assertThat(response.reviews).hasSize(reviewsCount)
         assertThat(response.reviews!![0].api).isEqualTo("My API")
@@ -103,7 +99,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
     @Test
     fun shouldReturnNumberOfUniqueApiReviewsBasedOnApiName() {
-        val now = now().toLocalDate()
+        val now = TestDateUtil.now().toLocalDate()
         apiReviewRepository.save(apiReview(now, "API A", null))
         apiReviewRepository.save(apiReview(now, "API B", null))
         apiReviewRepository.save(apiReview(now, "API B", null))
@@ -116,7 +112,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
     @Test
     fun deduplicatedReviewStatisticsShouldIgnoreApisWithoutName() {
-        val now = now().toLocalDate()
+        val now = TestDateUtil.now().toLocalDate()
         apiReviewRepository.save(apiReview(now, null, null))
         apiReviewRepository.save(apiReview(now, "", null))
         apiReviewRepository.save(apiReview(now, "Nice API", null))
@@ -129,7 +125,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
     @Test
     fun shouldStoreUserAgent() {
-        val now = now().toLocalDate()
+        val now = TestDateUtil.now().toLocalDate()
         apiReviewRepository.save(apiReview(now, null, "curl"))
 
         val statistics = reviewStatistics
@@ -139,7 +135,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
     @Test
     fun shouldFilterByUserAgent() {
-        val now = now().toLocalDate()
+        val now = TestDateUtil.now().toLocalDate()
         apiReviewRepository.save(apiReview(now, null, "curl"))
         apiReviewRepository.save(apiReview(now, null, null))
 
