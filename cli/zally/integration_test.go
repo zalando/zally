@@ -69,7 +69,7 @@ func TestIntegrationWithSomeOtherLocalYamlFile(t *testing.T) {
 
 		assert.Contains(t, out, "Provide API Specification using OpenAPI")
 		assert.Contains(t, out, "MUST violations: 39")
-		assert.Contains(t, out, "SHOULD violations: 24")
+		assert.Contains(t, out, "SHOULD violations: 23")
 		assert.Contains(t, out, "MAY violations: 11")
 		assert.Contains(t, out, "HINT violations: 0")
 
@@ -82,7 +82,7 @@ func TestIntegrationWithLocalJsonFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spp.json"})
 
 		assert.Contains(t, out, "MUST violations: 15")
-		assert.Contains(t, out, "SHOULD violations: 12")
+		assert.Contains(t, out, "SHOULD violations: 11")
 		assert.Contains(t, out, "MAY violations: 10")
 		assert.Contains(t, out, "HINT violations: 0")
 
@@ -113,7 +113,7 @@ func TestIntegrationWithRemoteJsonFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", ts.URL + "/api_spp.json"})
 
 		assert.Contains(t, out, "MUST violations: 15")
-		assert.Contains(t, out, "SHOULD violations: 12")
+		assert.Contains(t, out, "SHOULD violations: 11")
 		assert.Contains(t, out, "MAY violations: 1")
 		assert.Contains(t, out, "HINT violations: 0")
 
@@ -127,7 +127,7 @@ func TestIntegrationWithNoMustViolations(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/no_must_violations.yaml"})
 
 		assert.Contains(t, out, "MUST violations: 0")
-		assert.Contains(t, out, "SHOULD violations: 1")
+		assert.Contains(t, out, "SHOULD violations: 0")
 		assert.Contains(t, out, "MAY violations: 1")
 		assert.Contains(t, out, "HINT violations: 0")
 
