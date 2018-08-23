@@ -1,38 +1,48 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getFixture
+import de.zalando.zally.getOpenApiContextFromContent
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class SnakeCaseForQueryParamsRuleTest {
 
-    private val validSwagger = getFixture("snakeCaseForQueryParamsValid.json")
-    private val invalidSwaggerWithLocalParam = getFixture("snakeCaseForQueryParamsInvalidLocalParam.json")
-    private val invalidSwaggerWIthInternalRef = getFixture("snakeCaseForQueryParamsInvalidInternalRef.json")
-    private val invalidSwaggerWithExternalRef = getFixture("snakeCaseForQueryParamsInvalidExternalRef.json")
-
     private val rule = SnakeCaseForQueryParamsRule()
 
     @Test
-    fun shouldFindNoViolations() {
-        assertThat(rule.validate(validSwagger)).isNull()
+    fun `checkQueryParameter should return violation if query parameter is not snake_case`() {
+        val spec = """
+            openapi: 3.0.1
+            paths:
+              /article:
+                get:
+                  parameters:
+                    - name: filterExpensiveArticles
+                      in: query
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
+
+        val violations = rule.checkQueryParameter(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations[0].description).isEqualTo("Query parameter has to be snake_case")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1article/get/parameters/0")
     }
 
     @Test
-    fun shouldFindViolationsInLocalRef() {
-        val result = rule.validate(invalidSwaggerWithLocalParam)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("/items GET"))
-    }
+    fun `checkQueryParameter should return no violation if query parameters are snake_case`() {
+        val spec = """
+            openapi: 3.0.1
+            paths:
+              /article:
+                get:
+                  parameters:
+                    - name: filter_expensive_articles
+                      in: query
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
 
-    @Test
-    fun shouldFindViolationsInInternalRef() {
-        val result = rule.validate(invalidSwaggerWIthInternalRef)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("/items GET"))
-    }
+        val violations = rule.checkQueryParameter(context)
 
-    @Test
-    fun shouldFindViolationsInExternalRef() {
-        val result = rule.validate(invalidSwaggerWithExternalRef)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("/items GET"))
+        assertThat(violations).isEmpty()
     }
 }
