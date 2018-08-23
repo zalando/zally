@@ -1,39 +1,29 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.Swagger
-import io.swagger.models.properties.Property
 
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = "153",
-        severity = Severity.MUST,
-        title = "Use 429 With Header For Rate Limits"
+    ruleSet = ZalandoRuleSet::class,
+    id = "153",
+    severity = Severity.MUST,
+    title = "Use 429 With Header For Rate Limits"
 )
 class Use429HeaderForRateLimitRule {
 
-    private val description = "If Client Exceed Request Rate, Response Code Must Contain Header Information Providing Further Details to Client"
+    private val description = "Response has to contain rate limit information via headers"
     private val xRateLimitHeaders = listOf("X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset")
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: Swagger): Violation? {
-        val paths = swagger.paths.orEmpty().flatMap { (path, pathObj) ->
-            pathObj.operationMap.orEmpty().entries.flatMap { (verb, operation) ->
-                operation.responses.orEmpty().flatMap { (code, response) ->
-                    if (code == "429" && !containsRateLimitHeader(response.headers.orEmpty()))
-                        listOf("$path $verb $code")
-                    else emptyList()
-                }
-            }
-        }
-        return if (paths.isNotEmpty())
-            Violation(description, paths)
-        else null
-    }
+    fun checkHeadersForRateLimiting(context: Context): List<Violation> =
+        context.api.paths.values.flatMap { it.readOperations().flatMap { it.responses.entries } }
+            .filter { (code, _) -> "429" == code }.map { it.value }
+            .filterNot { containsRateLimitHeader(it.headers.orEmpty().keys) }
+            .map { context.violation(description, it) }
 
-    private fun containsRateLimitHeader(headers: Map<String, Property>): Boolean =
-        headers.containsKey("Retry-After") || headers.keys.containsAll(xRateLimitHeaders)
+    private fun containsRateLimitHeader(headers: Collection<String>): Boolean =
+        "Retry-After" in headers || headers.containsAll(xRateLimitHeaders)
 }

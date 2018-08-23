@@ -1,28 +1,48 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getFixture
+import de.zalando.zally.getOpenApiContextFromContent
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class Use429HeaderForRateLimitRuleTest {
+
     private val rule = Use429HeaderForRateLimitRule()
 
     @Test
-    fun positiveCase() {
-        val swagger = getFixture("use429HeadersForRateLimitValid.json")
-        assertThat(rule.validate(swagger)).isNull()
+    fun `checkHeadersForRateLimiting should return violation if no rate limit is provided via headers` () {
+        val content = """
+            openapi: 3.0.1
+            paths:
+              /articles:
+                get:
+                  responses:
+                    429: {}
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
+
+        val violations = rule.checkHeadersForRateLimiting(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations[0].description).containsPattern(".*has to contain rate limit information via headers.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1articles/get/responses/429")
     }
 
     @Test
-    fun negativeCase() {
-        val swagger = getFixture("use429HeadersForRateLimitInvalidHeader.json")
-        val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("/pets GET 429", "/pets POST 429", "/pets PUT 429"))
-    }
+    fun `checkHeadersForRateLimiting should return no violation if rate limit information is provided via headers` () {
+        val content = """
+            openapi: 3.0.1
+            paths:
+              /articles:
+                get:
+                  responses:
+                    429:
+                      headers:
+                        Retry-After: {}
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(content)
 
-    @Test
-    fun positiveCaseSpa() {
-        val swagger = getFixture("api_spa.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+        val violations = rule.checkHeadersForRateLimiting(context)
+
+        assertThat(violations).isEmpty()
     }
 }
