@@ -80,6 +80,30 @@ fun OpenAPI.getAllTransitiveSchemas(): Set<Schema<Any>> {
 }
 
 /**
+ * Traverses the schemas and returns all included properties and their names
+ * @return a map (name -> schema) of all transitive properties
+ */
+fun OpenAPI.getAllProperties(): Map<String, Schema<Any>> {
+    fun isPrimitive(schema: Schema<Any>): Boolean = schema.properties.orEmpty().isEmpty()
+    val collector = mutableMapOf<String, Schema<Any>>()
+
+    tailrec fun traverseSchemas(schemasToScan: Collection<Schema<Any>>) {
+        if (schemasToScan.isEmpty()) return
+
+        val properties = schemasToScan.flatMap { it.properties.orEmpty().entries }
+        val primitiveSchemas = properties.filter { isPrimitive(it.value) }
+        val nonPrimitiveSchemas = properties.filterNot { isPrimitive(it.value) }
+
+        collector.putAll(primitiveSchemas.associateBy({ it.key }, { it.value }))
+        traverseSchemas(nonPrimitiveSchemas.flatMap { it.value.properties.orEmpty().values })
+    }
+
+    traverseSchemas(this.getAllSchemas())
+
+    return collector
+}
+
+/**
  * Returns all defined parameters of an API specification
  * @return a collection of parameters
  */
