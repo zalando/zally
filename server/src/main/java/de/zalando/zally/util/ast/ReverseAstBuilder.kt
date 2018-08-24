@@ -8,9 +8,6 @@ import java.lang.reflect.Modifier
 import java.util.ArrayDeque
 import java.util.Deque
 import java.util.IdentityHashMap
-import kotlin.Comparator
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -66,7 +63,7 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
             map
             .filter { (key, value) -> key is String && value != null }
             .map { (key, value) ->
-                Node(value!!, pointer.append(JsonPointers.escape(key as String)), getMarker(map) ?: defaultMarker )
+                Node(value!!, pointer.append(JsonPointers.escape(key as String)), getMarker(map) ?: defaultMarker)
             }
         )
     }
