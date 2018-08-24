@@ -7,6 +7,8 @@ import org.assertj.core.api.ObjectAssert
 
 @Suppress("UndocumentedPublicClass", "SpreadOperator")
 class ViolationsAssert(violations: List<Violation>?) : AbstractListAssert<ViolationsAssert, List<Violation>, Violation, ObjectAssert<Violation>>(violations, ViolationsAssert::class.java) {
+    override fun newAbstractIterableAssert(iterable: MutableIterable<Violation>?): ViolationsAssert =
+        ViolationsAssert(violations = iterable?.toList())
 
     override fun toAssert(value: Violation?, description: String?): ObjectAssert<Violation> {
         return ObjectAssert<Violation>(value).`as`(description)
