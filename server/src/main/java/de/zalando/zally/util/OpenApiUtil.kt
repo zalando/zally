@@ -22,7 +22,7 @@ fun OpenAPI.getAllHeaders(): Set<HeaderElement> {
         .map { HeaderElement(it.key, it.value) }
         .toSet()
 
-    val fromParams = components.parameters.orEmpty().values.extractHeaders()
+    val fromComponentsParams = components.parameters.orEmpty().values.extractHeaders()
 
     val fromPaths = paths.orEmpty().flatMap { (_, path) ->
         val fromPathParameters = path.parameters.extractHeaders()
@@ -34,7 +34,9 @@ fun OpenAPI.getAllHeaders(): Set<HeaderElement> {
         fromPathParameters + fromOperations
     }
 
-    return fromParams + fromPaths
+    val fromComponentsHeaders = components.headers.orEmpty().map { HeaderElement(it.key, it.value) }
+
+    return fromComponentsParams + fromPaths + fromComponentsHeaders
 }
 
 /**

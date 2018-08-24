@@ -1,68 +1,45 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getFixture
-import de.zalando.zally.swaggerWithHeaderParams
-import de.zalando.zally.testConfig
-import io.swagger.models.Swagger
+import de.zalando.zally.getOpenApiContextFromContent
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class PascalCaseHttpHeadersRuleTest {
 
-    private val rule = PascalCaseHttpHeadersRule(testConfig)
+    private val rule = PascalCaseHttpHeadersRule()
 
     @Test
-    fun simplePositiveCase() {
-        val swagger = swaggerWithHeaderParams("Right-Name")
-        assertThat(rule.validate(swagger)).isNull()
+    fun `checkHttpHeaders should return violation if not pascal case is used`() {
+        @Language("YAML")
+        val spec = """
+            openapi: 3.0.1
+            components:
+              headers:
+                not-pascal-case-header: {}
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
+
+        val violations = rule.checkHttpHeaders(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations[0].description).isEqualTo("Header has to be Hyphenated-Pascal-Case")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/components/headers/not-pascal-case-header")
     }
 
     @Test
-    fun simpleNegativeCase() {
-        val swagger = swaggerWithHeaderParams("kebap-case-name")
-        val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf("parameters kebap-case-name"))
-    }
+    fun `checkHttpHeaders should return no violation if all headers are pascal case`() {
+        @Language("YAML")
+        val spec = """
+            openapi: 3.0.1
+            components:
+              headers:
+                Hyphenated-Pascal-Case-Header: {}
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
 
-    @Test
-    fun mustAcceptETag() {
-        val swagger = swaggerWithHeaderParams("ETag")
-        assertThat(rule.validate(swagger)).isNull()
-    }
+        val violations = rule.checkHttpHeaders(context)
 
-    @Test
-    fun mustAcceptZalandoHeaders() {
-        val swagger = swaggerWithHeaderParams("X-Flow-ID", "X-UID", "X-Tenant-ID", "X-Sales-Channel", "X-Frontend-Type",
-            "X-Device-Type", "X-Device-OS", "X-App-Domain")
-        assertThat(rule.validate(swagger)).isNull()
-    }
-
-    @Test
-    fun mustAcceptRateLimitHeaders() {
-        val swagger = swaggerWithHeaderParams("X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset")
-        assertThat(rule.validate(swagger)).isNull()
-    }
-
-    @Test
-    fun mustAcceptDigits() {
-        val swagger = swaggerWithHeaderParams("X-P1n-Id")
-        assertThat(rule.validate(swagger)).isNull()
-    }
-
-    @Test
-    fun emptySwaggerShouldPass() {
-        assertThat(rule.validate(Swagger())).isNull()
-    }
-
-    @Test
-    fun positiveCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        assertThat(rule.validate(swagger)).isNull()
-    }
-
-    @Test
-    fun positiveCaseTinbox() {
-        val swagger = getFixture("api_tinbox.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+        assertThat(violations).isEmpty()
     }
 }
