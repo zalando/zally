@@ -24,7 +24,7 @@ class SuccessResponseAsJsonObjectRule {
                     .flatMap { it.responses.filter { (resCode, _) -> isSuccess(resCode) }.values }
             }
             .flatMap {
-                it.content.entries
+                it.content.orEmpty().entries
                     .filter { (mediaType, _) -> mediaType.contains("json") }
             }.map { it.value.schema }
             .filterNot { schema -> schema.type.isNullOrEmpty() || "object" == schema.type }
