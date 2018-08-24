@@ -9,7 +9,7 @@ class Use429HeaderForRateLimitRuleTest {
     private val rule = Use429HeaderForRateLimitRule()
 
     @Test
-    fun `checkHeadersForRateLimiting should return violation if no rate limit is provided via headers` () {
+    fun `checkHeadersForRateLimiting should return violation if no rate limit is provided via headers`() {
         val content = """
             openapi: 3.0.1
             paths:
@@ -28,7 +28,7 @@ class Use429HeaderForRateLimitRuleTest {
     }
 
     @Test
-    fun `checkHeadersForRateLimiting should return no violation if rate limit information is provided via headers` () {
+    fun `checkHeadersForRateLimiting should return no violation if rate limit information is provided via headers`() {
         val content = """
             openapi: 3.0.1
             paths:

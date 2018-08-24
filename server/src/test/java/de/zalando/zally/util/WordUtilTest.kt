@@ -45,7 +45,7 @@ class WordUtilTest {
 
     @Test
     fun specialCasePluralized() {
-        assertTrue(isPlural("vat")) //whitelisted
-        assertTrue(isPlural("apis")) //whitelisted
+        assertTrue(isPlural("vat")) // whitelisted
+        assertTrue(isPlural("apis")) // whitelisted
     }
 }
