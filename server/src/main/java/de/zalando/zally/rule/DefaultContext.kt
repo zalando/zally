@@ -9,9 +9,7 @@ import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.ast.JsonPointers
 import de.zalando.zally.util.ast.MethodCallRecorder
 import de.zalando.zally.util.ast.ReverseAst
-import io.swagger.models.Info
 import io.swagger.models.Swagger
-import io.swagger.models.auth.OAuth2Definition
 import io.swagger.parser.SwaggerParser
 import io.swagger.parser.util.SwaggerDeserializationResult
 import io.swagger.v3.oas.models.OpenAPI
@@ -176,38 +174,12 @@ class DefaultContext(
         }
 
         private fun resolveOpenApi(parseResult: SwaggerParseResult): ContentParseResult<SwaggerParseResult> {
-            val preResolveViolations = preResolveCheck(parseResult)
-            if (preResolveViolations.isNotEmpty()) {
-                return ParsedWithErrors(preResolveViolations)
-            }
-
             try {
                 ResolverFully(true).resolveFully(parseResult.openAPI)
             } catch (e: NullPointerException) {
                 log.warn("Failed to fully resolve OpenAPI schema. Error not covered by pre-resolve checks.", e)
             }
             return ParsedSuccessfully(parseResult)
-        }
-
-        /**
-         * This serves two goals:
-         * - Fixing the parsed OpenAPI object before applying resolving on it.
-         * - Detecting cases where a violation should be automatically returned in the result.
-         */
-        private fun preResolveCheck(parseResult: SwaggerParseResult): List<Violation> {
-            val api = parseResult.openAPI
-
-            // COMPONENTS
-            // If it is null, it does not cause problems (so far). If not, he potentially does.
-            api.components?.also {
-
-                // SCHEMAS
-                if (it.schemas === null) {
-                    it.schemas = emptyMap()
-                }
-            }
-
-            return emptyList()
         }
 
         private fun parseSwagger(content: String): ContentParseResult<SwaggerDeserializationResult> {
@@ -225,41 +197,7 @@ class DefaultContext(
             }
         }
 
-        /**
-         * This serves two goals:
-         * - Fixing the parsed Swagger object before automatic conversion to OpenAPI
-         * - Detecting cases where a violation should be automatically returned in the result.
-         */
-        private fun preConvertChecks(swaggerDeserializationResult: SwaggerDeserializationResult): List<Violation> {
-            val swagger = swaggerDeserializationResult.swagger
-
-            // INFO
-            if (swagger.info === null) {
-                swagger.info = Info()
-            }
-
-            // OAUTH2 security definitions
-            swagger.securityDefinitions.orEmpty().values
-                .filter { it.type == "oauth2" }
-                .map { it as OAuth2Definition }
-                .forEach {
-                    if (it.flow == null) {
-                        it.flow = ""
-                    }
-                    if (it.scopes == null) {
-                        it.scopes = LinkedHashMap()
-                    }
-                }
-
-            return emptyList()
-        }
-
         private fun convertSwaggerToOpenAPI(parseResult: SwaggerDeserializationResult): ContentParseResult<SwaggerParseResult> {
-            val preConvertViolations = preConvertChecks(parseResult)
-            if (preConvertViolations.isNotEmpty()) {
-                return ParsedWithErrors(preConvertViolations)
-            }
-
             val convertResult = try {
                 SwaggerConverter().convert(parseResult)
             } catch (t: Throwable) {
