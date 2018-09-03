@@ -28,11 +28,13 @@ class DefaultContext(
     openApi: OpenAPI,
     swagger: Swagger? = null
 ) : Context {
-    private val recorder = MethodCallRecorder(openApi).skipMethods(*extensionNames)
+    private val openApiRecorder = MethodCallRecorder(openApi).skipMethods(*extensionNames)
+    private val swaggerRecorder = swagger?.let { MethodCallRecorder(it).skipMethods(*extensionNames) }
     private val openApiAst = ReverseAst.fromObject(openApi).withExtensionMethodNames(*extensionNames).build()
     private val swaggerAst = swagger?.let { ReverseAst.fromObject(it).withExtensionMethodNames(*extensionNames).build() }
 
-    override val api = recorder.proxy
+    override val api = openApiRecorder.proxy
+    override val swagger = swaggerRecorder?.proxy
     override fun isOpenAPI3(): Boolean = this.swaggerAst == null
 
     /**
@@ -105,7 +107,7 @@ class DefaultContext(
      * @return the new Violation
      */
     override fun violation(description: String, pointer: JsonPointer?): Violation =
-        Violation(description, pointer ?: recorder.pointer)
+        Violation(description, pointerFromRecorder(pointer))
 
     /**
      * Check whether a location should be ignored by a specific rule.
@@ -127,6 +129,16 @@ class DefaultContext(
         }
     } else {
         openApiAst.getPointer(value)
+    }
+
+    private fun pointerFromRecorder(pointer: JsonPointer?): JsonPointer = pointer.emptyToNull()
+        ?: swaggerRecorder?.pointer.emptyToNull()
+        ?: openApiRecorder.pointer.emptyToNull()
+        ?: JsonPointers.EMPTY
+
+    private fun JsonPointer?.emptyToNull() = when {
+        this == JsonPointers.EMPTY -> null
+        else -> this
     }
 
     companion object {
