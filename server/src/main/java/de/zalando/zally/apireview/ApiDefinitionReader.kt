@@ -3,7 +3,6 @@ package de.zalando.zally.apireview
 import de.zalando.zally.dto.ApiDefinitionRequest
 import de.zalando.zally.exception.InaccessibleResourceUrlException
 import de.zalando.zally.exception.MissingApiDefinitionException
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -16,23 +15,20 @@ import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestTemplate
 
 @Component
-class ApiDefinitionReader @Autowired
-constructor(private val client: RestTemplate) {
+class ApiDefinitionReader(private val client: RestTemplate) {
 
-    fun read(request: ApiDefinitionRequest): String? = when {
-        request.apiDefinitionString != null -> request.apiDefinitionString
-        request.apiDefinition != null -> request.apiDefinition
-        request.apiDefinitionUrl != null -> readFromUrl(request.apiDefinitionUrl)
-        else -> throw MissingApiDefinitionException()
-    }
+    fun read(request: ApiDefinitionRequest): String = request.apiDefinitionString?.let { it }
+        ?: request.apiDefinition?.let { it }
+        ?: request.apiDefinitionUrl?.let { readFromUrl(it) }
+        ?: throw MissingApiDefinitionException()
 
-    private fun readFromUrl(url: String?): String? = try {
+    private fun readFromUrl(url: String): String? = try {
         val headers = HttpHeaders()
         headers.accept = MEDIA_TYPE_WHITELIST
 
         val entity = HttpEntity<String>(null, headers)
 
-        val response = client.exchange(removeSpecialCharactersSuffix(url!!), HttpMethod.GET, entity, String::class.java)
+        val response = client.exchange(removeSpecialCharactersSuffix(url), HttpMethod.GET, entity, String::class.java)
 
         val contentType = response.headers.contentType
         if (contentType != null && MEDIA_TYPE_WHITELIST.none { contentType.isCompatibleWith(it) }) {

@@ -89,20 +89,20 @@ class ApiReview : Serializable {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
 
-        val that = o as ApiReview?
-        return (id == that!!.id
-                && name == that.name
-                && jsonPayload == that.jsonPayload
-                && apiDefinition == that.apiDefinition
-                && isSuccessfulProcessed == that.isSuccessfulProcessed
-                && day == that.day
-                && created == that.created
-                && numberOfEndpoints == that.numberOfEndpoints
-                && mustViolations == that.mustViolations
-                && shouldViolations == that.shouldViolations
-                && mayViolations == that.mayViolations
-                && hintViolations == that.hintViolations
-                && ruleViolations == that.ruleViolations)
+        val that = o as ApiReview
+        return (id == that.id &&
+                name == that.name &&
+                jsonPayload == that.jsonPayload &&
+                apiDefinition == that.apiDefinition &&
+                isSuccessfulProcessed == that.isSuccessfulProcessed &&
+                day == that.day &&
+                created == that.created &&
+                numberOfEndpoints == that.numberOfEndpoints &&
+                mustViolations == that.mustViolations &&
+                shouldViolations == that.shouldViolations &&
+                mayViolations == that.mayViolations &&
+                hintViolations == that.hintViolations &&
+                ruleViolations == that.ruleViolations)
     }
 
     override fun hashCode(): Int = Objects.hash(id, name, jsonPayload, apiDefinition, isSuccessfulProcessed,
