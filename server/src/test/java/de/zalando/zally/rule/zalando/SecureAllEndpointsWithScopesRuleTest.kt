@@ -1,10 +1,9 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getFixture
+import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.ZallyAssertions
 import de.zalando.zally.testConfig
-import io.swagger.models.Swagger
-import io.swagger.parser.SwaggerParser
-import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 /**
@@ -16,41 +15,44 @@ class SecureAllEndpointsWithScopesRuleTest {
     private val rule = SecureAllEndpointsWithScopesRule(testConfig)
 
     @Test
-    fun checkDefinedScopesWithNoSecurityReturnsNull() {
-        val text = """
+    fun `checkDefinedScopeFormats with no security`() {
+        @Language("YAML")
+        val yaml = """
             swagger: 2.0
             """.trimIndent()
-        val swagger = SwaggerParser().parse(text)
 
-        val violation = rule.checkDefinedScopeFormats(swagger)
+        val context = getSwaggerContextFromContent(yaml)
 
-        assertThat(violation)
-                .isNull()
+        val violations = rule.checkDefinedScopeFormats(context)
+
+        ZallyAssertions.assertThat(violations).isEmpty()
     }
 
     @Test
-    fun checkDefinedScopeFormatsWithMatchingScopesReturnsNull() {
-        val text = """
+    fun `checkDefinedScopeFormats with valid oauth2 scopes`() {
+        @Language("YAML")
+        val yaml = """
             swagger: 2.0
             securityDefinitions:
-              stups:
+              implicit-oauth2:
                 type: oauth2
                 scopes:
                   uid: Any logged in user
                   fulfillment-order.read: Can read fulfillment-order app
                   sales-order.shipment-order.write: Can create shipment-orders in the sales-order app
             """.trimIndent()
-        val swagger = SwaggerParser().parse(text)
 
-        val violation = rule.checkDefinedScopeFormats(swagger)
+        val context = getSwaggerContextFromContent(yaml)
 
-        assertThat(violation)
-                .isNull()
+        val violations = rule.checkDefinedScopeFormats(context)
+
+        ZallyAssertions.assertThat(violations).isEmpty()
     }
 
     @Test
-    fun checkDefinedScopeFormatsWithBasicScopesReturnsNull() {
-        val text = """
+    fun `checkDefinedScopeFormats with basic scopes`() {
+        @Language("YAML")
+        val yaml = """
             swagger: 2.0
             securityDefinitions:
               lazy-in-house-scripts:
@@ -59,58 +61,164 @@ class SecureAllEndpointsWithScopesRuleTest {
                   indexer: Can perform nightly indexing operations
                   expiry: Can perform automated expiry operations
             """.trimIndent()
-        val swagger = SwaggerParser().parse(text)
 
-        val violation = rule.checkDefinedScopeFormats(swagger)
+        val context = getSwaggerContextFromContent(yaml)
 
-        assertThat(violation)
-                .isNull()
+        val violations = rule.checkDefinedScopeFormats(context)
+
+        ZallyAssertions.assertThat(violations).isEmpty()
     }
 
     @Test
-    fun checkDefinedScopeFormatsWithNoMatchingScopesReturnsViolation() {
-        val text = """
+    fun `checkDefinedScopeFormats with invalid oauth2 scopes`() {
+        @Language("YAML")
+        val yaml = """
             swagger: 2.0
             securityDefinitions:
-              stups:
+              implicit-oauth2:
                 type: oauth2
+                flow: implicit
                 scopes:
                   max: Any user called Max
             """.trimIndent()
-        val swagger = SwaggerParser().parse(text)
 
-        val violation = rule.checkDefinedScopeFormats(swagger)
+        val context = getSwaggerContextFromContent(yaml)
 
-        assertThat(violation!!.paths)
-                .hasSameElementsAs(listOf("securityDefinitions stups max: scope 'max' does not match regex '^(uid)|(([a-z-]+\\.){1,2}(read|write))\$'"))
+        val violations = rule.checkDefinedScopeFormats(context)
+
+        ZallyAssertions.assertThat(violations)
+            .descriptionsAllEqualTo("scope 'max' does not match regex '^(uid)|(([a-z-]+\\.){1,2}(read|write))\$'")
+            .pointersEqualTo("/securityDefinitions/implicit-oauth2/scopes")
     }
 
     @Test
-    fun checkOperationsAreScopedWithEmpty() {
-        assertThat(rule.checkOperationsAreScoped(Swagger())).isNull()
+    fun `checkOperationsAreScoped with empty swagger`() {
+        @Language("YAML")
+        val yaml = """
+            swagger: 2.0
+            """.trimIndent()
+
+        val context = getSwaggerContextFromContent(yaml)
+
+        val violations = rule.checkOperationsAreScoped(context)
+
+        ZallyAssertions.assertThat(violations).isEmpty()
     }
 
     @Test
-    fun checkOperationsAreScopedWithoutScope() {
-        val swagger = getFixture("api_without_scopes_defined.yaml")
-        assertThat(rule.checkOperationsAreScoped(swagger)!!.paths).hasSize(4)
+    fun `checkOperationsAreScoped with no scope`() {
+        @Language("YAML")
+        val yaml = """
+            swagger: "2.0"
+            securityDefinitions:
+              oauth2:
+                type: oauth2
+                flow: password
+                scopes:
+                  defined-scope: A defined scope
+            paths:
+              /things:
+                get:
+                  responses:
+                    200:
+                      description: Success
+            """.trimIndent()
+
+        val context = getSwaggerContextFromContent(yaml)
+
+        val violations = rule.checkOperationsAreScoped(context)
+
+        ZallyAssertions.assertThat(violations)
+            .descriptionsEqualTo("Endpoint not secured by OAuth2 scope(s)")
+            .pointersEqualTo("/paths/~1things/get")
     }
 
     @Test
-    fun checkOperationsAreScopedWithDefinedScope() {
-        val swagger = getFixture("api_with_defined_scope.yaml")
-        assertThat(rule.checkOperationsAreScoped(swagger)).isNull()
+    fun `checkOperationsAreScoped with defined scope`() {
+        @Language("YAML")
+        val yaml = """
+            swagger: "2.0"
+            securityDefinitions:
+              oauth2:
+                type: oauth2
+                flow: password
+                scopes:
+                  defined-scope: A defined scope
+            paths:
+              /things:
+                get:
+                  responses:
+                    200:
+                      description: Success
+                  security:
+                  - oauth2:
+                    - defined-scope
+            """.trimIndent()
+
+        val context = getSwaggerContextFromContent(yaml)
+
+        val violations = rule.checkOperationsAreScoped(context)
+
+        ZallyAssertions.assertThat(violations).isEmpty()
     }
 
     @Test
-    fun checkOperationsAreScopedWithUndefinedScope() {
-        val swagger = getFixture("api_with_undefined_scope.yaml")
-        assertThat(rule.checkOperationsAreScoped(swagger)!!.paths).hasSize(2)
+    fun `checkOperationsAreScoped with undefined scope`() {
+        @Language("YAML")
+        val yaml = """
+            swagger: "2.0"
+            securityDefinitions:
+              oauth2:
+                type: oauth2
+                flow: password
+                scopes:
+                  defined-scope: A defined scope
+            paths:
+              /things:
+                get:
+                  responses:
+                    200:
+                      description: Success
+                  security:
+                  - oauth2:
+                    - undefined-scope
+            """.trimIndent()
+
+        val context = getSwaggerContextFromContent(yaml)
+
+        val violations = rule.checkOperationsAreScoped(context)
+
+        ZallyAssertions.assertThat(violations)
+            .descriptionsEqualTo("Endpoint secured by undefined OAuth2 scope(s): oauth2:undefined-scope")
+            .pointersEqualTo("/paths/~1things/get/security")
     }
 
     @Test
-    fun checkOperationsAreScopedWithDefinedTopLevelScope() {
-        val swagger = getFixture("api_with_toplevel_scope.yaml")
-        assertThat(rule.checkOperationsAreScoped(swagger)).isNull()
+    fun `checkOperationsAreScoped with defined top level scope`() {
+        @Language("YAML")
+        val yaml = """
+            swagger: "2.0"
+            securityDefinitions:
+              oauth2:
+                type: oauth2
+                flow: password
+                scopes:
+                  defined-scope: A defined scope
+            security:
+              - oauth2:
+                - defined-scope
+            paths:
+              /things:
+                get:
+                  responses:
+                    200:
+                      description: Success
+            """.trimIndent()
+
+        val context = getSwaggerContextFromContent(yaml)
+
+        val violations = rule.checkOperationsAreScoped(context)
+
+        ZallyAssertions.assertThat(violations).isEmpty()
     }
 }

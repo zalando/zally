@@ -30,6 +30,13 @@ class JsonPointersTest {
     }
 
     @Test
+    fun `converts components--securitySchemes--X--flows--X--scopes to securityDefinitions--implicit-oauth2--scopes`() {
+        val pointer = JsonPointer.compile("/components/securitySchemes/implicit-oauth2/flows/implicit/scopes")
+        val converted = JsonPointers.convertPointer(pointer)
+        assertThat(converted).hasToString("/securityDefinitions/implicit-oauth2/scopes")
+    }
+
+    @Test
     fun `escape() turns getInfo to info`() {
         val method = Swagger::class.java.methods.first { it.name == "getInfo" }
 
