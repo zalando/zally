@@ -7,6 +7,7 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.oas.models.security.SecurityScheme
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.SortedSet
@@ -20,7 +21,11 @@ import java.util.SortedSet
 class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
 
     private val scopeRegex = Regex(rulesConfig.getString(
-            "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.scope_regex"))
+        "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.scope_regex"))
+
+    private val pathWhitelist = rulesConfig.getStringList(
+        "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.path_whitelist")
+        .map { it.toRegex() }
 
     @Check(severity = Severity.MUST)
     fun checkDefinedScopeFormats(context: Context): List<Violation> =
@@ -39,7 +44,7 @@ class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
     @Check(severity = Severity.MUST)
     fun checkOperationsAreScoped(context: Context): List<Violation> {
         val defined = defined(context.api)
-        return context.validateOperations { (_, op) ->
+        return context.validateOperations(pathFilter = this::pathFilter) { (_, op) ->
             val requested = requested(context.api, op, defined)
             val undefined = undefined(requested, defined)
             when {
@@ -49,6 +54,8 @@ class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
             }
         }
     }
+
+    private fun pathFilter(entry: Map.Entry<String, PathItem>): Boolean = pathWhitelist.none { it.containsMatchIn(entry.key) }
 
     private fun SecurityScheme?.allFlows() = listOfNotNull(
         this?.flows?.implicit,

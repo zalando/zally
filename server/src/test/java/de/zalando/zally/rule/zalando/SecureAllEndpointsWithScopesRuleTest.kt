@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.getConfigFromContent
 import de.zalando.zally.getSwaggerContextFromContent
 import de.zalando.zally.rule.ZallyAssertions
-import de.zalando.zally.testConfig
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
@@ -12,7 +12,17 @@ import org.junit.Test
 @Suppress("StringLiteralDuplication", "UndocumentedPublicFunction", "UnsafeCallOnNullableType", "TooManyFunctions")
 class SecureAllEndpointsWithScopesRuleTest {
 
-    private val rule = SecureAllEndpointsWithScopesRule(testConfig)
+    private val config = getConfigFromContent("""
+        SecureAllEndpointsWithScopesRule {
+          scope_regex: "^(uid)|(([a-z-]+\\.){1,2}(read|write))${'$'}"
+          path_whitelist: [
+            "^/whitelisted/.*",
+            /obscure/
+          ]
+        }
+    """.trimIndent())
+
+    private val rule = SecureAllEndpointsWithScopesRule(config)
 
     @Test
     fun `checkDefinedScopeFormats with no security`() {
@@ -209,6 +219,37 @@ class SecureAllEndpointsWithScopesRuleTest {
                 - defined-scope
             paths:
               /things:
+                get:
+                  responses:
+                    200:
+                      description: Success
+            """.trimIndent()
+
+        val context = getSwaggerContextFromContent(yaml)
+
+        val violations = rule.checkOperationsAreScoped(context)
+
+        ZallyAssertions.assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `checkOperationsAreScoped with no scope on whitelisted path`() {
+        @Language("YAML")
+        val yaml = """
+            swagger: "2.0"
+            securityDefinitions:
+              oauth2:
+                type: oauth2
+                flow: password
+                scopes:
+                  defined-scope: A defined scope
+            paths:
+              /whitelisted/path:
+                get:
+                  responses:
+                    200:
+                      description: Success
+              /really/long/and/obscure/secret/path:
                 get:
                   responses:
                     200:
