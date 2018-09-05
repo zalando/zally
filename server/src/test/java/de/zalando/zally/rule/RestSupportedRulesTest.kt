@@ -2,13 +2,12 @@ package de.zalando.zally.rule
 
 import de.zalando.zally.apireview.RestApiBaseTest
 import de.zalando.zally.util.ErrorResponse
-import org.junit.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.context.TestPropertySource
-
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert.assertTrue
+import org.junit.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.BAD_REQUEST
+import org.springframework.test.context.TestPropertySource
 
 @Suppress("UndocumentedPublicClass")
 @TestPropertySource(properties = ["zally.ignoreRules=TestCheckAlwaysReport3MustViolations"])

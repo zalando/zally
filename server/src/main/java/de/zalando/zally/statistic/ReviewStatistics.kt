@@ -21,7 +21,7 @@ class ReviewStatistics {
         totalReviews = apiReviews.size
 
         totalReviewsDeduplicated = apiReviews
-                .filter { r -> r.name != null && !r.name.isEmpty() }
+                .filter { r -> !r.name.isNullOrEmpty() }
                 .groupBy { it.name }
                 .size
 
@@ -45,7 +45,7 @@ class ReviewStatistics {
                 .map { it.hintViolations }
                 .sum()
         violations = apiReviews
-                .flatMap { it.ruleViolations }
+                .flatMap { it.ruleViolations!! }
                 .groupBy { it.name }
                 .filter { !it.value.isEmpty() }
                 .map { ViolationStatistic(it.value[0], 1) }
