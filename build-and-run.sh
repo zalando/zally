@@ -19,7 +19,7 @@ cd ${SERVER_DIR} && ./gradlew clean build
 # Build web ui
 cd ${WEB_UI_DIR} && yarn && yarn build
 
-if [ "$@" == "--bark" ]; then
+if [[ "$@" == "--bark" ]]; then
 
     #Build Bark
     cd ${GITHUB_INTEGRATION_DIR} && ./gradlew clean build
