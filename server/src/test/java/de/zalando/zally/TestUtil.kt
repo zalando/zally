@@ -7,13 +7,9 @@ import de.zalando.zally.rule.ContentParseResult
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.rule.api.Context
-import io.swagger.models.ModelImpl
-import io.swagger.models.Operation
 import io.swagger.models.Path
-import io.swagger.models.Response
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.HeaderParameter
-import io.swagger.models.properties.StringProperty
 import io.swagger.parser.SwaggerParser
 import io.swagger.parser.util.ClasspathHelper
 import io.swagger.v3.oas.models.OpenAPI
@@ -66,7 +62,7 @@ fun getOpenApiContextFromContent(content: String): Context {
             throw RuntimeException("Parsed with violations:$errors")
         }
         is ContentParseResult.NotApplicable -> {
-            throw RuntimeException("Missing the 'OpenAPI' property.")
+            throw RuntimeException("Missing the 'openapi' property.")
         }
     }
 }
@@ -102,27 +98,6 @@ fun swaggerWithHeaderParams(vararg names: String) =
         parameters = names.map { header ->
             header to HeaderParameter().apply { name = header }
         }.toMap()
-    }
-
-fun swaggerWithDefinitions(vararg defs: Pair<String, List<String>>): Swagger =
-    Swagger().apply {
-        definitions = defs.map { def ->
-            def.first to ModelImpl().apply {
-                properties = def.second.map { prop -> prop to StringProperty() }.toMap()
-            }
-        }.toMap()
-    }
-
-fun swaggerWithOperations(operations: Map<String, Iterable<String>>): Swagger =
-    Swagger().apply {
-        val path = Path()
-        operations.forEach { method, statuses ->
-            val operation = Operation().apply {
-                statuses.forEach { addResponse(it, Response()) }
-            }
-            path.set(method, operation)
-        }
-        paths = mapOf("/test" to path)
     }
 
 fun openApiWithOperations(operations: Map<String, Iterable<String>>): OpenAPI =
