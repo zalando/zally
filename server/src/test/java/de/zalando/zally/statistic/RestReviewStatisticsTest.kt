@@ -14,8 +14,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import java.time.LocalDate
-import java.util.LinkedList
-import java.util.Arrays
 
 class RestReviewStatisticsTest : RestApiBaseTest() {
 
@@ -100,9 +98,9 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     @Test
     fun shouldReturnNumberOfUniqueApiReviewsBasedOnApiName() {
         val now = TestDateUtil.now().toLocalDate()
-        apiReviewRepository.save(apiReview(now, "API A", null))
-        apiReviewRepository.save(apiReview(now, "API B", null))
-        apiReviewRepository.save(apiReview(now, "API B", null))
+        apiReviewRepository!!.save(apiReview(now, "API A", null))
+        apiReviewRepository!!.save(apiReview(now, "API B", null))
+        apiReviewRepository!!.save(apiReview(now, "API B", null))
 
         val statistics = reviewStatistics
 
@@ -113,9 +111,9 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     @Test
     fun deduplicatedReviewStatisticsShouldIgnoreApisWithoutName() {
         val now = TestDateUtil.now().toLocalDate()
-        apiReviewRepository.save(apiReview(now, null, null))
-        apiReviewRepository.save(apiReview(now, "", null))
-        apiReviewRepository.save(apiReview(now, "Nice API", null))
+        apiReviewRepository!!.save(apiReview(now, null, null))
+        apiReviewRepository!!.save(apiReview(now, "", null))
+        apiReviewRepository!!.save(apiReview(now, "Nice API", null))
 
         val statistics = reviewStatistics
 
@@ -126,7 +124,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     @Test
     fun shouldStoreUserAgent() {
         val now = TestDateUtil.now().toLocalDate()
-        apiReviewRepository.save(apiReview(now, null, "curl"))
+        apiReviewRepository!!.save(apiReview(now, null, "curl"))
 
         val statistics = reviewStatistics
         assertThat(statistics.reviews).hasSize(1)
@@ -136,8 +134,8 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     @Test
     fun shouldFilterByUserAgent() {
         val now = TestDateUtil.now().toLocalDate()
-        apiReviewRepository.save(apiReview(now, null, "curl"))
-        apiReviewRepository.save(apiReview(now, null, null))
+        apiReviewRepository!!.save(apiReview(now, null, "curl"))
+        apiReviewRepository!!.save(apiReview(now, null, null))
 
         var statistics = reviewStatistics
         assertThat(statistics.reviews).hasSize(2)
@@ -147,7 +145,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     }
 
     private fun createRandomReviewsInBetween(from: LocalDate, to: LocalDate): List<ApiReview> {
-        val reviews = LinkedList<ApiReview>()
+        val reviews = mutableListOf<ApiReview>()
 
         var currentDate = LocalDate.from(from)
         while (currentDate.isBefore(to)) {
@@ -155,7 +153,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
             currentDate = currentDate.plusDays(1L)
         }
 
-        apiReviewRepository.saveAll(reviews)
+        apiReviewRepository!!.saveAll(reviews)
         return reviews
     }
 
@@ -171,7 +169,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     }
 
     private fun createRandomViolations(): List<Result> {
-        return Arrays.asList(Result(ZalandoRuleSet(), AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java), "", Severity.MUST, "/pointer"))
+        return listOf(Result(ZalandoRuleSet(), AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java), "", Severity.MUST, "/pointer"))
     }
 
     private fun assertBadRequestFor(from: Any?, to: Any?) {
