@@ -18,7 +18,7 @@ class SuccessResponseAsJsonObjectRule {
 
     @Check(severity = Severity.MUST)
     fun checkJSONObjectIsUsedAsSuccessResponseType(context: Context): List<Violation> =
-        context.api.paths.values
+        context.api.paths.orEmpty().values
             .flatMap {
                 it.readOperations().orEmpty()
                     .flatMap { it.responses.filter { (resCode, _) -> isSuccess(resCode) }.values }
