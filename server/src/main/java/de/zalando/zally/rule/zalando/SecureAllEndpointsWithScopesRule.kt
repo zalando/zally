@@ -1,90 +1,91 @@
 package de.zalando.zally.rule.zalando
 
-import com.google.common.collect.Sets
 import com.typesafe.config.Config
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.Operation
-import io.swagger.models.Swagger
-import io.swagger.models.auth.OAuth2Definition
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.PathItem
+import io.swagger.v3.oas.models.security.SecurityScheme
 import org.springframework.beans.factory.annotation.Autowired
+import java.util.SortedSet
 
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = "105",
-        severity = Severity.MUST,
-        title = "Secure All Endpoints With Scopes"
+    ruleSet = ZalandoRuleSet::class,
+    id = "105",
+    severity = Severity.MUST,
+    title = "Secure All Endpoints With Scopes"
 )
 class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
 
     private val scopeRegex = Regex(rulesConfig.getString(
-            "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.scope_regex"))
+        "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.scope_regex"))
+
+    private val pathWhitelist = rulesConfig.getStringList(
+        "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.path_whitelist")
+        .map { it.toRegex() }
 
     @Check(severity = Severity.MUST)
-    fun checkDefinedScopeFormats(swagger: Swagger): Violation? {
-        return swagger.securityDefinitions.orEmpty().flatMap { (schemeKey, scheme) ->
-            when (scheme) {
-                is OAuth2Definition -> {
-                    scheme.scopes.orEmpty().flatMap { (scope, _) ->
-                        checkDefinedScopeFormat(scope)?.let {
-                            listOf("securityDefinitions $schemeKey $scope: $it")
-                        } ?: emptyList()
-                    }
+    fun checkDefinedScopeFormats(context: Context): List<Violation> =
+        context.api.components?.securitySchemes?.values.orEmpty()
+            .filter { it.type == SecurityScheme.Type.OAUTH2 }
+            .flatMap { it.allFlows() }
+            .flatMap { flow ->
+                flow.scopes.orEmpty().keys.filterNot { scope ->
+                    scopeRegex.matches(scope)
                 }
+                .map { scope ->
+                    context.violation("scope '$scope' does not match regex '$scopeRegex'", flow.scopes)
+                }
+            }
+
+    @Check(severity = Severity.MUST)
+    fun checkOperationsAreScoped(context: Context): List<Violation> {
+        val defined = defined(context.api)
+        return context.validateOperations(pathFilter = this::pathFilter) { (_, op) ->
+            val requested = requested(context.api, op, defined)
+            val undefined = undefined(requested, defined)
+            when {
+                requested.isEmpty() -> context.violations("Endpoint not secured by OAuth2 scope(s)", op.security ?: op)
+                undefined.isNotEmpty() -> context.violations("Endpoint secured by undefined OAuth2 scope(s): ${undefined.joinToString()}", op.security ?: op)
                 else -> emptyList()
             }
-        }.takeIf { it.isNotEmpty() }?.let { Violation("Defined scopes should match an expected format", it) }
-    }
-
-    private fun checkDefinedScopeFormat(scope: String): String? {
-        return when {
-            scopeRegex.matches(scope) -> null
-            else -> "scope '$scope' does not match regex '$scopeRegex'"
         }
     }
 
-    @Check(severity = Severity.MUST)
-    fun checkOperationsAreScoped(swagger: Swagger): Violation? {
-        val definedScopes = getDefinedScopes(swagger)
-        val hasTopLevelScope = hasTopLevelScope(swagger, definedScopes)
-        val paths = swagger.paths.orEmpty().entries.flatMap { (pathKey, path) ->
-            path.operationMap.orEmpty().entries.map { (method, operation) ->
-                val actualScopes = extractAppliedScopes(operation)
-                val undefinedScopes = Sets.difference(actualScopes, definedScopes)
-                val unsecured = undefinedScopes.size == actualScopes.size && !hasTopLevelScope
-                val msg = when {
-                    unsecured ->
-                        "no valid OAuth2 scope"
-                    else -> null
-                }
-                if (msg != null) "$pathKey $method has $msg" else null
-            }.filterNotNull()
+    private fun pathFilter(entry: Map.Entry<String, PathItem>): Boolean = pathWhitelist.none { it.containsMatchIn(entry.key) }
+
+    private fun SecurityScheme?.allFlows() = listOfNotNull(
+        this?.flows?.implicit,
+        this?.flows?.password,
+        this?.flows?.clientCredentials,
+        this?.flows?.authorizationCode
+    )
+
+    private fun defined(api: OpenAPI): Map<String, Set<String>> = api.components?.securitySchemes.orEmpty()
+        .filterValues { scheme -> scheme.type == SecurityScheme.Type.OAUTH2 }
+        .mapValues { it.value.allFlows().flatMap { it.scopes.keys }.toSet() }
+
+    private fun requested(
+        api: OpenAPI,
+        op: io.swagger.v3.oas.models.Operation,
+        defined: Map<String, Set<String>>
+    ): List<Pair<String, String>> = (op.security ?: api.security ?: emptyList())
+        .flatMap { requirement ->
+            requirement
+                .filterKeys { name -> defined.containsKey(name) }
+                .flatMap { (name, scopes) -> scopes.map { name to it } }
         }
-        return if (!paths.isEmpty()) {
-            Violation("Every endpoint must be secured by some scope(s)", paths)
-        } else null
-    }
 
-    // get the scopes from security definition
-    private fun getDefinedScopes(swagger: Swagger): Set<Pair<String, String>> =
-        swagger.securityDefinitions.orEmpty().entries.flatMap { (group, def) ->
-            (def as? OAuth2Definition)?.scopes.orEmpty().keys.map { scope -> group to scope }
-        }.toSet()
-
-    // Extract all oauth2 scopes applied to the given operation into a simple list
-    private fun extractAppliedScopes(operation: Operation): Set<Pair<String, String>> =
-        operation.security?.flatMap { groupDefinition ->
-            groupDefinition.entries.flatMap { (group, scopes) ->
-                scopes.map { group to it }
-            }
-        }.orEmpty().toSet()
-
-    private fun hasTopLevelScope(swagger: Swagger, definedScopes: Set<Pair<String, String>>): Boolean =
-        swagger.security?.any { securityRequirement ->
-            securityRequirement.requirements.entries.any { (group, scopes) ->
-                scopes.any { scope -> (group to scope) in definedScopes }
-            }
-        } ?: false
+    private fun undefined(
+        requested: List<Pair<String, String>>,
+        defined: Map<String, Set<String>>
+    ): SortedSet<String> = requested
+        .filterNot { (name, scope) ->
+            defined[name].orEmpty().contains(scope)
+        }
+        .map { "${it.first}:${it.second}" }
+        .toSortedSet()
 }
