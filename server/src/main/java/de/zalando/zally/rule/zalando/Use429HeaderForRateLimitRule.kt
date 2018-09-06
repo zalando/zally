@@ -5,6 +5,7 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -19,11 +20,14 @@ class Use429HeaderForRateLimitRule {
 
     @Check(severity = Severity.MUST)
     fun checkHeadersForRateLimiting(context: Context): List<Violation> =
-        context.api.paths.orEmpty().values.flatMap { it.readOperations().flatMap { it.responses.orEmpty().entries } }
-            .filter { (code, _) -> "429" == code }.map { it.value }
-            .filterNot { containsRateLimitHeader(it.headers.orEmpty().keys) }
-            .map { context.violation(description, it) }
+        context.validateResponses(responseFilter = this::violatingResponse) { (_, response) ->
+            context.violations(description, response)
+        }
 
-    private fun containsRateLimitHeader(headers: Collection<String>): Boolean =
-        "Retry-After" in headers || headers.containsAll(xRateLimitHeaders)
+    private fun violatingResponse(entry: Map.Entry<String, ApiResponse>): Boolean {
+        val headers = entry.value.headers.orEmpty().keys
+        return "429" == entry.key &&
+            "Retry-After" !in headers &&
+            !headers.containsAll(xRateLimitHeaders)
+    }
 }
