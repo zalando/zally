@@ -19,7 +19,7 @@ class Use429HeaderForRateLimitRule {
 
     @Check(severity = Severity.MUST)
     fun checkHeadersForRateLimiting(context: Context): List<Violation> =
-        context.api.paths.values.flatMap { it.readOperations().flatMap { it.responses.entries } }
+        context.api.paths.orEmpty().values.flatMap { it.readOperations().flatMap { it.responses.orEmpty().entries } }
             .filter { (code, _) -> "429" == code }.map { it.value }
             .filterNot { containsRateLimitHeader(it.headers.orEmpty().keys) }
             .map { context.violation(description, it) }
