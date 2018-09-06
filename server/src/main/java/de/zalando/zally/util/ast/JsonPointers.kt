@@ -16,6 +16,7 @@ object JsonPointers {
             "^/components/schemas/(.*)$" to "/definitions/$1",
             "^/components/responses/(.*)$" to "/responses/$1",
             "^/components/parameters/(.*)$" to "/parameters/$1",
+            "^/components/securitySchemes/(.*?)/flows/(implicit|password|clientCredentials|authorizationCode)/(.*)$" to "/securityDefinitions/$1/$3",
             "^/components/securitySchemes/(.*)$" to "/securityDefinitions/$1",
             "^/paths/(.+/responses/.+)/content/.+/(schema.*)$" to "/paths/$1/$2",
 
