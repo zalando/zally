@@ -13,7 +13,6 @@ object PatternUtil {
     private val KEBAB_CASE_PATTERN = "^[a-z]+(?:-[a-z]+)*$".toRegex()
     private val HYPHENATED_PATTERN = "^[A-Za-z0-9.]+(-[A-Za-z0-9.]+)*$".toRegex()
     private val PATH_VARIABLE_PATTERN = "\\{.+}$".toRegex()
-    private val GENERIC_VERSION_PATTERN = "^\\d+\\.\\d+\\.\\d+$".toRegex()
     private val APPLICATION_PROBLEM_JSON_PATTERN = "^application/(problem\\+)?json$".toRegex()
     private val CUSTOM_WITH_VERSIONING_PATTERN = "^\\w+/[-+.\\w]+;v(ersion)?=\\d+$".toRegex()
 
@@ -34,8 +33,6 @@ object PatternUtil {
     fun isKebabCase(input: String): Boolean = input.matches(KEBAB_CASE_PATTERN)
 
     fun isHyphenated(input: String): Boolean = input.matches(HYPHENATED_PATTERN)
-
-    fun isVersion(input: String): Boolean = input.matches(GENERIC_VERSION_PATTERN)
 
     fun isApplicationJsonOrProblemJson(mediaType: String): Boolean =
         mediaType.matches(APPLICATION_PROBLEM_JSON_PATTERN)

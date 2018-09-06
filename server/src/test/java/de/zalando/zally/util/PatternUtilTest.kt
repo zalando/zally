@@ -9,7 +9,6 @@ import de.zalando.zally.util.PatternUtil.isKebabCase
 import de.zalando.zally.util.PatternUtil.isPascalCase
 import de.zalando.zally.util.PatternUtil.isPathVariable
 import de.zalando.zally.util.PatternUtil.isSnakeCase
-import de.zalando.zally.util.PatternUtil.isVersion
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -109,23 +108,5 @@ class PatternUtilTest {
         assertTrue(isHyphenated("aA"))
         assertTrue(isHyphenated("AA"))
         assertTrue(isHyphenated("CamelCaseIsNotAcceptableAndShouldBeIllegal"))
-    }
-
-    @Test
-    fun checkGenericIsVersion() {
-        assertFalse(isVersion("*"))
-        assertFalse(isVersion("1"))
-        assertFalse(isVersion("1.2"))
-        assertFalse(isVersion("12.3"))
-        assertTrue(isVersion("1.2.3"))
-        assertFalse(isVersion("1.23"))
-        assertTrue(isVersion("1.2.34"))
-        assertTrue(isVersion("123.456.789"))
-        assertFalse(isVersion("1.2.*"))
-        assertFalse(isVersion("1.*"))
-        assertFalse(isVersion("a"))
-        assertFalse(isVersion("1.a"))
-        assertFalse(isVersion("*.1"))
-        assertFalse(isVersion("1.*.2"))
     }
 }
