@@ -1,48 +1,69 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.swaggerWithPaths
-import io.swagger.models.Swagger
+import de.zalando.zally.getOpenApiContextFromContent
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class KebabCaseInPathSegmentsRuleTest {
 
-    private val testPath1 = "/shipment-order/{shipment_order_id}"
-    private val testPath2 = "/partner-order/{partner_order_id}"
-    private val testPath3 = "/partner-order/{partner_order_id}/partner-order/{partner_order_id}"
-    private val wrongTestPath1 = "/shipment_order/{shipment_order_id}"
-    private val wrongTestPath2 = "/partner-order/{partner_order_id}/partner-order1/{partner_order_id}"
-
     private val rule = KebabCaseInPathSegmentsRule()
 
     @Test
-    fun emptySwagger() {
-        assertThat(rule.validate(Swagger())).isNull()
+    fun `checkKebabCaseInPathSegments should return violation for path segments which are not lowercase separate words with hyphens`() {
+        @Language("YAML")
+        val spec = """
+            openapi: 3.0.1
+            paths:
+              /partnerOrders: {}
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
+
+        val violations = rule.checkKebabCaseInPathSegments(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations[0].description).contains("Use lowercase separate words with hyphens")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1partnerOrders")
     }
 
     @Test
-    fun validateNormalPath() {
-        val swagger = swaggerWithPaths(testPath1)
-        assertThat(rule.validate(swagger)).isNull()
+    fun `checkKebabCaseInPathSegments should return violation for sub resource names which are not lowercase separate words with hyphens`() {
+        @Language("YAML")
+        val spec = """
+            openapi: 3.0.1
+            paths:
+              /partner-orders/{order-id}/orderItems: {}
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
+
+        val violations = rule.checkKebabCaseInPathSegments(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations[0].description).contains("Use lowercase separate words with hyphens")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1partner-orders~1{order-id}~1orderItems")
     }
 
     @Test
-    fun validateMultipleNormalPaths() {
-        val swagger = swaggerWithPaths(testPath1, testPath2, testPath3)
-        assertThat(rule.validate(swagger)).isNull()
+    fun `checkKebabCaseInPathSegments should return no violation if all segments are lowercase separated words with hyphens`() {
+        @Language("YAML")
+        val spec = """
+            openapi: 3.0.1
+            paths:
+              /partner-orders/{orderId}/order-items: {}
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
+
+        val violations = rule.checkKebabCaseInPathSegments(context)
+
+        assertThat(violations).isEmpty()
     }
 
     @Test
-    fun validateFalsePath() {
-        val swagger = swaggerWithPaths(wrongTestPath1)
-        val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf(wrongTestPath1))
-    }
+    fun `lowerCaseHyphenSeparatedRegex should match lowercase, with hyphen separated words`() {
+        assertThat("articles".matches(rule.lowerCaseHyphenSeparatedRegex)).isTrue()
+        assertThat("partner-articles".matches(rule.lowerCaseHyphenSeparatedRegex)).isTrue()
 
-    @Test
-    fun validateMultipleFalsePaths() {
-        val swagger = swaggerWithPaths(wrongTestPath1, testPath2, wrongTestPath2)
-        val result = rule.validate(swagger)!!
-        assertThat(result.paths).hasSameElementsAs(listOf(wrongTestPath1, wrongTestPath2))
+        assertThat("COOL-ARTICLES".matches(rule.lowerCaseHyphenSeparatedRegex)).isFalse()
+        assertThat("wEirDARtiCles".matches(rule.lowerCaseHyphenSeparatedRegex)).isFalse()
     }
 }
