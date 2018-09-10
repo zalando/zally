@@ -27,6 +27,23 @@ class KebabCaseInPathSegmentsRuleTest {
     }
 
     @Test
+    fun `checkKebabCaseInPathSegments should return violation for sub resource names which are not lowercase separate words with hyphens`() {
+        @Language("YAML")
+        val spec = """
+            openapi: 3.0.1
+            paths:
+              /partner-orders/{order-id}/orderItems: {}
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
+
+        val violations = rule.checkKebabCaseInPathSegments(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations[0].description).contains("Use lowercase separate words with hyphens")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1partner-orders~1{order-id}~1orderItems")
+    }
+
+    @Test
     fun `checkKebabCaseInPathSegments should return no violation if all segments are lowercase separated words with hyphens`() {
         @Language("YAML")
         val spec = """
