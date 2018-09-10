@@ -15,7 +15,7 @@ class NestedPathsMayBeRootPathsRuleTest {
         val spec = """
             openapi: 3.0.1
             paths:
-              "/countries/{country-id}/cities/{city-id}": {}
+              "/countries/{country-id}/populated/cities/{city-id}": {}
         """.trimIndent()
         val context = getOpenApiContextFromContent(spec)
 
@@ -24,7 +24,7 @@ class NestedPathsMayBeRootPathsRuleTest {
         assertThat(violations).isNotEmpty
         assertThat(violations[0].description).contains("may be top-level resource")
         assertThat(violations[0].pointer.toString())
-            .isEqualTo("/paths/~1countries~1{country-id}~1cities~1{city-id}")
+            .isEqualTo("/paths/~1countries~1{country-id}~1populated~1cities~1{city-id}")
     }
 
     @Test
@@ -33,7 +33,7 @@ class NestedPathsMayBeRootPathsRuleTest {
         val spec = """
             openapi: 3.0.1
             paths:
-              pets/: {}
+              /pets/dogs: {}
         """.trimIndent()
         val context = getOpenApiContextFromContent(spec)
 
