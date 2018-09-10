@@ -6,7 +6,6 @@ import de.zalando.zally.util.PatternUtil.isHyphenated
 import de.zalando.zally.util.PatternUtil.isHyphenatedCamelCase
 import de.zalando.zally.util.PatternUtil.isHyphenatedPascalCase
 import de.zalando.zally.util.PatternUtil.isKebabCase
-import de.zalando.zally.util.PatternUtil.isLowerCaseAndHyphens
 import de.zalando.zally.util.PatternUtil.isPascalCase
 import de.zalando.zally.util.PatternUtil.isPathVariable
 import de.zalando.zally.util.PatternUtil.isSnakeCase
@@ -24,13 +23,6 @@ class PatternUtilTest {
     fun checkHasTrailingSlash() {
         assertTrue(hasTrailingSlash("blah/"))
         assertFalse(hasTrailingSlash("blah"))
-    }
-
-    @Test
-    fun checkIsLowerCaseAndHyphens() {
-        assertTrue(isLowerCaseAndHyphens("a-b-c"))
-        assertTrue(isLowerCaseAndHyphens("abc"))
-        assertFalse(isLowerCaseAndHyphens("A-B-C"))
     }
 
     @Test

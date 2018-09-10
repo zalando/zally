@@ -5,7 +5,6 @@ package de.zalando.zally.util
  */
 object PatternUtil {
 
-    private val LOWER_CASE_HYPHENS_PATTERN = "^[a-z-]*$".toRegex()
     private val CAMEL_CASE_PATTERN = "^[a-z]+(?:[A-Z][a-z]+)*$".toRegex()
     private val PASCAL_CASE_PATTERN = "^[A-Z][a-z]+(?:[A-Z][a-z]+)*$".toRegex()
     private val HYPHENATED_CAMEL_CASE_PATTERN = "^[a-z]+(?:-[A-Z][a-z]+)*$".toRegex()
@@ -19,8 +18,6 @@ object PatternUtil {
     private val CUSTOM_WITH_VERSIONING_PATTERN = "^\\w+/[-+.\\w]+;v(ersion)?=\\d+$".toRegex()
 
     fun hasTrailingSlash(input: String): Boolean = input.trim { it <= ' ' }.endsWith("/")
-
-    fun isLowerCaseAndHyphens(input: String): Boolean = input.matches(LOWER_CASE_HYPHENS_PATTERN)
 
     fun isPathVariable(input: String): Boolean = input.matches(PATH_VARIABLE_PATTERN)
 
