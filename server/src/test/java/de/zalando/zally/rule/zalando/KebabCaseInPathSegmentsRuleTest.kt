@@ -49,7 +49,7 @@ class KebabCaseInPathSegmentsRuleTest {
         val spec = """
             openapi: 3.0.1
             paths:
-              /partner-orders: {}
+              /partner-orders/{orderId}/order-items: {}
         """.trimIndent()
         val context = getOpenApiContextFromContent(spec)
 
