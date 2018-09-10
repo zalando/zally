@@ -14,6 +14,10 @@ Zally also contains some additional rules enforcing aspects of the OpenAPI spec 
 
 Information about protocol should be placed in schema and not as part of the host.
 
+## M009: At most one body parameter
+
+Enforces that "there can only be one body parameter" per operation as required by the [swagger spec](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#parameter-object).
+
 ## S005: Do not leave unused definitions
 
 Unused definitions cause confusion and should be avioded.
