@@ -1,6 +1,7 @@
 package de.zalando.zally.rule.api
 
 import com.fasterxml.jackson.core.JsonPointer
+import io.swagger.models.Swagger
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.PathItem
@@ -11,6 +12,11 @@ interface Context {
      * Parsed OpenAPI 3 object represents either the OpenAPI 3 specification or converted OpenAPI 2 (Swagger) spec.
      */
     val api: OpenAPI
+
+    /**
+     * Parsed Swagger object represents the original OpenAPI 2 (Swagger) spec, or null if original is OpenAPI 3.
+     */
+    val swagger: Swagger?
 
     /**
      * @return `true` if the source is a OpenAPI 3 specification.
