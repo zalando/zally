@@ -1,7 +1,9 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.getSwaggerContextFromContent
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class Use429HeaderForRateLimitRuleTest {
@@ -10,6 +12,7 @@ class Use429HeaderForRateLimitRuleTest {
 
     @Test
     fun `checkHeadersForRateLimiting should return violation if no rate limit is provided via headers`() {
+        @Language("YAML")
         val content = """
             openapi: 3.0.1
             paths:
@@ -29,6 +32,7 @@ class Use429HeaderForRateLimitRuleTest {
 
     @Test
     fun `checkHeadersForRateLimiting should return no violation if rate limit information is provided via headers`() {
+        @Language("YAML")
         val content = """
             openapi: 3.0.1
             paths:
@@ -40,6 +44,23 @@ class Use429HeaderForRateLimitRuleTest {
                         Retry-After: {}
         """.trimIndent()
         val context = getOpenApiContextFromContent(content)
+
+        val violations = rule.checkHeadersForRateLimiting(context)
+
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `checkHeadersForRateLimiting avoid bug 787 NPE on missing response`() {
+        @Language("YAML")
+        val content = """
+            swagger: "2.0"
+            paths:
+              /articles:
+                get:
+                  description: asd
+            """.trimIndent()
+        val context = getSwaggerContextFromContent(content)
 
         val violations = rule.checkHeadersForRateLimiting(context)
 

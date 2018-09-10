@@ -16,6 +16,7 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.oas.models.PathItem.HttpMethod
+import io.swagger.v3.oas.models.responses.ApiResponse
 import io.swagger.v3.parser.OpenAPIV3Parser
 import io.swagger.v3.parser.converter.SwaggerConverter
 import io.swagger.v3.parser.core.models.ParseOptions
@@ -67,6 +68,27 @@ class DefaultContext(
         path.readOperationsMap()
             .orEmpty()
             .filter(operationFilter)
+            .flatMap(action)
+            .filterNotNull()
+    }
+
+    /**
+     * Convenience method for filtering and iterating over the responses in order to create Violations.
+     * @param pathFilter a filter selecting the paths to validate
+     * @param operationFilter a filter selecting the operations to validate
+     * @param responseFilter a filter selecting the responses to validate
+     * @param action the action to perform on filtered items
+     * @return a list of Violations and/or nulls where no violations are necessary
+     */
+    override fun validateResponses(
+        pathFilter: (Map.Entry<String, PathItem>) -> Boolean,
+        operationFilter: (Map.Entry<HttpMethod, Operation>) -> Boolean,
+        responseFilter: (Map.Entry<String, ApiResponse>) -> Boolean,
+        action: (Map.Entry<String, ApiResponse>) -> List<Violation?>
+    ): List<Violation> = validateOperations(pathFilter, operationFilter) { (_, operation) ->
+        operation.responses
+            .orEmpty()
+            .filter(responseFilter)
             .flatMap(action)
             .filterNotNull()
     }
