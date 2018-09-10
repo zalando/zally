@@ -22,6 +22,7 @@ class NoVersionInUriRuleTest {
         val violations = rule.checkServerURLs(context)
 
         assertThat(violations).isNotEmpty
+        assertThat(violations).hasSize(1)
         assertThat(violations[0].description).contains("Server URL contains version number")
         assertThat(violations[0].pointer.toString()).isEqualTo("/servers/0")
     }

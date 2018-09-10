@@ -5,7 +5,6 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.PatternUtil
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -15,10 +14,11 @@ import de.zalando.zally.util.PatternUtil
 )
 class NoVersionInUriRule {
     private val description = "Server URL contains version number"
+    private val hasVersionInUrlRegex = "(.*)/(.*)v[0-9]+(.*)".toRegex()
 
     @Check(severity = Severity.MUST)
     fun checkServerURLs(context: Context): List<Violation> =
         context.api.servers.orEmpty()
-            .filter { PatternUtil.hasVersionInUrl(it.url) }
+            .filter { it.url.matches(hasVersionInUrlRegex) }
             .map { context.violation(description, it) }
 }

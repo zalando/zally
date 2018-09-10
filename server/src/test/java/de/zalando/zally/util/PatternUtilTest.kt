@@ -1,7 +1,6 @@
 package de.zalando.zally.util
 
 import de.zalando.zally.util.PatternUtil.hasTrailingSlash
-import de.zalando.zally.util.PatternUtil.hasVersionInUrl
 import de.zalando.zally.util.PatternUtil.isCamelCase
 import de.zalando.zally.util.PatternUtil.isHyphenated
 import de.zalando.zally.util.PatternUtil.isHyphenatedCamelCase
@@ -118,13 +117,6 @@ class PatternUtilTest {
         assertTrue(isHyphenated("aA"))
         assertTrue(isHyphenated("AA"))
         assertTrue(isHyphenated("CamelCaseIsNotAcceptableAndShouldBeIllegal"))
-    }
-
-    @Test
-    fun checkHasVersionInUrl() {
-        assertTrue(hasVersionInUrl("path/to/v1"))
-        assertTrue(hasVersionInUrl("path/to/v1/"))
-        assertFalse(hasVersionInUrl("path/to"))
     }
 
     @Test
