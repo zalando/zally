@@ -23,8 +23,26 @@ class NoVersionInUriRuleTest {
 
         assertThat(violations).isNotEmpty
         assertThat(violations).hasSize(1)
-        assertThat(violations[0].description).contains("Server URL contains version number")
+        assertThat(violations[0].description).contains("URL contains version number")
         assertThat(violations[0].pointer.toString()).isEqualTo("/servers/0")
+    }
+
+    @Test
+    fun `checkServerURLs should return a violation if (sub) resource names contain version suffix`() {
+        @Language("YAML")
+        val spec = """
+            openapi: 3.0.1
+            paths:
+              /shop/orders-v1/{order-id}: {}
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
+
+        val violations = rule.checkServerURLs(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations).hasSize(1)
+        assertThat(violations[0].description).contains("URL contains version number")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1shop~1orders-v1~1{order-id}")
     }
 
     @Test

@@ -5,6 +5,9 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.PathItem
+import io.swagger.v3.oas.models.servers.Server
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -13,12 +16,20 @@ import de.zalando.zally.rule.api.Violation
     title = "Do Not Use URI Versioning"
 )
 class NoVersionInUriRule {
-    private val description = "Server URL contains version number"
-    private val hasVersionInUrlRegex = "(.*)/(.*)v[0-9]+(.*)".toRegex()
+    private val description = "URL contains version number"
+    private val versionRegex = "(.*)v[0-9]+(.*)".toRegex()
 
     @Check(severity = Severity.MUST)
     fun checkServerURLs(context: Context): List<Violation> =
-        context.api.servers.orEmpty()
-            .filter { it.url.matches(hasVersionInUrlRegex) }
+        (violatingServers(context.api) + violatingPaths(context.api))
             .map { context.violation(description, it) }
+
+    private fun violatingServers(api: OpenAPI): Collection<Server> =
+        api.servers.orEmpty()
+            .filter { it.url.matches(versionRegex) }
+
+    private fun violatingPaths(api: OpenAPI): Collection<PathItem> =
+        api.paths.orEmpty().entries
+            .filter { (path, _) -> path.matches(versionRegex) }
+            .map { (_, pathEntry) -> pathEntry }
 }
