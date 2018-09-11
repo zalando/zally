@@ -1,44 +1,72 @@
 package de.zalando.zally.rule.zalando
 
-import io.swagger.models.Info
-import io.swagger.models.Swagger
+import de.zalando.zally.getOpenApiContextFromContent
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class VersionInInfoSectionRuleTest {
 
-    private fun swaggerWithVersion(versionValue: String) =
-        Swagger().apply {
-            info = Info().apply {
-                version = versionValue
-            }
-        }
-
     private val rule = VersionInInfoSectionRule()
 
     @Test
-    fun emptySwagger() {
-        val result = rule.validate(Swagger())!!
-        assertThat(result.description).contains("Version is missing")
+    fun `checkAPIVersion should return violation if version is not set`() {
+        @Language("YAML")
+        val spec = """
+            openapi: 3.0.1
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
+
+        val violation = rule.checkAPIVersion(context)
+
+        assertThat(violation).isNotNull
+        assertThat(violation!!.description).contains("version is missing")
+        assertThat(violation.pointer.toString()).isEqualTo("/info/version")
     }
 
     @Test
-    fun missingVersion() {
-        val swagger = Swagger().apply { info = Info() }
-        val result = rule.validate(swagger)!!
-        assertThat(result.description).contains("Version is missing")
+    fun `checkAPIVersion should return violation if version format is incorrect`() {
+        @Language("YAML")
+        val spec = """
+            openapi: 3.0.1
+            info:
+              version: 1-alpha
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
+
+        val violation = rule.checkAPIVersion(context)
+
+        assertThat(violation).isNotNull
+        assertThat(violation!!.description).contains("incorrect format")
+        assertThat(violation.pointer.toString()).isEqualTo("/info/version")
     }
 
     @Test
-    fun wrongVersionFormat() {
-        val swagger = swaggerWithVersion("1.2.3-a")
-        val result = rule.validate(swagger)!!
-        assertThat(result.description).contains("Specified version has incorrect format")
+    fun `checkAPIVersion should return no violation if version is present in the correct format`() {
+        @Language("YAML")
+        val spec = """
+            openapi: 3.0.1
+            info:
+              version: 1.0.0
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
+
+        val violation = rule.checkAPIVersion(context)
+
+        assertThat(violation).isNull()
     }
 
     @Test
-    fun correctVersion() {
-        val swagger = swaggerWithVersion("1.2.3")
-        assertThat(rule.validate(swagger)).isNull()
+    fun `versionRegex should match only valid version format`() {
+        assertThat("1.0.0".matches(rule.versionRegex)).isTrue()
+        assertThat("111.222.333".matches(rule.versionRegex)).isTrue()
+        assertThat("1.0".matches(rule.versionRegex)).isTrue()
+
+        assertThat(".0.0".matches(rule.versionRegex)).isFalse()
+        assertThat("..".matches(rule.versionRegex)).isFalse()
+        assertThat("1.".matches(rule.versionRegex)).isFalse()
+        assertThat("1-some-version".matches(rule.versionRegex)).isFalse()
+        assertThat("this-is-not-a-valid-version".matches(rule.versionRegex)).isFalse()
+        assertThat("1.1.1.1.1.1.1".matches(rule.versionRegex)).isFalse()
     }
 }

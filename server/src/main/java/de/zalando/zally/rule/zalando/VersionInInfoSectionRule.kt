@@ -1,30 +1,28 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.PatternUtil.isVersion
-import io.swagger.models.Swagger
 
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = "116",
-        severity = Severity.SHOULD,
-        title = "Provide version information"
+    ruleSet = ZalandoRuleSet::class,
+    id = "116",
+    severity = Severity.MUST,
+    title = "Use Semantic Versioning"
 )
 class VersionInInfoSectionRule {
-    private val description = "Only the documentation, not the API itself, needs version information. It should be in the " +
-        "format MAJOR.MINOR.DRAFT."
+    private val description = "Semantic versioning has to be used in format MAJOR.MINOR(.DRAFT)"
+    internal val versionRegex = """^\d+.\d+(.\d+)?$""".toRegex()
 
-    @Check(severity = Severity.SHOULD)
-    fun validate(swagger: Swagger): Violation? {
-        val version = swagger.info?.version
-        val desc = when {
-            version == null -> "Version is missing"
-            !isVersion(version) -> "Specified version has incorrect format: $version"
+    @Check(severity = Severity.MUST)
+    fun checkAPIVersion(context: Context): Violation? {
+        val version = context.api.info?.version?.trim()
+        return when {
+            version == null -> context.violation("$description: version is missing")
+            !version.matches(versionRegex) -> context.violation("$description: incorrect format")
             else -> null
         }
-        return desc?.let { Violation("$description $it", emptyList()) }
     }
 }
