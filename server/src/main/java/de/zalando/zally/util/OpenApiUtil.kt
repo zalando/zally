@@ -22,7 +22,7 @@ fun OpenAPI.getAllHeaders(): Set<HeaderElement> {
         .map { HeaderElement(it.key, it.value) }
         .toSet()
 
-    val fromParams = components.parameters.orEmpty().values.extractHeaders()
+    val fromComponentsParams = components?.parameters.orEmpty().values.extractHeaders()
 
     val fromPaths = paths.orEmpty().flatMap { (_, path) ->
         val fromPathParameters = path.parameters.extractHeaders()
@@ -34,16 +34,18 @@ fun OpenAPI.getAllHeaders(): Set<HeaderElement> {
         fromPathParameters + fromOperations
     }
 
-    return fromParams + fromPaths
+    val fromComponentsHeaders = components?.headers.orEmpty().map { HeaderElement(it.key, it.value) }
+
+    return fromComponentsParams + fromPaths + fromComponentsHeaders
 }
 
 /**
  * Returns all defined schemas of an API specification
  * @return a collection of schemas
  */
-fun OpenAPI.getAllSchemas(): Collection<Schema<Any>> = this.components.schemas.orEmpty().values +
-    this.components.responses.values.flatMap { it.content.values.mapNotNull { it.schema } } +
-    this.components.requestBodies.values.flatMap { it.content.values.mapNotNull { it.schema } } +
+fun OpenAPI.getAllSchemas(): Collection<Schema<Any>> = this.components?.schemas.orEmpty().values +
+    this.components?.responses.orEmpty().values.flatMap { it.content.orEmpty().values.mapNotNull { it.schema } } +
+    this.components?.requestBodies.orEmpty().values.flatMap { it.content.orEmpty().values.mapNotNull { it.schema } } +
     this.paths.orEmpty().flatMap {
         it.value.readOperations().flatMap { it.parameters.orEmpty().mapNotNull { it.schema } }
     } +
@@ -107,7 +109,7 @@ fun OpenAPI.getAllProperties(): Map<String, Schema<Any>> {
  * Returns all defined parameters of an API specification
  * @return a collection of parameters
  */
-fun OpenAPI.getAllParameters(): Map<String, Parameter> = this.components.parameters.orEmpty() +
+fun OpenAPI.getAllParameters(): Map<String, Parameter> = this.components?.parameters.orEmpty() +
     this.paths.orEmpty().values.flatMap { it.parameters.orEmpty().mapNotNull { it.name to it } } +
     this.paths.orEmpty().values.flatMap {
         it.readOperations()
