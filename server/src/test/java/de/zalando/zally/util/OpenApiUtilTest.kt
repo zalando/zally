@@ -15,6 +15,8 @@ import io.swagger.v3.oas.models.responses.ApiResponse
 import io.swagger.v3.oas.models.responses.ApiResponses
 import org.junit.Test
 import org.assertj.core.api.Assertions.assertThat
+import de.zalando.zally.getOpenApiContextFromContent
+import org.intellij.lang.annotations.Language
 
 class OpenApiUtilTest {
 
@@ -330,5 +332,40 @@ class OpenApiUtilTest {
 
         assertThat(schemas).isNotNull
         assertThat(schemas).isEmpty()
+    }
+
+    @Test
+    fun `getAllTransitiveSchemas should be able to cope with recursive schemas`() {
+        @Language("YAML")
+        val spec = """
+openapi: 3.0.1
+paths:
+  /products/{product_id}:
+    get:
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                ${'$'}ref: "#/components/schemas/FacetGetResponse"
+components:
+  schemas:
+    FacetGetResponse:
+      allOf:
+        - ${'$'}ref: "#/components/schemas/ProductResource"
+    ProductResource:
+      allOf:
+        - type: object
+          properties:
+            children:
+              type: array
+              items:
+                ${'$'}ref: "#/components/schemas/ProductResource"
+        """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
+
+        val schemas = context.api.getAllTransitiveSchemas()
+
+        assertThat(schemas).hasSize(2)
     }
 }

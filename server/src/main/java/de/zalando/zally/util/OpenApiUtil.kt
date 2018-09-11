@@ -4,6 +4,7 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.media.Schema
 import io.swagger.v3.oas.models.parameters.Parameter
 import io.swagger.v3.oas.models.responses.ApiResponse
+import java.util.Objects
 
 data class HeaderElement(
     val name: String,
@@ -62,9 +63,9 @@ fun OpenAPI.getAllSchemas(): Collection<Schema<Any>> = this.components?.schemas.
  * Traverses the schemas and returns all included schemas
  * @return a collection of all transitive schemas
  */
-fun OpenAPI.getAllTransitiveSchemas(): Set<Schema<Any>> {
+fun OpenAPI.getAllTransitiveSchemas(): Collection<Schema<Any>> {
     fun isPrimitive(schema: Schema<Any>): Boolean = schema.properties.orEmpty().isEmpty()
-    val collector = mutableSetOf<Schema<Any>>()
+    val collector = mutableMapOf<Int, Schema<Any>>()
 
     tailrec fun traverseSchemas(schemasToScan: Collection<Schema<Any>>) {
         if (schemasToScan.isEmpty()) return
@@ -72,13 +73,13 @@ fun OpenAPI.getAllTransitiveSchemas(): Set<Schema<Any>> {
         val primitiveSchemas = schemasToScan.filter { isPrimitive(it) }
         val nonPrimitiveSchemas = schemasToScan.filterNot { isPrimitive(it) }
 
-        collector.addAll(primitiveSchemas)
+        primitiveSchemas.forEach { schema -> collector[schema.customHash()] = schema }
         traverseSchemas(nonPrimitiveSchemas.flatMap { it.properties.values })
     }
 
     traverseSchemas(this.getAllSchemas())
 
-    return collector
+    return collector.values
 }
 
 /**
@@ -115,3 +116,13 @@ fun OpenAPI.getAllParameters(): Map<String, Parameter> = this.components?.parame
         it.readOperations()
             .flatMap { it.parameters.orEmpty().mapNotNull { it.name to it } }
     }
+
+/**
+ * Calculates custom hash to avoid calling the hash of the parent schema.
+ * E.g. io.swagger.v3.oas.models.media.ArraySchema#hashCode() calls super#hashCode()
+ * which fails for recursive data structures (endless loop -> StackOverflow)
+ */
+private fun Schema<Any>.customHash(): Int = Objects.hash(title, multipleOf, maximum, exclusiveMaximum, minimum,
+    exclusiveMinimum, maxLength, minLength, pattern, maxItems, minItems, uniqueItems, maxProperties, minProperties,
+    required, type, not, properties, additionalProperties, description, format, `$ref`, nullable, readOnly, writeOnly,
+    example, externalDocs, deprecated, xml, extensions, discriminator)
