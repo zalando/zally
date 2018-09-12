@@ -1,6 +1,9 @@
 package de.zalando.zally.apireview
 
+import de.zalando.zally.configuration.JacksonObjectMapperConfiguration
+import de.zalando.zally.dto.ApiDefinitionRequest
 import org.hamcrest.Matchers.containsString
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,10 +29,71 @@ class ApiViolationsControllerTest {
     @Throws(Exception::class)
     fun violationsResponseReferencesFullGuidelinesUrl() {
         mvc!!.perform(
-                post("/api-violations")
-                        .contentType("application/json")
-                        .content("{\"api_definition_string\":\"\"}"))
-                .andExpect(status().isOk)
-                .andExpect(content().string(containsString("https://zalando.github.io/restful-api-guidelines")))
+            post("/api-violations")
+                .contentType("application/json")
+                .content("{\"api_definition_string\":\"\"}"))
+            .andExpect(status().isOk)
+            .andExpect(content().string(containsString("https://zalando.github.io/restful-api-guidelines")))
     }
+
+    /**
+     * This test runs all rules against an API specification with recursive references. It prevents check developers
+     * from StackOverflow exceptions during the check execution.
+     *
+     * General advice: Don't use `hashCode` or `toString` methods on the OpenAPI elements since they don't support
+     * recursiveness. Keep in mind that these methods can be called implicitly (e.g. when putting objects in a Set).
+     */
+    @Test
+    fun `all rules must be able to cope with recursive api specifications`() {
+        val objectMapper = JacksonObjectMapperConfiguration().createObjectMapper()
+        val request = objectMapper.writeValueAsString(ApiDefinitionRequest(apiDefinitionString = recursiveSpec))
+        mvc!!.perform(
+            post("/api-violations")
+                .contentType("application/json")
+                .content(request))
+            .andExpect(status().isOk)
+    }
+
+    /**
+     * This test runs all rules against an empty OpenAPI object. It checks for possible NPE in the check implementation
+     * when traversing the OpenAPI object tree. By having this test in place we don't have to write such a test for each
+     * rule.
+     */
+    @Test
+    fun `all rules must be able to cope with empty (minimal) api specifications`() {
+        val objectMapper = JacksonObjectMapperConfiguration().createObjectMapper()
+        val request = objectMapper.writeValueAsString(ApiDefinitionRequest(apiDefinitionString = "openapi: 3.0.1"))
+        mvc!!.perform(
+            post("/api-violations")
+                .contentType("application/json")
+                .content(request))
+            .andExpect(status().isOk)
+    }
+
+    @Language("YAML")
+    private val recursiveSpec = """
+      openapi: 3.0.1
+      paths:
+        /products/{product_id}:
+          get:
+            responses:
+              200:
+                content:
+                  application/json:
+                    schema:
+                      ${'$'}ref: "#/components/schemas/FacetGetResponse"
+      components:
+        schemas:
+          FacetGetResponse:
+            allOf:
+              - ${'$'}ref: "#/components/schemas/ProductResource"
+          ProductResource:
+            allOf:
+              - type: object
+                properties:
+                  children:
+                    type: array
+                    items:
+                      ${'$'}ref: "#/components/schemas/ProductResource"
+        """.trimIndent()
 }

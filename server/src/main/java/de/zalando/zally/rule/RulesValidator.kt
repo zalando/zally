@@ -8,6 +8,7 @@ import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.zalando.UseOpenApiRule
 import de.zalando.zally.util.ast.JsonPointers
 import org.slf4j.LoggerFactory
+import java.lang.reflect.InvocationTargetException
 
 abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidator {
 
@@ -57,7 +58,12 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
     private fun invoke(details: CheckDetails, root: RootT): Iterable<Result> {
         log.debug("validating ${details.method.name} of ${details.instance.javaClass.simpleName} rule")
 
-        val result = details.method.invoke(details.instance, root)
+        val result = try {
+            details.method.invoke(details.instance, root)
+        } catch (e: InvocationTargetException) {
+            throw RuntimeException("check invocation failed: ruleId=${details.rule.id} " +
+                "ruleTitle=${details.rule.title} checkName=${details.method.name} reason=${e.targetException}", e)
+        }
 
         val violations = when (result) {
             null -> emptyList()

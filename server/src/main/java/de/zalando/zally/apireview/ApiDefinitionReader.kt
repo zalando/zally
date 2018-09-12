@@ -17,10 +17,11 @@ import org.springframework.web.client.RestTemplate
 @Component
 class ApiDefinitionReader(private val client: RestTemplate) {
 
-    fun read(request: ApiDefinitionRequest): String = request.apiDefinitionString?.let { it }
-        ?: request.apiDefinition?.let { it }
-        ?: request.apiDefinitionUrl?.let { readFromUrl(it) }
-        ?: throw MissingApiDefinitionException()
+    fun read(request: ApiDefinitionRequest): String =
+        request.apiDefinitionString?.let { it }
+            ?: request.apiDefinition?.let { it }
+            ?: request.apiDefinitionUrl?.let { readFromUrl(it) }
+            ?: throw MissingApiDefinitionException()
 
     private fun readFromUrl(url: String): String? = try {
         val headers = HttpHeaders()
@@ -54,23 +55,23 @@ class ApiDefinitionReader(private val client: RestTemplate) {
 
         // a whitelist of mime-types to accept when expecting JSON or YAML
         private val MEDIA_TYPE_WHITELIST = parseMediaTypes(listOf(
-                // standard YAML mime-type plus variants
-                "application/yaml",
-                "application/x-yaml",
-                "application/vnd.yaml",
-                "text/yaml",
-                "text/x-yaml",
-                "text/vnd.yaml",
+            // standard YAML mime-type plus variants
+            "application/yaml",
+            "application/x-yaml",
+            "application/vnd.yaml",
+            "text/yaml",
+            "text/x-yaml",
+            "text/vnd.yaml",
 
-                // standard JSON mime-type plus variants
-                "application/json",
-                "application/javascript",
-                "text/javascript",
-                "text/x-javascript",
-                "text/x-json",
+            // standard JSON mime-type plus variants
+            "application/json",
+            "application/javascript",
+            "text/javascript",
+            "text/x-javascript",
+            "text/x-json",
 
-                // github.com raw content pages issue text/plain content type for YAML
-                "text/plain"
+            // github.com raw content pages issue text/plain content type for YAML
+            "text/plain"
         ))
     }
 }
