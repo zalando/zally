@@ -24,8 +24,8 @@ class MediaTypesRule {
     @Check(severity = Severity.SHOULD)
     fun validate(context: Context): List<Violation> =
         context.validateOperations { (_, operation) ->
-            val consumedMediaTypes = operation.requestBody?.content?.entries.orEmpty()
-            val producedMediaTypes = operation.responses?.values.orEmpty()
+            val consumedMediaTypes = operation.requestBody?.content?.entries.orEmpty().toList()
+            val producedMediaTypes = operation.responses?.values.orEmpty().toList()
                 .flatMap { it.content?.entries.orEmpty() }
             (consumedMediaTypes + producedMediaTypes)
                 .filter { isViolatingMediaType(it.key) }
