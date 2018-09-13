@@ -37,14 +37,18 @@ class JsonProblemAsDefaultResponseRuleTest {
                 get:
                   responses:
                     default:
-                      ${'$'}ref: 'https://some.other.schema'
+                      content:
+                        application/problem+json:
+                          schema:
+                            ${'$'}ref: 'http://example.com'
         """.trimIndent())
 
         val violations = rule.checkDefaultResponseIsProblemJson(context)
 
         assertThat(violations).isNotEmpty
         assertThat(violations[0].description).containsPattern(".*problem json has to be used as default response.*")
-        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1pets/get")
+        assertThat(violations[0].pointer.toString())
+            .isEqualTo("/paths/~1pets/get/responses/default/content/application~1problem+json")
     }
 
     @Test
@@ -57,7 +61,10 @@ class JsonProblemAsDefaultResponseRuleTest {
                 get:
                   responses:
                     default:
-                      ${'$'}ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
+                      content:
+                        application/problem+json:
+                          schema:
+                            ${'$'}ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
         """.trimIndent())
 
         val violations = rule.checkDefaultResponseIsProblemJson(context)
