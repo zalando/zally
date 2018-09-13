@@ -5,7 +5,6 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.parser.OpenAPIParser
 import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.media.Schema
 import io.swagger.v3.oas.models.responses.ApiResponse

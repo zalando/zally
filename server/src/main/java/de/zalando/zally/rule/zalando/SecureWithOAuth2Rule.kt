@@ -48,7 +48,8 @@ class SecureWithOAuth2Rule {
         return usedScopes
             .filterNot { it in specifiedScopes }
             .map { (group, scope) ->
-                context.violation("The scope '$group/$scope' is not specified in the security schemes", scope)
+                context.violation("The scope '$group/$scope' is not specified in the clientCredentials flow of the " +
+                    "OAuth2 security definition", scope)
             }
     }
 }

@@ -107,12 +107,12 @@ class SecureWithOAuth2RuleTest {
         val violations = rule.checkUsedScopesAreSpecified(context)
 
         assertThat(violations).isNotEmpty
-        assertThat(violations[0].description).containsPattern("The scope 'oauth2/write' is not specified in the security schemes")
+        assertThat(violations[0].description).contains("The scope 'oauth2/write' is not specified")
         assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1article/post/security/0/oauth2/0")
     }
 
     @Test
-    fun `checkUsedScopesAreDefined should return no violation if only defined scopes are used`() {
+    fun `checkUsedScopesAreSpecified should return no violation if only defined scopes are used`() {
         @Language("YAML")
         val content = """
             openapi: 3.0.1
@@ -141,7 +141,7 @@ class SecureWithOAuth2RuleTest {
     }
 
     @Test
-    fun `checkUsedScopesAreDefined should ignore OpenAPI 2 (Swagger) specification`() {
+    fun `checkUsedScopesAreSpecified should ignore OpenAPI 2 (Swagger) specification`() {
         @Language("YAML")
         val content = """
             swagger: 2.0

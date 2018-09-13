@@ -55,7 +55,7 @@ func TestIntegrationWithLocalYamlFile(t *testing.T) {
 
 		assert.Contains(t, out, "MUST violations: 29")
 		assert.Contains(t, out, "SHOULD violations: 1")
-		assert.Contains(t, out, "MAY violations: 6")
+		assert.Contains(t, out, "MAY violations: 5")
 		assert.Contains(t, out, "HINT violations: 0")
 
 		assert.NotNil(t, e)
@@ -97,7 +97,7 @@ func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 
 		assert.Contains(t, out, "MUST violations: 29")
 		assert.Contains(t, out, "SHOULD violations: 1")
-		assert.Contains(t, out, "MAY violations: 6")
+		assert.Contains(t, out, "MAY violations: 5")
 		assert.Contains(t, out, "HINT violations: 0")
 
 		assert.NotNil(t, e)
@@ -127,7 +127,7 @@ func TestIntegrationWithNoMustViolations(t *testing.T) {
 
 		assert.Contains(t, out, "MUST violations: 0")
 		assert.Contains(t, out, "SHOULD violations: 0")
-		assert.Contains(t, out, "MAY violations: 1")
+		assert.Contains(t, out, "MAY violations: 20")
 		assert.Contains(t, out, "HINT violations: 0")
 
 		assert.Nil(t, e)
