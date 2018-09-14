@@ -58,6 +58,7 @@ class PatternUtilTest {
     fun checkIsHyphenatedPascalCase() {
         assertTrue(isHyphenatedPascalCase("Test-Case"))
         assertTrue(isHyphenatedPascalCase("X-Flow-Id"))
+        assertTrue(isHyphenatedPascalCase("ETag"))
         assertFalse(isHyphenatedPascalCase("test-Case"))
         assertFalse(isHyphenatedPascalCase("TestCase"))
         assertFalse(isHyphenatedPascalCase("testCase"))
