@@ -41,8 +41,8 @@ class FunctionalNamingForHostnamesRule {
         val audience = context.api.info?.extensions?.get(audienceExtension)
         val hostnames = context.api.servers.orEmpty()
 
-        when (audience) {
-            is String, in audiencesToCheck -> hostnames
+        when {
+            audience is String && audience in audiencesToCheck -> hostnames
                     .filterNot { isUrlValid(it.url) }
                     .map { context.violation(description, it.url) }
             else -> emptyList()
