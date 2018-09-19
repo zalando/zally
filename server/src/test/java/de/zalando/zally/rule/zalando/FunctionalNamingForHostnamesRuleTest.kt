@@ -42,6 +42,15 @@ class FunctionalNamingForHostnamesRuleTest {
     }
 
     @Test
+    fun `mustFollowFunctionalNaming should return violation for an internal APIs with invalid hostname`() {
+        val context = withAudienceAndHostname("company-internal", "https://some.url")
+
+        val violations = rule.mustFollowFunctionalNaming(context)
+
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
     fun `shouldFollowFunctionalNaming should return violation for company-internal APIs with invalid hostname`() {
         val context = withAudienceAndHostname("company-internal", "incorrect url")
 
