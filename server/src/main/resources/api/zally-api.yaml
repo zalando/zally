@@ -208,7 +208,7 @@ definitions:
       api_definition_url:
         type: string
         description: Link to the specification in OpenAPI format
-      ignoreRules:
+      ignore_rules:
         type: array
         items:
           type: string
