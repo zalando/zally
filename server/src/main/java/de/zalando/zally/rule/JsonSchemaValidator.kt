@@ -18,9 +18,9 @@ import java.io.IOException
 class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirects: Map<String, String> = mapOf()) {
 
     private object Keywords {
-        val oneOf = "oneOf"
-        val anyOf = "anyOf"
-        val additionalProperties = "additionalProperties"
+        const val oneOf = "oneOf"
+        const val anyOf = "anyOf"
+        const val additionalProperties = "additionalProperties"
     }
 
     private val factory: JsonSchemaFactory
@@ -52,16 +52,16 @@ class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirect
 
     private fun createValidationMessageWithSchemaRefs(node: JsonNode, message: String, pointer: JsonPointer, keyword: String): Violation {
         val schemaPath = node.at("/schema/pointer").textValue()
-        if (!schemaPath.isNullOrBlank()) {
-            val schemaRefNodes = schema.at(schemaPath + "/" + keyword)
+        return if (!schemaPath.isNullOrBlank()) {
+            val schemaRefNodes = schema.at("$schemaPath/$keyword")
             val schemaRefs = schemaRefNodes
                     .map { it.path("\$ref") }
                     .filterNot(JsonNode::isMissingNode)
                     .map(JsonNode::textValue)
                     .joinToString("; ")
-            return Violation(message + schemaRefs, pointer)
+            Violation(message + schemaRefs, pointer)
         } else {
-            return Violation(message, pointer)
+            Violation(message, pointer)
         }
     }
 
