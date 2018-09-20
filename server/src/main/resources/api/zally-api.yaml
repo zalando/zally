@@ -1,92 +1,34 @@
-swagger: '2.0'
+openapi: '3.0.1'
 
 info:
- title: Zally - Zalando's API Linter
- description: |
-         Zally is a quality assurance tool. It's main purpose is to check the complience of
-         API specifications to a specific set of API design rules.
+  title: Zally - Zalando's API Linter
+  description: |
+    Zally is a quality assurance tool. It's main purpose is to check the complience of
+    API specifications to a specific set of API design rules.
 
-         The service is able to lint the API specification in OpenAPI format. The result of
-         the linting is a set of Violations. A violation contains information about the violated
-         rule, its severity, and path of the violation in the specification document.
+    The service is able to lint the API specification in OpenAPI format. The result of
+    the linting is a set of Violations. A violation contains information about the violated
+    rule, its severity, and path of the violation in the specification document.
 
-         The API also provides a result and statistics endpoint. It contains aggregated statics like
-         the number of linting requests and the number of checked endpoints. Additionally, all
-         linting results and the linted API specifications can be retrieved.
+    The API also provides a result and statistics endpoint. It contains aggregated statics like
+    the number of linting requests and the number of checked endpoints. Additionally, all
+    linting results and the linted API specifications can be retrieved.
 
- version: "1.5.0"
- x-api-id: 48aa0090-25ef-11e8-b467-0ed5f89f718b
- x-audience: company-internal
- contact:
-   name: Team API Management
-   email: team-api-management@zalando.de
-   url: "http://tech.zalando.de"
+  version: "1.5.1"
+  x-api-id: 48aa0090-25ef-11e8-b467-0ed5f89f718b
+  x-audience: company-internal
+  contact:
+    name: Team API Management
+    email: team-api-management@zalando.de
+    url: "http://tech.zalando.de"
 
 externalDocs:
   description: Open Source project's page
   url: https://opensource.zalando.com/zally/
 
-host: "zally.overarching.zalan.do"
-
-schemes:
-  - https
-
-basePath: "/"
-
-securityDefinitions:
-  oauth2:
-    type: oauth2
-    tokenUrl: https://somewhere.on.the.internet
-    flow: application
-    scopes:
-      uid: submit API specification for validation
-
-parameters:
-  LintingRequest:
-    name: Request
-    in: body
-    description: Linting Request
-    required: true
-    schema:
-      $ref: '#/definitions/LintingRequest'
-  RulesType:
-    name: type
-    in: query
-    description: Rules Type
-    required: false
-    type: string
-    x-extensible-enum:
-      - MUST
-      - SHOULD
-      - COULD
-      - MAY
-      - HINT
-  IsActive:
-    name: is_active
-    in: query
-    description: Is Rule Active
-    required: false
-    type: boolean
-  From:
-    name: from
-    in: query
-    description: All review statistics from this day
-    required: false
-    type: string
-    format: date
-  To:
-    name: to
-    in: query
-    description: All review statistics until this day, only works in conjunction with from parameter
-    required: false
-    type: string
-    format: date
-  UserAgent:
-    name: user_agent
-    in: query
-    description: Review statistics requested with the specified User-Agent
-    required: false
-    type: string
+servers:
+- url: "https://zally.on.inter.net"
+  description: Production Zally Web UI instance
 
 paths:
   '/api-violations':
@@ -105,28 +47,33 @@ paths:
         responses from that will be passed on. For example you may be
         using Zally without authentication but supply a password
         protected url and still get a `401 Unauthorized` response.
-      parameters:
-        - $ref: '#/parameters/LintingRequest'
-      consumes:
-        - application/json
-      produces:
-        - application/json
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LintingRequest'
       responses:
         200:
           description: API swagger is OK
-          schema:
-            $ref: '#/definitions/LintingResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LintingResponse'
         400:
           description: Input file not parsable
-          schema:
-            $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+          content:
+            application/problem+json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
         default:
           description: Error object
-          schema:
-            $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+          content:
+            application/problem+json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
       security:
-        - oauth2:
-          - uid
+      - oauth2:
+        - uid
 
   '/supported-rules':
     get:
@@ -136,116 +83,177 @@ paths:
         Returns a list of rules which are supported by a current Zally
         installation.
       parameters:
-        - $ref: '#/parameters/RulesType'
-        - $ref: '#/parameters/IsActive'
-      consumes:
-        - application/json
-      produces:
-        - application/json
+      - $ref: '#/components/parameters/RulesType'
+      - $ref: '#/components/parameters/IsActive'
       responses:
         200:
           description: List of supported rules is successfully returned
-          schema:
-            $ref: '#/definitions/SupportedRulesResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportedRulesResponse'
         400:
           description: One of the query parameters is incorrect
-          schema:
-            $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+          content:
+            application/problem+json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
         default:
           description: Error object
-          schema:
-            $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+          content:
+            application/problem+json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
       security:
-        - oauth2:
-          - uid
+      - oauth2:
+        - uid
 
   '/review-statistics':
-      get:
-        summary:
-          Provides query capabilites for linting summaries and automatically computed review statistics.
-        description: |
-          Returns a list of all linting results and review statistics for a given
-          interval in time. If none of the query parameters is supplied, a list of
-          all linting results and review statistics for the last week is returned.
-        parameters:
-          - $ref: '#/parameters/From'
-          - $ref: '#/parameters/To'
-          - $ref: '#/parameters/UserAgent'
-        consumes:
-          - application/json
-        produces:
-          - application/json
-        responses:
-          200:
-            description: List of queried review statistics
-            schema:
-              $ref: '#/definitions/ReviewStatisticsResponse'
-          400:
-            description: One of the query parameters is incorrect
-            schema:
-              $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
-          default:
-            description: Error object
-            schema:
-              $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
-        security:
-          - oauth2:
-            - uid
+    get:
+      summary:
+        Provides query capabilites for linting summaries and automatically computed review statistics.
+      description: |
+        Returns a list of all linting results and review statistics for a given
+        interval in time. If none of the query parameters is supplied, a list of
+        all linting results and review statistics for the last week is returned.
+      parameters:
+      - $ref: '#/components/parameters/From'
+      - $ref: '#/components/parameters/To'
+      - $ref: '#/components/parameters/UserAgent'
+      responses:
+        200:
+          description: List of queried review statistics
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ReviewStatisticsResponse'
+        400:
+          description: One of the query parameters is incorrect
+          content:
+            application/problem+json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+        default:
+          description: Error object
+          content:
+            application/problem+json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+      security:
+      - oauth2:
+        - uid
 
-definitions:
-  LintingRequest:
-    type: object
-    description: |
-      Request containing a swagger definition file. One of the following fields must be provided:
-      api_definition, api_definition_string, or api_definition_url.
-    properties:
-      api_definition:
-        type: object
-        description: Specification object in OpenAPI format
-      api_definition_string:
+
+components:
+
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://identity.zalando.com/oauth2/token
+          scopes:
+            uid: Default scope to access Zally API
+
+  parameters:
+    RulesType:
+      name: type
+      in: query
+      description: Rules Type
+      required: false
+      schema:
         type: string
-        description: Raw API Specification string in OpenAPI format
-      api_definition_url:
+        x-extensible-enum:
+        - MUST
+        - SHOULD
+        - COULD
+        - MAY
+        - HINT
+    IsActive:
+      name: is_active
+      in: query
+      description: Is Rule Active
+      required: false
+      schema:
+        type: boolean
+    From:
+      name: from
+      in: query
+      description: All review statistics from this day
+      required: false
+      schema:
         type: string
-        description: Link to the specification in OpenAPI format
-      ignoreRules:
-        type: array
-        items:
+        format: date
+    To:
+      name: to
+      in: query
+      description: All review statistics until this day, only works in conjunction with from parameter
+      required: false
+      schema:
+        type: string
+        format: date
+    UserAgent:
+      name: user_agent
+      in: query
+      description: Review statistics requested with the specified User-Agent
+      required: false
+      schema:
+        type: string
+
+  schemas:
+    LintingRequest:
+      type: object
+      description: |
+        Request containing a swagger definition file. One of the following fields must be provided:
+        api_definition, api_definition_string, or api_definition_url.
+      properties:
+        api_definition:
+          type: object
+          description: Specification object in OpenAPI format
+        api_definition_string:
           type: string
-        description: List of rule ids to be ignored
+          description: Raw API Specification string in OpenAPI format
+        api_definition_url:
+          type: string
+          description: Link to the specification in OpenAPI format
+        ignore_rules:
+          type: array
+          items:
+            type: string
+          description: List of rule ids to be ignored
 
-  LintingResponse:
-    type: object
-    description: Linting Response
-    required:
+    LintingResponse:
+      type: object
+      description: Linting Response
+      required:
       - violations
-    properties:
-      violations:
-        type: array
-        items:
-          $ref: '#/definitions/Violation'
-        description: List of violations
-      message:
-        type: string
-        description: Custom server message
-      violations_count:
-        $ref: '#/definitions/ViolationsCount'
+      properties:
+        violations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Violation'
+          description: List of violations
+        message:
+          type: string
+          description: Custom server message
+        violations_count:
+          $ref: '#/components/schemas/ViolationsCount'
 
-  SupportedRulesResponse:
-    type: object
-    description: Supported Rules
-    required:
+    SupportedRulesResponse:
+      type: object
+      description: Supported Rules
+      required:
       - supported_rules
-    properties:
-      supported_rules:
-        type: array
-        items:
-          $ref: '#/definitions/Rule'
+      properties:
+        supported_rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Rule'
 
-  ReviewStatisticsResponse:
-    type: object
-    description: Linting results and review statistics for a given interval in time
-    required:
+    ReviewStatisticsResponse:
+      type: object
+      description: Linting results and review statistics for a given interval in time
+      required:
       - total_reviews
       - total_reviews_deduplicated
       - successful_reviews
@@ -256,199 +264,199 @@ definitions:
       - hint_violations
       - violations
       - reviews
-    properties:
-      total_reviews:
-        type: integer
-        format: int32
-        example: 23
-        description: Total number of lintings
-      total_reviews_deduplicated:
-        type: integer
-        format: int32
-        example: 12
-        description: Unique APIs linted
-      successful_reviews:
-        type: integer
-        format: int32
-        example: 17
-        description: Number of successful lintings
-      number_of_endpoints:
-        type: integer
-        format: int32
-        example: 10
-        description: Number of endpoints in the linted APIs
-      must_violations:
-        type: integer
-        format: int32
-        example: 123
-        description: Number of MUST violations
-      should_violations:
-        type: integer
-        format: int32
-        example: 81
-        description: Number of SHOULD violations
-      may_violations:
-        type: integer
-        format: int32
-        example: 32
-        description: Number of MAY violations
-      hint_violations:
-        type: integer
-        format: int32
-        example: 5
-        description: Number of HINTS
-      violations:
-        type: array
-        items:
-          $ref: '#/definitions/ViolationStatistic'
-      reviews:
-        type: array
-        items:
-          $ref: '#/definitions/ReviewStatistic'
+      properties:
+        total_reviews:
+          type: integer
+          format: int32
+          example: 23
+          description: Total number of lintings
+        total_reviews_deduplicated:
+          type: integer
+          format: int32
+          example: 12
+          description: Unique APIs linted
+        successful_reviews:
+          type: integer
+          format: int32
+          example: 17
+          description: Number of successful lintings
+        number_of_endpoints:
+          type: integer
+          format: int32
+          example: 10
+          description: Number of endpoints in the linted APIs
+        must_violations:
+          type: integer
+          format: int32
+          example: 123
+          description: Number of MUST violations
+        should_violations:
+          type: integer
+          format: int32
+          example: 81
+          description: Number of SHOULD violations
+        may_violations:
+          type: integer
+          format: int32
+          example: 32
+          description: Number of MAY violations
+        hint_violations:
+          type: integer
+          format: int32
+          example: 5
+          description: Number of HINTS
+        violations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViolationStatistic'
+        reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewStatistic'
 
-  ReviewStatistic:
-    type: object
-    description: One API review
-    required:
+    ReviewStatistic:
+      type: object
+      description: One API review
+      required:
       - api
       - successful
       - number_of_endpoints
       - violations
-    properties:
-      api:
-        type: string
-        description: API title
-        example: Awesome API
-      api_id:
-        type: string
-        description: x-api-id OpenAPI extension, if present in the specification
-        example: 48aa0090-25ef-11e8-b467-0ed5f89f718b
-      successful:
-        type: boolean
-        description: 'true if linting has not failed'
-      user_agent:
-        type: string
-        example: 'Zally-CLI/2.0'
-        description: User agent which has been issued the linting
-      number_of_endpoints:
-        type: integer
-        format: int32
-        example: 7
-        description: Number of endpoints in the API
-      violations:
-        type: array
-        items:
-          $ref: '#/definitions/ViolationStatistic'
+      properties:
+        api:
+          type: string
+          description: API title
+          example: Awesome API
+        api_id:
+          type: string
+          description: x-api-id OpenAPI extension, if present in the specification
+          example: 48aa0090-25ef-11e8-b467-0ed5f89f718b
+        successful:
+          type: boolean
+          description: 'true if linting has not failed'
+        user_agent:
+          type: string
+          example: 'Zally-CLI/2.0'
+          description: User agent which has been issued the linting
+        number_of_endpoints:
+          type: integer
+          format: int32
+          example: 7
+          description: Number of endpoints in the API
+        violations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViolationStatistic'
 
-  ViolationStatistic:
-    type: object
-    description: One violation in statistics
-    required:
+    ViolationStatistic:
+      type: object
+      description: One violation in statistics
+      required:
       - name
       - type
       - occurrence
-    properties:
-      name:
-        type: string
-        description: Violation text
-        example: 'Rule X has been violated'
-      type:
-        $ref: '#/definitions/RuleType'
-      occurrence:
-        type: integer
-        format: int32
-        example: 6
-        description: Number of occurrence
+      properties:
+        name:
+          type: string
+          description: Violation text
+          example: 'Rule X has been violated'
+        type:
+          $ref: '#/components/schemas/RuleType'
+        occurrence:
+          type: integer
+          format: int32
+          example: 6
+          description: Number of occurrence
 
-  Violation:
-    type: object
-    description: Violation Object
-    required:
+    Violation:
+      type: object
+      description: Violation Object
+      required:
       - title
       - description
       - violation_type
-    properties:
-      title:
-        type: string
-        description: Violation title
-      description:
-        type: string
-        description: Violation text
-      violation_type:
-        $ref: '#/definitions/RuleType'
-      rule_link:
-        type: string
-        description: Violated rule URL
-      paths:
-        type: array
-        items:
+      properties:
+        title:
           type: string
-        description: Violated paths
-      pointer:
-        type: string
-        description: JsonPointer to the violated path in the specification
+          description: Violation title
+        description:
+          type: string
+          description: Violation text
+        violation_type:
+          $ref: '#/components/schemas/RuleType'
+        rule_link:
+          type: string
+          description: Violated rule URL
+        paths:
+          type: array
+          items:
+            type: string
+          description: Violated paths
+        pointer:
+          type: string
+          description: JsonPointer to the violated path in the specification
 
-  ViolationsCount:
-    type: object
-    description: Violation Count
-    required:
+    ViolationsCount:
+      type: object
+      description: Violation Count
+      required:
       - must
       - should
       - may
       - could
       - hint
-    properties:
-      must:
-        type: integer
-        format: int32
-      should:
-        type: integer
-        format: int32
-      may:
-        type: integer
-        format: int32
-      could:
-        type: integer
-        format: int32
-      hint:
-        type: integer
-        format: int32
+      properties:
+        must:
+          type: integer
+          format: int32
+        should:
+          type: integer
+          format: int32
+        may:
+          type: integer
+          format: int32
+        could:
+          type: integer
+          format: int32
+        hint:
+          type: integer
+          format: int32
 
-  Rule:
-    type: object
-    description: Rule
-    required:
+    Rule:
+      type: object
+      description: Rule
+      required:
       - title
       - code
       - type
       - url
       - is_active
-    properties:
-      title:
-        type: string
-        description: Rule title
-        example: 'Do Not Use URI Versioning'
-      code:
-        type: string
-        description: Rule id
-        example: '115'
-      type:
-        $ref: '#/definitions/RuleType'
-      url:
-        type: string
-        description: Link to the rule's description
-        example: 'https://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning'
-      is_active:
-        type: boolean
-        description: Shows whether the rule is activated
-        example: true
+      properties:
+        title:
+          type: string
+          description: Rule title
+          example: 'Do Not Use URI Versioning'
+        code:
+          type: string
+          description: Rule id
+          example: '115'
+        type:
+          $ref: '#/components/schemas/RuleType'
+        url:
+          type: string
+          description: Link to the rule's description
+          example: 'https://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning'
+        is_active:
+          type: boolean
+          description: Shows whether the rule is activated
+          example: true
 
-  RuleType:
-    type: string
-    x-extensible-enum:
+    RuleType:
+      type: string
+      x-extensible-enum:
       - MUST
       - SHOULD
       - COULD
       - MAY
       - HINT
-    description: Rule type / severity
+      description: Rule type / severity
