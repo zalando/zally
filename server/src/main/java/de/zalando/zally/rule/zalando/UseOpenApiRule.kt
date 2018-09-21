@@ -7,6 +7,7 @@ import com.google.common.io.Resources
 import com.typesafe.config.Config
 import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.rule.ObjectTreeReader
+import de.zalando.zally.rule.OpenApiVersion
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
@@ -18,10 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.net.URL
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
-    id = UseOpenApiRule.id,
-    severity = Severity.MUST,
-    title = "Provide API Specification using OpenAPI"
+        ruleSet = ZalandoRuleSet::class,
+        id = UseOpenApiRule.id,
+        severity = Severity.MUST,
+        title = "Provide API Specification using OpenAPI"
 )
 open class UseOpenApiRule(@Autowired rulesConfig: Config) {
 
@@ -29,11 +30,11 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
 
     open val description = "Given file is not OpenAPI 2.0 compliant."
 
-    private val jsonSchemaValidators: List<JsonSchemaValidator>
+    private val jsonSchemaValidators: Map<OpenApiVersion, JsonSchemaValidator>
 
-    private val defaultSchemas = listOf(
-        Pair("Swagger 2.0", "schemas/openapi-2-schema.json"),
-        Pair("OpenAPI 3", "schemas/openapi-3-schema.json")
+    private val defaultSchemas = mapOf(
+            OpenApiVersion.SWAGGER to "schemas/openapi-2-schema.json",
+            OpenApiVersion.OPENAPI3 to "schemas/openapi-3-schema.json"
     )
 
     init {
@@ -41,21 +42,19 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
     }
 
     @Check(severity = Severity.MUST)
-    fun validate(swagger: JsonNode): List<Violation> {
-        val violations = mutableListOf<Violation>()
+    fun validateSchema(spec: JsonNode): List<Violation> {
+        val openApi3Spec = spec.get("swagger") == null
+        val currentVersion = if (openApi3Spec) OpenApiVersion.OPENAPI3.version else OpenApiVersion.SWAGGER.version
 
-        for (validator in jsonSchemaValidators) {
-            val result = validator.validate(swagger)
-            if (result.isEmpty()) {
-                return emptyList()
-            }
-            if (violations.isEmpty()) {
-                violations += result.map {
-                    Violation("Does not match ${validator.name}: ${it.description}", it.pointer ?: JsonPointers.EMPTY)
-                }
-            }
+        val swaggerValidator = jsonSchemaValidators[OpenApiVersion.SWAGGER]
+        val openApi3Validator = jsonSchemaValidators[OpenApiVersion.OPENAPI3]
+
+        return when {
+            openApi3Spec -> openApi3Validator?.validate(spec).orEmpty()
+            else -> swaggerValidator?.validate(spec).orEmpty()
+        }.map {
+            Violation("Does not match $currentVersion schema: ${it.description}", it.pointer ?: JsonPointers.EMPTY)
         }
-        return violations
     }
 
     @Check(severity = Severity.MUST)
@@ -71,21 +70,27 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
         }
     }
 
-    private fun getSchemaValidators(ruleConfig: Config): List<JsonSchemaValidator> {
+    private fun getSchemaValidators(ruleConfig: Config): Map<OpenApiVersion, JsonSchemaValidator> {
         return try {
-            ruleConfig.getStringList("swagger_schema_urls").map {
-                val url = URL(it)
-                val schema = ObjectMapper().readTree(url)
-                (schema as ObjectNode).remove("id")
-                JsonSchemaValidator(it, schema)
-            }
+            val swaggerSchemaLink = URL(ruleConfig.getString("schema_urls.${OpenApiVersion.SWAGGER.version}"))
+            val openApiSchemaLink = URL(ruleConfig.getString("schema_urls.${OpenApiVersion.OPENAPI3.version}"))
+
+            val swaggerSchema = ObjectMapper().readTree(swaggerSchemaLink)
+            val openApiSchema = ObjectMapper().readTree(openApiSchemaLink)
+
+            // to avoid resolving the `id` property of the schema by the validator
+            (swaggerSchema as ObjectNode).remove("id")
+            (openApiSchema as ObjectNode).remove("id")
+
+            return mapOf(OpenApiVersion.SWAGGER to JsonSchemaValidator(OpenApiVersion.SWAGGER.version, swaggerSchema),
+                    OpenApiVersion.OPENAPI3 to JsonSchemaValidator(OpenApiVersion.OPENAPI3.version, openApiSchema))
         } catch (e: Exception) {
             log.warn("Unable to load swagger schemas: ${e.message}. Using default schemas instead.")
             getDefaultSchemaValidators()
         }
     }
 
-    private fun getDefaultSchemaValidators(): List<JsonSchemaValidator> {
+    private fun getDefaultSchemaValidators(): Map<OpenApiVersion, JsonSchemaValidator> {
         // The downloadSwaggerSchema gradle task can be used to download latest versions of schemas
         val referencedOnlineSchema = "http://json-schema.org/draft-04/schema"
         val localResource = Resources.getResource("schemas/json-schema.json").toString()
@@ -93,8 +98,8 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
         return defaultSchemas.map { (name, file) ->
             val schemaUrl = Resources.getResource(file)
             val schema = ObjectTreeReader().read(schemaUrl)
-            JsonSchemaValidator(name, schema, schemaRedirects = mapOf(referencedOnlineSchema to localResource))
-        }
+            JsonSchemaValidator(name.version, schema, schemaRedirects = mapOf(referencedOnlineSchema to localResource))
+        }.associateBy { OpenApiVersion.valueOf(it.name.toUpperCase()) }
     }
 
     companion object {

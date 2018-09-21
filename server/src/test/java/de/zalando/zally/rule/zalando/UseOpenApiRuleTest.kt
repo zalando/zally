@@ -17,7 +17,7 @@ class UseOpenApiRuleTest {
     fun shouldNotFailOnCorrectYaml() {
         listOf("swagger2_petstore_expanded.yaml", "openapi3_petstore.yaml").forEach {
             val json = getResourceJson(it)
-            val validations = rule.validate(json)
+            val validations = rule.validateSchema(json)
             assertThat(validations).hasSize(0)
         }
     }
@@ -26,7 +26,7 @@ class UseOpenApiRuleTest {
     fun shouldNotFailOnCorrectJson() {
         listOf("swagger2_petstore_expanded.json", "openapi3_petstore.json").forEach {
             val json = getResourceJson(it)
-            val validations = rule.validate(json)
+            val validations = rule.validateSchema(json)
             assertThat(validations).hasSize(0)
         }
     }
@@ -34,9 +34,10 @@ class UseOpenApiRuleTest {
     @Test
     fun shouldReportInvalidYaml() {
         val json = ObjectTreeReader().read("foo: bar")
-        val validations = rule.validate(json)
+        val validations = rule.validateSchema(json)
         assertThat(validations).isNotEmpty
-        assertThat(validations).allMatch { it.description.matches(Regex("^Does not match.*")) }
+        assertThat(validations).anyMatch { it.description.matches(Regex(".*object has missing required properties.*")) }
+        assertThat(validations).anyMatch { it.description.matches(Regex(".*object instance has properties.*")) }
     }
 
     @Test
@@ -48,7 +49,7 @@ class UseOpenApiRuleTest {
         """)
 
         val json = ObjectTreeReader().read("foo: bar")
-        val validations = UseOpenApiRule(config).validate(json)
+        val validations = UseOpenApiRule(config).validateSchema(json)
         assertThat(validations).isNotEmpty
     }
 
@@ -61,7 +62,7 @@ class UseOpenApiRuleTest {
         """)
 
         val json = ObjectTreeReader().read("foo: bar")
-        val validations = UseOpenApiRule(config).validate(json)
+        val validations = UseOpenApiRule(config).validateSchema(json)
         assertThat(validations).isNotEmpty
     }
 
@@ -82,5 +83,20 @@ class UseOpenApiRuleTest {
         val violation = rule.checkIfTheFormatIsYAML(context)
 
         assertThat(violation).isNull()
+    }
+
+    @Test
+    fun `validateSchema should return no violation for valid OpenAPI 3 specification`() {
+        val jsonNode = ObjectTreeReader().read("""
+            openapi: 3.0.1
+            info:
+              title: "Minimal API"
+              version: "1.0.0"
+            paths: {}
+        """.trimIndent())
+
+        val violations = rule.validateSchema(jsonNode)
+
+        assertThat(violations).isEmpty()
     }
 }
