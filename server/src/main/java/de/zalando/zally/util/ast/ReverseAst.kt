@@ -10,16 +10,14 @@ class ReverseAst internal constructor(private val objectsToNodes: Map<Any, Node>
     fun getPointer(key: Any): JsonPointer? = objectsToNodes[key]?.pointer
 
     fun isIgnored(pointer: JsonPointer, ignoreValue: String): Boolean =
-        isIgnored(this.pointersToNodes[pointer.toString()], ignoreValue)
-
-    private fun isIgnored(node: Node?, ignoreValue: String): Boolean {
-        return node
+        generateSequence(pointer, JsonPointer::head)
+            .map { pointersToNodes[it.toString()] }
+            .find { it != null }
             ?.let {
-                isIgnored(node.marker, ignoreValue) ||
-                node.hasChildren() && node.children.all { c -> isIgnored(c.marker, ignoreValue) }
+                isIgnored(it.marker, ignoreValue) ||
+                it.hasChildren() && it.children.all { c -> isIgnored(c.marker, ignoreValue) }
             }
             ?: false
-    }
 
     private fun isIgnored(marker: Marker?, ignoreValue: String): Boolean =
         marker != null &&
