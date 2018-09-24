@@ -196,4 +196,28 @@ class ReverseAstTest {
                 .isSameAs(sharedParamPointer)
                 .hasToString("/components/parameters/SharedParam")
     }
+
+    @Test
+    fun `isIgnored even ignores unforeseen descendants of ignored nodes`() {
+        @Language("yaml")
+        val content = """
+            swagger: '2.0'
+            x-zally-ignore: [215, 218, 219]
+            info:
+              title: Some API
+              version: '1.0.0'
+              contact:
+                name: Team X
+                email: team@x.com
+                url: https://team.x.com
+            paths: {}
+            """.trimIndent()
+
+        val swagger = SwaggerParser().parse(content)
+        val ast = ReverseAst.fromObject(swagger).withExtensionMethodNames("getVendorExtensions").build()
+
+        assertThat(ast.isIgnored(JsonPointer.compile(""), "218")).isTrue()
+        assertThat(ast.isIgnored(JsonPointer.compile("/info"), "218")).isTrue()
+        assertThat(ast.isIgnored(JsonPointer.compile("/info/description"), "218")).isTrue()
+    }
 }
