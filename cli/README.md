@@ -117,7 +117,7 @@ zally rules
 
     ```bash
     cd cli/zally
-    goreleaser --skip-publish v1.1.0
+    goreleaser release --skip-publish
     ```
 
 1. Check builds inside `cli/zally/dist` directory.
