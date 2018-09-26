@@ -1,6 +1,5 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.getContextFromFixture
 import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.getSwaggerContextFromContent
 import de.zalando.zally.rule.ZallyAssertions
@@ -62,24 +61,6 @@ class NoProtocolInHostRuleTest {
             .assertThat(rule.validate(context))
             .descriptionsEqualTo("'https://google.com' contains protocol information which should be listed separately as schemes")
             .pointersEqualTo("/host")
-    }
-
-    @Test
-    fun `validate swagger with SPP json returns no violations`() {
-        val context = getContextFromFixture("api_spp.json")
-
-        ZallyAssertions
-            .assertThat(rule.validate(context))
-            .isEmpty()
-    }
-
-    @Test
-    fun `validate swagger with SPA yaml returns no violations`() {
-        val context = getContextFromFixture("api_spa.yaml")
-
-        ZallyAssertions
-            .assertThat(rule.validate(context))
-            .isEmpty()
     }
 
     @Test
