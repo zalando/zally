@@ -70,8 +70,8 @@ class UseProblemJsonRuleTest {
         ZallyAssertions
             .assertThat(violations)
             .descriptionsEqualTo(
-                "$description object has missing required properties ([\"exclusiveMaximum\",\"format\",\"maximum\",\"minimum\"])",
-                "$description instance value (\"string\") not found in enum (possible values: [\"integer\"])"
+                "$description Object has missing required properties ([\"exclusiveMaximum\",\"format\",\"maximum\",\"minimum\"])",
+                "$description Instance value (\"string\") not found in enum (possible values: [\"integer\"])"
             )
             .pointersEqualTo(
                 "/paths/~1bad/get/responses/default/content/application~1problem+json/schema/properties/status",
@@ -108,8 +108,8 @@ class UseProblemJsonRuleTest {
         ZallyAssertions
             .assertThat(violations)
             .descriptionsEqualTo(
-                "$description object has missing required properties ([\"exclusiveMaximum\",\"format\",\"maximum\",\"minimum\"])",
-                "$description instance value (\"string\") not found in enum (possible values: [\"integer\"])"
+                "$description Object has missing required properties ([\"exclusiveMaximum\",\"format\",\"maximum\",\"minimum\"])",
+                "$description Instance value (\"string\") not found in enum (possible values: [\"integer\"])"
             )
             .pointersEqualTo(
                 "/paths/~1pets/get/responses/default/schema/properties/status",
@@ -256,8 +256,8 @@ class UseProblemJsonRuleTest {
         ZallyAssertions
             .assertThat(violations)
             .descriptionsEqualTo(
-                "$description object has missing required properties ([\"format\"])",
-                "$description instance value (\"number\") not found in enum (possible values: [\"string\"])")
+                "$description Object has missing required properties ([\"format\"])",
+                "$description Instance value (\"number\") not found in enum (possible values: [\"string\"])")
             .pointersEqualTo(
                 "/components/schemas/Problem/properties/instance",
                 "/components/schemas/Problem/properties/instance/type"
