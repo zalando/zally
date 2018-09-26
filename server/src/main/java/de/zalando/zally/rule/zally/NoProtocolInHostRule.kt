@@ -18,10 +18,10 @@ import io.swagger.models.Swagger
  * equivalent [io.swagger.v3.oas.models.servers.Server.url] is a url rather than "host only".
  */
 @Rule(
-        ruleSet = ZallyRuleSet::class,
-        id = "M008",
-        severity = Severity.MUST,
-        title = "Host should not contain protocol"
+    ruleSet = ZallyRuleSet::class,
+    id = "M008",
+    severity = Severity.MUST,
+    title = "Host should not contain protocol"
 )
 class NoProtocolInHostRule {
 
@@ -29,9 +29,16 @@ class NoProtocolInHostRule {
     fun validate(context: Context): List<Violation> {
         val host = context.swagger?.host.orEmpty()
         return when {
-            "://" in host -> listOf(Violation(
-                "'$host' contains protocol information which should be listed separately as schemes",
-                JsonPointer.compile("/host")))
+
+            context.isOpenAPI3() -> emptyList()
+
+            "://" in host -> listOf(
+                Violation(
+                    "'$host' contains protocol information which should be listed separately as schemes",
+                    JsonPointer.compile("/host")
+                )
+            )
+
             else -> emptyList()
         }
     }
