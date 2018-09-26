@@ -1,10 +1,11 @@
 package de.zalando.zally.rule.zally
 
+import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.Swagger
 
 @Rule(
         ruleSet = ZallyRuleSet::class,
@@ -17,15 +18,13 @@ class ExtractBasePathRule {
     private val description = "All paths start with prefix '%s'. This prefix could be part of base path."
 
     @Check(severity = Severity.HINT)
-    fun validate(swagger: Swagger): Violation? {
-        val paths = swagger.paths.orEmpty().keys
-        if (paths.size < 2) {
-            return null
+    fun validate(context: Context): List<Violation> {
+        val paths = context.api.paths?.keys.orEmpty()
+        val prefix = paths.reduce { s1, s2 -> findCommonPrefix(s1, s2) }
+        return when {
+            paths.size < 2 || prefix.isEmpty() -> emptyList()
+            else -> listOf(Violation(description.format(prefix), emptyList(), JsonPointer.compile("/paths")))
         }
-        val commonPrefix = paths.reduce { s1, s2 -> findCommonPrefix(s1, s2) }
-        return if (commonPrefix.isNotEmpty())
-            Violation(description.format(commonPrefix), emptyList())
-        else null
     }
 
     private fun findCommonPrefix(s1: String, s2: String): String {
