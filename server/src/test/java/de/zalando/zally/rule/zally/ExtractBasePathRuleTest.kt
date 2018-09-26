@@ -1,9 +1,7 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.getFixture
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.swaggerWithPaths
-import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -11,11 +9,6 @@ class ExtractBasePathRuleTest {
     val DESC_PATTERN = "All paths start with prefix '%s'. This prefix could be part of base path."
 
     private val rule = ExtractBasePathRule()
-
-    @Test
-    fun validateEmptyPath() {
-        assertThat(rule.validate(Swagger())).isNull()
-    }
 
     @Test
     fun simplePositiveCase() {
@@ -64,18 +57,6 @@ class ExtractBasePathRuleTest {
             "/applications/{app_id}",
             "/applications/"
         )
-        assertThat(rule.validate(swagger)).isNull()
-    }
-
-    @Test
-    fun positiveCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        assertThat(rule.validate(swagger)).isNull()
-    }
-
-    @Test
-    fun positiveCaseTinbox() {
-        val swagger = getFixture("api_tinbox.yaml")
         assertThat(rule.validate(swagger)).isNull()
     }
 }
