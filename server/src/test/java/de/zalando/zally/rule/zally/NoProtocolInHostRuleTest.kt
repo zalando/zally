@@ -1,54 +1,80 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.getFixture
-import de.zalando.zally.rule.api.Violation
-import io.swagger.models.Swagger
-import org.assertj.core.api.Assertions.assertThat
+import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.ZallyAssertions
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class NoProtocolInHostRuleTest {
 
     private val rule = NoProtocolInHostRule()
 
-    val expectedViolation = rule.let {
-        Violation("", emptyList())
+    @Test
+    fun `validate swagger with empty swagger returns no violations`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent("""
+            swagger: 2.0
+            """.trimIndent())
+
+        ZallyAssertions
+            .assertThat(rule.validate(context))
+            .isEmpty()
     }
 
     @Test
-    fun emptySwagger() {
-        val swagger = Swagger()
-        assertThat(rule.validate(swagger)).isNull()
+    fun `validate swagger with simple hostname returns no violations`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent("""
+            swagger: 2.0
+            host: google.com
+            """.trimIndent())
+
+        ZallyAssertions
+            .assertThat(rule.validate(context))
+            .isEmpty()
     }
 
     @Test
-    fun positiveCase() {
-        val swagger = Swagger().apply { host = "google.com" }
-        assertThat(rule.validate(swagger)).isNull()
+    fun `validate swagger with http protocol included returns a violation`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent("""
+            swagger: 2.0
+            host: http://google.com
+            """.trimIndent())
+
+        ZallyAssertions
+            .assertThat(rule.validate(context))
+            .descriptionsEqualTo("'http://google.com' contains protocol information which should be listed separately as schemes")
+            .pointersEqualTo("/host")
     }
 
     @Test
-    fun negativeCaseHttp() {
-        val swagger = Swagger().apply { host = "http://google.com" }
-        val res = rule.validate(swagger)
-        assertThat(res?.copy(description = "")).isEqualTo(expectedViolation)
+    fun `validate swagger with https protocol included returns a violation`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent("""
+            swagger: 2.0
+            host: https://google.com
+            """.trimIndent())
+
+        ZallyAssertions
+            .assertThat(rule.validate(context))
+            .descriptionsEqualTo("'https://google.com' contains protocol information which should be listed separately as schemes")
+            .pointersEqualTo("/host")
     }
 
     @Test
-    fun negativeCaseHttps() {
-        val swagger = Swagger().apply { host = "https://google.com" }
-        val res = rule.validate(swagger)
-        assertThat(res?.copy(description = "")).isEqualTo(expectedViolation)
-    }
+    fun `validate openapi with url including protocol returns no violations`() {
+        @Language("YAML")
+        val context = getOpenApiContextFromContent("""
+            openapi: 3.0.1
+            servers:
+              - url: https://google.com
+                description: OpenAPI expects a URL, not a hostname, so this is correct!
+            """.trimIndent())
 
-    @Test
-    fun positiveCaseSpp() {
-        val swagger = getFixture("api_spp.json")
-        assertThat(rule.validate(swagger)).isNull()
-    }
-
-    @Test
-    fun positiveCaseSpa() {
-        val swagger = getFixture("api_spa.yaml")
-        assertThat(rule.validate(swagger)).isNull()
+        ZallyAssertions
+            .assertThat(rule.validate(context))
+            .isEmpty()
     }
 }
