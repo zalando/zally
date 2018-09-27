@@ -8,14 +8,12 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 
 @Rule(
-        ruleSet = ZallyRuleSet::class,
-        id = "H001",
-        severity = Severity.HINT,
-        title = "Base path can be extracted"
+    ruleSet = ZallyRuleSet::class,
+    id = "H001",
+    severity = Severity.HINT,
+    title = "Base path can be extracted"
 )
 class ExtractBasePathRule {
-
-    private val description = "All paths start with prefix '%s'. This prefix could be part of base path."
 
     @Check(severity = Severity.HINT)
     fun validate(context: Context): List<Violation> {
@@ -23,9 +21,18 @@ class ExtractBasePathRule {
         val prefix = paths.reduce { s1, s2 -> findCommonPrefix(s1, s2) }
         return when {
             paths.size < 2 || prefix.isEmpty() -> emptyList()
-            else -> listOf(Violation(description.format(prefix), emptyList(), JsonPointer.compile("/paths")))
+            context.isOpenAPI3() -> violations(prefix, "servers' urls")
+            else -> violations(prefix, "basePath")
         }
     }
+
+    fun violations(prefix: String, target: String) =
+        listOf(
+            Violation(
+                "All paths start with prefix '$prefix' which could be part of $target.",
+                JsonPointer.compile("/paths")
+            )
+        )
 
     private fun findCommonPrefix(s1: String, s2: String): String {
         val parts1 = s1.split("/")

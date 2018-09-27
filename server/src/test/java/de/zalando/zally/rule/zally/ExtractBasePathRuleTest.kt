@@ -1,5 +1,6 @@
 package de.zalando.zally.rule.zally
 
+import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.getSwaggerContextFromContent
 import de.zalando.zally.rule.ZallyAssertions
 import org.intellij.lang.annotations.Language
@@ -52,7 +53,7 @@ class ExtractBasePathRuleTest {
 
         ZallyAssertions
             .assertThat(rule.validate(context))
-            .descriptionsEqualTo("All paths start with prefix '/shipment'. This prefix could be part of base path.")
+            .descriptionsEqualTo("All paths start with prefix '/shipment' which could be part of basePath.")
             .pointersEqualTo("/paths")
     }
 
@@ -70,7 +71,7 @@ class ExtractBasePathRuleTest {
 
         ZallyAssertions
             .assertThat(rule.validate(context))
-            .descriptionsEqualTo("All paths start with prefix '/queue/models'. This prefix could be part of base path.")
+            .descriptionsEqualTo("All paths start with prefix '/queue/models' which could be part of basePath.")
             .pointersEqualTo("/paths")
     }
 
@@ -89,5 +90,22 @@ class ExtractBasePathRuleTest {
         ZallyAssertions
             .assertThat(rule.validate(context))
             .isEmpty()
+    }
+
+    @Test
+    fun `validate openapi with common first segment returns violation`() {
+        @Language("YAML")
+        val context = getOpenApiContextFromContent("""
+            openapi: 3.0.1
+            paths:
+              /shipment/{shipment_id}: {}
+              /shipment/{shipment_id}/status: {}
+              /shipment/{shipment_id}/details: {}
+            """.trimIndent())
+
+        ZallyAssertions
+            .assertThat(rule.validate(context))
+            .descriptionsEqualTo("All paths start with prefix '/shipment' which could be part of servers' urls.")
+            .pointersEqualTo("/paths")
     }
 }
