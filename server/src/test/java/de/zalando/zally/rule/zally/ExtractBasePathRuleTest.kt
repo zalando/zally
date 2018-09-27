@@ -11,6 +11,18 @@ class ExtractBasePathRuleTest {
     private val rule = ExtractBasePathRule()
 
     @Test
+    fun `validate swagger with no paths returns no violations`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent("""
+            swagger: 2.0
+            """.trimIndent())
+
+        ZallyAssertions
+            .assertThat(rule.validate(context))
+            .isEmpty()
+    }
+
+    @Test
     fun `validate swagger with no common first segments returns no violations`() {
         @Language("YAML")
         val context = getSwaggerContextFromContent("""
