@@ -27,13 +27,13 @@ class FunctionalNamingForHostnamesRule {
             """(https://)?$functionalDomain-$functionalComponent\.zalandoapis\.com.*""".toRegex()
 
     @Check(severity = Severity.MUST)
-    val mustFollowFunctionalNaming = checkHostnames(mustFollow)
+    fun mustFollowFunctionalNaming(context: Context): List<Violation> = checkHostnames(mustFollow)(context)
 
     @Check(severity = Severity.SHOULD)
-    val shouldFollowFunctionalNaming = checkHostnames(shouldFollow)
+    fun shouldFollowFunctionalNaming(context: Context): List<Violation> = checkHostnames(shouldFollow)(context)
 
     @Check(severity = Severity.MAY)
-    val mayFollowFunctionalNaming = checkHostnames(mayFollow)
+    fun mayFollowFunctionalNaming(context: Context): List<Violation> = checkHostnames(mayFollow)(context)
 
     internal fun isUrlValid(url: String): Boolean = functionHostnameURLRegEx.matches(url)
 
@@ -43,8 +43,10 @@ class FunctionalNamingForHostnamesRule {
 
         when {
             audience is String && audience in audiencesToCheck -> hostnames
+                    .asSequence()
                     .filterNot { isUrlValid(it.url) }
                     .map { context.violation(description, it.url) }
+                    .toList()
             else -> emptyList()
         }
     }
