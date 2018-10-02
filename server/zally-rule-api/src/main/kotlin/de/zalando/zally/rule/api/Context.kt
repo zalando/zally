@@ -36,8 +36,8 @@ interface Context {
      * @return a list of Violations and/or nulls where no violations are necessary
      */
     fun validatePaths(
-            pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
-            action: (Map.Entry<String, PathItem>) -> List<Violation?>
+            pathFilter: (Map.Entry<String, PathItem?>) -> Boolean = { true },
+            action: (Map.Entry<String, PathItem?>) -> List<Violation?>
     ): List<Violation>
 
     /**
@@ -48,9 +48,9 @@ interface Context {
      * @return a list of Violations and/or nulls where no violations are necessary
      */
     fun validateOperations(
-        pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
-        operationFilter: (Map.Entry<PathItem.HttpMethod, Operation>) -> Boolean = { true },
-        action: (Map.Entry<PathItem.HttpMethod, Operation>) -> List<Violation?>
+        pathFilter: (Map.Entry<String, PathItem?>) -> Boolean = { true },
+        operationFilter: (Map.Entry<PathItem.HttpMethod, Operation?>) -> Boolean = { true },
+        action: (Map.Entry<PathItem.HttpMethod, Operation?>) -> List<Violation?>
     ): List<Violation>
 
     /**
@@ -62,10 +62,10 @@ interface Context {
      * @return a list of Violations and/or nulls where no violations are necessary
      */
     fun validateResponses(
-        pathFilter: (Map.Entry<String, PathItem>) -> Boolean = { true },
-        operationFilter: (Map.Entry<PathItem.HttpMethod, Operation>) -> Boolean = { true },
-        responseFilter: (Map.Entry<String, ApiResponse>) -> Boolean = { true },
-        action: (Map.Entry<String, ApiResponse>) -> List<Violation?>
+        pathFilter: (Map.Entry<String, PathItem?>) -> Boolean = { true },
+        operationFilter: (Map.Entry<PathItem.HttpMethod, Operation?>) -> Boolean = { true },
+        responseFilter: (Map.Entry<String, ApiResponse?>) -> Boolean = { true },
+        action: (Map.Entry<String, ApiResponse?>) -> List<Violation?>
     ): List<Violation>
 
     /**
@@ -75,7 +75,7 @@ interface Context {
      * @param value the OpenAPI or Swagger model node
      * @return the new Violation
      */
-    fun violations(description: String, value: Any): List<Violation>
+    fun violations(description: String, value: Any?): List<Violation>
 
     /**
      * Creates a List of one Violation with the specified pointer, defaulting to the last recorded location.
@@ -92,7 +92,7 @@ interface Context {
      * @param value the OpenAPI or Swagger model node
      * @return the new Violation
      */
-    fun violation(description: String, value: Any): Violation
+    fun violation(description: String, value: Any?): Violation
 
     /**
      * Creates a Violation with the specified pointer, defaulting to the last recorded location.

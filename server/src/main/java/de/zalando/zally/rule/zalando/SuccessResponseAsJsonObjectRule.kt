@@ -20,13 +20,13 @@ class SuccessResponseAsJsonObjectRule {
     fun checkJSONObjectIsUsedAsSuccessResponseType(context: Context): List<Violation> =
         context.api.paths.orEmpty().values
             .flatMap {
-                it.readOperations().orEmpty()
-                    .flatMap { it.responses.filter { (resCode, _) -> isSuccess(resCode) }.values }
+                it?.readOperations().orEmpty()
+                    .flatMap { it.responses.orEmpty().filter { (resCode, _) -> isSuccess(resCode) }.values }
             }
             .flatMap {
-                it.content.orEmpty().entries
+                it?.content.orEmpty().entries
                     .filter { (mediaType, _) -> mediaType.contains("json") }
-            }.map { it.value.schema }
+            }.mapNotNull { it.value?.schema }
             .filterNot { schema -> schema.type.isNullOrEmpty() || "object" == schema.type }
             .map { schema -> context.violation(description, schema) }
 

@@ -42,7 +42,7 @@ class SecureWithOAuth2Rule {
             }.toSet()
 
         val usedScopes = context.api.paths.values
-            .flatMap { it.readOperations().orEmpty().flatMap { it.security.orEmpty() } }
+            .flatMap { it?.readOperations().orEmpty().flatMap { it.security.orEmpty() } }
             .flatMap { secReq -> secReq.keys.flatMap { group -> secReq[group].orEmpty().map { scope -> group to scope } } }
 
         return usedScopes

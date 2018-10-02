@@ -30,18 +30,18 @@ class JsonProblemAsDefaultResponseRule {
         .filter { "default" in it.second.keys }
         .flatMap { it.second["default"]!!.content.orEmpty().entries }
         .filter { (contentType, _) -> contentType in validContentTypes }
-        .filterNot { it.value.schema.`$ref` in validRefs || isProblemJsonSchema(it.value.schema) }
+        .filterNot { it.value?.schema?.`$ref` in validRefs || isProblemJsonSchema(it.value?.schema) }
         .map { context.violation("problem json has to be used as default response (${validRefs[0]})", it.value) }
 
     private fun responsesPerOperation(context: Context): Collection<Pair<Operation, Map<String, ApiResponse>>> =
         context.api.paths.values
             .flatMap {
-                it.readOperations().orEmpty()
+                it?.readOperations().orEmpty()
                     .map { operation -> Pair(operation, operation.responses.orEmpty()) }
             }
 
-    private fun isProblemJsonSchema(schema: Schema<*>): Boolean {
-        val props = schema.properties.orEmpty()
+    private fun isProblemJsonSchema(schema: Schema<*>?): Boolean {
+        val props = schema?.properties.orEmpty()
         return props["type"]?.type == "string" && props["type"]?.format == "uri" &&
             props["title"]?.type == "string" &&
             props["status"]?.type == "integer" && props["status"]?.format == "int32" &&
