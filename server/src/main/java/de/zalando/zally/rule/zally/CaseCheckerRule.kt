@@ -1,4 +1,4 @@
-package de.zalando.zally.rule.zalando
+package de.zalando.zally.rule.zally
 
 import com.typesafe.config.Config
 import de.zalando.zally.rule.CaseChecker
@@ -10,17 +10,16 @@ import de.zalando.zally.rule.api.Violation
 import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
-    id = "118",
+    ruleSet = ZallyRuleSet::class,
+    id = "M010",
     severity = Severity.MUST,
-    title = "Property Names Must be ASCII snake_case"
+    title = "Check case of various terms"
 )
-class SnakeCaseInPropNameRule(@Autowired config: Config) {
-    private val description = "Property name has to be snake_case"
+class CaseCheckerRule(@Autowired config: Config) {
 
     private val checker = CaseChecker.load(config)
 
     @Check(severity = Severity.MUST)
     fun checkPropertyNames(context: Context): List<Violation> =
-        checker.checkPropertyNames(context).map { Violation(description, it.pointer!!) }
+        checker.checkPropertyNames(context)
 }

@@ -18,6 +18,15 @@ Information about protocol should be placed in schema and not as part of the hos
 
 Enforces that "there can only be one body parameter" per operation as required by the [swagger spec](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#parameter-object).
 
+## M010: Check case of various terms
+
+Enforced that various terms match case requirements configured via
+CaseChecker section in rules-config.conf.
+
+Supports:
+
+- schema property names
+
 ## S005: Do not leave unused definitions
 
 Unused definitions cause confusion and should be avioded.

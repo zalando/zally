@@ -53,7 +53,7 @@ func TestIntegrationWithLocalYamlFile(t *testing.T) {
 	t.Run("integrationWithLocalYamlFile", func(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spa.yaml"})
 
-		assert.Contains(t, out, "MUST violations: 30")
+		assert.Contains(t, out, "MUST violations: 43")
 		assert.Contains(t, out, "SHOULD violations: 1")
 		assert.Contains(t, out, "MAY violations: 5")
 		assert.Contains(t, out, "HINT violations: 0")
@@ -95,7 +95,7 @@ func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 		defer ts.Close()
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", ts.URL + "/api_spa.yaml"})
 
-		assert.Contains(t, out, "MUST violations: 30")
+		assert.Contains(t, out, "MUST violations: 43")
 		assert.Contains(t, out, "SHOULD violations: 1")
 		assert.Contains(t, out, "MAY violations: 5")
 		assert.Contains(t, out, "HINT violations: 0")
