@@ -45,8 +45,8 @@ class DefaultContext(
      * @return a list of Violations and/or nulls where no violations are necessary
      */
     override fun validatePaths(
-        pathFilter: (Map.Entry<String, PathItem>) -> Boolean,
-        action: (Map.Entry<String, PathItem>) -> List<Violation?>
+        pathFilter: (Map.Entry<String, PathItem?>) -> Boolean,
+        action: (Map.Entry<String, PathItem?>) -> List<Violation?>
     ): List<Violation> = api.paths
         .orEmpty()
         .filter(pathFilter)
@@ -61,11 +61,11 @@ class DefaultContext(
      * @return a list of Violations and/or nulls where no violations are necessary
      */
     override fun validateOperations(
-        pathFilter: (Map.Entry<String, PathItem>) -> Boolean,
-        operationFilter: (Map.Entry<HttpMethod, Operation>) -> Boolean,
-        action: (Map.Entry<HttpMethod, Operation>) -> List<Violation?>
+        pathFilter: (Map.Entry<String, PathItem?>) -> Boolean,
+        operationFilter: (Map.Entry<HttpMethod, Operation?>) -> Boolean,
+        action: (Map.Entry<HttpMethod, Operation?>) -> List<Violation?>
     ): List<Violation> = validatePaths(pathFilter) { (_, path) ->
-        path.readOperationsMap()
+        path?.readOperationsMap()
             .orEmpty()
             .filter(operationFilter)
             .flatMap(action)
@@ -81,12 +81,12 @@ class DefaultContext(
      * @return a list of Violations and/or nulls where no violations are necessary
      */
     override fun validateResponses(
-        pathFilter: (Map.Entry<String, PathItem>) -> Boolean,
-        operationFilter: (Map.Entry<HttpMethod, Operation>) -> Boolean,
-        responseFilter: (Map.Entry<String, ApiResponse>) -> Boolean,
-        action: (Map.Entry<String, ApiResponse>) -> List<Violation?>
+        pathFilter: (Map.Entry<String, PathItem?>) -> Boolean,
+        operationFilter: (Map.Entry<HttpMethod, Operation?>) -> Boolean,
+        responseFilter: (Map.Entry<String, ApiResponse?>) -> Boolean,
+        action: (Map.Entry<String, ApiResponse?>) -> List<Violation?>
     ): List<Violation> = validateOperations(pathFilter, operationFilter) { (_, operation) ->
-        operation.responses
+        operation?.responses
             .orEmpty()
             .filter(responseFilter)
             .flatMap(action)
@@ -100,7 +100,7 @@ class DefaultContext(
      * @param value the OpenAPI or Swagger model node
      * @return the new Violation
      */
-    override fun violations(description: String, value: Any): List<Violation> =
+    override fun violations(description: String, value: Any?): List<Violation> =
         listOf(violation(description, value))
 
     /**
@@ -119,7 +119,7 @@ class DefaultContext(
      * @param value the OpenAPI or Swagger model node
      * @return the new Violation
      */
-    override fun violation(description: String, value: Any): Violation =
+    override fun violation(description: String, value: Any?): Violation =
         violation(description, pointerForValue(value))
 
     /**
@@ -140,7 +140,7 @@ class DefaultContext(
     override fun isIgnored(pointer: JsonPointer, ruleId: String): Boolean =
         swaggerAst?.isIgnored(pointer, ruleId) ?: openApiAst.isIgnored(pointer, ruleId)
 
-    private fun pointerForValue(value: Any): JsonPointer? = if (swaggerAst != null) {
+    private fun pointerForValue(value: Any?): JsonPointer? = if (swaggerAst != null) {
         val swaggerPointer = swaggerAst.getPointer(value)
         if (swaggerPointer != null)
             swaggerPointer
