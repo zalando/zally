@@ -3,12 +3,14 @@ package de.zalando.zally.rule
 import com.typesafe.config.Config
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.getAllParameters
 import de.zalando.zally.util.getAllProperties
 import io.github.config4k.extract
 
 class CaseChecker(
     val cases: Map<String, Regex>,
-    val propertyNames: CaseCheck?
+    val propertyNames: CaseCheck?,
+    val queryParameterNames: CaseCheck?
 ) {
     companion object {
         fun load(config: Config): CaseChecker = config.extract("CaseChecker")
@@ -29,8 +31,18 @@ class CaseChecker(
     fun checkPropertyNames(context: Context): List<Violation> {
         return context.api
             .getAllProperties()
-            .flatMap { (name, param) ->
+            .flatMap { (name, schema) ->
                 check("Property", "Properties", propertyNames, name)
+                    ?.let { context.violations(it, schema) }
+                    .orEmpty()
+            }
+    }
+
+    fun checkQueryParameterNames(context: Context): List<Violation> {
+        return context.api.getAllParameters().values
+            .filter { "query" == it.`in` }
+            .flatMap { param ->
+                check("Query parameter", "Query parameters", queryParameterNames, param.name)
                     ?.let { context.violations(it, param) }
                     .orEmpty()
             }

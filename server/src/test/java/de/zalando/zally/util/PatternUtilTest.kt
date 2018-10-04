@@ -8,7 +8,6 @@ import de.zalando.zally.util.PatternUtil.isHyphenatedPascalCase
 import de.zalando.zally.util.PatternUtil.isKebabCase
 import de.zalando.zally.util.PatternUtil.isPascalCase
 import de.zalando.zally.util.PatternUtil.isPathVariable
-import de.zalando.zally.util.PatternUtil.isSnakeCase
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -62,22 +61,6 @@ class PatternUtilTest {
         assertFalse(isHyphenatedPascalCase("test-Case"))
         assertFalse(isHyphenatedPascalCase("TestCase"))
         assertFalse(isHyphenatedPascalCase("testCase"))
-    }
-
-    @Test
-    fun checkIsSnakeCase() {
-        assertTrue(isSnakeCase("test_case"))
-        assertTrue(isSnakeCase("test"))
-        assertTrue(isSnakeCase("v1_id"))
-        assertTrue(isSnakeCase("0_1_2_3"))
-        assertFalse(isSnakeCase("test__case"))
-        assertFalse(isSnakeCase("TestCase"))
-        assertFalse(isSnakeCase("Test_Case"))
-        assertFalse(isSnakeCase(""))
-        assertFalse(isSnakeCase("_"))
-        assertFalse(isSnakeCase("customer-number"))
-        assertFalse(isSnakeCase("_customer_number"))
-        assertFalse(isSnakeCase("CUSTOMER_NUMBER"))
     }
 
     @Test

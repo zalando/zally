@@ -22,4 +22,8 @@ class CaseCheckerRule(@Autowired config: Config) {
     @Check(severity = Severity.MUST)
     fun checkPropertyNames(context: Context): List<Violation> =
         checker.checkPropertyNames(context)
+
+    @Check(severity = Severity.MUST)
+    fun checkQueryParameterNames(context: Context): List<Violation> =
+        checker.checkQueryParameterNames(context)
 }

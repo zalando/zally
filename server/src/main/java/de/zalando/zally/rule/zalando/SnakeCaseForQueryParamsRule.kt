@@ -1,12 +1,12 @@
 package de.zalando.zally.rule.zalando
 
+import com.typesafe.config.Config
+import de.zalando.zally.rule.CaseChecker
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.PatternUtil
-import de.zalando.zally.util.getAllParameters
 
 /**
  * Lint for snake case for query params
@@ -17,14 +17,13 @@ import de.zalando.zally.util.getAllParameters
     severity = Severity.MUST,
     title = "Use snake_case (never camelCase) for Query Parameters"
 )
-class SnakeCaseForQueryParamsRule {
+class SnakeCaseForQueryParamsRule(config: Config) {
 
     val description = "Query parameter has to be snake_case"
 
+    private val checker = CaseChecker.load(config)
+
     @Check(severity = Severity.MUST)
     fun checkQueryParameter(context: Context): List<Violation> =
-        context.api.getAllParameters().values
-            .filter { "query" == it.`in` }
-            .filterNot { PatternUtil.isSnakeCase(it.name) }
-            .map { context.violation(description, it) }
+        checker.checkQueryParameterNames(context).map { Violation(description, it.pointer!!) }
 }
