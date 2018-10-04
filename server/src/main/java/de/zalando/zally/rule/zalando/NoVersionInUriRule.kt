@@ -26,7 +26,7 @@ class NoVersionInUriRule {
 
     private fun violatingServers(api: OpenAPI): Collection<Server> =
         api.servers.orEmpty()
-            .filter { it.url.matches(versionRegex) }
+            .filter { it?.url?.matches(versionRegex) ?: false }
 
     private fun violatingPaths(api: OpenAPI): Collection<PathItem> =
         api.paths.orEmpty().entries

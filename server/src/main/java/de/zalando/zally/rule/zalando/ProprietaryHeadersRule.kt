@@ -38,12 +38,12 @@ class ProprietaryHeadersRule(@Autowired rulesConfig: Config) {
             .map { context.violation(responseDescription, it.value) }
 
     private fun requestHeaders(context: Context): List<Parameter> = context.api.paths.values
-            .flatMap { it.readOperations()
+            .flatMap { it?.readOperations().orEmpty()
                 .flatMap { it.parameters.orEmpty()
                     .filter { "header" == it.`in` } } }
 
     private fun responseHeaders(context: Context): List<Map.Entry<String, Header>> = context.api.paths.values
-            .flatMap { it.readOperations()
+            .flatMap { it?.readOperations().orEmpty()
                 .flatMap { it.responses.orEmpty().values
                     .flatMap { it.headers.orEmpty().entries } } }
 }

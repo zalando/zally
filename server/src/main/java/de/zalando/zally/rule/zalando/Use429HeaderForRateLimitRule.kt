@@ -24,8 +24,8 @@ class Use429HeaderForRateLimitRule {
             context.violations(description, response)
         }
 
-    private fun violatingResponse(entry: Map.Entry<String, ApiResponse>): Boolean {
-        val headers = entry.value.headers.orEmpty().keys
+    private fun violatingResponse(entry: Map.Entry<String, ApiResponse?>): Boolean {
+        val headers = entry.value?.headers.orEmpty().keys
         return "429" == entry.key &&
             "Retry-After" !in headers &&
             !headers.containsAll(xRateLimitHeaders)
