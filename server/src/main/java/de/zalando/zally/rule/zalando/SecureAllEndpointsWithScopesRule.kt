@@ -48,14 +48,14 @@ class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
             val requested = requested(context.api, op, defined)
             val undefined = undefined(requested, defined)
             when {
-                requested.isEmpty() -> context.violations("Endpoint not secured by OAuth2 scope(s)", op.security ?: op)
-                undefined.isNotEmpty() -> context.violations("Endpoint secured by undefined OAuth2 scope(s): ${undefined.joinToString()}", op.security ?: op)
+                requested.isEmpty() -> context.violations("Endpoint not secured by OAuth2 scope(s)", op?.security ?: op)
+                undefined.isNotEmpty() -> context.violations("Endpoint secured by undefined OAuth2 scope(s): ${undefined.joinToString()}", op?.security ?: op)
                 else -> emptyList()
             }
         }
     }
 
-    private fun pathFilter(entry: Map.Entry<String, PathItem>): Boolean = pathWhitelist.none { it.containsMatchIn(entry.key) }
+    private fun pathFilter(entry: Map.Entry<String, PathItem?>): Boolean = pathWhitelist.none { it.containsMatchIn(entry.key) }
 
     private fun SecurityScheme?.allFlows() = listOfNotNull(
         this?.flows?.implicit,
@@ -70,9 +70,9 @@ class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
 
     private fun requested(
         api: OpenAPI,
-        op: io.swagger.v3.oas.models.Operation,
+        op: io.swagger.v3.oas.models.Operation?,
         defined: Map<String, Set<String>>
-    ): List<Pair<String, String>> = (op.security ?: api.security ?: emptyList())
+    ): List<Pair<String, String>> = (op?.security ?: api.security ?: emptyList())
         .flatMap { requirement ->
             requirement
                 .filterKeys { name -> defined.containsKey(name) }

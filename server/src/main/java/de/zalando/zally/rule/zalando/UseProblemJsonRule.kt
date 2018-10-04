@@ -36,7 +36,7 @@ class UseProblemJsonRule {
     @Check(severity = Severity.MUST)
     fun validate(context: Context): List<Violation> {
         return context.api.paths.orEmpty().flatMap { (_, pathItem) ->
-            pathItem.readOperations().flatMap { op ->
+            pathItem?.readOperations().orEmpty().flatMap { op ->
                 op.responses.orEmpty()
                     .filter { (code, _) ->
                         code.toIntOrNull() in 400..599 || code == "default"
