@@ -26,6 +26,8 @@ CaseChecker section in rules-config.conf.
 Supports:
 
 - schema property names
+- query parameter names
+- path parameter names
 
 ## S005: Do not leave unused definitions
 

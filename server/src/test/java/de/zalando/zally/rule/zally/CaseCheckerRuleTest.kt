@@ -18,7 +18,7 @@ class CaseCheckerRuleTest {
             definitions:
               Defined:
                 properties:
-                  iNvAlId:
+                  InVaLiD!:
                     type: boolean
             """.trimIndent())
 
@@ -26,8 +26,29 @@ class CaseCheckerRuleTest {
 
         ZallyAssertions
             .assertThat(violations)
-            .pointersEqualTo("/definitions/Defined/properties/iNvAlId")
-            .descriptionsAllMatch("Property 'iNvAlId' does not match .*".toRegex())
+            .pointersEqualTo("/definitions/Defined/properties/InVaLiD!")
+            .descriptionsAllMatch("Property 'InVaLiD!' does not match .*".toRegex())
+    }
+
+    @Test
+    fun `checkPathParameterNames returns violations`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent("""
+            swagger: '2.0'
+            paths:
+              /things:
+                post:
+                  parameters:
+                  - in: path
+                    name: InVaLiD!
+            """.trimIndent())
+
+        val violations = cut.checkPathParameterNames(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsAllMatch("Path parameter 'InVaLiD!' does not match .*".toRegex())
+            .pointersEqualTo("/paths/~1things/post/parameters/0")
     }
 
     @Test
@@ -40,14 +61,14 @@ class CaseCheckerRuleTest {
                 post:
                   parameters:
                   - in: query
-                    name: iNvAlId
+                    name: InVaLiD!
             """.trimIndent())
 
         val violations = cut.checkQueryParameterNames(context)
 
         ZallyAssertions
             .assertThat(violations)
-            .descriptionsAllMatch("Query parameter 'iNvAlId' does not match .*".toRegex())
+            .descriptionsAllMatch("Query parameter 'InVaLiD!' does not match .*".toRegex())
             .pointersEqualTo("/paths/~1things/post/parameters/0")
     }
 }

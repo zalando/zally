@@ -13,7 +13,7 @@ class CaseCheckerTest {
         "UPPER" to upper
     )
     private val check = CaseChecker.CaseCheck(lower, listOf(white))
-    private val cut = CaseChecker(cases, check, null)
+    private val cut = CaseChecker(cases, check, null, null)
 
     @Test
     fun `check with matching input returns null`() {

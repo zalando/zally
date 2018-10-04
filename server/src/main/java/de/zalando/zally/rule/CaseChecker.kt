@@ -10,6 +10,7 @@ import io.github.config4k.extract
 class CaseChecker(
     val cases: Map<String, Regex>,
     val propertyNames: CaseCheck?,
+    val pathParameterNames: CaseCheck?,
     val queryParameterNames: CaseCheck?
 ) {
     companion object {
@@ -38,11 +39,23 @@ class CaseChecker(
             }
     }
 
+    fun checkPathParameterNames(context: Context): List<Violation> {
+        return checkParameterNames(context, "Path", pathParameterNames)
+    }
+
     fun checkQueryParameterNames(context: Context): List<Violation> {
+        return checkParameterNames(context, "Query", queryParameterNames)
+    }
+
+    fun checkParameterNames(
+        context: Context,
+        type: String,
+        check: CaseCheck?
+    ): List<Violation> {
         return context.api.getAllParameters().values
-            .filter { "query" == it.`in` }
+            .filter { type.toLowerCase() == it.`in` }
             .flatMap { param ->
-                check("Query parameter", "Query parameters", queryParameterNames, param.name)
+                check("$type parameter", "$type parameters", check, param.name)
                     ?.let { context.violations(it, param) }
                     .orEmpty()
             }
