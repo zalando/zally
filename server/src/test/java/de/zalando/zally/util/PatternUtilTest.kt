@@ -4,7 +4,6 @@ import de.zalando.zally.util.PatternUtil.hasTrailingSlash
 import de.zalando.zally.util.PatternUtil.isCamelCase
 import de.zalando.zally.util.PatternUtil.isHyphenated
 import de.zalando.zally.util.PatternUtil.isHyphenatedCamelCase
-import de.zalando.zally.util.PatternUtil.isHyphenatedPascalCase
 import de.zalando.zally.util.PatternUtil.isKebabCase
 import de.zalando.zally.util.PatternUtil.isPascalCase
 import de.zalando.zally.util.PatternUtil.isPathVariable
@@ -51,16 +50,6 @@ class PatternUtilTest {
         assertFalse(isHyphenatedCamelCase("Test-Case"))
         assertFalse(isHyphenatedCamelCase("testCase"))
         assertFalse(isHyphenatedCamelCase("TestCase"))
-    }
-
-    @Test
-    fun checkIsHyphenatedPascalCase() {
-        assertTrue(isHyphenatedPascalCase("Test-Case"))
-        assertTrue(isHyphenatedPascalCase("X-Flow-Id"))
-        assertTrue(isHyphenatedPascalCase("ETag"))
-        assertFalse(isHyphenatedPascalCase("test-Case"))
-        assertFalse(isHyphenatedPascalCase("TestCase"))
-        assertFalse(isHyphenatedPascalCase("testCase"))
     }
 
     @Test

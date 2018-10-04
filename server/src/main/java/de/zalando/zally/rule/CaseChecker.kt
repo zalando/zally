@@ -3,15 +3,17 @@ package de.zalando.zally.rule
 import com.typesafe.config.Config
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.getAllHeaders
 import de.zalando.zally.util.getAllParameters
 import de.zalando.zally.util.getAllProperties
 import io.github.config4k.extract
 
 class CaseChecker(
     val cases: Map<String, Regex>,
-    val propertyNames: CaseCheck?,
-    val pathParameterNames: CaseCheck?,
-    val queryParameterNames: CaseCheck?
+    val propertyNames: CaseCheck? = null,
+    val pathParameterNames: CaseCheck? = null,
+    val queryParameterNames: CaseCheck? = null,
+    val headerNames: CaseCheck? = null
 ) {
     companion object {
         fun load(config: Config): CaseChecker = config.extract("CaseChecker")
@@ -35,6 +37,16 @@ class CaseChecker(
             .flatMap { (name, schema) ->
                 check("Property", "Properties", propertyNames, name)
                     ?.let { context.violations(it, schema) }
+                    .orEmpty()
+            }
+    }
+
+    fun checkHeadersNames(context: Context): List<Violation> {
+        return context.api
+            .getAllHeaders()
+            .flatMap { header ->
+                check("Header", "Headers", headerNames, header.name)
+                    ?.let { context.violations(it, header.element) }
                     .orEmpty()
             }
     }

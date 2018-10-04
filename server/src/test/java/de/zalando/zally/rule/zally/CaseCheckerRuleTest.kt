@@ -71,4 +71,25 @@ class CaseCheckerRuleTest {
             .descriptionsAllMatch("Query parameter 'InVaLiD!' does not match .*".toRegex())
             .pointersEqualTo("/paths/~1things/post/parameters/0")
     }
+
+    @Test
+    fun `checkHeaderNames returns violations`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent("""
+            swagger: '2.0'
+            paths:
+              /things:
+                post:
+                  parameters:
+                  - in: header
+                    name: InVaLiD!
+            """.trimIndent())
+
+        val violations = cut.checkHeaderNames(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsAllMatch("Header 'InVaLiD!' does not match .*".toRegex())
+            .pointersEqualTo("/paths/~1things/post/parameters/0")
+    }
 }
