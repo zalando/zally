@@ -53,6 +53,6 @@ class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) {
     private fun isNonViolating(it: String) =
             !PatternUtil.isPathVariable(it) && !isPlural(it)
 
-    private fun violation(context: Context, term: String, definition: PathItem) =
+    private fun violation(context: Context, term: String, definition: PathItem?) =
             context.violation("Resource '$term' appears to be singular", definition)
 }

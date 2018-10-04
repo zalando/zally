@@ -23,13 +23,13 @@ fun OpenAPI.getAllHeaders(): Set<HeaderElement> {
         .map { HeaderElement(it.key, it.value) }
         .toSet()
 
-    val fromComponentsParams = components?.parameters.orEmpty().values.extractHeaders()
+    val fromComponentsParams = components?.parameters?.values.extractHeaders()
 
     val fromPaths = paths.orEmpty().flatMap { (_, path) ->
-        val fromPathParameters = path.parameters.extractHeaders()
-        val fromOperations = path.readOperations().flatMap { operation ->
-            val fromOpParams = operation.parameters.extractHeaders()
-            val fromOpResponses = operation.responses.orEmpty().values.extractHeaders()
+        val fromPathParameters = path?.parameters.extractHeaders()
+        val fromOperations = path?.readOperations().orEmpty().flatMap { operation ->
+            val fromOpParams = operation?.parameters.extractHeaders()
+            val fromOpResponses = operation?.responses?.values.extractHeaders()
             fromOpParams + fromOpResponses
         }
         fromPathParameters + fromOperations
@@ -48,15 +48,15 @@ fun OpenAPI.getAllSchemas(): Collection<Schema<Any>> = this.components?.schemas.
     this.components?.responses.orEmpty().values.flatMap { it.content.orEmpty().values.mapNotNull { it.schema } } +
     this.components?.requestBodies.orEmpty().values.flatMap { it.content.orEmpty().values.mapNotNull { it.schema } } +
     this.paths.orEmpty().flatMap {
-        it.value.readOperations().flatMap { it.parameters.orEmpty().mapNotNull { it.schema } }
+        it.value?.readOperations().orEmpty().flatMap { it.parameters.orEmpty().mapNotNull { it.schema } }
     } +
     this.paths.orEmpty().flatMap {
-        it.value.readOperations().flatMap {
+        it.value?.readOperations().orEmpty().flatMap {
             it.responses.orEmpty().flatMap { it.value.content.orEmpty().values.mapNotNull { it.schema } }
         }
     } +
     this.paths.orEmpty().flatMap {
-        it.value.readOperations().flatMap { it.requestBody?.content.orEmpty().values.mapNotNull { it.schema } }
+        it.value?.readOperations().orEmpty().flatMap { it.requestBody?.content.orEmpty().values.mapNotNull { it.schema } }
     }
 
 /**
@@ -111,10 +111,9 @@ fun OpenAPI.getAllProperties(): Map<String, Schema<Any>> {
  * @return a collection of parameters
  */
 fun OpenAPI.getAllParameters(): Map<String, Parameter> = this.components?.parameters.orEmpty() +
-    this.paths.orEmpty().values.flatMap { it.parameters.orEmpty().mapNotNull { it.name to it } } +
+    this.paths.orEmpty().values.flatMap { it?.parameters.orEmpty().mapNotNull { it.name to it } } +
     this.paths.orEmpty().values.flatMap {
-        it.readOperations()
-            .flatMap { it.parameters.orEmpty().mapNotNull { it.name to it } }
+        it?.readOperations().orEmpty().flatMap { it?.parameters.orEmpty().mapNotNull { it.name to it } }
     }
 
 /**

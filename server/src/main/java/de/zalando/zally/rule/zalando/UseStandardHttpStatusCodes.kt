@@ -41,7 +41,7 @@ class UseStandardHttpStatusCodes(@Autowired rulesConfig: Config) {
     @Check(severity = Severity.MUST)
     fun checkWellUnderstoodResponseCodesUsage(context: Context): List<Violation> =
         context.validateOperations { (method, operation) ->
-            operation.responses.orEmpty().filterNot { (status, _) ->
+            operation?.responses.orEmpty().filterNot { (status, _) ->
                 isAllowed(method, status)
             }.map { (_, response) ->
                 context.violation("Operations must use standard HTTP status codes", response)
@@ -56,7 +56,7 @@ class UseStandardHttpStatusCodes(@Autowired rulesConfig: Config) {
     @Check(severity = Severity.MUST)
     fun checkIfOnlyStandardizedResponseCodesAreUsed(context: Context): List<Violation> =
             context.validateOperations { (_, operation) ->
-                operation.responses.orEmpty().filterNot { (status, _) ->
+                operation?.responses.orEmpty().filterNot { (status, _) ->
                     status in standardResponseCodes
                 }.map { (status, response) ->
                     context.violation("$status is not a standardized response code", response)
@@ -71,7 +71,7 @@ class UseStandardHttpStatusCodes(@Autowired rulesConfig: Config) {
     @Check(severity = Severity.SHOULD)
     fun checkIfOnlyWellUnderstoodResponseCodesAreUsed(context: Context): List<Violation> =
             context.validateOperations { (_, operation) ->
-                operation.responses.orEmpty().filterNot { (status, _) ->
+                operation?.responses.orEmpty().filterNot { (status, _) ->
                     status in wellUnderstoodResponseCode
                 }.map { (status, response) ->
                     context.violation("$status is not a well-understood response code", response)
