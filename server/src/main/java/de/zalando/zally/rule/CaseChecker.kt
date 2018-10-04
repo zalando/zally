@@ -3,6 +3,7 @@ package de.zalando.zally.rule
 import com.typesafe.config.Config
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.PatternUtil
 import de.zalando.zally.util.getAllHeaders
 import de.zalando.zally.util.getAllParameters
 import de.zalando.zally.util.getAllProperties
@@ -11,6 +12,7 @@ import io.github.config4k.extract
 class CaseChecker(
     val cases: Map<String, Regex>,
     val propertyNames: CaseCheck? = null,
+    val pathSegments: CaseCheck? = null,
     val pathParameterNames: CaseCheck? = null,
     val queryParameterNames: CaseCheck? = null,
     val headerNames: CaseCheck? = null
@@ -31,49 +33,69 @@ class CaseChecker(
         }
     }
 
-    fun checkPropertyNames(context: Context): List<Violation> {
-        return context.api
-            .getAllProperties()
-            .flatMap { (name, schema) ->
-                check("Property", "Properties", propertyNames, name)
-                    ?.let { context.violations(it, schema) }
-                    .orEmpty()
-            }
-    }
+    fun checkPathSegments(context: Context): List<Violation> = context.api
+        .paths?.entries.orEmpty()
+        .flatMap { (path, item) ->
+            val inputs = path
+                .split("/")
+                .filterNot { it.isEmpty() }
+                .filterNot { PatternUtil.isPathVariable(it) }
+            check("Path segment", "Path segments", pathSegments, inputs)
+                ?.let { context.violations(it, item) }
+                .orEmpty()
+        }
 
-    fun checkHeadersNames(context: Context): List<Violation> {
-        return context.api
-            .getAllHeaders()
-            .flatMap { header ->
-                check("Header", "Headers", headerNames, header.name)
-                    ?.let { context.violations(it, header.element) }
-                    .orEmpty()
-            }
-    }
+    fun checkPropertyNames(context: Context): List<Violation> = context.api
+        .getAllProperties()
+        .flatMap { (name, schema) ->
+            check("Property", "Properties", propertyNames, name)
+                ?.let { context.violations(it, schema) }
+                .orEmpty()
+        }
 
-    fun checkPathParameterNames(context: Context): List<Violation> {
-        return checkParameterNames(context, "Path", pathParameterNames)
-    }
+    fun checkHeadersNames(context: Context): List<Violation> = context.api
+        .getAllHeaders()
+        .flatMap { header ->
+            check("Header", "Headers", headerNames, header.name)
+                ?.let { context.violations(it, header.element) }
+                .orEmpty()
+        }
 
-    fun checkQueryParameterNames(context: Context): List<Violation> {
-        return checkParameterNames(context, "Query", queryParameterNames)
-    }
+    fun checkPathParameterNames(context: Context): List<Violation> =
+        checkParameterNames(context, "Path", pathParameterNames)
 
-    fun checkParameterNames(
+    fun checkQueryParameterNames(context: Context): List<Violation> =
+        checkParameterNames(context, "Query", queryParameterNames)
+
+    private fun checkParameterNames(
         context: Context,
         type: String,
         check: CaseCheck?
-    ): List<Violation> {
-        return context.api.getAllParameters().values
-            .filter { type.toLowerCase() == it.`in` }
-            .flatMap { param ->
-                check("$type parameter", "$type parameters", check, param.name)
-                    ?.let { context.violations(it, param) }
-                    .orEmpty()
-            }
-    }
+    ): List<Violation> = context.api
+        .getAllParameters().values
+        .filter { type.toLowerCase() == it.`in` }
+        .flatMap { param ->
+            check("$type parameter", "$type parameters", check, param.name)
+                ?.let { context.violations(it, param) }
+                .orEmpty()
+        }
 
-    fun check(prefix: String, prefixes: String, check: CaseChecker.CaseCheck?, vararg inputs: String): String? {
+    internal fun check(prefix: String, prefixes: String, check: CaseChecker.CaseCheck?, input: String): String? =
+        check(prefix, prefixes, check, listOf(input))
+
+    internal fun check(
+        prefix: String,
+        prefixes: String,
+        check: CaseChecker.CaseCheck?,
+        vararg inputs: String
+    ): String? = check(prefix, prefixes, check, inputs.asIterable())
+
+    internal fun check(
+        prefix: String,
+        prefixes: String,
+        check: CaseChecker.CaseCheck?,
+        inputs: Iterable<String>
+    ): String? {
         if (check == null) {
             return null
         }
@@ -119,8 +141,8 @@ class CaseChecker(
         }
     }
 
-    private fun appendSuggestions(message: StringBuilder, inputs: Array<out String>) {
-        val suggestions = inputs.asIterable()
+    private fun appendSuggestions(message: StringBuilder, inputs: Iterable<String>) {
+        val suggestions = inputs
             .map { input ->
                 cases.filterValues { it.matches(input) }.keys
             }
@@ -131,16 +153,6 @@ class CaseChecker(
         when {
             suggestions.size == 1 -> message.append(" but seems to be ").append(suggestions[0])
             suggestions.isNotEmpty() -> message.append(" but seems to be one of ").append(suggestions.joinToString())
-        }
-    }
-
-    private fun caseToString(case: CaseChecker.CaseCheck): String {
-        val matches = cases.filterValues { it.pattern == case.toString() }
-        return if (matches.isEmpty()) {
-            "regex $case"
-        } else {
-            val entry = matches.iterator().next()
-            "${entry.key} (${entry.value})"
         }
     }
 }

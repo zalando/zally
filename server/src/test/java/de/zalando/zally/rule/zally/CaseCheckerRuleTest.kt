@@ -92,4 +92,22 @@ class CaseCheckerRuleTest {
             .descriptionsAllMatch("Header 'InVaLiD!' does not match .*".toRegex())
             .pointersEqualTo("/paths/~1things/post/parameters/0")
     }
+
+    @Test
+    fun `checkPathSegments returns violations`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent("""
+            swagger: '2.0'
+            paths:
+              /things/{param}//InVaLiD:
+                post:
+            """.trimIndent())
+
+        val violations = cut.checkPathSegments(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsAllMatch("Path segment 'InVaLiD' does not match .*".toRegex())
+            .pointersEqualTo("/paths/~1things~1{param}~1~1InVaLiD")
+    }
 }

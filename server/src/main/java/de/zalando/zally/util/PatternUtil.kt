@@ -8,7 +8,6 @@ object PatternUtil {
     private val CAMEL_CASE_PATTERN = "^[a-z]+(?:[A-Z][a-z]+)*$".toRegex()
     private val PASCAL_CASE_PATTERN = "^[A-Z][a-z]+(?:[A-Z][a-z]+)*$".toRegex()
     private val HYPHENATED_CAMEL_CASE_PATTERN = "^[a-z]+(?:-[A-Z][a-z]+)*$".toRegex()
-    private val KEBAB_CASE_PATTERN = "^[a-z]+(?:-[a-z]+)*$".toRegex()
     private val HYPHENATED_PATTERN = "^[A-Za-z0-9.]+(-[A-Za-z0-9.]+)*$".toRegex()
     private val PATH_VARIABLE_PATTERN = "\\{.+}$".toRegex()
     private val APPLICATION_PROBLEM_JSON_PATTERN = "^application/(problem\\+)?json$".toRegex()
@@ -23,8 +22,6 @@ object PatternUtil {
     fun isPascalCase(input: String): Boolean = input.matches(PASCAL_CASE_PATTERN)
 
     fun isHyphenatedCamelCase(input: String): Boolean = input.matches(HYPHENATED_CAMEL_CASE_PATTERN)
-
-    fun isKebabCase(input: String): Boolean = input.matches(KEBAB_CASE_PATTERN)
 
     fun isHyphenated(input: String): Boolean = input.matches(HYPHENATED_PATTERN)
 

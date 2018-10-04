@@ -34,4 +34,8 @@ class CaseCheckerRule(@Autowired config: Config) {
     @Check(severity = Severity.MUST)
     fun checkHeaderNames(context: Context): List<Violation> =
         checker.checkHeadersNames(context)
+
+    @Check(severity = Severity.MUST)
+    fun checkPathSegments(context: Context): List<Violation> =
+        checker.checkPathSegments(context)
 }

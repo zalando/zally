@@ -4,7 +4,6 @@ import de.zalando.zally.util.PatternUtil.hasTrailingSlash
 import de.zalando.zally.util.PatternUtil.isCamelCase
 import de.zalando.zally.util.PatternUtil.isHyphenated
 import de.zalando.zally.util.PatternUtil.isHyphenatedCamelCase
-import de.zalando.zally.util.PatternUtil.isKebabCase
 import de.zalando.zally.util.PatternUtil.isPascalCase
 import de.zalando.zally.util.PatternUtil.isPathVariable
 import org.junit.Assert.assertFalse
@@ -50,13 +49,6 @@ class PatternUtilTest {
         assertFalse(isHyphenatedCamelCase("Test-Case"))
         assertFalse(isHyphenatedCamelCase("testCase"))
         assertFalse(isHyphenatedCamelCase("TestCase"))
-    }
-
-    @Test
-    fun checkIsKebabCase() {
-        assertTrue(isKebabCase("test-case"))
-        assertFalse(isKebabCase("test-Case"))
-        assertFalse(isKebabCase("testCase"))
     }
 
     @Test

@@ -7,7 +7,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(Parameterized::class)
-class CaseCheckerParameterizedTest(val param: TestParam) {
+class CaseCheckerParameterizedTest(private val param: TestParam) {
 
     class TestParam(val case: String, val term: String, val expectation: Boolean) {
         operator fun not(): TestParam = TestParam(case, term, !expectation)
@@ -30,7 +30,20 @@ class CaseCheckerParameterizedTest(val param: TestParam) {
             ) + parameters(
                 "snake_case",
                 listOf("test_case", "test", "v1_id", "0_1_2_3"),
-                listOf("test__case", "TestCase", "Test_Case", "", "_", "customer-number", "_customer_number", "CUSTOMER_NUMBER")
+                listOf(
+                    "test__case",
+                    "TestCase",
+                    "Test_Case",
+                    "",
+                    "_",
+                    "customer-number",
+                    "_customer_number",
+                    "CUSTOMER_NUMBER"
+                )
+            ) + parameters(
+                "kebab-case",
+                listOf("test-case"),
+                listOf("test-Case", "testCase")
             )
 
             val excess = parameters.map { it.case }.toSet() - checker.cases.keys
@@ -61,12 +74,7 @@ class CaseCheckerParameterizedTest(val param: TestParam) {
         }
 
         private fun parameters(case: String, matches: List<String>, mismatches: List<String>): List<TestParam> {
-            return matches.map {
-                TestParam(case, it, true)
-            } +
-                   mismatches.map {
-               TestParam(case, it, false)
-           }
+            return matches.map { TestParam(case, it, true) } + mismatches.map { TestParam(case, it, false) }
         }
     }
 

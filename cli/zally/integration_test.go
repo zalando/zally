@@ -67,7 +67,7 @@ func TestIntegrationWithSomeOtherLocalYamlFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_tinbox.yaml"})
 
 		assert.Contains(t, out, "Provide API Specification using OpenAPI")
-		assert.Contains(t, out, "MUST violations: 54")
+		assert.Contains(t, out, "MUST violations: 57")
 		assert.Contains(t, out, "SHOULD violations: 23")
 		assert.Contains(t, out, "MAY violations: 11")
 		assert.Contains(t, out, "HINT violations: 0")
