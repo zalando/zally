@@ -49,4 +49,23 @@ class SnakeCaseInPropNameRuleTest {
 
         assertThat(violations).isEmpty()
     }
+
+    @Test
+    fun `checkPropertyNames should return no violation if only whitelisted properties are used`() {
+        @Language("YAML")
+        val spec = """
+            openapi: '3.0.1'
+            components:
+              schemas:
+                article:
+                  properties:
+                    _links:
+                      type: string
+            """.trimIndent()
+        val context = getOpenApiContextFromContent(spec)
+
+        val violations = rule.checkPropertyNames(context)
+
+        assertThat(violations).isEmpty()
+    }
 }

@@ -19,6 +19,11 @@ class ViolationsAssert(violations: List<Violation>?) : AbstractListAssert<Violat
         return this
     }
 
+    fun descriptionsAllMatch(regex: Regex): ViolationsAssert {
+        descriptions().allMatch { regex.matches(it) }
+        return this
+    }
+
     fun descriptionsEqualTo(vararg descriptions: String): ViolationsAssert {
         descriptions().containsExactly(*descriptions)
         return this
