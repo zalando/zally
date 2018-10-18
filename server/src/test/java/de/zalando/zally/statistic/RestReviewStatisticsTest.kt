@@ -84,9 +84,9 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     @Test
     fun shouldReturnNumberOfUniqueApiReviewsBasedOnApiName() {
         val now = TestDateUtil.now().toLocalDate()
-        apiReviewRepository!!.save(apiReview(now, "API A", null))
-        apiReviewRepository!!.save(apiReview(now, "API B", null))
-        apiReviewRepository!!.save(apiReview(now, "API B", null))
+        apiReviewRepository!!.save(apiReview(now, "API A", ""))
+        apiReviewRepository!!.save(apiReview(now, "API B", ""))
+        apiReviewRepository!!.save(apiReview(now, "API B", ""))
 
         val statistics = reviewStatistics
 
@@ -98,7 +98,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     fun shouldFilterByUserAgent() {
         val now = TestDateUtil.now().toLocalDate()
         apiReviewRepository!!.save(apiReview(now, null, "curl"))
-        apiReviewRepository!!.save(apiReview(now, null, null))
+        apiReviewRepository!!.save(apiReview(now, null, ""))
 
         var statistics = reviewStatistics
         assertThat(statistics.totalReviews).isEqualTo(2)
@@ -112,7 +112,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
         var currentDate = LocalDate.from(from)
         while (currentDate.isBefore(to)) {
-            reviews.add(apiReview(currentDate, "My API", null))
+            reviews.add(apiReview(currentDate, "My API", ""))
             currentDate = currentDate.plusDays(1L)
         }
 
@@ -120,8 +120,8 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
         return reviews
     }
 
-    private fun apiReview(date: LocalDate, apiName: String?, userAgent: String?): ApiReview {
-        val review = ApiReview(ApiDefinitionRequest(), null, "dummyApiDefinition", createRandomViolations())
+    private fun apiReview(date: LocalDate, apiName: String?, userAgent: String): ApiReview {
+        val review = ApiReview(ApiDefinitionRequest(), "", "dummyApiDefinition", createRandomViolations())
         review.day = date
         review.name = apiName
         review.apiId = "48aa0090-25ef-11e8-b467-0ed5f89f718b"

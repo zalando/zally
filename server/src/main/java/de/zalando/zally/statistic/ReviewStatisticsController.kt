@@ -51,14 +51,14 @@ constructor(private val apiReviewRepository: ApiReviewRepository) {
 
         return when {
             userAgent == null || userAgent.isEmpty() -> getReviewStatistics(today.minusDays(7L), today)
-            else -> getReviewStatisticsByUserAgent(userAgent, today.minusDays(7L), today)
+            else -> getReviewStatistics(today.minusDays(7L), today, userAgent)
         }
     }
 
     private fun ApiReviewRepository.findByDayBetween(userAgent: String?, from: LocalDate, to: LocalDate): ReviewStatistics {
         return when {
             userAgent == null || userAgent.isEmpty() -> getReviewStatistics(from, to)
-            else -> getReviewStatisticsByUserAgent(userAgent, from, to)
+            else -> getReviewStatistics(from, to, userAgent)
         }
     }
 

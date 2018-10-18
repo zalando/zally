@@ -40,7 +40,7 @@ constructor(
         val requestPolicy = retrieveRulesPolicy(request)
 
         val violations = rulesValidator.validate(apiDefinition!!, requestPolicy)
-        apiReviewRepository.save(ApiReview(request, userAgent, apiDefinition, violations))
+        apiReviewRepository.save(ApiReview(request, userAgent.orEmpty(), apiDefinition, violations))
 
         return buildApiDefinitionResponse(violations, userAgent)
     }
@@ -52,10 +52,10 @@ constructor(
     private fun retrieveApiDefinition(request: ApiDefinitionRequest): String? = try {
         apiDefinitionReader.read(request)
     } catch (e: MissingApiDefinitionException) {
-        apiReviewRepository.save(ApiReview(request, null, ""))
+        apiReviewRepository.save(ApiReview(request, "", ""))
         throw e
     } catch (e: InaccessibleResourceUrlException) {
-        apiReviewRepository.save(ApiReview(request, null, ""))
+        apiReviewRepository.save(ApiReview(request, "", ""))
         throw e
     }
 

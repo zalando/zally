@@ -21,7 +21,7 @@ class ApiReviewTest {
         val mustViolation2 = result(Severity.MUST, "/pointer2")
         val shouldViolation = result(Severity.SHOULD, "/pointer3")
 
-        val apiReview = ApiReview(ApiDefinitionRequest(), null, "", asList(mustViolation1, mustViolation2, shouldViolation))
+        val apiReview = ApiReview(ApiDefinitionRequest(), "", "", asList(mustViolation1, mustViolation2, shouldViolation))
 
         assertThat(apiReview.mustViolations).isEqualTo(2)
         assertThat(apiReview.shouldViolations).isEqualTo(1)
@@ -37,7 +37,7 @@ class ApiReviewTest {
 
         val apiDefinition = resourceToString("fixtures/limitNumberOfResourcesValid.json")
 
-        val apiReview = ApiReview(ApiDefinitionRequest(), null, apiDefinition, asList(violation1, violation2))
+        val apiReview = ApiReview(ApiDefinitionRequest(), "", apiDefinition, asList(violation1, violation2))
 
         assertThat(apiReview.numberOfEndpoints).isEqualTo(2)
     }
@@ -46,7 +46,7 @@ class ApiReviewTest {
     @Throws(IOException::class)
     fun shouldParseApiNameFromApiDefinition() {
         val apiDefinition = resourceToString("fixtures/limitNumberOfResourcesValid.json")
-        val apiReview = ApiReview(ApiDefinitionRequest(), null, apiDefinition, emptyList())
+        val apiReview = ApiReview(ApiDefinitionRequest(), "", apiDefinition, emptyList())
         assertThat(apiReview.name).isEqualTo("Test Service")
     }
 
