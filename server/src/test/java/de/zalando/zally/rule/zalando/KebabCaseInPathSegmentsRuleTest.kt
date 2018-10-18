@@ -1,13 +1,14 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class KebabCaseInPathSegmentsRuleTest {
 
-    private val rule = KebabCaseInPathSegmentsRule()
+    private val rule = KebabCaseInPathSegmentsRule(testConfig)
 
     @Test
     fun `checkKebabCaseInPathSegments should return violation for path segments which are not lowercase separate words with hyphens`() {

@@ -18,6 +18,17 @@ Information about protocol should be placed in schema and not as part of the hos
 
 Enforces that "there can only be one body parameter" per operation as required by the [swagger spec](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#parameter-object).
 
+## M010: Check case of various terms
+
+Enforced that various terms match case requirements configured via
+CaseChecker section in rules-config.conf.
+
+Supports:
+
+- schema property names
+- query parameter names
+- path parameter names
+
 ## S005: Do not leave unused definitions
 
 Unused definitions cause confusion and should be avioded.
@@ -29,7 +40,3 @@ If all paths start with the same prefix then it would be cleaner to extract that
 ## H002: Avoid `x-zally-ignore`
 
 The `x-zally-ignore` extension should be used sparingly for temporary exceptional circumstances. Use encourages deviation from agreed standards. For longer term solutions please discuss disabling or adjusting the rule with your team.
-
-## 131: Use Hyphenated HTTP Headers
-
-Header names should be hyphenated rather than use underscores or other separators

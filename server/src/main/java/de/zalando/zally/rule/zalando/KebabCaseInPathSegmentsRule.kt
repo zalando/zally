@@ -1,11 +1,12 @@
 package de.zalando.zally.rule.zalando
 
+import com.typesafe.config.Config
+import de.zalando.zally.rule.CaseChecker
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.PatternUtil
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -13,17 +14,14 @@ import de.zalando.zally.util.PatternUtil
     severity = Severity.MUST,
     title = "Lowercase words with hyphens"
 )
-class KebabCaseInPathSegmentsRule {
+class KebabCaseInPathSegmentsRule(config: Config) {
+
+    private val checker = CaseChecker.load(config)
 
     private val description = "Use lowercase separate words with hyphens for path segments"
-    internal val lowerCaseHyphenSeparatedRegex = """^[a-z-]+$""".toRegex()
+    internal val lowerCaseHyphenSeparatedRegex = "^[a-z-]+$".toRegex()
 
     @Check(severity = Severity.MUST)
     fun checkKebabCaseInPathSegments(context: Context): List<Violation> =
-        context.api.paths.orEmpty().entries
-            .filter { (path, _) ->
-                path.split("/").filterNot { it.isEmpty() }
-                    .any { segment -> !PatternUtil.isPathVariable(segment) && !segment.matches(lowerCaseHyphenSeparatedRegex) }
-            }
-            .map { (_, pathEntry) -> context.violation(description, pathEntry) }
+        checker.checkPathSegments(context).map { Violation(description, it.pointer!!) }
 }
