@@ -1,23 +1,23 @@
 package de.zalando.zally.rule.zally
 
+import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.ast.JsonPointers
 
 /**
  * Rule highlighting that x-zally-ignore should be used sparingly
  */
 @Rule(
-        ruleSet = ZallyRuleSet::class,
-        id = "H002",
-        severity = Severity.HINT,
-        title = "Avoid using x-zally-ignore extension."
+    ruleSet = ZallyRuleSet::class,
+    id = "H002",
+    severity = Severity.HINT,
+    title = "Avoid using x-zally-ignore extension."
 )
 class AvoidXZallyIgnoreRule {
-
-    private val description = "Ignoring rules should be reserved for exceptional temporary circumstances"
 
     private val xZallyIgnore = "x-zally-ignore"
 
@@ -27,38 +27,40 @@ class AvoidXZallyIgnoreRule {
      * @return Violation iff x-zally-ignore is in use
      */
     @Check(severity = Severity.HINT)
-    fun validate(root: JsonNode): Violation? {
-        val paths = validateTree(root)
-        return when {
-            paths.isEmpty() -> null
-            else -> Violation(description, paths)
-        }
-    }
+    fun validate(root: JsonNode): List<Violation> = validateTree(JsonPointers.EMPTY, root)
 
-    private fun validateTree(node: JsonNode): List<String> {
-        return when {
-            node.isObject -> validateXZallyIgnore(node) + validateChildren(node)
+    private fun validateTree(pointer: JsonPointer, node: JsonNode): List<Violation> =
+        when {
+            node.isArray -> validateArrayNode(pointer, node)
+            node.isObject -> validateObjectNode(pointer, node)
             else -> emptyList()
         }
-    }
 
-    private fun validateXZallyIgnore(node: JsonNode): List<String> {
-        return when {
-            node.has(xZallyIgnore) -> {
-                val ignores = node.get(xZallyIgnore)
-                when {
-                    ignores.isArray -> listOf("ignores rules " + ignores.joinToString(separator = ", ", transform = JsonNode::asText))
-                    ignores.isValueNode -> listOf("invalid ignores, expected list but found single value $ignores")
-                    else -> listOf("invalid ignores, expected list but found $ignores")
-                }
+    private fun validateArrayNode(pointer: JsonPointer, node: JsonNode): List<Violation> =
+        node.asSequence().toList().mapIndexed { index, childNode ->
+            val childPointer = pointer.append(JsonPointer.compile("/$index"))
+            validateTree(childPointer, childNode)
+        }.flatten()
+
+    private fun validateObjectNode(pointer: JsonPointer, node: JsonNode): List<Violation> =
+        node.fields().asSequence().toList().flatMap { (name, childNode) ->
+            val childPointer = pointer.append(JsonPointers.escape(name))
+            when (name) {
+                xZallyIgnore -> validateXZallyIgnore(childPointer, childNode)
+                else -> validateTree(childPointer, childNode)
             }
-            else -> emptyList()
         }
-    }
 
-    private fun validateChildren(node: JsonNode): List<String> {
-        return node.fields().asSequence().toList().flatMap { (name, child) ->
-            validateTree(child).map { "$name: $it" }
-        }
-    }
+    private fun validateXZallyIgnore(pointer: JsonPointer, node: JsonNode): List<Violation> =
+        listOf(Violation(
+            when {
+                node.isArray -> node.joinToString(
+                    prefix = "Ignores rules ",
+                    separator = ", ",
+                    transform = JsonNode::asText
+                )
+                node.isValueNode -> "Invalid ignores, expected list but found single value $node"
+                else -> "Invalid ignores, expected list but found $node"
+            }, pointer
+        ))
 }
