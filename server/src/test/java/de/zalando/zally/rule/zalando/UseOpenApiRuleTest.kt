@@ -36,8 +36,8 @@ class UseOpenApiRuleTest {
         val json = ObjectTreeReader().read("foo: bar")
         val validations = rule.validateSchema(json)
         assertThat(validations).isNotEmpty
-        assertThat(validations).anyMatch { it.description.matches(Regex(".*object has missing required properties.*")) }
-        assertThat(validations).anyMatch { it.description.matches(Regex(".*object instance has properties.*")) }
+        assertThat(validations).anyMatch { it.description.matches(Regex(".*Object has missing required properties.*")) }
+        assertThat(validations).anyMatch { it.description.matches(Regex(".*Object instance has properties.*")) }
     }
 
     @Test
