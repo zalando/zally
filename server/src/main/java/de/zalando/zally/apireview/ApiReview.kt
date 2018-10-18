@@ -63,7 +63,7 @@ class ApiReview : Serializable {
      */
     protected constructor() {}
 
-    constructor(request: ApiDefinitionRequest, userAgent: String? = null, apiDefinition: String, violations: List<Result> = emptyList()) {
+    constructor(request: ApiDefinitionRequest, userAgent: String = "", apiDefinition: String, violations: List<Result> = emptyList()) {
         this.jsonPayload = request.toString()
         this.apiDefinition = apiDefinition
         this.isSuccessfulProcessed = StringUtils.isNotBlank(apiDefinition)

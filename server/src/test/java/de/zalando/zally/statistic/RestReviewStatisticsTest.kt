@@ -19,7 +19,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
     @Test
     fun shouldReturnEmptyReviewStatisticsList() {
-        assertThat(reviewStatistics.reviews).isEmpty()
+        assertThat(reviewStatistics.totalReviews).isEqualTo(0)
     }
 
     @Test
@@ -30,9 +30,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
         val response = reviewStatistics
 
-        assertThat(response.reviews).hasSize(reviews.size)
-        assertThat(response.violations).hasSize(1)
-        assertThat(response.violations!![0].occurrence).isEqualTo(1)
+        assertThat(response.totalReviews.toInt()).isEqualTo(reviews.size)
     }
 
     @Test
@@ -46,12 +44,10 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
         val response = getReviewStatisticsBetween(from, null)
 
-        assertThat(response.numberOfEndpoints).isEqualTo(reviews.size * 2)
-        assertThat(response.mustViolations).isEqualTo(reviews.size)
-        assertThat(response.totalReviews).isEqualTo(reviews.size)
-        assertThat(response.successfulReviews).isEqualTo(reviews.size)
-        assertThat(response.reviews).hasSize(reviews.size)
-        assertThat(response.violations).hasSize(1)
+        assertThat(response.numberOfEndpoints.toInt()).isEqualTo(reviews.size * 2)
+        assertThat(response.mustViolations.toInt()).isEqualTo(reviews.size)
+        assertThat(response.totalReviews.toInt()).isEqualTo(reviews.size)
+        assertThat(response.successfulReviews.toInt()).isEqualTo(reviews.size)
     }
 
     @Test
@@ -62,7 +58,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
         val reviews = createRandomReviewsInBetween(from, TestDateUtil.now().toLocalDate())
 
         val response = getReviewStatisticsBetween(from, to)
-        assertThat(response.reviews).hasSize(reviews.size - 1)
+        assertThat(response.totalReviews.toInt()).isEqualTo(reviews.size - 1)
     }
 
     @Test
@@ -86,62 +82,29 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     }
 
     @Test
-    fun shouldReturnApiNameAndId() {
-        val reviewsCount = 7
-        createRandomReviewsInBetween(TestDateUtil.now().minusDays(reviewsCount.toLong()).toLocalDate(), TestDateUtil.now().toLocalDate())
-        val response = reviewStatistics
-        assertThat(response.reviews).hasSize(reviewsCount)
-        assertThat(response.reviews!![0].api).isEqualTo("My API")
-        assertThat(response.reviews!![0].apiId).isEqualTo("48aa0090-25ef-11e8-b467-0ed5f89f718b")
-    }
-
-    @Test
     fun shouldReturnNumberOfUniqueApiReviewsBasedOnApiName() {
         val now = TestDateUtil.now().toLocalDate()
-        apiReviewRepository!!.save(apiReview(now, "API A", null))
-        apiReviewRepository!!.save(apiReview(now, "API B", null))
-        apiReviewRepository!!.save(apiReview(now, "API B", null))
+        apiReviewRepository!!.save(apiReview(now, "API A", ""))
+        apiReviewRepository!!.save(apiReview(now, "API B", ""))
+        apiReviewRepository!!.save(apiReview(now, "API B", ""))
 
         val statistics = reviewStatistics
 
-        assertThat(statistics.reviews).hasSize(3)
+        assertThat(statistics.totalReviews).isEqualTo(3)
         assertThat(statistics.totalReviewsDeduplicated).isEqualTo(2)
-    }
-
-    @Test
-    fun deduplicatedReviewStatisticsShouldIgnoreApisWithoutName() {
-        val now = TestDateUtil.now().toLocalDate()
-        apiReviewRepository!!.save(apiReview(now, null, null))
-        apiReviewRepository!!.save(apiReview(now, "", null))
-        apiReviewRepository!!.save(apiReview(now, "Nice API", null))
-
-        val statistics = reviewStatistics
-
-        assertThat(statistics.reviews).hasSize(3)
-        assertThat(statistics.totalReviewsDeduplicated).isEqualTo(1)
-    }
-
-    @Test
-    fun shouldStoreUserAgent() {
-        val now = TestDateUtil.now().toLocalDate()
-        apiReviewRepository!!.save(apiReview(now, null, "curl"))
-
-        val statistics = reviewStatistics
-        assertThat(statistics.reviews).hasSize(1)
-        assertThat(statistics.reviews!![0].userAgent).isEqualTo("curl")
     }
 
     @Test
     fun shouldFilterByUserAgent() {
         val now = TestDateUtil.now().toLocalDate()
         apiReviewRepository!!.save(apiReview(now, null, "curl"))
-        apiReviewRepository!!.save(apiReview(now, null, null))
+        apiReviewRepository!!.save(apiReview(now, null, ""))
 
         var statistics = reviewStatistics
-        assertThat(statistics.reviews).hasSize(2)
+        assertThat(statistics.totalReviews).isEqualTo(2)
 
         statistics = getReviewStatisticsByUserAgent("curl")
-        assertThat(statistics.reviews).hasSize(1)
+        assertThat(statistics.totalReviews).isEqualTo(1)
     }
 
     private fun createRandomReviewsInBetween(from: LocalDate, to: LocalDate): List<ApiReview> {
@@ -149,7 +112,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
         var currentDate = LocalDate.from(from)
         while (currentDate.isBefore(to)) {
-            reviews.add(apiReview(currentDate, "My API", null))
+            reviews.add(apiReview(currentDate, "My API", ""))
             currentDate = currentDate.plusDays(1L)
         }
 
@@ -157,8 +120,8 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
         return reviews
     }
 
-    private fun apiReview(date: LocalDate, apiName: String?, userAgent: String?): ApiReview {
-        val review = ApiReview(ApiDefinitionRequest(), null, "dummyApiDefinition", createRandomViolations())
+    private fun apiReview(date: LocalDate, apiName: String?, userAgent: String): ApiReview {
+        val review = ApiReview(ApiDefinitionRequest(), "", "dummyApiDefinition", createRandomViolations())
         review.day = date
         review.name = apiName
         review.apiId = "48aa0090-25ef-11e8-b467-0ed5f89f718b"

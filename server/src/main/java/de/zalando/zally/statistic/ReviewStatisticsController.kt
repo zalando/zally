@@ -1,6 +1,5 @@
 package de.zalando.zally.statistic
 
-import de.zalando.zally.apireview.ApiReview
 import de.zalando.zally.apireview.ApiReviewRepository
 import de.zalando.zally.exception.InsufficientTimeIntervalParameterException
 import de.zalando.zally.exception.TimeParameterIsInTheFutureException
@@ -37,29 +36,29 @@ constructor(private val apiReviewRepository: ApiReviewRepository) {
             throw InsufficientTimeIntervalParameterException()
         }
 
-        val apiReviews = if (from != null) {
+        val apiReviewStatistics = if (from != null) {
             apiReviewRepository.findByDayBetween(userAgent, from, to ?: today())
         } else {
             apiReviewRepository.findFromLastWeek(userAgent)
         }
 
-        LOG.info("Found {} api reviews from {} to {} user_agent {}", apiReviews.size, from, to, userAgent)
-        return ReviewStatistics(apiReviews)
+        LOG.info("Found {} api reviews from {} to {} user_agent {}", apiReviewStatistics.totalReviews, from, to, userAgent)
+        return apiReviewStatistics
     }
 
-    private fun ApiReviewRepository.findFromLastWeek(userAgent: String?): Collection<ApiReview> {
+    private fun ApiReviewRepository.findFromLastWeek(userAgent: String?): ReviewStatistics {
         val today = Instant.now().atOffset(ZoneOffset.UTC).toLocalDate()
 
         return when {
-            userAgent == null || userAgent.isEmpty() -> findByDayBetween(today.minusDays(7L), today)
-            else -> findByUserAgentAndDayBetween(userAgent, today.minusDays(7L), today)
+            userAgent == null || userAgent.isEmpty() -> getReviewStatistics(today.minusDays(7L), today)
+            else -> getReviewStatistics(today.minusDays(7L), today, userAgent)
         }
     }
 
-    private fun ApiReviewRepository.findByDayBetween(userAgent: String?, from: LocalDate, to: LocalDate): Collection<ApiReview> {
+    private fun ApiReviewRepository.findByDayBetween(userAgent: String?, from: LocalDate, to: LocalDate): ReviewStatistics {
         return when {
-            userAgent == null || userAgent.isEmpty() -> findByDayBetween(from, to)
-            else -> findByUserAgentAndDayBetween(userAgent, from, to)
+            userAgent == null || userAgent.isEmpty() -> getReviewStatistics(from, to)
+            else -> getReviewStatistics(from, to, userAgent)
         }
     }
 
