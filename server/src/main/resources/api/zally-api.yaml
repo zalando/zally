@@ -14,7 +14,7 @@ info:
     the number of linting requests and the number of checked endpoints. Additionally, all
     linting results and the linted API specifications can be retrieved.
 
-  version: "1.5.1"
+  version: "2.0.0"
   x-api-id: 48aa0090-25ef-11e8-b467-0ed5f89f718b
   x-audience: company-internal
   contact:
@@ -262,8 +262,6 @@ components:
       - should_violations
       - may_violations
       - hint_violations
-      - violations
-      - reviews
       properties:
         total_reviews:
           type: integer
@@ -305,68 +303,6 @@ components:
           format: int32
           example: 5
           description: Number of HINTS
-        violations:
-          type: array
-          items:
-            $ref: '#/components/schemas/ViolationStatistic'
-        reviews:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReviewStatistic'
-
-    ReviewStatistic:
-      type: object
-      description: One API review
-      required:
-      - api
-      - successful
-      - number_of_endpoints
-      - violations
-      properties:
-        api:
-          type: string
-          description: API title
-          example: Awesome API
-        api_id:
-          type: string
-          description: x-api-id OpenAPI extension, if present in the specification
-          example: 48aa0090-25ef-11e8-b467-0ed5f89f718b
-        successful:
-          type: boolean
-          description: 'true if linting has not failed'
-        user_agent:
-          type: string
-          example: 'Zally-CLI/2.0'
-          description: User agent which has been issued the linting
-        number_of_endpoints:
-          type: integer
-          format: int32
-          example: 7
-          description: Number of endpoints in the API
-        violations:
-          type: array
-          items:
-            $ref: '#/components/schemas/ViolationStatistic'
-
-    ViolationStatistic:
-      type: object
-      description: One violation in statistics
-      required:
-      - name
-      - type
-      - occurrence
-      properties:
-        name:
-          type: string
-          description: Violation text
-          example: 'Rule X has been violated'
-        type:
-          $ref: '#/components/schemas/RuleType'
-        occurrence:
-          type: integer
-          format: int32
-          example: 6
-          description: Number of occurrence
 
     Violation:
       type: object
