@@ -1,7 +1,9 @@
 package de.zalando.zally.rule.zally
 
 import de.zalando.zally.rule.ObjectTreeReader
+import de.zalando.zally.rule.ZallyAssertions
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class AvoidXZallyIgnoreRuleTest {
@@ -10,31 +12,24 @@ class AvoidXZallyIgnoreRuleTest {
     private val reader = ObjectTreeReader()
 
     @Test
-    fun validateSpecWithNoIgnores() {
-        val root = reader.read("""
-            swagger: 2.0
-            """.trimIndent())
-
-        val violation = rule.validate(root)
-
-        assertThat(violation).isNull()
-    }
-
-    @Test
-    fun validateSpecWithInlineIgnoresAtRoot() {
+    fun `validate swagger with inline ignores returns violation`() {
+        @Language("YAML")
         val root = reader.read("""
             swagger: 2.0
             x-zally-ignore: [ ONE, TWO, THREE]
             """.trimIndent())
 
-        val violation = rule.validate(root)
+        val violations = rule.validate(root)
 
-        assertThat(violation?.paths!!)
-                .hasSameElementsAs(listOf("ignores rules ONE, TWO, THREE"))
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsEqualTo("Ignores rules ONE, TWO, THREE")
+            .pointersEqualTo("/x-zally-ignore")
     }
 
     @Test
-    fun validateSpecWithDashedIgnoresAtRoot() {
+    fun `validate swagger with dashed ignores returns violation`() {
+        @Language("YAML")
         val root = reader.read("""
             swagger: 2.0
             x-zally-ignore:
@@ -43,50 +38,79 @@ class AvoidXZallyIgnoreRuleTest {
               - THREE
             """.trimIndent())
 
-        val violation = rule.validate(root)
+        val violations = rule.validate(root)
 
-        assertThat(violation?.paths!!)
-                .hasSameElementsAs(listOf("ignores rules ONE, TWO, THREE"))
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsEqualTo("Ignores rules ONE, TWO, THREE")
+            .pointersEqualTo("/x-zally-ignore")
     }
 
     @Test
-    fun validateSpecWithInlineIgnoresDeeper() {
+    fun `validate swagger with ignores within object returns violation`() {
+        @Language("YAML")
         val root = reader.read("""
             swagger: 2.0
             info:
               x-zally-ignore: [ ONE, TWO, THREE]
             """.trimIndent())
 
-        val violation = rule.validate(root)
+        val violations = rule.validate(root)
 
-        assertThat(violation?.paths!!)
-                .hasSameElementsAs(listOf("info: ignores rules ONE, TWO, THREE"))
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsEqualTo("Ignores rules ONE, TWO, THREE")
+            .pointersEqualTo("/info/x-zally-ignore")
     }
 
     @Test
-    fun validateSpecWithInvalidSingleValueIgnores() {
+    fun `validate openapi with ignores within array returns violation`() {
+        @Language("YAML")
+        val root = reader.read("""
+            openapi: 3.0.0
+            servers:
+              - url: http://example.com
+                x-zally-ignore: [ONE, TWO, THREE]
+            """.trimIndent())
+
+        val violations = rule.validate(root)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsEqualTo("Ignores rules ONE, TWO, THREE")
+            .pointersEqualTo("/servers/0/x-zally-ignore")
+    }
+
+    @Test
+    fun `validate openapi with invalid ignores string returns violation`() {
+        @Language("YAML")
         val root = reader.read("""
             swagger: 2.0
             x-zally-ignore: INVALID
             """.trimIndent())
 
-        val violation = rule.validate(root)
+        val violations = rule.validate(root)
 
-        assertThat(violation?.paths!!)
-                .hasSameElementsAs(listOf("invalid ignores, expected list but found single value \"INVALID\""))
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsEqualTo("Invalid ignores, expected list but found single value \"INVALID\"")
+            .pointersEqualTo("/x-zally-ignore")
     }
 
     @Test
-    fun validateSpecWithInvalidOtherIgnores() {
+    fun `validate openapi with invalid ignores object returns violation`() {
+        @Language("YAML")
         val root = reader.read("""
             swagger: 2.0
             x-zally-ignore:
               invalid: INVALID
             """.trimIndent())
 
-        val violation = rule.validate(root)
+        val violations = rule.validate(root)
 
-        assertThat(violation?.paths!!)
-                .hasSameElementsAs(listOf("invalid ignores, expected list but found {\"invalid\":\"INVALID\"}"))
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsEqualTo("Invalid ignores, expected list but found {\"invalid\":\"INVALID\"}")
+            .pointersEqualTo("/x-zally-ignore")
     }
 }
