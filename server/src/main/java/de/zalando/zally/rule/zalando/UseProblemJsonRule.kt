@@ -36,8 +36,8 @@ class UseProblemJsonRule {
     @Check(severity = Severity.MUST)
     fun validate(context: Context): List<Violation> {
         return context.api.paths.orEmpty().flatMap { (_, pathItem) ->
-            pathItem?.readOperations().orEmpty().flatMap {
-                it.responses.orEmpty()
+            pathItem?.readOperations().orEmpty().flatMap { op ->
+                op.responses.orEmpty()
                     .filter { (code, _) ->
                         code.toIntOrNull() in 400..599 || code == "default"
                     }
@@ -62,7 +62,7 @@ class UseProblemJsonRule {
         response.content?.flatMap { (type, mediaType) ->
             // doesn't check media type in OpenAPI2 (Swagger) specifications because of converting issues
             if (isOpenAPI3 && !type.startsWith(problemDetailsObjectMediaType)) {
-                val message = Violation("Media type have to be 'application/problem+json'")
+                val message = Violation("Media type have to be 'application/problem+json'", JsonPointers.EMPTY)
                 return listOf(Pair(mediaType, message))
             }
             val node = objectMapper.convertValue(mediaType.schema, JsonNode::class.java)
