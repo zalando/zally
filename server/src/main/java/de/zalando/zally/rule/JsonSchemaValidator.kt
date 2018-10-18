@@ -39,7 +39,7 @@ class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirect
     private fun toValidationMessage(processingMessage: ProcessingMessage): Violation {
         val node = processingMessage.asJson()
         val keyword = node.path("keyword").textValue()
-        val message = node.path("message").textValue()
+        val message = node.path("message").textValue().capitalize()
         val pointer = node.at("/instance/pointer").textValue()
                 .let { JsonPointer.compile(it) }
 
@@ -55,10 +55,9 @@ class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirect
         return if (!schemaPath.isNullOrBlank()) {
             val schemaRefNodes = schema.at("$schemaPath/$keyword")
             val schemaRefs = schemaRefNodes
-                    .map { it.path("\$ref") }
-                    .filterNot(JsonNode::isMissingNode)
-                    .map(JsonNode::textValue)
-                    .joinToString("; ")
+                .map { it.path("\$ref") }
+                .filterNot(JsonNode::isMissingNode)
+                .joinToString("; ", transform = JsonNode::textValue)
             Violation(message + schemaRefs, pointer)
         } else {
             Violation(message, pointer)

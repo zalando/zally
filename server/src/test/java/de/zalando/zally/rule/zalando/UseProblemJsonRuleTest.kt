@@ -2,13 +2,16 @@ package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.getSwaggerContextFromContent
-import org.assertj.core.api.Assertions.assertThat
+import de.zalando.zally.rule.ZallyAssertions
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class UseProblemJsonRuleTest {
 
     private val rule = UseProblemJsonRule()
+
+    private val description = "Operations should return problem JSON when any problem occurs during processing " +
+        "whether caused by client or server."
 
     @Test
     fun `should return violation if wrong media type is used as the default response`() {
@@ -32,9 +35,10 @@ class UseProblemJsonRuleTest {
         val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
-        assertThat(violations.size).isEqualTo(1)
-        assertThat(violations[0].pointer.toString())
-            .isEqualTo("/paths/~1pets/get/responses/default/content/application~1json")
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsEqualTo("$description Media type have to be 'application/problem+json'")
+            .pointersEqualTo("/paths/~1pets/get/responses/default/content/application~1json")
     }
 
     @Test
@@ -63,10 +67,16 @@ class UseProblemJsonRuleTest {
         val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
-        assertThat(violations.map { it.pointer.toString() }).containsExactlyInAnyOrder(
-            "/paths/~1bad/get/responses/default/content/application~1problem+json/schema/properties/status",
-            "/paths/~1bad/get/responses/default/content/application~1problem+json/schema/properties/status/type"
-        )
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsEqualTo(
+                "$description Object has missing required properties ([\"exclusiveMaximum\",\"format\",\"maximum\",\"minimum\"])",
+                "$description Instance value (\"string\") not found in enum (possible values: [\"integer\"])"
+            )
+            .pointersEqualTo(
+                "/paths/~1bad/get/responses/default/content/application~1problem+json/schema/properties/status",
+                "/paths/~1bad/get/responses/default/content/application~1problem+json/schema/properties/status/type"
+            )
     }
 
     @Test
@@ -95,10 +105,16 @@ class UseProblemJsonRuleTest {
         val context = getSwaggerContextFromContent(content)
         val violations = rule.validate(context)
 
-        assertThat(violations.map { it.pointer.toString() }).containsExactlyInAnyOrder(
-            "/paths/~1pets/get/responses/default/schema/properties/status",
-            "/paths/~1pets/get/responses/default/schema/properties/status/type"
-        )
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsEqualTo(
+                "$description Object has missing required properties ([\"exclusiveMaximum\",\"format\",\"maximum\",\"minimum\"])",
+                "$description Instance value (\"string\") not found in enum (possible values: [\"integer\"])"
+            )
+            .pointersEqualTo(
+                "/paths/~1pets/get/responses/default/schema/properties/status",
+                "/paths/~1pets/get/responses/default/schema/properties/status/type"
+            )
     }
 
     @Test
@@ -124,7 +140,9 @@ class UseProblemJsonRuleTest {
         val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
-        assertThat(violations).isEmpty()
+        ZallyAssertions
+            .assertThat(violations)
+            .isEmpty()
     }
 
     @Test
@@ -151,7 +169,9 @@ class UseProblemJsonRuleTest {
         val context = getSwaggerContextFromContent(content)
         val violations = rule.validate(context)
 
-        assertThat(violations).isEmpty()
+        ZallyAssertions
+            .assertThat(violations)
+            .isEmpty()
     }
 
     @Test
@@ -194,7 +214,9 @@ class UseProblemJsonRuleTest {
         val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
-        assertThat(violations).isEmpty()
+        ZallyAssertions
+            .assertThat(violations)
+            .isEmpty()
     }
 
     @Test
@@ -231,6 +253,14 @@ class UseProblemJsonRuleTest {
         val context = getOpenApiContextFromContent(content)
         val violations = rule.validate(context)
 
-        assertThat(violations).isNotEmpty
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsEqualTo(
+                "$description Object has missing required properties ([\"format\"])",
+                "$description Instance value (\"number\") not found in enum (possible values: [\"string\"])")
+            .pointersEqualTo(
+                "/components/schemas/Problem/properties/instance",
+                "/components/schemas/Problem/properties/instance/type"
+            )
     }
 }
