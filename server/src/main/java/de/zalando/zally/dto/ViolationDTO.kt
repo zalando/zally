@@ -10,5 +10,7 @@ data class ViolationDTO(
     var violationType: Severity? = null,
     var ruleLink: String? = null,
     @JsonInclude(Include.NON_NULL) @Deprecated("Use `pointer` instead.") var paths: List<String>? = null,
-    @JsonInclude(Include.NON_NULL) var pointer: String? = null
+    @JsonInclude(Include.NON_NULL) var pointer: String? = null,
+    var startLine: Int? = null,
+    var endLine: Int? = null
 )

@@ -13,7 +13,8 @@ data class Result(
     val description: String,
     val violationType: Severity,
     @Deprecated("Use `pointer` instead.") val paths: List<String>,
-    val pointer: JsonPointer? = null
+    val pointer: JsonPointer? = null,
+    val lines: IntRange? = null
 ) {
 
     constructor(
@@ -21,8 +22,9 @@ data class Result(
         rule: Rule,
         description: String,
         violationType: Severity,
-        pointer: JsonPointer?
-    ) : this(ruleSet, rule, description, violationType, emptyList(), pointer)
+        pointer: JsonPointer?,
+        lines: IntRange?
+    ) : this(ruleSet, rule, description, violationType, emptyList(), pointer, lines)
 
     constructor(
         ruleSet: RuleSet,
