@@ -15,12 +15,14 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkSwagger with unreferenced definitions returns violations`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             swagger: '2.0'
             definitions:
               Thing:
                 type: object
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkSwagger(root)
 
@@ -34,7 +36,8 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkSwagger with referenced definitions returns empty`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             swagger: '2.0'
             definitions:
               Thing:
@@ -42,7 +45,8 @@ class NoUnusedDefinitionsRuleTest {
                 properties:
                   parent:
                     $ref: "#/definitions/Thing"
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkSwagger(root)
 
@@ -55,7 +59,8 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkSwagger with discriminator enum returns empty`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             swagger: '2.0'
             definitions:
               Pet:
@@ -101,7 +106,8 @@ class NoUnusedDefinitionsRuleTest {
                       minimum: 0
                   required:
                   - packSize
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkSwagger(root)
 
@@ -114,12 +120,14 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkSwagger with unreferenced parameter returns violations`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             swagger: '2.0'
             parameters:
               Param:
                 type: object
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkSwagger(root)
 
@@ -133,7 +141,8 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkSwagger with referenced parameter returns no violations`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             swagger: '2.0'
             parameters:
               Param:
@@ -142,7 +151,8 @@ class NoUnusedDefinitionsRuleTest {
               /things:
                 parameters:
                 - $ref: "#/parameters/Param"
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkSwagger(root)
 
@@ -155,12 +165,14 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkSwagger with unreferenced response returns violations`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             swagger: '2.0'
             responses:
               NotFound:
                 description: Entity not found.
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkSwagger(root)
 
@@ -174,7 +186,8 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkSwagger with referenced response returns no violations`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             swagger: '2.0'
             responses:
               NotFound:
@@ -185,7 +198,8 @@ class NoUnusedDefinitionsRuleTest {
                   responses:
                     404:
                       $ref: "#/responses/NotFound"
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkSwagger(root)
 
@@ -198,13 +212,15 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkOpenAPI with unreferenced definitions returns violations`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             openapi: 3.0.1
             components:
               schemas:
                 Thing:
                   type: object
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkOpenAPI(root)
 
@@ -218,7 +234,8 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkOpenAPI with referenced definitions returns empty`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             openapi: 3.0.1
             components:
               schemas:
@@ -227,7 +244,8 @@ class NoUnusedDefinitionsRuleTest {
                   properties:
                     parent:
                       $ref: '#/components/schemas/Thing'
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkOpenAPI(root)
 
@@ -240,7 +258,8 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkOpenAPI with discriminator enum returns empty`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             openapi: 3.0.1
             components:
               schemas:
@@ -290,7 +309,8 @@ class NoUnusedDefinitionsRuleTest {
                     mapping:
                       Cat: Cat
                       Dog: Dog
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkOpenAPI(root)
 
@@ -303,7 +323,8 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkOpenAPI with unreferenced parameter returns violations`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             openapi: 3.0.1
             components:
               parameters:
@@ -311,7 +332,8 @@ class NoUnusedDefinitionsRuleTest {
                   in: header
                   schema:
                     type: object
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkOpenAPI(root)
 
@@ -325,7 +347,8 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkOpenAPI with referenced parameter returns no violations`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             openapi: 3.0.1
             paths:
               /things:
@@ -337,7 +360,8 @@ class NoUnusedDefinitionsRuleTest {
                   in: header
                   schema:
                     type: object
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkOpenAPI(root)
 
@@ -350,13 +374,15 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkOpenAPI with unreferenced response returns violations`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             openapi: 3.0.1
             components:
               responses:
                 NotFound:
                   description: Entity not found.
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkOpenAPI(root)
 
@@ -370,7 +396,8 @@ class NoUnusedDefinitionsRuleTest {
     fun `checkOpenAPI with referenced response returns no violations`() {
 
         @Language("YAML")
-        val root = reader.read("""
+        val root = reader.read(
+            """
             openapi: 3.0.1
             paths:
               /things:
@@ -382,7 +409,8 @@ class NoUnusedDefinitionsRuleTest {
               responses:
                 NotFound:
                   description: Entity not found.
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = rule.checkSwagger(root)
 
