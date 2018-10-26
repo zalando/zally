@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zally
 
 import com.fasterxml.jackson.core.JsonPointer
-import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation

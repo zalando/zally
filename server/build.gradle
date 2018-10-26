@@ -138,7 +138,7 @@ task ktlintIntegrateIJ(type: JavaExec, group: "formatting") {
     description = "Apply ktlint settings to IDEA-based IDE project settings."
     classpath = configurations.ktlint
     main = "com.github.shyiko.ktlint.Main"
-    args "--apply-to-idea-project"
+    args "--apply-to-idea-project", "-y"
 }
 
 bootRun {

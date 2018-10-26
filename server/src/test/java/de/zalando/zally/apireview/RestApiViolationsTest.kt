@@ -91,8 +91,8 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Throws(IOException::class)
     fun shouldRespondWithBadRequestOnMalformedJson() {
         val responseEntity = sendApiDefinition(
-                ApiDefinitionRequest.fromJson("{\"malformed\": \"dummy\""),
-                ErrorResponse::class.java
+            ApiDefinitionRequest.fromJson("{\"malformed\": \"dummy\""),
+            ErrorResponse::class.java
         )
 
         assertThat(responseEntity.statusCode).isEqualTo(BAD_REQUEST)
@@ -106,7 +106,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Throws(IOException::class)
     fun shouldRespondWithBadRequestWhenApiDefinitionFieldIsMissing() {
         val responseEntity = restTemplate!!.postForEntity(
-                RestApiBaseTest.API_VIOLATIONS_URL, ImmutableMap.of("my_api", "dummy"), ErrorResponse::class.java
+            RestApiBaseTest.API_VIOLATIONS_URL, ImmutableMap.of("my_api", "dummy"), ErrorResponse::class.java
         )
 
         assertThat(responseEntity.statusCode).isEqualTo(BAD_REQUEST)
@@ -119,7 +119,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Test
     fun shouldRespondWithViolationWhenApiDefinitionFieldIsNotValidSwaggerDefinition() {
         val response = sendApiDefinition(
-                ApiDefinitionRequest.fromJson("\"no swagger definition\"")
+            ApiDefinitionRequest.fromJson("\"no swagger definition\"")
         )
 
         assertThat(response!!.violations).hasSize(5)
@@ -134,7 +134,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
         val definitionUrl = JadlerUtil.stubResource("fixtures/openapi3_petstore_expanded.json")
 
         val violations = sendApiDefinition(
-                ApiDefinitionRequest.fromUrl(definitionUrl)
+            ApiDefinitionRequest.fromUrl(definitionUrl)
         )!!.violations
 
         assertThat(violations).hasSize(3)
@@ -149,7 +149,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
         val definitionUrl = JadlerUtil.stubResource("fixtures/openapi3_petstore.yaml")
 
         val violations = sendApiDefinition(
-                ApiDefinitionRequest.fromUrl(definitionUrl)
+            ApiDefinitionRequest.fromUrl(definitionUrl)
         )!!.violations
 
         assertThat(violations).hasSize(3)
@@ -161,7 +161,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
     fun shouldReturn404WhenHostNotRecognised() {
         val request = ApiDefinitionRequest.fromUrl("http://remote-localhost/test.yaml")
         val responseEntity = restTemplate!!.postForEntity(
-                RestApiBaseTest.API_VIOLATIONS_URL, request, ErrorResponse::class.java
+            RestApiBaseTest.API_VIOLATIONS_URL, request, ErrorResponse::class.java
         )
 
         assertThat(responseEntity.statusCode).isEqualTo(NOT_FOUND)
@@ -171,8 +171,8 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Test
     fun shouldReturn404WhenNotFound() {
         val responseEntity = sendApiDefinition(
-                ApiDefinitionRequest.fromUrl(JadlerUtil.stubNotFound()),
-                ErrorResponse::class.java
+            ApiDefinitionRequest.fromUrl(JadlerUtil.stubNotFound()),
+            ErrorResponse::class.java
         )
 
         assertThat(responseEntity.statusCode).isEqualTo(NOT_FOUND)
@@ -190,8 +190,8 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Test
     fun shouldStoreUnsuccessfulApiReviewRequest() {
         sendApiDefinition(
-                ApiDefinitionRequest.fromUrl(JadlerUtil.stubNotFound()),
-                ErrorResponse::class.java
+            ApiDefinitionRequest.fromUrl(JadlerUtil.stubNotFound()),
+            ErrorResponse::class.java
         )
 
         assertThat(apiReviewRepository!!.count()).isEqualTo(1L)
@@ -203,9 +203,9 @@ class RestApiViolationsTest : RestApiBaseTest() {
     fun shouldAcceptYamlAndRespondWithJson() {
         val mockMvc = MockMvcBuilders.webAppContextSetup(wac!!).build()
         val requestBuilder = MockMvcRequestBuilders.post("/api-violations")
-                .contentType(WebMvcConfiguration.MEDIA_TYPE_APP_XYAML)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(resourceToString("fixtures/api_violations_request.yaml"))
+            .contentType(WebMvcConfiguration.MEDIA_TYPE_APP_XYAML)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(resourceToString("fixtures/api_violations_request.yaml"))
 
         val result = mockMvc.perform(requestBuilder).andReturn()
 
@@ -218,9 +218,9 @@ class RestApiViolationsTest : RestApiBaseTest() {
     fun shouldNotAcceptYamlWithoutCorrectContentType() {
         val mockMvc = MockMvcBuilders.webAppContextSetup(wac!!).build()
         val requestBuilder = MockMvcRequestBuilders.post("/api-violations")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(resourceToString("fixtures/api_violations_request.yaml"))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(resourceToString("fixtures/api_violations_request.yaml"))
 
         val result = mockMvc.perform(requestBuilder).andReturn()
 

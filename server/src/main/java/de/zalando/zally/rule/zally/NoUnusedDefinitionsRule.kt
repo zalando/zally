@@ -1,9 +1,9 @@
 package de.zalando.zally.rule.zally
 
 import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import io.swagger.models.ArrayModel
 import io.swagger.models.ComposedModel
 import io.swagger.models.Model
@@ -20,10 +20,10 @@ import io.swagger.models.properties.Property
 import io.swagger.models.properties.RefProperty
 
 @Rule(
-        ruleSet = ZallyRuleSet::class,
-        id = "S005",
-        severity = Severity.SHOULD,
-        title = "Do not leave unused definitions"
+    ruleSet = ZallyRuleSet::class,
+    id = "S005",
+    severity = Severity.SHOULD,
+    title = "Do not leave unused definitions"
 )
 class NoUnusedDefinitionsRule {
 
@@ -45,7 +45,8 @@ class NoUnusedDefinitionsRule {
         val refsInDefs = swagger.definitions.orEmpty().values.flatMap(this::findAllRefs)
         val allRefs = (refsInPaths + refsInDefs).toSet()
 
-        val unusedParams = swagger.parameters.orEmpty().filterValues { it !in paramsInPaths }.keys.map { "/parameters/$it" }
+        val unusedParams =
+            swagger.parameters.orEmpty().filterValues { it !in paramsInPaths }.keys.map { "/parameters/$it" }
         val unusedDefs = swagger.definitions.orEmpty().keys.filter { it !in allRefs }.map { "/definitions/$it" }
 
         val paths = unusedParams + unusedDefs

@@ -8,10 +8,10 @@ import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
 
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = "136",
-        severity = Severity.MUST,
-        title = "Avoid Trailing Slashes"
+    ruleSet = ZalandoRuleSet::class,
+    id = "136",
+    severity = Severity.MUST,
+    title = "Avoid Trailing Slashes"
 )
 class AvoidTrailingSlashesRule {
     private val description = "Rule avoid trailing slashes is not followed"

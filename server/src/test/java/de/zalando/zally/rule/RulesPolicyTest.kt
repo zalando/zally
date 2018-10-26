@@ -13,10 +13,10 @@ class RulesPolicyTest {
 
     /** TestRule used for testing RulesPolicy */
     @Rule(
-            ruleSet = TestRuleSet::class,
-            id = "TestRule",
-            severity = Severity.MUST,
-            title = "Test Rule"
+        ruleSet = TestRuleSet::class,
+        id = "TestRule",
+        severity = Severity.MUST,
+        title = "Test Rule"
     )
     class TestRule(val result: Violation?) {
 

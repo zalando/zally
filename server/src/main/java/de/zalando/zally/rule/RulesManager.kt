@@ -6,13 +6,13 @@ class RulesManager(val rules: List<RuleDetails>) {
 
     fun checks(policy: RulesPolicy): List<CheckDetails> {
         return rules(policy)
-                .flatMap { details ->
-                    details.instance::class.java.methods.mapNotNull { method ->
-                        method.getAnnotation(Check::class.java)?.let {
-                            details.toCheckDetails(it, method)
-                        }
+            .flatMap { details ->
+                details.instance::class.java.methods.mapNotNull { method ->
+                    method.getAnnotation(Check::class.java)?.let {
+                        details.toCheckDetails(it, method)
                     }
                 }
+            }
     }
 
     fun rules(policy: RulesPolicy): List<RuleDetails> {

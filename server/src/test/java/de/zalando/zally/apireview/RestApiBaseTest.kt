@@ -20,7 +20,10 @@ import org.springframework.web.util.UriComponentsBuilder.fromPath
 import java.time.LocalDate
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = arrayOf(Application::class, RestApiTestConfiguration::class))
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = arrayOf(Application::class, RestApiTestConfiguration::class)
+)
 @ActiveProfiles("test")
 abstract class RestApiBaseTest {
 
@@ -90,11 +93,15 @@ abstract class RestApiBaseTest {
         return responseEntity.body!!.rules!!
     }
 
-    protected fun <T> getSupportedRules(ruleType: String?, active: Boolean?, responseType: Class<T>): ResponseEntity<T> {
+    protected fun <T> getSupportedRules(
+        ruleType: String?,
+        active: Boolean?,
+        responseType: Class<T>
+    ): ResponseEntity<T> {
         val url = fromPath(SUPPORTED_RULES_URL)
-                .queryParam("type", ruleType)
-                .queryParam("is_active", active)
-                .build().encode().toUriString()
+            .queryParam("type", ruleType)
+            .queryParam("is_active", active)
+            .build().encode().toUriString()
 
         return restTemplate!!.getForEntity(url, responseType)
     }

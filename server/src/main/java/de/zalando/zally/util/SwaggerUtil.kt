@@ -36,7 +36,11 @@ fun Swagger.getAllJsonObjects(): List<ObjectDefinition> {
     return (fromPaths + fromDefinitions).toSet().toList()
 }
 
-private fun Swagger.findJsonObjects(obj: Map<String, Property>?, path: String, visitedPaths: MutableSet<String>): List<ObjectDefinition> =
+private fun Swagger.findJsonObjects(
+    obj: Map<String, Property>?,
+    path: String,
+    visitedPaths: MutableSet<String>
+): List<ObjectDefinition> =
     if (path !in visitedPaths) {
         visitedPaths += path
         listOf(ObjectDefinition(obj.orEmpty(), path)) + obj.orEmpty().flatMap { (name, property) ->
@@ -44,7 +48,11 @@ private fun Swagger.findJsonObjects(obj: Map<String, Property>?, path: String, v
         }
     } else emptyList()
 
-private fun Swagger.findJsonObjects(property: Property?, path: String, visitedPaths: MutableSet<String>): List<ObjectDefinition> =
+private fun Swagger.findJsonObjects(
+    property: Property?,
+    path: String,
+    visitedPaths: MutableSet<String>
+): List<ObjectDefinition> =
     when (property) {
         is RefProperty -> {
             val model = definitions.orEmpty()[property.simpleRef]
@@ -56,7 +64,11 @@ private fun Swagger.findJsonObjects(property: Property?, path: String, visitedPa
         else -> emptyList()
     }
 
-private fun Swagger.findJsonObjects(model: Model?, path: String, visitedPaths: MutableSet<String>): List<ObjectDefinition> =
+private fun Swagger.findJsonObjects(
+    model: Model?,
+    path: String,
+    visitedPaths: MutableSet<String>
+): List<ObjectDefinition> =
     when (model) {
         is RefModel ->
             findJsonObjects(model.properties, "/definitions/${model.simpleRef}", visitedPaths)

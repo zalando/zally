@@ -42,7 +42,13 @@ constructor(private val apiReviewRepository: ApiReviewRepository) {
             apiReviewRepository.findFromLastWeek(userAgent)
         }
 
-        LOG.info("Found {} api reviews from {} to {} user_agent {}", apiReviewStatistics.totalReviews, from, to, userAgent)
+        LOG.info(
+            "Found {} api reviews from {} to {} user_agent {}",
+            apiReviewStatistics.totalReviews,
+            from,
+            to,
+            userAgent
+        )
         return apiReviewStatistics
     }
 
@@ -55,7 +61,11 @@ constructor(private val apiReviewRepository: ApiReviewRepository) {
         }
     }
 
-    private fun ApiReviewRepository.findByDayBetween(userAgent: String?, from: LocalDate, to: LocalDate): ReviewStatistics {
+    private fun ApiReviewRepository.findByDayBetween(
+        userAgent: String?,
+        from: LocalDate,
+        to: LocalDate
+    ): ReviewStatistics {
         return when {
             userAgent == null || userAgent.isEmpty() -> getReviewStatistics(from, to)
             else -> getReviewStatistics(from, to, userAgent)

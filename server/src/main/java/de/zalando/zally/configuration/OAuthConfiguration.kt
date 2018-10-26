@@ -37,27 +37,28 @@ open class OAuthConfiguration : ResourceServerConfigurerAdapter() {
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity?) {
         http!!
-                .httpBasic().disable()
-                .requestMatchers().antMatchers("/**")
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.NEVER)
-                .and()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .regexMatchers("/health/?").permitAll()
-                .regexMatchers(
-                        "/metrics/?(\\?.*)?",
-                        "/api-violations/?(\\?)?",
-                        "/supported-rules/?(\\?.*)?",
-                        "/review-statistics/?(\\?.*)?")
-                .access("#oauth2.hasScope('uid')")
-                .antMatchers("**").denyAll()
+            .httpBasic().disable()
+            .requestMatchers().antMatchers("/**")
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.NEVER)
+            .and()
+            .authorizeRequests()
+            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .regexMatchers("/health/?").permitAll()
+            .regexMatchers(
+                "/metrics/?(\\?.*)?",
+                "/api-violations/?(\\?)?",
+                "/supported-rules/?(\\?.*)?",
+                "/review-statistics/?(\\?.*)?"
+            )
+            .access("#oauth2.hasScope('uid')")
+            .antMatchers("**").denyAll()
 
         http
-                .exceptionHandling()
-                .authenticationEntryPoint(problemSupport)
-                .accessDeniedHandler(problemSupport)
+            .exceptionHandling()
+            .authenticationEntryPoint(problemSupport)
+            .accessDeniedHandler(problemSupport)
     }
 
     @Bean

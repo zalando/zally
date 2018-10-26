@@ -23,14 +23,19 @@ open class RestApiTestConfiguration {
     @Profile("test")
     open fun rules(): Collection<Any> {
         return listOf(
-                TestCheckIsOpenApi3(),
-                TestCheckAlwaysReport3MustViolations(),
-                TestUseOpenApiRule()
+            TestCheckIsOpenApi3(),
+            TestCheckAlwaysReport3MustViolations(),
+            TestUseOpenApiRule()
         )
     }
 
     /** Rule used for testing  */
-    @Rule(ruleSet = TestRuleSet::class, id = "TestCheckIsOpenApi3", severity = Severity.MUST, title = "TestCheckIsOpenApi3")
+    @Rule(
+        ruleSet = TestRuleSet::class,
+        id = "TestCheckIsOpenApi3",
+        severity = Severity.MUST,
+        title = "TestCheckIsOpenApi3"
+    )
     class TestCheckIsOpenApi3 {
 
         @Check(severity = Severity.MUST)
@@ -42,15 +47,20 @@ open class RestApiTestConfiguration {
     }
 
     /** Rule used for testing  */
-    @Rule(ruleSet = TestRuleSet::class, id = "TestCheckAlwaysReport3MustViolations", severity = Severity.MUST, title = "TestCheckAlwaysReport3MustViolations")
+    @Rule(
+        ruleSet = TestRuleSet::class,
+        id = "TestCheckAlwaysReport3MustViolations",
+        severity = Severity.MUST,
+        title = "TestCheckAlwaysReport3MustViolations"
+    )
     class TestCheckAlwaysReport3MustViolations {
 
         @Check(severity = Severity.MUST)
         fun validate(json: JsonNode): Iterable<Violation> {
             return listOf(
-                    Violation("TestCheckAlwaysReport3MustViolations #1", JsonPointers.EMPTY),
-                    Violation("TestCheckAlwaysReport3MustViolations #2", JsonPointers.EMPTY),
-                    Violation("TestCheckAlwaysReport3MustViolations #3", JsonPointers.EMPTY)
+                Violation("TestCheckAlwaysReport3MustViolations #1", JsonPointers.EMPTY),
+                Violation("TestCheckAlwaysReport3MustViolations #2", JsonPointers.EMPTY),
+                Violation("TestCheckAlwaysReport3MustViolations #3", JsonPointers.EMPTY)
             )
         }
     }

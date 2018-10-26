@@ -31,17 +31,17 @@ class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirect
 
     @Throws(ProcessingException::class, IOException::class)
     fun validate(jsonToValidate: JsonNode): List<Violation> = factory
-            .validator
-            .validateUnchecked(schema, jsonToValidate, true)
-            .map(this::toValidationMessage)
-            .toList()
+        .validator
+        .validateUnchecked(schema, jsonToValidate, true)
+        .map(this::toValidationMessage)
+        .toList()
 
     private fun toValidationMessage(processingMessage: ProcessingMessage): Violation {
         val node = processingMessage.asJson()
         val keyword = node.path("keyword").textValue()
         val message = node.path("message").textValue().capitalize()
         val pointer = node.at("/instance/pointer").textValue()
-                .let { JsonPointer.compile(it) }
+            .let { JsonPointer.compile(it) }
 
         return when (keyword) {
             Keywords.oneOf, Keywords.anyOf -> createValidationMessageWithSchemaRefs(node, message, pointer, keyword)
@@ -50,7 +50,12 @@ class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirect
         }
     }
 
-    private fun createValidationMessageWithSchemaRefs(node: JsonNode, message: String, pointer: JsonPointer, keyword: String): Violation {
+    private fun createValidationMessageWithSchemaRefs(
+        node: JsonNode,
+        message: String,
+        pointer: JsonPointer,
+        keyword: String
+    ): Violation {
         val schemaPath = node.at("/schema/pointer").textValue()
         return if (!schemaPath.isNullOrBlank()) {
             val schemaRefNodes = schema.at("$schemaPath/$keyword")
@@ -64,7 +69,11 @@ class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirect
         }
     }
 
-    private fun createValidationMessageWithSchemaPath(node: JsonNode, message: String, pointer: JsonPointer): Violation {
+    private fun createValidationMessageWithSchemaPath(
+        node: JsonNode,
+        message: String,
+        pointer: JsonPointer
+    ): Violation {
         val schemaPath = node.at("/schema/pointer").textValue()
         return Violation(message + schemaPath, pointer)
     }
@@ -72,15 +81,15 @@ class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirect
     private fun createValidatorFactory(schemaRedirects: Map<String, String>): JsonSchemaFactory {
         val validationMessages = getValidationMessagesBundle()
         val validationConfiguration = ValidationConfiguration.newBuilder()
-                .setValidationMessages(validationMessages)
-                .freeze()
+            .setValidationMessages(validationMessages)
+            .freeze()
 
         val loadingConfig = createLoadingConfiguration(schemaRedirects)
 
         return JsonSchemaFactory.newBuilder()
-                .setValidationConfiguration(validationConfiguration)
-                .setLoadingConfiguration(loadingConfig)
-                .freeze()
+            .setValidationConfiguration(validationConfiguration)
+            .setLoadingConfiguration(loadingConfig)
+            .freeze()
     }
 
     private fun createLoadingConfiguration(schemaRedirects: Map<String, String>): LoadingConfiguration? {
@@ -88,15 +97,15 @@ class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirect
         schemaRedirects.forEach { (from, to) -> urlTranslatorConfig.addSchemaRedirect(from, to) }
 
         return LoadingConfiguration.newBuilder()
-                .setURITranslatorConfiguration(urlTranslatorConfig.freeze())
-                .freeze()
+            .setURITranslatorConfiguration(urlTranslatorConfig.freeze())
+            .freeze()
     }
 
     private fun getValidationMessagesBundle(): MessageBundle {
         val customValidationMessages = PropertiesMessageSource.fromResource("/schema-validation-messages.properties")
         return MessageBundles.getBundle(JsonSchemaValidationBundle::class.java)
-                .thaw()
-                .appendSource(customValidationMessages)
-                .freeze()
+            .thaw()
+            .appendSource(customValidationMessages)
+            .freeze()
     }
 }

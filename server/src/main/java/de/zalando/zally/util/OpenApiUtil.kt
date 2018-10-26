@@ -56,7 +56,8 @@ fun OpenAPI.getAllSchemas(): Collection<Schema<Any>> = this.components?.schemas.
         }
     } +
     this.paths.orEmpty().flatMap {
-        it.value?.readOperations().orEmpty().flatMap { it.requestBody?.content.orEmpty().values.mapNotNull { it.schema } }
+        it.value?.readOperations().orEmpty()
+            .flatMap { it.requestBody?.content.orEmpty().values.mapNotNull { it.schema } }
     }
 
 /**
@@ -121,7 +122,9 @@ fun OpenAPI.getAllParameters(): Map<String, Parameter> = this.components?.parame
  * E.g. io.swagger.v3.oas.models.media.ArraySchema#hashCode() calls super#hashCode()
  * which fails for recursive data structures (endless loop -> StackOverflow)
  */
-private fun Schema<Any>.customHash(): Int = Objects.hash(title, multipleOf, maximum, exclusiveMaximum, minimum,
+private fun Schema<Any>.customHash(): Int = Objects.hash(
+    title, multipleOf, maximum, exclusiveMaximum, minimum,
     exclusiveMinimum, maxLength, minLength, pattern, maxItems, minItems, uniqueItems, maxProperties, minProperties,
     required, type, not, properties, additionalProperties, description, format, `$ref`, nullable, readOnly, writeOnly,
-    example, externalDocs, deprecated, xml, extensions, discriminator)
+    example, externalDocs, deprecated, xml, extensions, discriminator
+)

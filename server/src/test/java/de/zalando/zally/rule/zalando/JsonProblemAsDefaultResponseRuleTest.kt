@@ -12,13 +12,15 @@ class JsonProblemAsDefaultResponseRuleTest {
     @Test
     fun `checkContainsDefaultResponse should return violation if default response is not set`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
             paths:
               '/pets':
                 get:
                   responses:
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val violations = rule.checkContainsDefaultResponse(context)
 
@@ -30,7 +32,8 @@ class JsonProblemAsDefaultResponseRuleTest {
     @Test
     fun `checkDefaultResponseIsProblemJson should return violation if not problem json is set as default response`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
             paths:
               '/pets':
@@ -41,7 +44,8 @@ class JsonProblemAsDefaultResponseRuleTest {
                         application/problem+json:
                           schema:
                             ${'$'}ref: 'http://example.com'
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val violations = rule.checkDefaultResponseIsProblemJson(context)
 
@@ -54,7 +58,8 @@ class JsonProblemAsDefaultResponseRuleTest {
     @Test
     fun `checkDefaultResponseIsProblemJson should not return violation if problem json is set as default response`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
             paths:
               '/pets':
@@ -65,7 +70,8 @@ class JsonProblemAsDefaultResponseRuleTest {
                         application/problem+json:
                           schema:
                             ${'$'}ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val violations = rule.checkDefaultResponseIsProblemJson(context)
 
@@ -75,9 +81,11 @@ class JsonProblemAsDefaultResponseRuleTest {
     @Test
     fun `(checkDefaultResponseIsProblemJson|checkContainsDefaultResponse) should not return violation for empty specification`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
-        """)
+        """
+        )
 
         assertThat(rule.checkContainsDefaultResponse(context)).isEmpty()
         assertThat(rule.checkDefaultResponseIsProblemJson(context)).isEmpty()

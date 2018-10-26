@@ -42,11 +42,13 @@ class UseOpenApiRuleTest {
 
     @Test
     fun shouldLoadSchemaFromResourceIfUrlNotSpecified() {
-        val config = ConfigFactory.parseString("""
+        val config = ConfigFactory.parseString(
+            """
         UseOpenApiRule {
              // swagger_schema_url not defined
         }
-        """)
+        """
+        )
 
         val json = ObjectTreeReader().read("foo: bar")
         val validations = UseOpenApiRule(config).validateSchema(json)
@@ -55,11 +57,13 @@ class UseOpenApiRuleTest {
 
     @Test
     fun shouldLoadSchemaFromResourceIfLoadFromUrlFailed() {
-        val config = ConfigFactory.parseString("""
+        val config = ConfigFactory.parseString(
+            """
         UseOpenApiRule {
              swagger_schema_url: "http://localhost/random_url.html"
         }
-        """)
+        """
+        )
 
         val json = ObjectTreeReader().read("foo: bar")
         val validations = UseOpenApiRule(config).validateSchema(json)
@@ -87,13 +91,15 @@ class UseOpenApiRuleTest {
 
     @Test
     fun `validateSchema should return no violation for valid OpenAPI 3 specification`() {
-        val jsonNode = ObjectTreeReader().read("""
+        val jsonNode = ObjectTreeReader().read(
+            """
             openapi: 3.0.1
             info:
               title: "Minimal API"
               version: "1.0.0"
             paths: {}
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val violations = rule.validateSchema(jsonNode)
 

@@ -2,9 +2,9 @@ package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.util.getAllTransitiveSchemas
 
 @Rule(

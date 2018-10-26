@@ -31,14 +31,15 @@ open class JacksonObjectMapperConfiguration {
 
     private fun configure(mapper: ObjectMapper): ObjectMapper {
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
-                .registerModules(
-                        Jdk8Module(),
-                        JavaTimeModule(),
-                        ProblemModule(),
-                        KotlinModule())
+            .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
+            .registerModules(
+                Jdk8Module(),
+                JavaTimeModule(),
+                ProblemModule(),
+                KotlinModule()
+            )
         return mapper
     }
 }

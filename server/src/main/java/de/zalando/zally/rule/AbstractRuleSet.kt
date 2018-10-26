@@ -10,8 +10,8 @@ abstract class AbstractRuleSet : RuleSet {
 
     override fun equals(other: Any?): Boolean {
         return other != null &&
-                this.javaClass == other.javaClass &&
-                this.id == (other as RuleSet).id
+            this.javaClass == other.javaClass &&
+            this.id == (other as RuleSet).id
     }
 
     override fun toString(): String {

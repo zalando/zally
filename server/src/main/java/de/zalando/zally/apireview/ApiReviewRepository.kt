@@ -8,7 +8,8 @@ import java.time.LocalDate
 
 interface ApiReviewRepository : CrudRepository<ApiReview, Long> {
 
-    @Query("""
+    @Query(
+        """
         SELECT new de.zalando.zally.statistic.ReviewStatistics(
 	        COUNT(r) AS totalReviews,
 	        COUNT(DISTINCT r.name) AS totalReviewDeduplicated,
@@ -20,7 +21,8 @@ interface ApiReviewRepository : CrudRepository<ApiReview, Long> {
 	        COALESCE(SUM(r.hintViolations),0) AS hintViolations)
         FROM de.zalando.zally.apireview.ApiReview r
         WHERE day >= :from AND day <= :to AND user_agent LIKE :userAgent
-    """)
+    """
+    )
     fun getReviewStatistics(
         @Param("from") from: LocalDate,
         @Param("to") to: LocalDate,
