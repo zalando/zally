@@ -195,7 +195,7 @@ class NoUnusedDefinitionsRuleTest {
     }
 
     @Test
-    fun `checkOpenAPI  with unreferenced definitions returns violations`() {
+    fun `checkOpenAPI with unreferenced definitions returns violations`() {
 
         @Language("YAML")
         val root = reader.read("""
@@ -215,7 +215,7 @@ class NoUnusedDefinitionsRuleTest {
     }
 
     @Test
-    fun `checkOpenAPI  with referenced definitions returns empty`() {
+    fun `checkOpenAPI with referenced definitions returns empty`() {
 
         @Language("YAML")
         val root = reader.read("""

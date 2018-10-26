@@ -74,17 +74,21 @@ class NoUnusedDefinitionsRule {
         node.isArray -> node.flatMap { used(it, discriminators) }.toSet()
         node.isObject -> {
             val references = mutableSetOf<JsonPointer>()
-            references += listOfNotNull(node["\$ref"])
-                .map { it.asText() }
-                .filter { it.startsWith("#") }
-                .map { it.substring(1) }
-                .map { JsonPointer.compile(it) }
+            references += reference(node)
             references += discriminators(node).orEmpty()
             references += node.flatMap { used(it, discriminators) }
             references
         }
         else -> emptySet()
     }
+
+    private fun reference(node: JsonNode): Sequence<JsonPointer> =
+        sequenceOf(node["\$ref"])
+            .filterNotNull()
+            .map { it.asText() }
+            .filter { it.startsWith("#") }
+            .map { it.substring(1) }
+            .map { JsonPointer.compile(it) }
 
     private fun unused(
         root: JsonNode,
@@ -93,14 +97,13 @@ class NoUnusedDefinitionsRule {
         used: Set<JsonPointer>
     ): List<Violation> {
         val ptr = JsonPointer.compile(pointer)
-        return root
-            .at(ptr)
+        return root.at(ptr)
             ?.fieldNames()
             ?.asSequence()
+            ?.map { ptr.append(JsonPointers.escape(it)) }
+            ?.minus(used)
+            ?.map { Violation(description, it) }
             ?.toList()
             .orEmpty()
-            .map { ptr.append(JsonPointers.escape(it)) }
-            .minus(used)
-            .map { Violation(description, it) }
     }
 }
