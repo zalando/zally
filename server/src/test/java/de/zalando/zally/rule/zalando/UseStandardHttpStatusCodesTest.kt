@@ -11,7 +11,7 @@ import org.junit.Test
 
 @Suppress("UndocumentedPublicClass")
 class UseStandardHttpStatusCodesTest {
-    private val rule = UseStandardHttpStatusCodes(testConfig)
+    private val rule = UseStandardHttpStatusCodesRule(testConfig)
 
     @Test
     fun `checkWellUnderstoodResponseCodesUsage should return no violations if the usage is correct`() {
