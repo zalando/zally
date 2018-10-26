@@ -1,23 +1,12 @@
 package de.zalando.zally.rule.zally
 
+import com.fasterxml.jackson.core.JsonPointer
+import com.fasterxml.jackson.databind.JsonNode
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.models.ArrayModel
-import io.swagger.models.ComposedModel
-import io.swagger.models.Model
-import io.swagger.models.ModelImpl
-import io.swagger.models.RefModel
-import io.swagger.models.Response
-import io.swagger.models.Swagger
-import io.swagger.models.parameters.BodyParameter
-import io.swagger.models.parameters.Parameter
-import io.swagger.models.properties.ArrayProperty
-import io.swagger.models.properties.MapProperty
-import io.swagger.models.properties.ObjectProperty
-import io.swagger.models.properties.Property
-import io.swagger.models.properties.RefProperty
+import de.zalando.zally.util.ast.JsonPointers
 
 @Rule(
     ruleSet = ZallyRuleSet::class,
@@ -28,61 +17,93 @@ import io.swagger.models.properties.RefProperty
 class NoUnusedDefinitionsRule {
 
     @Check(severity = Severity.SHOULD)
-    fun validate(swagger: Swagger): Violation? {
-        val paramsInPaths = swagger.paths.orEmpty().values.flatMap { path ->
-            path.operations.orEmpty().flatMap { operation ->
-                operation.parameters.orEmpty()
-            }
-        }.toSet()
+    fun checkSwagger(root: JsonNode): List<Violation> {
 
-        val refsInPaths = swagger.paths.orEmpty().values.flatMap { path ->
-            path.operations.orEmpty().flatMap { operation ->
-                val inParams = operation.parameters.orEmpty().flatMap(this::findAllRefs)
-                val inResponse = operation.responses.orEmpty().values.flatMap(this::findAllRefs)
-                inParams + inResponse
-            }
+        val used = used(root) { node ->
+            node["discriminator"]
+                ?.asText()
+                ?.let { prop ->
+                    node["properties"]
+                        ?.get(prop)
+                        ?.get("enum")
+                        ?.takeIf { it.isArray }
+                        ?.toList()
+                        ?.map { it.asText() }
+                        ?.map { JsonPointers.escape(it) }
+                        ?.map {
+                            JsonPointer.compile("/definitions").append(it)
+                        }
+                }
         }
-        val refsInDefs = swagger.definitions.orEmpty().values.flatMap(this::findAllRefs)
-        val allRefs = (refsInPaths + refsInDefs).toSet()
 
-        val unusedParams =
-            swagger.parameters.orEmpty().filterValues { it !in paramsInPaths }.keys.map { "/parameters/$it" }
-        val unusedDefs = swagger.definitions.orEmpty().keys.filter { it !in allRefs }.map { "/definitions/$it" }
-
-        val paths = unusedParams + unusedDefs
-
-        return if (paths.isNotEmpty()) {
-            Violation("Found ${paths.size} unused definitions", paths)
-        } else null
+        return emptyList<Violation>() +
+            unused(root, "/definitions", "Unused definition", used) +
+            unused(root, "/parameters", "Unused parameter", used) +
+            unused(root, "/responses", "Unused response", used)
     }
 
-    fun findAllRefs(param: Parameter?): List<String> =
-        if (param is BodyParameter) findAllRefs(param.schema) else emptyList()
+    @Check(severity = Severity.SHOULD)
+    fun checkOpenAPI(root: JsonNode): List<Violation> {
 
-    fun findAllRefs(response: Response?): List<String> =
-        if (response?.schema != null) findAllRefs(response.schema) else emptyList()
-
-    fun findAllRefs(model: Model?): List<String> =
-        when (model) {
-            is RefModel -> listOf(model.simpleRef)
-            is ArrayModel -> findAllRefs(model.items)
-            is ModelImpl ->
-                model.properties.orEmpty().values.flatMap(this::findAllRefs) +
-                    findAllRefs(model.additionalProperties)
-            is ComposedModel ->
-                model.allOf.orEmpty().flatMap(this::findAllRefs) +
-                    model.interfaces.orEmpty().flatMap(this::findAllRefs) +
-                    findAllRefs(model.parent) +
-                    findAllRefs(model.child)
-            else -> emptyList()
+        val used = used(root) { node ->
+            node["discriminator"]
+                ?.get("mapping")
+                ?.toList()
+                ?.map { it.asText() }
+                ?.map { JsonPointers.escape(it) }
+                ?.map {
+                    JsonPointer.compile("/components/schemas").append(it)
+                }
         }
 
-    fun findAllRefs(prop: Property?): List<String> =
-        when (prop) {
-            is RefProperty -> listOf(prop.simpleRef)
-            is ArrayProperty -> findAllRefs(prop.items)
-            is MapProperty -> findAllRefs(prop.additionalProperties)
-            is ObjectProperty -> prop.properties.orEmpty().values.flatMap(this::findAllRefs)
-            else -> emptyList()
+        return emptyList<Violation>() +
+            unused(root, "/components/schemas", "Unused schema", used) +
+            unused(root, "/components/responses", "Unused response", used) +
+            unused(root, "/components/parameters", "Unused parameter", used) +
+            unused(root, "/components/examples", "Unused example", used) +
+            unused(root, "/components/requestBodies", "Unused request body", used) +
+            unused(root, "/components/headers", "Unused header", used) +
+            unused(root, "/components/links", "Unused link", used) +
+            unused(root, "/components/callbacks", "Unused callback", used)
+    }
+
+    private fun used(
+        node: JsonNode,
+        discriminators: (JsonNode) -> List<JsonPointer>?
+    ): Set<JsonPointer> = when {
+        node.isArray -> node.flatMap { used(it, discriminators) }.toSet()
+        node.isObject -> {
+            val references = mutableSetOf<JsonPointer>()
+            references += reference(node)
+            references += discriminators(node).orEmpty()
+            references += node.flatMap { used(it, discriminators) }
+            references
         }
+        else -> emptySet()
+    }
+
+    private fun reference(node: JsonNode): Sequence<JsonPointer> =
+        sequenceOf(node["\$ref"])
+            .filterNotNull()
+            .map { it.asText() }
+            .filter { it.startsWith("#") }
+            .map { it.substring(1) }
+            .map { JsonPointer.compile(it) }
+
+    private fun unused(
+        root: JsonNode,
+        pointer: String,
+        description: String,
+        used: Set<JsonPointer>
+    ): List<Violation> {
+        val ptr = JsonPointer.compile(pointer)
+        return root.at(ptr)
+            ?.fieldNames()
+            ?.asSequence()
+            ?.map { ptr.append(JsonPointers.escape(it)) }
+            ?.minus(used)
+            ?.map { Violation(description, it) }
+            ?.toList()
+            .orEmpty()
+    }
 }
