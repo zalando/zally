@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
     severity = Severity.MUST,
     title = "Use Standard HTTP Status Codes"
 )
-class UseStandardHttpStatusCodes(@Autowired rulesConfig: Config) {
+class UseStandardHttpStatusCodesRule(@Autowired rulesConfig: Config) {
 
     private val wellUnderstoodResponseCodesAndVerbs = rulesConfig
         .getConfig("${javaClass.simpleName}.well_understood")
