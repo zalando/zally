@@ -13,7 +13,7 @@ class ObjectTreeReader {
      * @return a tree of JsonNodes
      */
     fun read(location: URL): JsonNode =
-            read(location.readText(), location.toString())
+        read(location.readText(), location.toString())
 
     /**
      * Reads JSON or YAML content into a JsonNode tree.
@@ -22,5 +22,5 @@ class ObjectTreeReader {
      * @return a tree of JsonNodes
      */
     fun read(content: String, location: String = "memory"): JsonNode =
-            DeserializationUtils.deserializeIntoTree(content, location)
+        DeserializationUtils.deserializeIntoTree(content, location)
 }

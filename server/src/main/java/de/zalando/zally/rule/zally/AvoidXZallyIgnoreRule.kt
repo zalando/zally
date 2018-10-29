@@ -52,15 +52,17 @@ class AvoidXZallyIgnoreRule {
         }
 
     private fun validateXZallyIgnore(pointer: JsonPointer, node: JsonNode): List<Violation> =
-        listOf(Violation(
-            when {
-                node.isArray -> node.joinToString(
-                    prefix = "Ignores rules ",
-                    separator = ", ",
-                    transform = JsonNode::asText
-                )
-                node.isValueNode -> "Invalid ignores, expected list but found single value $node"
-                else -> "Invalid ignores, expected list but found $node"
-            }, pointer
-        ))
+        listOf(
+            Violation(
+                when {
+                    node.isArray -> node.joinToString(
+                        prefix = "Ignores rules ",
+                        separator = ", ",
+                        transform = JsonNode::asText
+                    )
+                    node.isValueNode -> "Invalid ignores, expected list but found single value $node"
+                    else -> "Invalid ignores, expected list but found $node"
+                }, pointer
+            )
+        )
 }

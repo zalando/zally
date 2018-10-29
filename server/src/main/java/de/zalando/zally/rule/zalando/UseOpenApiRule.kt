@@ -19,10 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.net.URL
 
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = UseOpenApiRule.id,
-        severity = Severity.MUST,
-        title = "Provide API Specification using OpenAPI"
+    ruleSet = ZalandoRuleSet::class,
+    id = UseOpenApiRule.id,
+    severity = Severity.MUST,
+    title = "Provide API Specification using OpenAPI"
 )
 open class UseOpenApiRule(@Autowired rulesConfig: Config) {
 
@@ -33,8 +33,8 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
     private val jsonSchemaValidators: Map<OpenApiVersion, JsonSchemaValidator>
 
     private val defaultSchemas = mapOf(
-            OpenApiVersion.SWAGGER to "schemas/openapi-2-schema.json",
-            OpenApiVersion.OPENAPI3 to "schemas/openapi-3-schema.json"
+        OpenApiVersion.SWAGGER to "schemas/openapi-2-schema.json",
+        OpenApiVersion.OPENAPI3 to "schemas/openapi-3-schema.json"
     )
 
     init {
@@ -82,8 +82,10 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
             (swaggerSchema as ObjectNode).remove("id")
             (openApiSchema as ObjectNode).remove("id")
 
-            return mapOf(OpenApiVersion.SWAGGER to JsonSchemaValidator(OpenApiVersion.SWAGGER.version, swaggerSchema),
-                    OpenApiVersion.OPENAPI3 to JsonSchemaValidator(OpenApiVersion.OPENAPI3.version, openApiSchema))
+            return mapOf(
+                OpenApiVersion.SWAGGER to JsonSchemaValidator(OpenApiVersion.SWAGGER.version, swaggerSchema),
+                OpenApiVersion.OPENAPI3 to JsonSchemaValidator(OpenApiVersion.OPENAPI3.version, openApiSchema)
+            )
         } catch (e: Exception) {
             log.warn("Unable to load swagger schemas: ${e.message}. Using default schemas instead.")
             getDefaultSchemaValidators()

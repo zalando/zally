@@ -29,9 +29,11 @@ class RestSupportedRulesTest : RestApiBaseTest() {
         for (i in 1 until rules.size) {
             val prev = rules[i - 1].type
             val next = rules[i].type
-            assertTrue("Item #" + i + " is out of order:\n" +
+            assertTrue(
+                "Item #" + i + " is out of order:\n" +
                     rules.joinToString(separator = "\n") { it.toString() },
-                    prev!! <= next!!)
+                prev!! <= next!!
+            )
         }
     }
 

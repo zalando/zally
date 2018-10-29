@@ -13,14 +13,16 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkPropertyNames returns violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: '2.0'
             definitions:
               Defined:
                 properties:
                   InVaLiD!:
                     type: boolean
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = cut.checkPropertyNames(context)
 
@@ -33,7 +35,8 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkPathParameterNames returns violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: '2.0'
             paths:
               /things:
@@ -41,7 +44,8 @@ class CaseCheckerRuleTest {
                   parameters:
                   - in: path
                     name: InVaLiD!
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = cut.checkPathParameterNames(context)
 
@@ -54,7 +58,8 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkQueryParameterNames returns violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: '2.0'
             paths:
               /things:
@@ -62,7 +67,8 @@ class CaseCheckerRuleTest {
                   parameters:
                   - in: query
                     name: InVaLiD!
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = cut.checkQueryParameterNames(context)
 
@@ -75,7 +81,8 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkHeaderNames returns violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: '2.0'
             paths:
               /things:
@@ -83,7 +90,8 @@ class CaseCheckerRuleTest {
                   parameters:
                   - in: header
                     name: InVaLiD!
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = cut.checkHeaderNames(context)
 
@@ -96,12 +104,14 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkPathSegments returns violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: '2.0'
             paths:
               /things/{param}//InVaLiD:
                 post:
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val violations = cut.checkPathSegments(context)
 

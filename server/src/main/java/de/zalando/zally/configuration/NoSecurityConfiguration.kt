@@ -12,7 +12,7 @@ open class NoSecurityConfiguration : WebSecurityConfigurerAdapter() {
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http.httpBasic().disable()
-                .csrf().disable()
-                .authorizeRequests().antMatchers("/**").permitAll()
+            .csrf().disable()
+            .authorizeRequests().antMatchers("/**").permitAll()
     }
 }

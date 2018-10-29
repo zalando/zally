@@ -7,10 +7,10 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 
 @Rule(
-        ruleSet = ZalandoRuleSet::class,
-        id = "224",
-        severity = Severity.MUST,
-        title = "Follow Naming Convention for Hostnames"
+    ruleSet = ZalandoRuleSet::class,
+    id = "224",
+    severity = Severity.MUST,
+    title = "Follow Naming Convention for Hostnames"
 )
 class FunctionalNamingForHostnamesRule {
     private val audienceExtension = "x-audience"
@@ -24,7 +24,7 @@ class FunctionalNamingForHostnamesRule {
     private val functionalDomain = """[a-z][a-z0-9]*"""
     private val functionalComponent = """[a-z][a-z0-9-]*"""
     private val functionHostnameURLRegEx =
-            """(https://)?$functionalDomain-$functionalComponent\.zalandoapis\.com.*""".toRegex()
+        """(https://)?$functionalDomain-$functionalComponent\.zalandoapis\.com.*""".toRegex()
 
     @Check(severity = Severity.MUST)
     fun mustFollowFunctionalNaming(context: Context): List<Violation> = checkHostnames(mustFollow)(context)
@@ -43,10 +43,10 @@ class FunctionalNamingForHostnamesRule {
 
         when {
             audience is String && audience in audiencesToCheck -> hostnames
-                    .asSequence()
-                    .filterNot { isUrlValid(it.url) }
-                    .map { context.violation(description, it.url) }
-                    .toList()
+                .asSequence()
+                .filterNot { isUrlValid(it.url) }
+                .map { context.violation(description, it.url) }
+                .toList()
             else -> emptyList()
         }
     }

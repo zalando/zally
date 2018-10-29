@@ -16,13 +16,15 @@ class JsonSchemaValidatorTest {
         val json = ObjectTreeReader().read(schemaUrl)
         val jsonSchemaValidator = JsonSchemaValidator(file, json, mapOf(onlineSchema to localResource))
 
-        val jsonToValidate = ObjectTreeReader().read("""
+        val jsonToValidate = ObjectTreeReader().read(
+            """
         {
             "firstName": "MyName",
             "lastName": "MyLastName",
             "age": -10
         }
-        """)
+        """
+        )
 
         val valResult = jsonSchemaValidator.validate(jsonToValidate)
         assertThat(valResult.isEmpty()).isFalse()

@@ -5,7 +5,10 @@ import com.fasterxml.jackson.core.JsonPointer
 /**
  * ReverseAst holds meta information for nodes of a Swagger or OpenApi object.
  */
-class ReverseAst internal constructor(private val objectsToNodes: Map<Any, Node>, private val pointersToNodes: Map<String, Node>) {
+class ReverseAst internal constructor(
+    private val objectsToNodes: Map<Any, Node>,
+    private val pointersToNodes: Map<String, Node>
+) {
 
     fun getPointer(key: Any?): JsonPointer? =
         if (key != null) objectsToNodes[key]?.pointer else null
@@ -16,14 +19,14 @@ class ReverseAst internal constructor(private val objectsToNodes: Map<Any, Node>
             .find { it != null }
             ?.let {
                 isIgnored(it.marker, ignoreValue) ||
-                it.hasChildren() && it.children.all { c -> isIgnored(c.marker, ignoreValue) }
+                    it.hasChildren() && it.children.all { c -> isIgnored(c.marker, ignoreValue) }
             }
             ?: false
 
     private fun isIgnored(marker: Marker?, ignoreValue: String): Boolean =
         marker != null &&
-        Marker.TYPE_X_ZALLY_IGNORE == marker.type &&
-        marker.values.contains(ignoreValue)
+            Marker.TYPE_X_ZALLY_IGNORE == marker.type &&
+            marker.values.contains(ignoreValue)
 
     fun getIgnoreValues(pointer: JsonPointer): Collection<String> =
         getIgnoreValues(this.pointersToNodes[pointer.toString()])

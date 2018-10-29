@@ -132,7 +132,15 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     }
 
     private fun createRandomViolations(): List<Result> {
-        return listOf(Result(ZalandoRuleSet(), AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java), "", Severity.MUST, "/pointer"))
+        return listOf(
+            Result(
+                ZalandoRuleSet(),
+                AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java),
+                "",
+                Severity.MUST,
+                "/pointer"
+            )
+        )
     }
 
     private fun assertBadRequestFor(from: Any?, to: Any?) {

@@ -1,0 +1,25 @@
+# Contribute to Zally Server
+
+## Formatting
+
+### editorconfig
+
+This project includes a [`.editorconfig`](.editorconfig) file. Make sure your editor
+is considering it for automatic formatting of the source code. If your editor does
+not support `.editorconfig` files, open the file and apply those settings manually.
+
+### ktlint
+
+The [`ktlint`](https://github.com/shyiko/ktlint) Gradle plugin is also configured. Make
+sure to apply its formatting before committing code.
+
+    ./gradlew ktlintFormat
+
+`ktlint` considers the `.editorconfig` file when linting and formatting.
+
+To help development tasks, the `ktlint` style can be automatically applied to the
+local _IntelliJ IDEA_ project.
+
+    ./gradlew ktlineIntegrateIJ
+
+_IntelliJ IDEA_ will then format the code as you edit it using the `ktlint` rules.

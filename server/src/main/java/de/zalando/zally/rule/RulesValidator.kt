@@ -2,8 +2,8 @@ package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.ContentParseResult.NotApplicable
-import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
 import de.zalando.zally.rule.ContentParseResult.ParsedSuccessfully
+import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.zalando.UseOpenApiRule
 import de.zalando.zally.util.ast.JsonPointers
@@ -32,7 +32,8 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
                         rule = useOpenApiRule.rule,
                         description = violation.description,
                         violationType = useOpenApiRule.rule.severity,
-                        pointer = violation.pointer)
+                        pointer = violation.pointer
+                    )
                 }
             is ParsedSuccessfully ->
                 rules
@@ -61,8 +62,10 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
         val result = try {
             details.method.invoke(details.instance, root)
         } catch (e: InvocationTargetException) {
-            throw RuntimeException("check invocation failed: ruleId=${details.rule.id} " +
-                "ruleTitle=${details.rule.title} checkName=${details.method.name} reason=${e.targetException}", e)
+            throw RuntimeException(
+                "check invocation failed: ruleId=${details.rule.id} " +
+                    "ruleTitle=${details.rule.title} checkName=${details.method.name} reason=${e.targetException}", e
+            )
         }
 
         val violations = when (result) {

@@ -12,7 +12,8 @@ import org.junit.Test
 @Suppress("StringLiteralDuplication", "UndocumentedPublicFunction", "UnsafeCallOnNullableType", "TooManyFunctions")
 class SecureAllEndpointsWithScopesRuleTest {
 
-    private val config = getConfigFromContent("""
+    private val config = getConfigFromContent(
+        """
         SecureAllEndpointsWithScopesRule {
           scope_regex: "^(uid)|(([a-z-]+\\.){1,2}(read|write))${'$'}"
           path_whitelist: [
@@ -20,7 +21,8 @@ class SecureAllEndpointsWithScopesRuleTest {
             /obscure/
           ]
         }
-    """.trimIndent())
+    """.trimIndent()
+    )
 
     private val rule = SecureAllEndpointsWithScopesRule(config)
 

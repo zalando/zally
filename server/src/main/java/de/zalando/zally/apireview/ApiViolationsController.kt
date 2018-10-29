@@ -68,20 +68,20 @@ constructor(
     }
 
     private fun toDto(violation: Result): ViolationDTO = ViolationDTO(
-            violation.rule.title,
-            violation.description,
-            violation.violationType,
-            violation.ruleSet.url(violation.rule).toString(),
-            violation.paths,
-            if (violation.pointer == null) null else violation.pointer.toString()
+        violation.rule.title,
+        violation.description,
+        violation.violationType,
+        violation.ruleSet.url(violation.rule).toString(),
+        violation.paths,
+        if (violation.pointer == null) null else violation.pointer.toString()
     )
 
     private fun buildViolationsCount(violations: List<Result>): Map<String, Int> {
         val counter = ViolationsCounter(violations)
         return Severity.values()
-                .map { severity ->
-                    severity.name.toLowerCase() to counter[severity]
-                }
-                .toMap()
+            .map { severity ->
+                severity.name.toLowerCase() to counter[severity]
+            }
+            .toMap()
     }
 }

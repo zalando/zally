@@ -13,9 +13,11 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate swagger with no paths returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: 2.0
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -25,13 +27,15 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate swagger with no common first segments returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: 2.0
             paths:
               /orders/{order_id}: {}
               /orders/{updates}: {}
               /merchants: {}
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -41,11 +45,13 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate swagger with single path returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: 2.0
             paths:
               /orders/{order_id}: {}
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -55,13 +61,15 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate swagger with common first segment returns violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: 2.0
             paths:
               /shipment/{shipment_id}: {}
               /shipment/{shipment_id}/status: {}
               /shipment/{shipment_id}/details: {}
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -72,14 +80,16 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate swagger with multiple common first segments returns violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: 2.0
             paths:
               /queue/models/configs/{config-id}: {}
               /queue/models/: {}
               /queue/models/{model-id}: {}
               /queue/models/summaries: {}
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -90,14 +100,16 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate swagger with common prefix but no common first segments returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: 2.0
             paths:
               /api/{api_id}/deployments: {}
               /api/{api_id}/: {}
               /applications/{app_id}: {}
               /applications/: {}
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -107,13 +119,15 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate openapi with common first segment returns violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
             paths:
               /shipment/{shipment_id}: {}
               /shipment/{shipment_id}/status: {}
               /shipment/{shipment_id}/details: {}
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         ZallyAssertions
             .assertThat(rule.validate(context))

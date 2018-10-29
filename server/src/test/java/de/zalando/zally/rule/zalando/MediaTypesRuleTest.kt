@@ -53,7 +53,8 @@ class MediaTypesRuleTest {
     @Test
     fun `versioned custom media type causes no violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.0
             paths:
               "/shipment-order/{shipment_order_id}":
@@ -63,14 +64,16 @@ class MediaTypesRuleTest {
                       content:
                         "application/x.zalando.contract+json;v=123": {}
                         "application/vnd.api+json;version=3": {}
-        """.trimIndent())
+        """.trimIndent()
+        )
         assertThat(rule.validate(context)).isEmpty()
     }
 
     @Test
     fun `custom media type without versioning causes violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.0
             paths:
               "/shipment-order/{shipment_order_id}":
@@ -80,16 +83,20 @@ class MediaTypesRuleTest {
                       content:
                         "application/json": {}
                         "application/vnd.api+json": {}
-        """.trimIndent())
-        assertThat(rule.validate(context)).hasSameElementsAs(listOf(
-            v("/paths/~1shipment-order~1{shipment_order_id}/get/responses/200/content/application~1vnd.api+json")
-        ))
+        """.trimIndent()
+        )
+        assertThat(rule.validate(context)).hasSameElementsAs(
+            listOf(
+                v("/paths/~1shipment-order~1{shipment_order_id}/get/responses/200/content/application~1vnd.api+json")
+            )
+        )
     }
 
     @Test
     fun `only some of multiple paths without versioning causes violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.0
             paths:
               "/path1":
@@ -111,29 +118,34 @@ class MediaTypesRuleTest {
                     200:
                       content:
                         "application/x.zalando.contract+json;v=123": {}
-        """.trimIndent())
+        """.trimIndent()
+        )
         val result = rule.validate(context)
-        assertThat(result).hasSameElementsAs(listOf(
-            v("/paths/~1path1/get/responses/200/content/application~1vnd.api+json"),
-            v("/paths/~1path2/get/responses/200/content/application~1x.zalando.contract+json")
-        ))
+        assertThat(result).hasSameElementsAs(
+            listOf(
+                v("/paths/~1path1/get/responses/200/content/application~1vnd.api+json"),
+                v("/paths/~1path2/get/responses/200/content/application~1x.zalando.contract+json")
+            )
+        )
     }
 
     @Test
     fun `the SPP API generates violations`() {
         val context = getContextFromFixture("api_spp.json")
         val result = rule.validate(context)
-        assertThat(result).hasSameElementsAs(listOf(
-            // --- consumes ---
-            v("/paths/~1products~1{product_id}/patch/consumes"),
-            v("/paths/~1product-put-requests~1{product_path}/post/consumes"),
-            // --- produces ---
-            v("/paths/~1products/get/responses/200"),
-            v("/paths/~1products~1{product_id}/get/responses/200"),
-            v("/paths/~1products~1{product_id}~1children/get/responses/200"),
-            v("/paths/~1products~1{product_id}~1updates~1{update_id}/get/responses/200"),
-            v("/paths/~1request-groups~1{request_group_id}~1updates/get/responses/200")
-        ))
+        assertThat(result).hasSameElementsAs(
+            listOf(
+                // --- consumes ---
+                v("/paths/~1products~1{product_id}/patch/consumes"),
+                v("/paths/~1product-put-requests~1{product_path}/post/consumes"),
+                // --- produces ---
+                v("/paths/~1products/get/responses/200"),
+                v("/paths/~1products~1{product_id}/get/responses/200"),
+                v("/paths/~1products~1{product_id}~1children/get/responses/200"),
+                v("/paths/~1products~1{product_id}~1updates~1{update_id}/get/responses/200"),
+                v("/paths/~1request-groups~1{request_group_id}~1updates/get/responses/200")
+            )
+        )
     }
 
     @Test

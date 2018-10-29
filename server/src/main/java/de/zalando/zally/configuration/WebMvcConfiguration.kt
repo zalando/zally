@@ -9,7 +9,6 @@ import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
-
 import java.util.Arrays
 
 @Configuration
@@ -21,13 +20,13 @@ open class WebMvcConfiguration : WebMvcConfigurerAdapter() {
 
     override fun configureContentNegotiation(configurer: ContentNegotiationConfigurer?) {
         configurer!!
-                .favorPathExtension(true)
-                .favorParameter(false)
-                .ignoreAcceptHeader(false)
-                .defaultContentType(MediaType.APPLICATION_JSON)
-                .mediaType(MediaType.APPLICATION_JSON.subtype, MediaType.APPLICATION_JSON)
-                .mediaType(MEDIA_TYPE_TEXT_XYAML.subtype, MEDIA_TYPE_TEXT_XYAML)
-                .mediaType(MEDIA_TYPE_APP_XYAML.subtype, MEDIA_TYPE_APP_XYAML)
+            .favorPathExtension(true)
+            .favorParameter(false)
+            .ignoreAcceptHeader(false)
+            .defaultContentType(MediaType.APPLICATION_JSON)
+            .mediaType(MediaType.APPLICATION_JSON.subtype, MediaType.APPLICATION_JSON)
+            .mediaType(MEDIA_TYPE_TEXT_XYAML.subtype, MEDIA_TYPE_TEXT_XYAML)
+            .mediaType(MEDIA_TYPE_APP_XYAML.subtype, MEDIA_TYPE_APP_XYAML)
     }
 
     override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>?) {

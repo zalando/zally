@@ -257,7 +257,8 @@ class UseProblemJsonRuleTest {
             .assertThat(violations)
             .descriptionsEqualTo(
                 "$description Object has missing required properties ([\"format\"])",
-                "$description Instance value (\"number\") not found in enum (possible values: [\"string\"])")
+                "$description Instance value (\"number\") not found in enum (possible values: [\"string\"])"
+            )
             .pointersEqualTo(
                 "/components/schemas/Problem/properties/instance",
                 "/components/schemas/Problem/properties/instance/type"

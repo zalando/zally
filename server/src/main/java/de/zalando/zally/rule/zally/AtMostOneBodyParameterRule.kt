@@ -9,9 +9,9 @@ import io.swagger.models.parameters.BodyParameter
 
 @Rule(
     ruleSet = ZallyRuleSet::class,
-        id = "M009",
-        severity = Severity.MUST,
-        title = "At Most One Body Parameter"
+    id = "M009",
+    severity = Severity.MUST,
+    title = "At Most One Body Parameter"
 )
 class AtMostOneBodyParameterRule {
     val description = "No more than one body parameter can be associated with an operation"

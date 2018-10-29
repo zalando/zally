@@ -63,9 +63,11 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should not return any violations for a minimal api`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
     }
@@ -73,7 +75,8 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should not return any violations for a specification with non-common fields`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
             components:
               schemas:
@@ -81,7 +84,8 @@ class CommonFieldTypesRuleTest {
                   properties:
                     name:
                       type: string
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
     }
@@ -89,7 +93,8 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should not return any violations for a specification with valid common fields`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
             components:
               schemas:
@@ -97,7 +102,8 @@ class CommonFieldTypesRuleTest {
                   properties:
                     id:
                       type: string
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
     }
@@ -105,7 +111,8 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should return a violation for a specification with invalid common field in a schema`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
             components:
               schemas:
@@ -113,7 +120,8 @@ class CommonFieldTypesRuleTest {
                   properties:
                     id:
                       type: integer
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val violations = rule.checkTypesOfCommonFields(context)
 
@@ -126,7 +134,8 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should return a violation if common field has a valid type but invalid format`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
             components:
               schemas:
@@ -135,7 +144,8 @@ class CommonFieldTypesRuleTest {
                     modified:
                       type: string
                       format: uuid
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val violations = rule.checkTypesOfCommonFields(context)
 
@@ -148,7 +158,8 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should return a violation for invalid common field embedded in path segment as response`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
             paths:
               /pets:
@@ -161,7 +172,8 @@ class CommonFieldTypesRuleTest {
                             properties:
                               id:
                                 type: integer
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val violations = rule.checkTypesOfCommonFields(context)
 
@@ -174,7 +186,8 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should return a violation for invalid common field in nested objects`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
             components:
               schemas:
@@ -184,7 +197,8 @@ class CommonFieldTypesRuleTest {
                       properties:
                         modified:
                           type: number
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val violations = rule.checkTypesOfCommonFields(context)
 
@@ -197,7 +211,8 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should also test references`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
             paths:
               /pets:
@@ -215,7 +230,8 @@ class CommonFieldTypesRuleTest {
                 CustomId:
                   type: integer
                   format: int64
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val violations = rule.checkTypesOfCommonFields(context)
 

@@ -2,9 +2,9 @@ package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.api.Rule
 import io.swagger.v3.oas.models.security.SecurityScheme
 
 @Rule(
@@ -25,7 +25,8 @@ class SecureWithOAuth2Rule {
 
     @Check(severity = Severity.MUST)
     fun checkSecuritySchemesOnlyOAuth2IsUsed(context: Context): Violation? {
-        val otherSecuritySchemeIsUsed = context.api.components.securitySchemes.values.any { SecurityScheme.Type.OAUTH2 != it.type }
+        val otherSecuritySchemeIsUsed =
+            context.api.components.securitySchemes.values.any { SecurityScheme.Type.OAUTH2 != it.type }
 
         return if (otherSecuritySchemeIsUsed) context.violation("Only OAuth2 is allowed to secure the API")
         else null
@@ -43,13 +44,19 @@ class SecureWithOAuth2Rule {
 
         val usedScopes = context.api.paths.values
             .flatMap { it?.readOperations().orEmpty().flatMap { it.security.orEmpty() } }
-            .flatMap { secReq -> secReq.keys.flatMap { group -> secReq[group].orEmpty().map { scope -> group to scope } } }
+            .flatMap { secReq ->
+                secReq.keys.flatMap { group ->
+                    secReq[group].orEmpty().map { scope -> group to scope }
+                }
+            }
 
         return usedScopes
             .filterNot { it in specifiedScopes }
             .map { (group, scope) ->
-                context.violation("The scope '$group/$scope' is not specified in the clientCredentials flow of the " +
-                    "OAuth2 security definition", scope)
+                context.violation(
+                    "The scope '$group/$scope' is not specified in the clientCredentials flow of the " +
+                        "OAuth2 security definition", scope
+                )
             }
     }
 }

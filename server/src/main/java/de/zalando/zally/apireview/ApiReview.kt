@@ -46,7 +46,10 @@ class ApiReview : Serializable {
     var userAgent: String? = null
 
     @Column(nullable = false)
-    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentOffsetDateTime", parameters = [Parameter(name = "javaZone", value = "UTC")])
+    @Type(
+        type = "org.jadira.usertype.dateandtime.threeten.PersistentOffsetDateTime",
+        parameters = [Parameter(name = "javaZone", value = "UTC")]
+    )
     var created: OffsetDateTime? = null
 
     var numberOfEndpoints: Int = 0
@@ -63,7 +66,12 @@ class ApiReview : Serializable {
      */
     protected constructor() {}
 
-    constructor(request: ApiDefinitionRequest, userAgent: String = "", apiDefinition: String, violations: List<Result> = emptyList()) {
+    constructor(
+        request: ApiDefinitionRequest,
+        userAgent: String = "",
+        apiDefinition: String,
+        violations: List<Result> = emptyList()
+    ) {
         this.jsonPayload = request.toString()
         this.apiDefinition = apiDefinition
         this.isSuccessfulProcessed = StringUtils.isNotBlank(apiDefinition)
@@ -91,21 +99,23 @@ class ApiReview : Serializable {
 
         val that = o as ApiReview
         return (id == that.id &&
-                name == that.name &&
-                jsonPayload == that.jsonPayload &&
-                apiDefinition == that.apiDefinition &&
-                isSuccessfulProcessed == that.isSuccessfulProcessed &&
-                day == that.day &&
-                created == that.created &&
-                numberOfEndpoints == that.numberOfEndpoints &&
-                mustViolations == that.mustViolations &&
-                shouldViolations == that.shouldViolations &&
-                mayViolations == that.mayViolations &&
-                hintViolations == that.hintViolations &&
-                ruleViolations == that.ruleViolations)
+            name == that.name &&
+            jsonPayload == that.jsonPayload &&
+            apiDefinition == that.apiDefinition &&
+            isSuccessfulProcessed == that.isSuccessfulProcessed &&
+            day == that.day &&
+            created == that.created &&
+            numberOfEndpoints == that.numberOfEndpoints &&
+            mustViolations == that.mustViolations &&
+            shouldViolations == that.shouldViolations &&
+            mayViolations == that.mayViolations &&
+            hintViolations == that.hintViolations &&
+            ruleViolations == that.ruleViolations)
     }
 
-    override fun hashCode(): Int = Objects.hash(id, name, jsonPayload, apiDefinition, isSuccessfulProcessed,
+    override fun hashCode(): Int = Objects.hash(
+        id, name, jsonPayload, apiDefinition, isSuccessfulProcessed,
         day, created, numberOfEndpoints, mustViolations, shouldViolations, mayViolations,
-        hintViolations, ruleViolations)
+        hintViolations, ruleViolations
+    )
 }

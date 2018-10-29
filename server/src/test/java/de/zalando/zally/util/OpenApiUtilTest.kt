@@ -1,5 +1,6 @@
 package de.zalando.zally.util
 
+import de.zalando.zally.getOpenApiContextFromContent
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
@@ -13,10 +14,9 @@ import io.swagger.v3.oas.models.parameters.Parameter
 import io.swagger.v3.oas.models.parameters.RequestBody
 import io.swagger.v3.oas.models.responses.ApiResponse
 import io.swagger.v3.oas.models.responses.ApiResponses
-import org.junit.Test
 import org.assertj.core.api.Assertions.assertThat
-import de.zalando.zally.getOpenApiContextFromContent
 import org.intellij.lang.annotations.Language
+import org.junit.Test
 
 class OpenApiUtilTest {
 
