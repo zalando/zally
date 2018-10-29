@@ -27,7 +27,7 @@ object JsonPointers {
             // VERB/requestBody/content/MEDIA_TYPE --> VERB/consumes
             "^/paths/(.*)/requestBody/content/[^/]*$" to "/paths/$1/consumes"
         )
-        .map { it.first.toRegex() to it.second }
+            .map { it.first.toRegex() to it.second }
 
     /**
      * Convert an OpenAPI 3 JSON pointer to a Swagger 2 pointer.

@@ -22,9 +22,11 @@ class LimitNumberOfResourcesRule(@Autowired rulesConfig: Config) {
     fun checkLimitOfResources(context: Context): Violation? {
         val resourceTypes = resourceTypes(context.api.paths.orEmpty().keys)
         return if (resourceTypes.size > resourceTypesLimit) {
-            context.violation("Identified ${resourceTypes.size} resource resource types, " +
-                "greater than recommended limit of $resourceTypesLimit",
-                context.api.paths)
+            context.violation(
+                "Identified ${resourceTypes.size} resource resource types, " +
+                    "greater than recommended limit of $resourceTypesLimit",
+                context.api.paths
+            )
         } else null
     }
 

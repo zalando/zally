@@ -32,7 +32,8 @@ class DefaultContext(
     private val openApiRecorder = MethodCallRecorder(openApi).skipMethods(*extensionNames)
     private val swaggerRecorder = swagger?.let { MethodCallRecorder(it).skipMethods(*extensionNames) }
     private val openApiAst = ReverseAst.fromObject(openApi).withExtensionMethodNames(*extensionNames).build()
-    private val swaggerAst = swagger?.let { ReverseAst.fromObject(it).withExtensionMethodNames(*extensionNames).build() }
+    private val swaggerAst =
+        swagger?.let { ReverseAst.fromObject(it).withExtensionMethodNames(*extensionNames).build() }
 
     override val api = openApiRecorder.proxy
     override val swagger = swaggerRecorder?.proxy
@@ -235,7 +236,10 @@ class DefaultContext(
             val convertResult = try {
                 SwaggerConverter().convert(parseResult)
             } catch (t: Throwable) {
-                log.warn("Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. Error not covered by pre-convert checks.", t)
+                log.warn(
+                    "Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. Error not covered by pre-convert checks.",
+                    t
+                )
                 val violation = Violation("Unable to parse specification", JsonPointers.EMPTY)
                 return ParsedWithErrors(listOf(violation))
             }

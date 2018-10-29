@@ -1,9 +1,8 @@
 package de.zalando.zally.dto
 
 import de.zalando.zally.rule.api.Severity
-import org.junit.Test
-
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
 
 class SeverityBinderTest {
     @Test(expected = IllegalArgumentException::class)

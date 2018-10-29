@@ -12,7 +12,11 @@ import org.springframework.http.MediaType.TEXT_PLAIN_VALUE
 object JadlerUtil {
 
     @JvmOverloads
-    fun stubResource(resourceName: String, responseBody: String = resourceToString(resourceName), contentType: String = APPLICATION_JSON_VALUE): String {
+    fun stubResource(
+        resourceName: String,
+        responseBody: String = resourceToString(resourceName),
+        contentType: String = APPLICATION_JSON_VALUE
+    ): String {
         return stubResource(resourceName, responseBody, OK.value(), contentType)
     }
 
@@ -20,12 +24,12 @@ object JadlerUtil {
         val url = String.format("http://localhost:%d/%s", port(), resourceName)
 
         onRequest()
-                .havingMethodEqualTo(GET.name)
-                .havingPathEqualTo("/$resourceName")
-                .respond()
-                .withStatus(status)
-                .withHeader(CONTENT_TYPE, contentType)
-                .withBody(responseBody)
+            .havingMethodEqualTo(GET.name)
+            .havingPathEqualTo("/$resourceName")
+            .respond()
+            .withStatus(status)
+            .withHeader(CONTENT_TYPE, contentType)
+            .withBody(responseBody)
 
         return url
     }
@@ -35,12 +39,12 @@ object JadlerUtil {
         val url = "http://localhost:" + port() + remotePath
 
         onRequest()
-                .havingMethodEqualTo(GET.name)
-                .havingPathEqualTo(remotePath)
-                .respond()
-                .withStatus(NOT_FOUND.value())
-                .withHeader(CONTENT_TYPE, TEXT_PLAIN_VALUE)
-                .withBody("NotFound")
+            .havingMethodEqualTo(GET.name)
+            .havingPathEqualTo(remotePath)
+            .respond()
+            .withStatus(NOT_FOUND.value())
+            .withHeader(CONTENT_TYPE, TEXT_PLAIN_VALUE)
+            .withBody("NotFound")
 
         return url
     }

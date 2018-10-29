@@ -3,7 +3,7 @@ configurations {
 }
 
 def versions = [
-    jacoco: '0.7.8',
+        jacoco: '0.7.8',
 ]
 
 buildscript {
@@ -30,23 +30,23 @@ buildscript {
 }
 
 allprojects {
-  apply plugin: 'java'
-  apply plugin: 'kotlin'
+    apply plugin: 'java'
+    apply plugin: 'kotlin'
 
-  repositories {
-    jcenter()
-    mavenCentral()
-  }
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
 
-  sourceCompatibility = 1.8
-  targetCompatibility = 1.8
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
-  compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-  }
-  compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-  }
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
 }
 
 apply plugin: 'kotlin-allopen'
@@ -117,15 +117,29 @@ jacocoTestReport {
         xml.enabled true
     }
 }
+check.dependsOn jacocoTestReport
 
-task ktlint(type: JavaExec) {
-    main = "com.github.shyiko.ktlint.Main"
+task ktlint(type: JavaExec, group: "formatting") {
+    description = "Check Kotlin code style."
     classpath = configurations.ktlint
+    main = "com.github.shyiko.ktlint.Main"
     args "src/**/*.kt"
 }
-
 check.dependsOn ktlint
-check.dependsOn jacocoTestReport
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.github.shyiko.ktlint.Main"
+    args "-F", "src/**/*.kt"
+}
+
+task ktlintIntegrateIJ(type: JavaExec, group: "formatting") {
+    description = "Apply ktlint settings to IDEA-based IDE project settings."
+    classpath = configurations.ktlint
+    main = "com.github.shyiko.ktlint.Main"
+    args "--apply-to-idea-project", "-y"
+}
 
 bootRun {
     jvmArgs = ["-Dspring.profiles.active=dev"]

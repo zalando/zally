@@ -20,11 +20,15 @@ import java.util.SortedSet
 )
 class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
 
-    private val scopeRegex = Regex(rulesConfig.getString(
-        "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.scope_regex"))
+    private val scopeRegex = Regex(
+        rulesConfig.getString(
+            "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.scope_regex"
+        )
+    )
 
     private val pathWhitelist = rulesConfig.getStringList(
-        "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.path_whitelist")
+        "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.path_whitelist"
+    )
         .map { it.toRegex() }
 
     @Check(severity = Severity.MUST)
@@ -36,9 +40,9 @@ class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
                 flow.scopes.orEmpty().keys.filterNot { scope ->
                     scopeRegex.matches(scope)
                 }
-                .map { scope ->
-                    context.violation("scope '$scope' does not match regex '$scopeRegex'", flow.scopes)
-                }
+                    .map { scope ->
+                        context.violation("scope '$scope' does not match regex '$scopeRegex'", flow.scopes)
+                    }
             }
 
     @Check(severity = Severity.MUST)
@@ -49,13 +53,17 @@ class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
             val undefined = undefined(requested, defined)
             when {
                 requested.isEmpty() -> context.violations("Endpoint not secured by OAuth2 scope(s)", op?.security ?: op)
-                undefined.isNotEmpty() -> context.violations("Endpoint secured by undefined OAuth2 scope(s): ${undefined.joinToString()}", op?.security ?: op)
+                undefined.isNotEmpty() -> context.violations(
+                    "Endpoint secured by undefined OAuth2 scope(s): ${undefined.joinToString()}", op?.security
+                        ?: op
+                )
                 else -> emptyList()
             }
         }
     }
 
-    private fun pathFilter(entry: Map.Entry<String, PathItem?>): Boolean = pathWhitelist.none { it.containsMatchIn(entry.key) }
+    private fun pathFilter(entry: Map.Entry<String, PathItem?>): Boolean =
+        pathWhitelist.none { it.containsMatchIn(entry.key) }
 
     private fun SecurityScheme?.allFlows() = listOfNotNull(
         this?.flows?.implicit,

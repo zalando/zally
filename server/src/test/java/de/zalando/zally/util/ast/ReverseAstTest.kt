@@ -193,8 +193,8 @@ class ReverseAstTest {
         val sharedParamPointer = ast.getPointer(sharedParam)
 
         assertThat(pathParamPointer)
-                .isSameAs(sharedParamPointer)
-                .hasToString("/components/parameters/SharedParam")
+            .isSameAs(sharedParamPointer)
+            .hasToString("/components/parameters/SharedParam")
     }
 
     @Test

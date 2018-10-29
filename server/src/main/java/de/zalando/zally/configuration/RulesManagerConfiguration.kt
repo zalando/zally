@@ -23,12 +23,12 @@ open class RulesManagerConfiguration {
     open fun rulesManager(): RulesManager {
         val rules = context!!.getBean("rules", Collection::class.java)
         val details = rules
-                .filterNotNull()
-                .map { instance ->
-                    val rule = instance.javaClass.getAnnotation(Rule::class.java)
-                    val ruleSet = context.getBean(rule.ruleSet.java)
-                    RuleDetails(ruleSet, rule, instance)
-                }
+            .filterNotNull()
+            .map { instance ->
+                val rule = instance.javaClass.getAnnotation(Rule::class.java)
+                val ruleSet = context.getBean(rule.ruleSet.java)
+                RuleDetails(ruleSet, rule, instance)
+            }
         return RulesManager(details)
     }
 }

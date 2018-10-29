@@ -33,14 +33,23 @@ class ApiDefinitionReader(private val client: RestTemplate) {
 
         val contentType = response.headers.contentType
         if (contentType != null && MEDIA_TYPE_WHITELIST.none { contentType.isCompatibleWith(it) }) {
-            throw InaccessibleResourceUrlException("Unexpected content type while retrieving api definition url: $contentType", UNSUPPORTED_MEDIA_TYPE)
+            throw InaccessibleResourceUrlException(
+                "Unexpected content type while retrieving api definition url: $contentType",
+                UNSUPPORTED_MEDIA_TYPE
+            )
         }
 
         response.body
     } catch (exception: HttpClientErrorException) {
-        throw InaccessibleResourceUrlException("${exception.message} while retrieving api definition url", exception.statusCode)
+        throw InaccessibleResourceUrlException(
+            "${exception.message} while retrieving api definition url",
+            exception.statusCode
+        )
     } catch (exception: ResourceAccessException) {
-        throw InaccessibleResourceUrlException("Unknown host while retrieving api definition url: ${exception.cause?.message}", HttpStatus.NOT_FOUND)
+        throw InaccessibleResourceUrlException(
+            "Unknown host while retrieving api definition url: ${exception.cause?.message}",
+            HttpStatus.NOT_FOUND
+        )
     }
 
     private fun removeSpecialCharactersSuffix(url: String): String = when {
@@ -54,24 +63,26 @@ class ApiDefinitionReader(private val client: RestTemplate) {
         private const val SPECIAL_CHARACTERS_SUFFIX = "%3D%3D"
 
         // a whitelist of mime-types to accept when expecting JSON or YAML
-        private val MEDIA_TYPE_WHITELIST = parseMediaTypes(listOf(
-            // standard YAML mime-type plus variants
-            "application/yaml",
-            "application/x-yaml",
-            "application/vnd.yaml",
-            "text/yaml",
-            "text/x-yaml",
-            "text/vnd.yaml",
+        private val MEDIA_TYPE_WHITELIST = parseMediaTypes(
+            listOf(
+                // standard YAML mime-type plus variants
+                "application/yaml",
+                "application/x-yaml",
+                "application/vnd.yaml",
+                "text/yaml",
+                "text/x-yaml",
+                "text/vnd.yaml",
 
-            // standard JSON mime-type plus variants
-            "application/json",
-            "application/javascript",
-            "text/javascript",
-            "text/x-javascript",
-            "text/x-json",
+                // standard JSON mime-type plus variants
+                "application/json",
+                "application/javascript",
+                "text/javascript",
+                "text/x-javascript",
+                "text/x-json",
 
-            // github.com raw content pages issue text/plain content type for YAML
-            "text/plain"
-        ))
+                // github.com raw content pages issue text/plain content type for YAML
+                "text/plain"
+            )
+        )
     }
 }

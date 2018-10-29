@@ -25,12 +25,14 @@ class PluralizeResourceNamesRuleTest {
         val context = getContextFromFixture("pluralizeResourcesInvalid.json")
         val violations = rule.validate(context)
         assertThat(violations)
-                .descriptionsEqualTo(
-                        "Resource 'pet' appears to be singular",
-                        "Resource 'tail' appears to be singular")
-                .pointersEqualTo(
-                        "/paths/~1pet~1cats",
-                        "/paths/~1pets~1cats~1{cat-id}~1tail~1{tail-id}~1strands")
+            .descriptionsEqualTo(
+                "Resource 'pet' appears to be singular",
+                "Resource 'tail' appears to be singular"
+            )
+            .pointersEqualTo(
+                "/paths/~1pet~1cats",
+                "/paths/~1pets~1cats~1{cat-id}~1tail~1{tail-id}~1strands"
+            )
     }
 
     @Test
@@ -59,16 +61,17 @@ class PluralizeResourceNamesRuleTest {
         val context = getContextFromFixture("api_tinbox.yaml")
         val violations = rule.validate(context)
         assertThat(violations)
-                .pointersEqualTo(
-                        "/paths/~1meta~1article_domains",
-                        "/paths/~1meta~1colors",
-                        "/paths/~1meta~1commodity_groups",
-                        "/paths/~1meta~1size_grids",
-                        "/paths/~1meta~1tags",
-                        "/paths/~1queue~1configs~1{config-id}",
-                        "/paths/~1queue~1models",
-                        "/paths/~1queue~1models~1{model-id}",
-                        "/paths/~1queue~1summaries")
+            .pointersEqualTo(
+                "/paths/~1meta~1article_domains",
+                "/paths/~1meta~1colors",
+                "/paths/~1meta~1commodity_groups",
+                "/paths/~1meta~1size_grids",
+                "/paths/~1meta~1tags",
+                "/paths/~1queue~1configs~1{config-id}",
+                "/paths/~1queue~1models",
+                "/paths/~1queue~1models~1{model-id}",
+                "/paths/~1queue~1summaries"
+            )
     }
 
     @Test
@@ -78,7 +81,7 @@ class PluralizeResourceNamesRuleTest {
         val violations = rule.validate(context)
 
         assertThat(violations)
-                .isEmpty()
+            .isEmpty()
     }
 
     @Test
@@ -88,12 +91,14 @@ class PluralizeResourceNamesRuleTest {
         val violations = rule.validate(context)
 
         assertThat(violations)
-                .descriptionsEqualTo(
-                        "Resource 'singular' appears to be singular",
-                        "Resource 'thing' appears to be singular")
-                .pointersEqualTo(
-                        "/paths/~1singular~1thing",
-                        "/paths/~1singular~1thing")
+            .descriptionsEqualTo(
+                "Resource 'singular' appears to be singular",
+                "Resource 'thing' appears to be singular"
+            )
+            .pointersEqualTo(
+                "/paths/~1singular~1thing",
+                "/paths/~1singular~1thing"
+            )
     }
 
     @Test
@@ -103,12 +108,14 @@ class PluralizeResourceNamesRuleTest {
         val violations = rule.validate(context)
 
         assertThat(violations)
-                .descriptionsEqualTo(
-                        "Resource 'prefix' appears to be singular",
-                        "Resource 'suffix' appears to be singular")
-                .pointersEqualTo(
-                        "/paths/~1prefix~1{parameter}~1suffix",
-                        "/paths/~1prefix~1{parameter}~1suffix")
+            .descriptionsEqualTo(
+                "Resource 'prefix' appears to be singular",
+                "Resource 'suffix' appears to be singular"
+            )
+            .pointersEqualTo(
+                "/paths/~1prefix~1{parameter}~1suffix",
+                "/paths/~1prefix~1{parameter}~1suffix"
+            )
     }
 
     @Test
@@ -118,7 +125,7 @@ class PluralizeResourceNamesRuleTest {
         val violations = rule.validate(context)
 
         assertThat(violations)
-                .isEmpty()
+            .isEmpty()
     }
 
     @Test
@@ -129,7 +136,7 @@ class PluralizeResourceNamesRuleTest {
         val violations = rule.validate(context)
 
         assertThat(violations)
-                .isEmpty()
+            .isEmpty()
     }
 
     @Test
@@ -140,7 +147,7 @@ class PluralizeResourceNamesRuleTest {
         val violations = rule.validate(context)
 
         assertThat(violations)
-                .isEmpty()
+            .isEmpty()
     }
 
     @Test
@@ -151,12 +158,14 @@ class PluralizeResourceNamesRuleTest {
         val violations = rule.validate(context)
 
         assertThat(violations)
-                .descriptionsEqualTo(
-                        "Resource 'prefix' appears to be singular",
-                        "Resource 'suffix' appears to be singular")
-                .pointersEqualTo(
-                        "/paths/~1prefix~1whitelisted~1suffix",
-                        "/paths/~1prefix~1whitelisted~1suffix")
+            .descriptionsEqualTo(
+                "Resource 'prefix' appears to be singular",
+                "Resource 'suffix' appears to be singular"
+            )
+            .pointersEqualTo(
+                "/paths/~1prefix~1whitelisted~1suffix",
+                "/paths/~1prefix~1whitelisted~1suffix"
+            )
     }
 
     @Suppress("UnsafeCallOnNullableType")

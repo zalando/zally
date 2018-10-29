@@ -20,3 +20,7 @@ Follow these steps to contribute your work to Zally:
 1. We will review your PR, give feedback, and merge when it is ready.
 
 Thanks for your contribution!
+
+## Sub-Project Specific
+
+- Please refer to [this document](server/CONTRIBUTING) if contributing to the **Zally Server**

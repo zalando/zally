@@ -22,7 +22,12 @@ class LimitNumberOfSubResourcesRule(@Autowired rulesConfig: Config) {
     @Check(severity = Severity.SHOULD)
     fun checkNumberOfSubResources(context: Context): List<Violation> =
         context.api.paths.orEmpty().entries
-            .map { (path, pathObj) -> Pair(path.split("/").filter { it.isNotEmpty() && !PatternUtil.isPathVariable(it) }.size - 1, pathObj) }
+            .map { (path, pathObj) ->
+                Pair(
+                    path.split("/").filter { it.isNotEmpty() && !PatternUtil.isPathVariable(it) }.size - 1,
+                    pathObj
+                )
+            }
             .filter { (numberOfSubResources, _) -> numberOfSubResources > subResourcesLimit }
             .map { (_, pathObj) -> context.violation(description, pathObj) }
 }

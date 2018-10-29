@@ -55,13 +55,13 @@ class UseStandardHttpStatusCodesRule(@Autowired rulesConfig: Config) {
      */
     @Check(severity = Severity.MUST)
     fun checkIfOnlyStandardizedResponseCodesAreUsed(context: Context): List<Violation> =
-            context.validateOperations { (_, operation) ->
-                operation?.responses.orEmpty().filterNot { (status, _) ->
-                    status in standardResponseCodes
-                }.map { (status, response) ->
-                    context.violation("$status is not a standardized response code", response)
-                }
+        context.validateOperations { (_, operation) ->
+            operation?.responses.orEmpty().filterNot { (status, _) ->
+                status in standardResponseCodes
+            }.map { (status, response) ->
+                context.violation("$status is not a standardized response code", response)
             }
+        }
 
     /**
      * Check that well-understood HTTP response codes are used
@@ -70,13 +70,13 @@ class UseStandardHttpStatusCodesRule(@Autowired rulesConfig: Config) {
      */
     @Check(severity = Severity.SHOULD)
     fun checkIfOnlyWellUnderstoodResponseCodesAreUsed(context: Context): List<Violation> =
-            context.validateOperations { (_, operation) ->
-                operation?.responses.orEmpty().filterNot { (status, _) ->
-                    status in wellUnderstoodResponseCode
-                }.map { (status, response) ->
-                    context.violation("$status is not a well-understood response code", response)
-                }
+        context.validateOperations { (_, operation) ->
+            operation?.responses.orEmpty().filterNot { (status, _) ->
+                status in wellUnderstoodResponseCode
+            }.map { (status, response) ->
+                context.violation("$status is not a well-understood response code", response)
             }
+        }
 
     private fun isAllowed(method: PathItem.HttpMethod, statusCode: String): Boolean {
         val allowedMethods = wellUnderstoodResponseCodesAndVerbs[statusCode.toLowerCase()].orEmpty()

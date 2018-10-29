@@ -21,7 +21,8 @@ class ApiReviewTest {
         val mustViolation2 = result(Severity.MUST, "/pointer2")
         val shouldViolation = result(Severity.SHOULD, "/pointer3")
 
-        val apiReview = ApiReview(ApiDefinitionRequest(), "", "", asList(mustViolation1, mustViolation2, shouldViolation))
+        val apiReview =
+            ApiReview(ApiDefinitionRequest(), "", "", asList(mustViolation1, mustViolation2, shouldViolation))
 
         assertThat(apiReview.mustViolations).isEqualTo(2)
         assertThat(apiReview.shouldViolations).isEqualTo(1)

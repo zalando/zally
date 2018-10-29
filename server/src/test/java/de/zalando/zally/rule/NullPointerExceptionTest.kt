@@ -22,10 +22,12 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule
 @ActiveProfiles("test")
 class NullPointerExceptionTest(private val spec: String) {
     companion object {
-        @ClassRule @JvmField
+        @ClassRule
+        @JvmField
         val springClassRule = SpringClassRule()
 
-        @Parameterized.Parameters @JvmStatic
+        @Parameterized.Parameters
+        @JvmStatic
         fun parameters(): List<Array<Any>> {
             val parameters = mutableListOf<Any>()
 
@@ -412,7 +414,8 @@ class NullPointerExceptionTest(private val spec: String) {
         }
     }
 
-    @Rule @JvmField
+    @Rule
+    @JvmField
     val springMethodRule = SpringMethodRule()
 
     @Autowired

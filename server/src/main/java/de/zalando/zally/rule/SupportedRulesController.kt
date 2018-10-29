@@ -46,11 +46,13 @@ class SupportedRulesController(private val rules: RulesManager, private val rule
             .filter { filterByIsActive(it, isActiveFilter) }
             .filter { filterByType(it, typeFilter) }
             .map { this.toDto(it) }
-            .sortedWith(compareBy(
-                RuleDTO::type,
-                RuleDTO::code,
-                RuleDTO::title
-            ))
+            .sortedWith(
+                compareBy(
+                    RuleDTO::type,
+                    RuleDTO::code,
+                    RuleDTO::title
+                )
+            )
 
         return RulesListDTO(filteredRules)
     }

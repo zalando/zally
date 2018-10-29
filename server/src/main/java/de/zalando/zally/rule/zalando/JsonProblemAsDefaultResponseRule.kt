@@ -16,8 +16,10 @@ import io.swagger.v3.oas.models.responses.ApiResponse
     title = "Specify Success and Error Responses"
 )
 class JsonProblemAsDefaultResponseRule {
-    private val validRefs = listOf("https://zalando.github.io/problem/schema.yaml#/Problem",
-        "https://opensource.zalando.com/problem/schema.yaml#/Problem")
+    private val validRefs = listOf(
+        "https://zalando.github.io/problem/schema.yaml#/Problem",
+        "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+    )
     private val validContentTypes = listOf("application/json", "application/problem+json")
 
     @Check(severity = Severity.MAY)

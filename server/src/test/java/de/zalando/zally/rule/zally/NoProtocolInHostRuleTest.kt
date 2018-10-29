@@ -13,9 +13,11 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate swagger with empty swagger returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: 2.0
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -25,10 +27,12 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate swagger with simple hostname returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: 2.0
             host: google.com
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -38,10 +42,12 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate swagger with http protocol included returns a violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: 2.0
             host: http://google.com
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -52,10 +58,12 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate swagger with https protocol included returns a violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent("""
+        val context = getSwaggerContextFromContent(
+            """
             swagger: 2.0
             host: https://google.com
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -66,12 +74,14 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate openapi with url including protocol returns no violations`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: 3.0.1
             servers:
               - url: https://google.com
                 description: OpenAPI expects a URL, not a hostname, so this is correct!
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         ZallyAssertions
             .assertThat(rule.validate(context))

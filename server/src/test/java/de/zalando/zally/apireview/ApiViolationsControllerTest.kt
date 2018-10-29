@@ -31,7 +31,8 @@ class ApiViolationsControllerTest {
         mvc!!.perform(
             post("/api-violations")
                 .contentType("application/json")
-                .content("{\"api_definition_string\":\"\"}"))
+                .content("{\"api_definition_string\":\"\"}")
+        )
             .andExpect(status().isOk)
             .andExpect(content().string(containsString("https://zalando.github.io/restful-api-guidelines")))
     }
@@ -50,7 +51,8 @@ class ApiViolationsControllerTest {
         mvc!!.perform(
             post("/api-violations")
                 .contentType("application/json")
-                .content(request))
+                .content(request)
+        )
             .andExpect(status().isOk)
     }
 
@@ -66,7 +68,8 @@ class ApiViolationsControllerTest {
         mvc!!.perform(
             post("/api-violations")
                 .contentType("application/json")
-                .content(request))
+                .content(request)
+        )
             .andExpect(status().isOk)
     }
 

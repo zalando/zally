@@ -13,9 +13,11 @@ class AvoidTrailingSlashesRuleTest {
     @Test
     fun emptySwagger() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: '3.0.0'
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val violations = rule.validate(context)
 
@@ -25,11 +27,13 @@ class AvoidTrailingSlashesRuleTest {
     @Test
     fun positiveCase() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: '3.0.0'
             paths:
               /api/test-api: {}
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val violations = rule.validate(context)
 
@@ -39,14 +43,16 @@ class AvoidTrailingSlashesRuleTest {
     @Test
     fun negativeCase() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent("""
+        val context = getOpenApiContextFromContent(
+            """
             openapi: '3.0.0'
             paths:
               /api/test-api/: {}
               /api/test: {}
               /some/other/path: {}
               /long/bad/path/with/slash/: {}
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val violations = rule.validate(context)
 

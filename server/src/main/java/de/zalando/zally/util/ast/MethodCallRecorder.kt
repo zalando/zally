@@ -7,9 +7,6 @@ import org.springframework.aop.framework.ProxyFactory
 import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
 import java.util.IdentityHashMap
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 /**
  * MethodCallRecorder creates a Proxy around an obj, typically Swagger or OpenApi, and records
@@ -54,8 +51,8 @@ class MethodCallRecorder<T : Any>(obj: T) {
 
     private fun getGenericReturnValueType(m: Method): Class<*> =
         (m.genericReturnType as? ParameterizedType)
-        ?.let { it.actualTypeArguments.last() as Class<*> }
-        ?: throw MethodCallRecorderException(m.returnType.toString())
+            ?.let { it.actualTypeArguments.last() as Class<*> }
+            ?: throw MethodCallRecorderException(m.returnType.toString())
 
     fun skipMethods(vararg methodNames: String): MethodCallRecorder<T> {
         skipMethods += methodNames

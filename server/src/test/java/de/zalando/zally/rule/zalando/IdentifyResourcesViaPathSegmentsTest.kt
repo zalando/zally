@@ -48,14 +48,18 @@ class IdentifyResourcesViaPathSegmentsTest {
     fun `should not return any violations if path doesn't contain successive parameters`() {
         assertThat(rule.pathDoesNotContainSuccessiveParameters(withPath("/customers"))).isEmpty()
         assertThat(rule.pathDoesNotContainSuccessiveParameters(withPath("/customers/{customer-id}"))).isEmpty()
-        assertThat(rule.pathDoesNotContainSuccessiveParameters(
-            withPath("/customers/{customer-id}/addresses/primary"))).isEmpty()
+        assertThat(
+            rule.pathDoesNotContainSuccessiveParameters(
+                withPath("/customers/{customer-id}/addresses/primary")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun `should return a violation if path parameter contains prefix`() {
         val violations = rule.pathParameterDoesNotContainPrefixAndSuffix(
-            withPath("/orders/de-{order-id}"))
+            withPath("/orders/de-{order-id}")
+        )
 
         assertThat(violations).isNotEmpty
         assertThat(violations[0].description).containsPattern(".*must not contain prefixes and suffixes*")
@@ -65,7 +69,8 @@ class IdentifyResourcesViaPathSegmentsTest {
     @Test
     fun `should return a violation if path parameter contains suffix`() {
         val violations = rule.pathParameterDoesNotContainPrefixAndSuffix(
-            withPath("/orders/{order-id}-de"))
+            withPath("/orders/{order-id}-de")
+        )
 
         assertThat(violations).isNotEmpty
         assertThat(violations[0].description).containsPattern(".*must not contain prefixes and suffixes*")

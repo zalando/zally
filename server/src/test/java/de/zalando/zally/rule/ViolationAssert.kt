@@ -5,7 +5,8 @@ import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.StringAssert
 
 @Suppress("UndocumentedPublicClass")
-class ViolationAssert(actual: Violation?) : AbstractAssert<ViolationAssert, Violation?>(actual, ViolationAssert::class.java) {
+class ViolationAssert(actual: Violation?) :
+    AbstractAssert<ViolationAssert, Violation?>(actual, ViolationAssert::class.java) {
 
     fun descriptionEqualTo(description: String): ViolationAssert {
         description().isEqualTo(description)

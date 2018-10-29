@@ -35,7 +35,8 @@ fun getContextFromFixture(fileName: String): Context {
         is ContentParseResult.ParsedSuccessfully ->
             openApiResult.result
         is ContentParseResult.ParsedWithErrors -> {
-            val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n") { "${it.description} (${it.pointer})" }
+            val errors =
+                openApiResult.violations.joinToString("\n  -", "\n  -", "\n") { "${it.description} (${it.pointer})" }
             throw RuntimeException("Parsed with violations:$errors")
         }
         is ContentParseResult.NotApplicable -> {
@@ -44,7 +45,11 @@ fun getContextFromFixture(fileName: String): Context {
                 is ContentParseResult.ParsedSuccessfully ->
                     swaggerResult.result
                 is ContentParseResult.ParsedWithErrors -> {
-                    val errors = swaggerResult.violations.joinToString("\n  -", "\n  -", "\n") { "${it.description} (${it.pointer})" }
+                    val errors = swaggerResult.violations.joinToString(
+                        "\n  -",
+                        "\n  -",
+                        "\n"
+                    ) { "${it.description} (${it.pointer})" }
                     throw RuntimeException("Parsed with violations:$errors")
                 }
                 is ContentParseResult.NotApplicable -> {
