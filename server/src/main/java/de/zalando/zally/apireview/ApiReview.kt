@@ -82,8 +82,8 @@ class ApiReview : Serializable {
         this.name = OpenApiHelper.extractApiName(apiDefinition)
         this.apiId = OpenApiHelper.extractApiId(apiDefinition)
         this.ruleViolations = violations
-            .map { (_, rule, _, violationType, paths) ->
-                RuleViolation(this, "${rule.title} (${rule.id})", violationType, paths.size)
+            .map { (_, rule, _, violationType, _) ->
+                RuleViolation(this, "${rule.title} (${rule.id})", violationType, 1)
             }
 
         this.numberOfEndpoints = EndpointCounter.count(apiDefinition)

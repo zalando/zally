@@ -6,7 +6,6 @@ import de.zalando.zally.rule.ContentParseResult.ParsedSuccessfully
 import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.rule.zalando.UseOpenApiRule
-import de.zalando.zally.util.ast.JsonPointers
 import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationTargetException
 
@@ -76,17 +75,12 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
         }
         log.debug("${violations.count()} violations identified")
 
-        // TODO: make pointer not-null and remove usage of `paths`
         return violations
             .filterNot {
-                ignore(root, it.pointer ?: JsonPointers.EMPTY, details.rule.id)
+                ignore(root, it.pointer, details.rule.id)
             }
             .map {
-                if (it.pointer != null) {
-                    Result(details.ruleSet, details.rule, it.description, details.check.severity, it.paths, it.pointer)
-                } else {
-                    Result(details.ruleSet, details.rule, it.description, details.check.severity, it.paths)
-                }
+                Result(details.ruleSet, details.rule, it.description, details.check.severity, it.pointer)
             }
     }
 

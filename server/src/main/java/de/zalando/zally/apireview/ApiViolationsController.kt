@@ -72,8 +72,8 @@ constructor(
         violation.description,
         violation.violationType,
         violation.ruleSet.url(violation.rule).toString(),
-        violation.paths,
-        if (violation.pointer == null) null else violation.pointer.toString()
+        listOf(violation.pointer.toString()),
+        violation.pointer.toString()
     )
 
     private fun buildViolationsCount(violations: List<Result>): Map<String, Int> {

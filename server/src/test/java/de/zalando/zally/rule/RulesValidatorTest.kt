@@ -5,6 +5,7 @@ import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.ast.JsonPointers
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -25,10 +26,7 @@ class RulesValidatorTest {
 
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.SHOULD)
-        fun validate(swagger: Swagger): List<Violation> = listOf(
-            Violation("dummy1", listOf("x", "y", "z")),
-            Violation("dummy2", listOf())
-        )
+        fun validate(swagger: Swagger): List<Violation> = listOf("dummy1", "dummy2").map { Violation(it, JsonPointers.EMPTY) }
     }
 
     @Rule(
@@ -41,7 +39,7 @@ class RulesValidatorTest {
 
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
-        fun validate(swagger: Swagger): Violation? = Violation("dummy3", listOf("a"))
+        fun validate(swagger: Swagger): Violation? = Violation("dummy3", JsonPointers.EMPTY)
     }
 
     @Rule(

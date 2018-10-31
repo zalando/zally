@@ -46,7 +46,7 @@ class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirect
         return when (keyword) {
             Keywords.oneOf, Keywords.anyOf -> createValidationMessageWithSchemaRefs(node, message, pointer, keyword)
             Keywords.additionalProperties -> createValidationMessageWithSchemaPath(node, message, pointer)
-            else -> Violation(message, emptyList(), pointer)
+            else -> Violation(message, pointer)
         }
     }
 
