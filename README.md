@@ -49,8 +49,10 @@ export GITHUB_SECRET=your_github_secret
 
 ./build-and-run.sh --bark
 ``` 
+
 Github webhook endpoint is accessible on http://localhost:8081/github_webhook
-More details about how to register[Webhooks](https://developer.github.com/webhooks/) 
+
+More details about how to register [Webhooks](https://developer.github.com/webhooks/).
 
 ### Contributing
 
