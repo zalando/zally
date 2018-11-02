@@ -22,15 +22,11 @@ class CaseChecker(
     }
 
     class CaseCheck(
-        private val regex: Regex,
-        private val whitelist: List<Regex>?
+        val allow: List<Regex>
     ) {
-        fun accepts(input: String): Boolean =
-            (whitelist.orEmpty() + regex).any { it.matches(input) }
+        fun accepts(input: String): Boolean = allow.any { it.matches(input) }
 
-        override fun toString(): String {
-            return regex.pattern
-        }
+        override fun toString(): String = allow.map { it.pattern }.toString()
     }
 
     fun checkPathSegments(context: Context): List<Violation> = context.api
@@ -132,19 +128,20 @@ class CaseChecker(
     }
 
     private fun appendRegex(message: StringBuilder, check: CaseCheck) {
-        val caseMatches = cases.filterValues { it.pattern == check.toString() }
-        if (caseMatches.isEmpty()) {
-            message.append("regex $check")
-        } else {
-            val entry = caseMatches.iterator().next()
-            message.append("${entry.key} (${entry.value})")
+        if (check.allow.size > 1) {
+            message.append("any of ")
         }
+        message.append(check.allow.joinToString { it.describe() })
     }
 
     private fun appendSuggestions(message: StringBuilder, inputs: Iterable<String>) {
         val suggestions = inputs
             .map { input ->
-                cases.filterValues { it.matches(input) }.keys
+                cases
+                    .values
+                    .filter { it.matches(input) }
+                    .map { it.describe() }
+                    .toSet()
             }
             .reduce { acc, set ->
                 acc.intersect(set)
@@ -155,4 +152,11 @@ class CaseChecker(
             suggestions.isNotEmpty() -> message.append(" but seems to be one of ").append(suggestions.joinToString())
         }
     }
+
+    private fun Regex.describe(): String = cases
+        .filterValues { it.pattern == this.pattern }
+        .keys
+        .firstOrNull()
+        ?.let { name -> "$name ('${this.pattern}')" }
+        ?: "'${this.pattern}'"
 }
