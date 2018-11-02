@@ -42,7 +42,7 @@ class ApiViolationsControllerTest {
      * from StackOverflow exceptions during the check execution.
      *
      * General advice: Don't use `hashCode` or `toString` methods on the OpenAPI elements since they don't support
-     * recursiveness. Keep in mind that these methods can be called implicitly (e.g. when putting objects in a Set).
+     * recursion. Keep in mind that these methods can be called implicitly (e.g. when putting objects in a Set).
      */
     @Test
     fun `all rules must be able to cope with recursive api specifications`() {
