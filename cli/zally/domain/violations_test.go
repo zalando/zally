@@ -11,7 +11,7 @@ func TestViolations(t *testing.T) {
 	mustViolation.Title = "Must Title"
 	mustViolation.RuleLink = "http://example.com/mustViolation"
 	mustViolation.ViolationType = "MUST"
-	mustViolation.Decription = "Must Description"
+	mustViolation.Description = "Must Description"
 	mustViolation.Pointer = "/pointer/1"
 	mustViolation.Paths = []string{"/path/one", "/path/two"}
 
@@ -19,21 +19,21 @@ func TestViolations(t *testing.T) {
 	shouldViolation.Title = "Should Title"
 	shouldViolation.RuleLink = "http://example.com/shouldViolation"
 	shouldViolation.ViolationType = "SHOULD"
-	shouldViolation.Decription = "Should Description"
+	shouldViolation.Description = "Should Description"
 	shouldViolation.Paths = []string{"/path/three", "/path/four"}
 
 	var mayViolation Violation
 	mayViolation.Title = "May Title"
 	mayViolation.RuleLink = "http://example.com/mayViolation"
 	mayViolation.ViolationType = "MAY"
-	mayViolation.Decription = "May Description"
+	mayViolation.Description = "May Description"
 	mayViolation.Paths = []string{"/path/five", "/path/six"}
 
 	var hintViolation Violation
 	hintViolation.Title = "Hint Title"
 	hintViolation.RuleLink = "http://example.com/hintViolation"
 	hintViolation.ViolationType = "HINT"
-	hintViolation.Decription = "Hint Description"
+	hintViolation.Description = "Hint Description"
 	hintViolation.Pointer = "/pointer/2"
 
 	var violationsCount ViolationsCount

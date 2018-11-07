@@ -92,7 +92,7 @@ func TestPrintViolations(t *testing.T) {
 	mustViolation.Title = "Must Title"
 	mustViolation.RuleLink = "http://example.com/mustViolation"
 	mustViolation.ViolationType = "MUST"
-	mustViolation.Decription = "Must Description"
+	mustViolation.Description = "Must Description"
 	mustViolation.Paths = []string{"/path/one", "/path/two"}
 	mustViolations := []domain.Violation{mustViolation}
 
@@ -100,7 +100,7 @@ func TestPrintViolations(t *testing.T) {
 	shouldViolation.Title = "Should Title"
 	shouldViolation.RuleLink = "http://example.com/shouldViolation"
 	shouldViolation.ViolationType = "SHOULD"
-	shouldViolation.Decription = "Should Description"
+	shouldViolation.Description = "Should Description"
 	shouldViolation.Paths = []string{"/path/three", "/path/four"}
 	shouldViolations := []domain.Violation{shouldViolation}
 

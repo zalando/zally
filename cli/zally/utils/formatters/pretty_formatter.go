@@ -87,7 +87,7 @@ func (f *PrettyFormatter) formatViolation(violation *domain.Violation) string {
 	colorize := f.colorizer.ColorizeByTypeFunc(violation.ViolationType)
 
 	fmt.Fprintf(&buffer, "%s %s\n", colorize(violation.ViolationType), colorize(violation.Title))
-	fmt.Fprintf(&buffer, "\t%s\n", violation.Decription)
+	fmt.Fprintf(&buffer, "\t%s\n", violation.Description)
 	fmt.Fprintf(&buffer, "\t%s\n", violation.RuleLink)
 
 	if violation.Pointer != "" {

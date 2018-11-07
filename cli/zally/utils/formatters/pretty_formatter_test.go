@@ -16,7 +16,7 @@ func TestPrettyFormatViolations(t *testing.T) {
 		mustViolation.Title = "Must Title"
 		mustViolation.RuleLink = "http://example.com/mustViolation"
 		mustViolation.ViolationType = "MUST"
-		mustViolation.Decription = "Must Description"
+		mustViolation.Description = "Must Description"
 		mustViolation.Paths = []string{"/path/one", "/path/two"}
 		violations := []domain.Violation{mustViolation}
 
@@ -116,7 +116,7 @@ func TestPrettyFormatViolationInPrettyFormat(t *testing.T) {
 	violation.Title = "Test Title"
 	violation.RuleLink = "http://example.com/violation"
 	violation.ViolationType = "MUST"
-	violation.Decription = "Test Description"
+	violation.Description = "Test Description"
 
 	t.Run("Converts violation to string in pretty format with just paths", func(t *testing.T) {
 

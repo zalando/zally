@@ -67,7 +67,7 @@ func (f *MarkdownFormatter) formatViolation(violation *domain.Violation) string 
 	var buffer bytes.Buffer
 
 	fmt.Fprintf(&buffer, "### `%s` [%s](%s)\n\n", violation.ViolationType, violation.Title, violation.RuleLink)
-	fmt.Fprintf(&buffer, "> %s\n\n", violation.Decription)
+	fmt.Fprintf(&buffer, "> %s\n\n", violation.Description)
 
 	if violation.Pointer != "" {
 		fmt.Fprintf(&buffer, "- %s\n", violation.ToPointerDisplayString())

@@ -11,7 +11,7 @@ func TestViolation(t *testing.T) {
 	violation.Title = "A Title"
 	violation.RuleLink = "http://example.com/"
 	violation.ViolationType = "MUST"
-	violation.Decription = "Description"
+	violation.Description = "Description"
 
 	t.Run("ToPointerDisplayString returns path without leading slash", func(t *testing.T) {
 		violation.Pointer = "/pointer"
