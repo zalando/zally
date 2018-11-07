@@ -3,12 +3,10 @@ package de.zalando.zally
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
-import de.zalando.zally.configuration.RegexCustomType
 import de.zalando.zally.rule.ContentParseResult
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.rule.api.Context
-import io.github.config4k.registerCustomType
 import io.swagger.models.Path
 import io.swagger.models.Swagger
 import io.swagger.models.parameters.HeaderParameter
@@ -22,7 +20,6 @@ import io.swagger.v3.oas.models.responses.ApiResponses
 import java.io.StringReader
 
 val testConfig: Config by lazy {
-    registerCustomType(RegexCustomType)
     ConfigFactory.load("rules-config.conf")
 }
 
