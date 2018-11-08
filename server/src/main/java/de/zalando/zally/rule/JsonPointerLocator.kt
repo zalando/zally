@@ -8,6 +8,9 @@ import org.yaml.snakeyaml.nodes.Node
 import org.yaml.snakeyaml.nodes.ScalarNode
 import java.io.StringReader
 
+/**
+ * Identifies line locations from JsonPointers.
+ */
 class JsonPointerLocator(contents: String) {
 
     private val yaml = when {
@@ -17,6 +20,9 @@ class JsonPointerLocator(contents: String) {
 
     private fun isJson(contents: String): Boolean = contents.trim { it <= ' ' }.startsWith("{")
 
+    /**
+     * Identify the range of line making up an element indicated by a JsonPointer
+     */
     fun locate(pointer: JsonPointer): IntRange? = yaml?.let { locate(pointer, yaml) }
 
     private fun locate(pointer: JsonPointer, node: Node, parent: Node = node): IntRange = when (node) {
