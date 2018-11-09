@@ -22,5 +22,5 @@ class SnakeCaseInPropNameRule(@Autowired config: Config) {
 
     @Check(severity = Severity.MUST)
     fun checkPropertyNames(context: Context): List<Violation> =
-        checker.checkPropertyNames(context).map { Violation(description, it.pointer!!) }
+        checker.checkPropertyNames(context).map { Violation(description, it.pointer) }
 }
