@@ -12,6 +12,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import kotlin.reflect.full.createInstance
 
+@Suppress("UndocumentedPublicClass", "StringLiteralDuplication")
 class RulesValidatorTest {
 
     private val swaggerContent = javaClass.classLoader.getResource("fixtures/api_spp.json").readText(Charsets.UTF_8)
