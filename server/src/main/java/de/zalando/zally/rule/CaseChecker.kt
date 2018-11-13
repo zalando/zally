@@ -12,6 +12,7 @@ import io.github.config4k.extract
 /**
  * Utility class for checking cases of strings against configured requirements.
  */
+@Suppress("TooManyFunctions")
 class CaseChecker(
     val cases: Map<String, Regex>,
     val propertyNames: CaseCheck? = null,
