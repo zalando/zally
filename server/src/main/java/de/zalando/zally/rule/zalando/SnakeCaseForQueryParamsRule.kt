@@ -25,5 +25,5 @@ class SnakeCaseForQueryParamsRule(config: Config) {
 
     @Check(severity = Severity.MUST)
     fun checkQueryParameter(context: Context): List<Violation> =
-        checker.checkQueryParameterNames(context).map { Violation(description, it.pointer!!) }
+        checker.checkQueryParameterNames(context).map { Violation(description, it.pointer) }
 }

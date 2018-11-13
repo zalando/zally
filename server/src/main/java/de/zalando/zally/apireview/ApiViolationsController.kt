@@ -72,8 +72,8 @@ constructor(
         violation.description,
         violation.violationType,
         violation.ruleSet.url(violation.rule).toString(),
-        violation.paths,
-        violation.pointer?.toString(),
+        listOf(violation.pointer.toString()),
+        violation.pointer.toString(),
         violation.lines?.start,
         violation.lines?.endInclusive
     )
