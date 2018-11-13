@@ -49,7 +49,7 @@ class UseProblemJsonRule {
                             .let {
                                 Violation(
                                     "${it.description} ${validation.description}",
-                                    it.pointer?.append(validation.pointer ?: JsonPointers.EMPTY)
+                                    it.pointer.append(validation.pointer)
                                         ?: JsonPointers.EMPTY
                                 )
                             }

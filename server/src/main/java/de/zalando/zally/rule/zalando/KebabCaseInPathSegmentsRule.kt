@@ -23,5 +23,5 @@ class KebabCaseInPathSegmentsRule(config: Config) {
 
     @Check(severity = Severity.MUST)
     fun checkKebabCaseInPathSegments(context: Context): List<Violation> =
-        checker.checkPathSegments(context).map { Violation(description, it.pointer!!) }
+        checker.checkPathSegments(context).map { Violation(description, it.pointer) }
 }

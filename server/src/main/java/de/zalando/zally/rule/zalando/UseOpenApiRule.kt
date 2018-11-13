@@ -13,7 +13,6 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.ast.JsonPointers
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import java.net.URL
@@ -53,7 +52,7 @@ open class UseOpenApiRule(@Autowired rulesConfig: Config) {
             openApi3Spec -> openApi3Validator?.validate(spec).orEmpty()
             else -> swaggerValidator?.validate(spec).orEmpty()
         }.map {
-            Violation("Does not match $currentVersion schema: ${it.description}", it.pointer ?: JsonPointers.EMPTY)
+            Violation("Does not match $currentVersion schema: ${it.description}", it.pointer)
         }
     }
 

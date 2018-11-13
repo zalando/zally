@@ -5,12 +5,14 @@ import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.ast.JsonPointers
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import kotlin.reflect.full.createInstance
 
+@Suppress("UndocumentedPublicClass", "StringLiteralDuplication")
 class RulesValidatorTest {
 
     private val swaggerContent = javaClass.classLoader.getResource("fixtures/api_spp.json").readText(Charsets.UTF_8)
@@ -25,10 +27,7 @@ class RulesValidatorTest {
 
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.SHOULD)
-        fun validate(swagger: Swagger): List<Violation> = listOf(
-            Violation("dummy1", listOf("x", "y", "z")),
-            Violation("dummy2", listOf())
-        )
+        fun validate(swagger: Swagger): List<Violation> = listOf("dummy1", "dummy2").map { Violation(it, JsonPointers.EMPTY) }
     }
 
     @Rule(
@@ -41,7 +40,7 @@ class RulesValidatorTest {
 
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
-        fun validate(swagger: Swagger): Violation? = Violation("dummy3", listOf("a"))
+        fun validate(swagger: Swagger): Violation? = Violation("dummy3", JsonPointers.EMPTY)
     }
 
     @Rule(
@@ -75,7 +74,7 @@ class RulesValidatorTest {
         val rules = listOf(TestSecondRule())
         val validator = SwaggerRulesValidator(rulesManager(rules))
         val results = validator.validate(swaggerContent, RulesPolicy(emptyArray()))
-        assertThat(results.map(Result::toViolation).map(Violation::description))
+        assertThat(results.map(Result::description))
             .containsExactly("dummy3")
     }
 
@@ -84,7 +83,7 @@ class RulesValidatorTest {
         val rules = listOf(TestFirstRule())
         val validator = SwaggerRulesValidator(rulesManager(rules))
         val results = validator.validate(swaggerContent, RulesPolicy(emptyArray()))
-        assertThat(results.map(Result::toViolation).map(Violation::description))
+        assertThat(results.map(Result::description))
             .containsExactly("dummy1", "dummy2")
     }
 
@@ -93,7 +92,7 @@ class RulesValidatorTest {
         val rules = listOf(TestFirstRule(), TestSecondRule())
         val validator = SwaggerRulesValidator(rulesManager(rules))
         val results = validator.validate(swaggerContent, RulesPolicy(emptyArray()))
-        assertThat(results.map(Result::toViolation).map(Violation::description))
+        assertThat(results.map(Result::description))
             .containsExactly("dummy3", "dummy1", "dummy2")
     }
 
@@ -102,7 +101,7 @@ class RulesValidatorTest {
         val rules = listOf(TestFirstRule(), TestSecondRule())
         val validator = SwaggerRulesValidator(rulesManager(rules))
         val results = validator.validate(swaggerContent, RulesPolicy(arrayOf("TestSecondRule")))
-        assertThat(results.map(Result::toViolation).map(Violation::description))
+        assertThat(results.map(Result::description))
             .containsExactly("dummy1", "dummy2")
     }
 
