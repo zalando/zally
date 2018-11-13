@@ -23,5 +23,5 @@ class PascalCaseHttpHeadersRule(config: Config) {
     @Check(severity = Severity.SHOULD)
     fun checkHttpHeaders(context: Context): List<Violation> =
         checker.checkHeadersNames(context)
-            .map { Violation("Header has to be Hyphenated-Pascal-Case", it.pointer!!) }
+            .map { Violation("Header has to be Hyphenated-Pascal-Case", it.pointer) }
 }

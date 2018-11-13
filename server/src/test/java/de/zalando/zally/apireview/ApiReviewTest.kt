@@ -1,5 +1,6 @@
 package de.zalando.zally.apireview
 
+import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.dto.ApiDefinitionRequest
 import de.zalando.zally.rule.Result
 import de.zalando.zally.rule.TestRuleSet
@@ -17,9 +18,9 @@ class ApiReviewTest {
 
     @Test
     fun shouldAggregateRuleTypeCount() {
-        val mustViolation1 = result(Severity.MUST, "/pointer1")
-        val mustViolation2 = result(Severity.MUST, "/pointer2")
-        val shouldViolation = result(Severity.SHOULD, "/pointer3")
+        val mustViolation1 = result(Severity.MUST, JsonPointer.compile("/pointer1"))
+        val mustViolation2 = result(Severity.MUST, JsonPointer.compile("/pointer2"))
+        val shouldViolation = result(Severity.SHOULD, JsonPointer.compile("/pointer3"))
 
         val apiReview =
             ApiReview(ApiDefinitionRequest(), "", "", asList(mustViolation1, mustViolation2, shouldViolation))
@@ -33,8 +34,8 @@ class ApiReviewTest {
     @Test
     @Throws(IOException::class)
     fun shouldCalculateNumberOfEndpoints() {
-        val violation1 = result(Severity.MUST, "/pointer1")
-        val violation2 = result(Severity.MUST, "/pointer2")
+        val violation1 = result(Severity.MUST, JsonPointer.compile("/pointer1"))
+        val violation2 = result(Severity.MUST, JsonPointer.compile("/pointer2"))
 
         val apiDefinition = resourceToString("fixtures/limitNumberOfResourcesValid.json")
 
@@ -51,6 +52,6 @@ class ApiReviewTest {
         assertThat(apiReview.name).isEqualTo("Test Service")
     }
 
-    private fun result(severity: Severity, pointer: String): Result =
+    private fun result(severity: Severity, pointer: JsonPointer): Result =
         Result(TestRuleSet(), UseOpenApiRule::class.java.getAnnotation(Rule::class.java), "", severity, pointer)
 }

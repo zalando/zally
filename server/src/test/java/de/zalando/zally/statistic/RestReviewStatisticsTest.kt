@@ -1,5 +1,6 @@
 package de.zalando.zally.statistic
 
+import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.apireview.ApiReview
 import de.zalando.zally.apireview.RestApiBaseTest
 import de.zalando.zally.dto.ApiDefinitionRequest
@@ -138,7 +139,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
                 AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java),
                 "",
                 Severity.MUST,
-                "/pointer"
+                JsonPointer.compile("/pointer")
             )
         )
     }
