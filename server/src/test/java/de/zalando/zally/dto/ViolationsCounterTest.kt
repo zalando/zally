@@ -1,5 +1,6 @@
 package de.zalando.zally.dto
 
+import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.Result
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -103,7 +104,7 @@ class ViolationsCounterTest {
                 AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java),
                 "Test Description",
                 severity,
-                "/pointer"
+                JsonPointer.compile("/pointer")
             )
         }
     }

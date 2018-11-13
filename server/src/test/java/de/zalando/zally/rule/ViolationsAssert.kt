@@ -40,7 +40,7 @@ class ViolationsAssert(violations: List<Violation>?) :
 
     fun pointersEqualTo(vararg pointers: String): ViolationsAssert {
         isNotNull
-        ListAssert(actual.map { it.pointer?.toString() }).`as`("pointers").containsExactly(*pointers)
+        ListAssert(actual.map { it.pointer.toString() }).`as`("pointers").containsExactly(*pointers)
         return this
     }
 }
