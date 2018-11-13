@@ -9,6 +9,9 @@ import de.zalando.zally.util.getAllParameters
 import de.zalando.zally.util.getAllProperties
 import io.github.config4k.extract
 
+/**
+ * Utility class for checking cases of strings against configured requirements.
+ */
 class CaseChecker(
     val cases: Map<String, Regex>,
     val propertyNames: CaseCheck? = null,
@@ -21,14 +24,27 @@ class CaseChecker(
         fun load(config: Config): CaseChecker = config.extract("CaseChecker")
     }
 
+    /**
+     * Represents the check regex requirements for a specific kind of string.
+     */
     class CaseCheck(
         val allow: List<Regex>
     ) {
+        /**
+         * Apply this check to the supplied input.
+         * @param input the string to check.
+         * @return true if any allowed regexes match the input.
+         */
         fun accepts(input: String): Boolean = allow.any { it.matches(input) }
 
         override fun toString(): String = allow.map { it.pattern }.toString()
     }
 
+    /**
+     * Check that path segments match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
     fun checkPathSegments(context: Context): List<Violation> = context.api
         .paths?.entries.orEmpty()
         .flatMap { (path, item) ->
@@ -41,6 +57,11 @@ class CaseChecker(
                 .orEmpty()
         }
 
+    /**
+     * Check that property names match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
     fun checkPropertyNames(context: Context): List<Violation> = context.api
         .getAllProperties()
         .flatMap { (name, schema) ->
@@ -49,6 +70,11 @@ class CaseChecker(
                 .orEmpty()
         }
 
+    /**
+     * Check that header names match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
     fun checkHeadersNames(context: Context): List<Violation> = context.api
         .getAllHeaders()
         .flatMap { header ->
@@ -57,9 +83,19 @@ class CaseChecker(
                 .orEmpty()
         }
 
+    /**
+     * Check that path parameter names match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
     fun checkPathParameterNames(context: Context): List<Violation> =
         checkParameterNames(context, "Path", pathParameterNames)
 
+    /**
+     * Check that query parameter names match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
     fun checkQueryParameterNames(context: Context): List<Violation> =
         checkParameterNames(context, "Query", queryParameterNames)
 
