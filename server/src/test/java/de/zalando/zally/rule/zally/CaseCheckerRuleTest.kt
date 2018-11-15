@@ -33,7 +33,7 @@ class CaseCheckerRuleTest {
     }
 
     @Test
-    fun `checkPathParameterNames returns violations`() {
+    fun `checkPathParameterNames with InVaLiD! returns violations`() {
         @Language("YAML")
         val context = getSwaggerContextFromContent(
             """
@@ -53,6 +53,50 @@ class CaseCheckerRuleTest {
             .assertThat(violations)
             .descriptionsAllMatch("Path parameter 'InVaLiD!' does not match .*".toRegex())
             .pointersEqualTo("/paths/~1things/post/parameters/0")
+    }
+
+    @Test
+    fun `checkPathParameterNames with kebab-case returns no violations`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent(
+            """
+            swagger: '2.0'
+            paths:
+              /things:
+                post:
+                  parameters:
+                  - in: path
+                    name: kebab-case
+            """.trimIndent()
+        )
+
+        val violations = cut.checkPathParameterNames(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .isEmpty()
+    }
+
+    @Test
+    fun `checkPathParameterNames with snake_case returns no violations`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent(
+            """
+            swagger: '2.0'
+            paths:
+              /things:
+                post:
+                  parameters:
+                  - in: path
+                    name: snake_case
+            """.trimIndent()
+        )
+
+        val violations = cut.checkPathParameterNames(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .isEmpty()
     }
 
     @Test

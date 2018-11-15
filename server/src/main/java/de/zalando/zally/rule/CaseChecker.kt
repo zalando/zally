@@ -9,6 +9,10 @@ import de.zalando.zally.util.getAllParameters
 import de.zalando.zally.util.getAllProperties
 import io.github.config4k.extract
 
+/**
+ * Utility class for checking cases of strings against configured requirements.
+ */
+@Suppress("TooManyFunctions")
 class CaseChecker(
     val cases: Map<String, Regex>,
     val propertyNames: CaseCheck? = null,
@@ -21,18 +25,27 @@ class CaseChecker(
         fun load(config: Config): CaseChecker = config.extract("CaseChecker")
     }
 
+    /**
+     * Represents the check regex requirements for a specific kind of string.
+     */
     class CaseCheck(
-        private val regex: Regex,
-        private val whitelist: List<Regex>?
+        val allow: List<Regex>
     ) {
-        fun accepts(input: String): Boolean =
-            (whitelist.orEmpty() + regex).any { it.matches(input) }
+        /**
+         * Apply this check to the supplied input.
+         * @param input the string to check.
+         * @return true if any allowed regexes match the input.
+         */
+        fun accepts(input: String): Boolean = allow.any { it.matches(input) }
 
-        override fun toString(): String {
-            return regex.pattern
-        }
+        override fun toString(): String = allow.map { it.pattern }.toString()
     }
 
+    /**
+     * Check that path segments match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
     fun checkPathSegments(context: Context): List<Violation> = context.api
         .paths?.entries.orEmpty()
         .flatMap { (path, item) ->
@@ -45,6 +58,11 @@ class CaseChecker(
                 .orEmpty()
         }
 
+    /**
+     * Check that property names match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
     fun checkPropertyNames(context: Context): List<Violation> = context.api
         .getAllProperties()
         .flatMap { (name, schema) ->
@@ -53,6 +71,11 @@ class CaseChecker(
                 .orEmpty()
         }
 
+    /**
+     * Check that header names match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
     fun checkHeadersNames(context: Context): List<Violation> = context.api
         .getAllHeaders()
         .flatMap { header ->
@@ -61,9 +84,19 @@ class CaseChecker(
                 .orEmpty()
         }
 
+    /**
+     * Check that path parameter names match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
     fun checkPathParameterNames(context: Context): List<Violation> =
         checkParameterNames(context, "Path", pathParameterNames)
 
+    /**
+     * Check that query parameter names match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
     fun checkQueryParameterNames(context: Context): List<Violation> =
         checkParameterNames(context, "Query", queryParameterNames)
 
@@ -132,19 +165,20 @@ class CaseChecker(
     }
 
     private fun appendRegex(message: StringBuilder, check: CaseCheck) {
-        val caseMatches = cases.filterValues { it.pattern == check.toString() }
-        if (caseMatches.isEmpty()) {
-            message.append("regex $check")
-        } else {
-            val entry = caseMatches.iterator().next()
-            message.append("${entry.key} (${entry.value})")
+        if (check.allow.size > 1) {
+            message.append("any of ")
         }
+        message.append(check.allow.joinToString { it.describe() })
     }
 
     private fun appendSuggestions(message: StringBuilder, inputs: Iterable<String>) {
         val suggestions = inputs
             .map { input ->
-                cases.filterValues { it.matches(input) }.keys
+                cases
+                    .values
+                    .filter { it.matches(input) }
+                    .map { it.describe() }
+                    .toSet()
             }
             .reduce { acc, set ->
                 acc.intersect(set)
@@ -155,4 +189,11 @@ class CaseChecker(
             suggestions.isNotEmpty() -> message.append(" but seems to be one of ").append(suggestions.joinToString())
         }
     }
+
+    private fun Regex.describe(): String = cases
+        .filterValues { it.pattern == this.pattern }
+        .keys
+        .firstOrNull()
+        ?.let { name -> "$name ('${this.pattern}')" }
+        ?: "'${this.pattern}'"
 }
