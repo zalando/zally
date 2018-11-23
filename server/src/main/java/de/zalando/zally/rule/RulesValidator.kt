@@ -21,6 +21,7 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
 
     override fun validate(content: String, policy: RulesPolicy): List<Result> {
         val parseResult = parse(content)
+        val locator = JsonPointerLocator(content)
         return when (parseResult) {
             is NotApplicable ->
                 emptyList()
@@ -31,14 +32,15 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
                         rule = useOpenApiRule.rule,
                         description = violation.description,
                         violationType = useOpenApiRule.rule.severity,
-                        pointer = violation.pointer
+                        pointer = violation.pointer,
+                        lines = locator.locate(violation.pointer)
                     )
                 }
             is ParsedSuccessfully ->
                 rules
                     .checks(policy)
                     .filter { details -> isCheckMethod(details, parseResult.result) }
-                    .flatMap { details -> invoke(details, parseResult.result) }
+                    .flatMap { details -> invoke(details, parseResult.result, locator) }
                     .sortedBy(Result::violationType)
         }
     }
@@ -55,7 +57,7 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
         details.method.parameters.isNotEmpty() &&
             details.method.parameters[0].type.isAssignableFrom(root::class.java)
 
-    private fun invoke(details: CheckDetails, root: RootT): Iterable<Result> {
+    private fun invoke(details: CheckDetails, root: RootT, locator: JsonPointerLocator): Iterable<Result> {
         log.debug("validating ${details.method.name} of ${details.instance.javaClass.simpleName} rule")
 
         val result = try {
@@ -80,7 +82,7 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
                 ignore(root, it.pointer, details.rule.id)
             }
             .map {
-                Result(details.ruleSet, details.rule, it.description, details.check.severity, it.pointer)
+                Result(details.ruleSet, details.rule, it.description, details.check.severity, it.pointer, locator.locate(it.pointer))
             }
     }
 

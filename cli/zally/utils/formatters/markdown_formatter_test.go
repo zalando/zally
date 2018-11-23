@@ -25,14 +25,14 @@ func TestMarkdownFormatViolations(t *testing.T) {
 		firstViolation.Title = "Test Must"
 		firstViolation.RuleLink = "http://example.com/first-violation"
 		firstViolation.ViolationType = "MUST"
-		firstViolation.Decription = "Test Description"
+		firstViolation.Description = "Test Description"
 		firstViolation.Paths = []string{"/path/one", "/path/two"}
 
 		var secondViolation domain.Violation
 		secondViolation.Title = "Test Should"
 		secondViolation.RuleLink = "http://example.com/second-violation"
 		secondViolation.ViolationType = "SHOULD"
-		secondViolation.Decription = "Test Description"
+		secondViolation.Description = "Test Description"
 		secondViolation.Paths = []string{"/path/one", "/path/two"}
 
 		var violations = []domain.Violation{firstViolation, secondViolation}
@@ -130,7 +130,7 @@ func TestMarkdownFormatViolation(t *testing.T) {
 	violation.Title = "Test Title"
 	violation.RuleLink = "http://example.com/violation"
 	violation.ViolationType = "MUST"
-	violation.Decription = "Test Description"
+	violation.Description = "Test Description"
 
 	t.Run("Converts violation to string in pretty format with just paths", func(t *testing.T) {
 

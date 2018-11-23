@@ -11,7 +11,7 @@ func TestViolation(t *testing.T) {
 	violation.Title = "A Title"
 	violation.RuleLink = "http://example.com/"
 	violation.ViolationType = "MUST"
-	violation.Decription = "Description"
+	violation.Description = "Description"
 
 	t.Run("ToPointerDisplayString returns path without leading slash", func(t *testing.T) {
 		violation.Pointer = "/pointer"
@@ -59,6 +59,30 @@ func TestViolation(t *testing.T) {
 		actualResult := violation.ToPointerDisplayString()
 
 		expectedResult := "~1pointer"
+
+		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+
+	t.Run("ToPointerDisplayString returns path with line numbers", func(t *testing.T) {
+		violation.Pointer = "/pointer"
+		violation.StartLine = 5
+		violation.EndLine = 10
+
+		actualResult := violation.ToPointerDisplayString()
+
+		expectedResult := "pointer (lines 5-10)"
+
+		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+
+	t.Run("ToPointerDisplayString returns path with single line number", func(t *testing.T) {
+		violation.Pointer = "/pointer"
+		violation.StartLine = 5
+		violation.EndLine = 5
+
+		actualResult := violation.ToPointerDisplayString()
+
+		expectedResult := "pointer (line 5)"
 
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})

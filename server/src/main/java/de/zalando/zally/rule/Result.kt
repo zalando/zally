@@ -10,5 +10,6 @@ data class Result(
     val rule: Rule,
     val description: String,
     val violationType: Severity,
-    val pointer: JsonPointer
+    val pointer: JsonPointer,
+    val lines: IntRange? = null
 )
