@@ -59,6 +59,7 @@ constructor(
     }
 
     private fun buildApiDefinitionResponse(review: ApiReview): ApiDefinitionResponse = ApiDefinitionResponse(
+        externalId = review.externalId,
         message = serverMessageService.serverMessage(review.userAgent),
         violations = review.ruleViolations!!.map {
             ViolationDTO(
