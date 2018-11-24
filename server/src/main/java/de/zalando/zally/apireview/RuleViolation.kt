@@ -1,6 +1,7 @@
 package de.zalando.zally.apireview
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import de.zalando.zally.rule.Result
 import de.zalando.zally.rule.api.Severity
 import java.io.Serializable
 import javax.persistence.Column
@@ -28,8 +29,26 @@ class RuleViolation : Serializable {
     var name: String? = null
 
     @Column(nullable = false)
+    var ruleTitle: String? = null
+
+    @Column(nullable = false)
+    var ruleUrl: String? = null
+
+    @Column(nullable = false)
+    var description: String? = null
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     var type: Severity? = null
+
+    @Column(nullable = false)
+    var locationPointer: String? = null
+
+    @Column(nullable = false)
+    var locationLineStart: Int? = null
+
+    @Column(nullable = false)
+    var locationLineEnd: Int? = null
 
     @Deprecated("")
     @Column(nullable = false)
@@ -42,10 +61,16 @@ class RuleViolation : Serializable {
      */
     protected constructor() : super()
 
-    constructor(apiReview: ApiReview, name: String, type: Severity, occurrence: Int) {
+    constructor(apiReview: ApiReview, result: Result) {
         this.apiReview = apiReview
-        this.name = name
-        this.type = type
-        this.occurrence = occurrence
+        this.name = "${result.rule.title} (${result.rule.id})"
+        this.ruleTitle = result.rule.title
+        this.ruleUrl = result.ruleSet.url(result.rule).toString()
+        this.description = result.description
+        this.type = result.violationType
+        this.locationPointer = result.pointer.toString()
+        this.locationLineStart = result.lines?.start
+        this.locationLineEnd = result.lines?.endInclusive
+        this.occurrence = 1
     }
 }
