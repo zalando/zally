@@ -3,11 +3,9 @@ package de.zalando.zally.apireview
 import de.zalando.zally.dto.ApiDefinitionRequest
 import de.zalando.zally.dto.ApiDefinitionResponse
 import de.zalando.zally.dto.ViolationDTO
-import de.zalando.zally.dto.ViolationsCounter
 import de.zalando.zally.exception.InaccessibleResourceUrlException
 import de.zalando.zally.exception.MissingApiDefinitionException
 import de.zalando.zally.rule.ApiValidator
-import de.zalando.zally.rule.Result
 import de.zalando.zally.rule.RulesPolicy
 import de.zalando.zally.rule.api.Severity
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,9 +38,10 @@ constructor(
         val requestPolicy = retrieveRulesPolicy(request)
 
         val violations = rulesValidator.validate(apiDefinition!!, requestPolicy)
-        apiReviewRepository.save(ApiReview(request, userAgent.orEmpty(), apiDefinition, violations))
+        val review = ApiReview(request, userAgent.orEmpty(), apiDefinition, violations)
+        apiReviewRepository.save(review)
 
-        return buildApiDefinitionResponse(violations, userAgent)
+        return buildApiDefinitionResponse(review)
     }
 
     private fun retrieveRulesPolicy(request: ApiDefinitionRequest): RulesPolicy = request.ignoreRules
@@ -59,31 +58,25 @@ constructor(
         throw e
     }
 
-    private fun buildApiDefinitionResponse(violations: List<Result>, userAgent: String?): ApiDefinitionResponse {
-        val response = ApiDefinitionResponse()
-        response.message = serverMessageService.serverMessage(userAgent)
-        response.violations = violations.map { this.toDto(it) }
-        response.violationsCount = buildViolationsCount(violations)
-        return response
-    }
-
-    private fun toDto(violation: Result): ViolationDTO = ViolationDTO(
-        violation.rule.title,
-        violation.description,
-        violation.violationType,
-        violation.ruleSet.url(violation.rule).toString(),
-        listOf(violation.pointer.toString()),
-        violation.pointer.toString(),
-        violation.lines?.start,
-        violation.lines?.endInclusive
+    private fun buildApiDefinitionResponse(review: ApiReview): ApiDefinitionResponse = ApiDefinitionResponse(
+        message = serverMessageService.serverMessage(review.userAgent),
+        violations = review.ruleViolations!!.map {
+            ViolationDTO(
+                it.ruleTitle,
+                it.description,
+                it.type,
+                it.ruleUrl,
+                listOf(it.locationPointer!!),
+                it.locationPointer,
+                it.locationLineStart,
+                it.locationLineEnd
+            )
+        },
+        violationsCount = listOf(
+            Severity.MUST to review.mustViolations,
+            Severity.SHOULD to review.shouldViolations,
+            Severity.MAY to review.mayViolations,
+            Severity.HINT to review.hintViolations
+        ).map { it.first.name.toLowerCase() to it.second }.toMap()
     )
-
-    private fun buildViolationsCount(violations: List<Result>): Map<String, Int> {
-        val counter = ViolationsCounter(violations)
-        return Severity.values()
-            .map { severity ->
-                severity.name.toLowerCase() to counter[severity]
-            }
-            .toMap()
-    }
 }
