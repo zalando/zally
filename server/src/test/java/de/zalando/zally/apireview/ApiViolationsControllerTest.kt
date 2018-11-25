@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@Suppress("UnsafeCallOnNullableType")
 class ApiViolationsControllerTest {
 
     @Autowired

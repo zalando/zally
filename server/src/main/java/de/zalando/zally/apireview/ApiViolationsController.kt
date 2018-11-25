@@ -50,7 +50,7 @@ constructor(
         apiReviewRepository.save(review)
 
         val location = uriBuilder
-            .path("/api-violations/{id}")
+            .path("/api-violations/{externalId}")
             .buildAndExpand(review.externalId)
             .toUri()
 
@@ -87,13 +87,13 @@ constructor(
     private fun buildApiDefinitionResponse(review: ApiReview): ApiDefinitionResponse = ApiDefinitionResponse(
         externalId = review.externalId,
         message = serverMessageService.serverMessage(review.userAgent),
-        violations = review.ruleViolations!!.map {
+        violations = review.ruleViolations.orEmpty().map {
             ViolationDTO(
                 it.ruleTitle,
                 it.description,
                 it.type,
                 it.ruleUrl,
-                listOf(it.locationPointer!!),
+                listOfNotNull(it.locationPointer),
                 it.locationPointer,
                 it.locationLineStart,
                 it.locationLineEnd

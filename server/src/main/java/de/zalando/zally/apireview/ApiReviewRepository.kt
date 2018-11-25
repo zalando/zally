@@ -30,5 +30,10 @@ interface ApiReviewRepository : CrudRepository<ApiReview, Long> {
         @Param("userAgent") userAgent: String = "%"
     ): ReviewStatistics
 
+    /**
+     * Find ApiReview instance by it's externalId UUID.
+     *
+     * @return the found ApiReview or null.
+     */
     fun findByExternalId(externalId: UUID): ApiReview?
 }
