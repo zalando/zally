@@ -3,18 +3,25 @@ package de.zalando.zally.apireview
 import de.zalando.zally.dto.ApiDefinitionRequest
 import de.zalando.zally.dto.ApiDefinitionResponse
 import de.zalando.zally.dto.ViolationDTO
+import de.zalando.zally.exception.ApiReviewNotFoundException
 import de.zalando.zally.exception.InaccessibleResourceUrlException
 import de.zalando.zally.exception.MissingApiDefinitionException
 import de.zalando.zally.rule.ApiValidator
 import de.zalando.zally.rule.RulesPolicy
 import de.zalando.zally.rule.api.Severity
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.util.UriComponentsBuilder
+import java.util.UUID
 
 @CrossOrigin
 @RestController
@@ -31,8 +38,9 @@ constructor(
     @PostMapping("/api-violations")
     fun validate(
         @RequestBody(required = true) request: ApiDefinitionRequest,
-        @RequestHeader(value = "User-Agent", required = false) userAgent: String?
-    ): ApiDefinitionResponse {
+        @RequestHeader(value = "User-Agent", required = false) userAgent: String?,
+        uriBuilder: UriComponentsBuilder
+    ): ResponseEntity<ApiDefinitionResponse> {
         val apiDefinition = retrieveApiDefinition(request)
 
         val requestPolicy = retrieveRulesPolicy(request)
@@ -40,6 +48,24 @@ constructor(
         val violations = rulesValidator.validate(apiDefinition!!, requestPolicy)
         val review = ApiReview(request, userAgent.orEmpty(), apiDefinition, violations)
         apiReviewRepository.save(review)
+
+        val location = uriBuilder
+            .path("/api-violations/{id}")
+            .buildAndExpand(review.externalId)
+            .toUri()
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .location(location)
+            .body(buildApiDefinitionResponse(review))
+    }
+
+    @ResponseBody
+    @GetMapping("/api-violations/{externalId}")
+    fun getExistingViolationResponse(
+        @PathVariable(value = "externalId") externalId: UUID
+    ): ApiDefinitionResponse {
+        val review = apiReviewRepository.findByExternalId(externalId) ?: throw ApiReviewNotFoundException()
 
         return buildApiDefinitionResponse(review)
     }

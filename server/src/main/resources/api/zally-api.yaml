@@ -59,8 +59,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LintingResponse'
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: The URI where the validation result can be rerequested.
         400:
           description: Input file not parsable
+          content:
+            application/problem+json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+        default:
+          description: Error object
+          content:
+            application/problem+json:
+              schema:
+                $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+      security:
+      - oauth2:
+        - uid
+
+  '/api-violations/{externalId}':
+    get:
+      summary:
+        Get previous generated validation result
+      description: |
+        Retreive a previous validation result in the same format as when
+        it was originally processed.
+
+        If the idenfied validation result cannot be found then a
+        `404 Not Found` response is returned.
+      parameters:
+      - $ref: '#/components/parameters/ExternalId'
+      responses:
+        200:
+          description: API swagger is OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LintingResponse'
+        404:
+          description: No such API review
           content:
             application/problem+json:
               schema:
@@ -199,6 +240,14 @@ components:
       required: false
       schema:
         type: string
+    ExternalId:
+      name: externalId
+      in: path
+      description: Identifier of a previous validation result
+      required: true
+      schema:
+        type: string
+        format: uuid
 
   schemas:
     LintingRequest:
