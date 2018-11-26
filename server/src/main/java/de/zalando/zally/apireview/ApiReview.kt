@@ -11,6 +11,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import java.util.UUID
 import java.util.Objects
 import javax.persistence.CascadeType
 import javax.persistence.Column
@@ -27,6 +28,8 @@ class ApiReview : Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+
+    var externalId: UUID? = null
 
     var name: String? = null
 
@@ -72,6 +75,7 @@ class ApiReview : Serializable {
         apiDefinition: String,
         violations: List<Result> = emptyList()
     ) {
+        this.externalId = UUID.randomUUID()
         this.jsonPayload = request.toString()
         this.apiDefinition = apiDefinition
         this.isSuccessfulProcessed = StringUtils.isNotBlank(apiDefinition)
@@ -82,8 +86,8 @@ class ApiReview : Serializable {
         this.name = OpenApiHelper.extractApiName(apiDefinition)
         this.apiId = OpenApiHelper.extractApiId(apiDefinition)
         this.ruleViolations = violations
-            .map { (_, rule, _, violationType, _) ->
-                RuleViolation(this, "${rule.title} (${rule.id})", violationType, 1)
+            .map { result ->
+                RuleViolation(this, result)
             }
 
         this.numberOfEndpoints = EndpointCounter.count(apiDefinition)

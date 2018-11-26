@@ -53,6 +53,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
         assertThat(violations!![0].description).isEqualTo("TestCheckAlwaysReport3MustViolations #1")
         assertThat(violations[1].description).isEqualTo("TestCheckAlwaysReport3MustViolations #2")
         assertThat(violations[2].description).isEqualTo("TestCheckAlwaysReport3MustViolations #3")
+        assertThat(response.externalId).isNotNull()
     }
 
     @Test
@@ -65,6 +66,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
         assertThat(count["should"]).isEqualTo(0)
         assertThat(count["may"]).isEqualTo(0)
         assertThat(count["hint"]).isEqualTo(0)
+        assertThat(response.externalId).isNotNull()
     }
 
     @Test
@@ -85,6 +87,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
 
         val violations = response!!.violations
         assertThat(violations).isEmpty()
+        assertThat(response.externalId).isNotNull()
     }
 
     @Test
@@ -126,6 +129,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
         assertThat(response.violations!![0].title).isEqualTo("TestUseOpenApiRule")
         assertThat(response.violations!![0].description).isEqualTo("attribute openapi is not of type `object`")
         assertThat(response.violations!![1].title).isEqualTo("TestCheckIsOpenApi3")
+        assertThat(response.externalId).isNotNull()
     }
 
     @Test

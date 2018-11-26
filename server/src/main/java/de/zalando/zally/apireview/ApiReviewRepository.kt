@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
 import java.time.LocalDate
+import java.util.UUID
 
 interface ApiReviewRepository : CrudRepository<ApiReview, Long> {
 
@@ -28,4 +29,11 @@ interface ApiReviewRepository : CrudRepository<ApiReview, Long> {
         @Param("to") to: LocalDate,
         @Param("userAgent") userAgent: String = "%"
     ): ReviewStatistics
+
+    /**
+     * Find ApiReview instance by it's externalId UUID.
+     *
+     * @return the found ApiReview or null.
+     */
+    fun findByExternalId(externalId: UUID): ApiReview?
 }

@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@Suppress("UnsafeCallOnNullableType")
 class ApiViolationsControllerTest {
 
     @Autowired
@@ -32,6 +34,34 @@ class ApiViolationsControllerTest {
             post("/api-violations")
                 .contentType("application/json")
                 .content("{\"api_definition_string\":\"\"}")
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().string(containsString("https://zalando.github.io/restful-api-guidelines")))
+    }
+
+    @Test
+    fun `getExistingViolationResponse with no previous apis responds NotFound`() {
+        mvc!!.perform(
+            get("/api-violations/00000000-0000-0000-0000-000000000000")
+                .accept("application/json")
+        )
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun `getExistingViolationResponse with existing responds NotFound`() {
+
+        val location = mvc!!.perform(
+            post("/api-violations")
+                .contentType("application/json")
+                .content("{\"api_definition_string\":\"\"}")
+        )
+            .andExpect(status().isOk)
+            .andReturn().response.getHeaderValue("Location")!!
+
+        mvc.perform(
+            get(location.toString())
+                .accept("application/json")
         )
             .andExpect(status().isOk)
             .andExpect(content().string(containsString("https://zalando.github.io/restful-api-guidelines")))
