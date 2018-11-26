@@ -29,7 +29,6 @@ class ApiReview : Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    @Column(nullable = false)
     var externalId: UUID? = null
 
     var name: String? = null
