@@ -4,10 +4,10 @@
 Zally WEB-UI
 ============
 
-The project provides a simple web user interface client for [Zally Rest API](https://github.com/zalando/zally), a tool to lint your api specs.
+The project provides a simple web user interface client for [Zally Server](../server),
+a tool to lint your api specs.
 
-It's implemented as an [express](https://expressjs.com/) app/middleware and a Single Page Application based on [React](https://facebook.github.io/react/). 
-
+It's implemented as an [express](https://expressjs.com/) app/middleware and a Single Page Application based on [React](https://facebook.github.io/react/).
 
 ## Main features
 
