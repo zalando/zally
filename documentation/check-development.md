@@ -60,10 +60,10 @@ class NiceCompanyRuleSet : AbstractRuleSet() {
 
 `Context` object contains raw API specification as `String` (`Context#source`), parsed
 `OpenAPI` object (`Context#openApi`), and an optional `Swagger` object (`Context#swagger`).
-`OpenAPI` object represents OpenAPI 3 specification. If an OpenAPI 2 spefication (Swagger 2)
-is provided, the `Context#swagger` object is not empty and represents an OpenAPI 2 document.
-In both cases, the `OpenAPI` object is present and contains either a parsed, or a converted
-(from Swagger 2) specification.
+`OpenAPI` object represents OpenAPI 3 specification.
+Zally converts OpenAPI 2 specifications to OpenAPI 3. Normally, you would implement
+a Check against an OpenAPI object (`Context#openApi`). But you can also target `Context#swagger`
+if your Check doesn't apply to OpenAPI 3 specifications.
 
 - [`OpenAPI` reference](https://github.com/swagger-api/swagger-core/blob/master/modules/swagger-models/src/main/java/io/swagger/v3/oas/models/OpenAPI.java)
 - [`Swagger` reference](https://static.javadoc.io/io.swagger/swagger-models/1.5.9/io/swagger/models/Swagger.html)
@@ -86,5 +86,5 @@ for more information.
 
 In order to create a violation, you should use
 `Context#violation(desc: String, value: Any?)` function. It should contain violation
-description. Optionally, you can supply a leaf from the `openApi` object. This would
-create a pointer to violation location in the documentation.
+description. We also encourage you to supply a node from the `openApi` object. The
+created violation will be associated with a specific location within the API specification.
