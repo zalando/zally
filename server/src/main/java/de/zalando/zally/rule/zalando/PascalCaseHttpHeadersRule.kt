@@ -16,12 +16,12 @@ import de.zalando.zally.rule.api.Violation
 )
 class PascalCaseHttpHeadersRule(config: Config) {
 
-    val description = "Query parameter has to be snake_case"
+    val description = "Header has to be Hyphenated-Pascal-Case"
 
     private val checker = CaseChecker.load(config)
 
     @Check(severity = Severity.SHOULD)
     fun checkHttpHeaders(context: Context): List<Violation> =
         checker.checkHeadersNames(context)
-            .map { Violation("Header has to be Hyphenated-Pascal-Case", it.pointer) }
+            .map { Violation(description, it.pointer) }
 }
