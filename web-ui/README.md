@@ -5,7 +5,7 @@ Zally WEB-UI
 ============
 
 The project provides a simple web user interface client for [Zally Server](../server),
-a tool to lint your api specs.
+a tool to lint your OpenAPI specs.
 
 It's implemented as an [express](https://expressjs.com/) app/middleware and a Single Page Application based on [React](https://facebook.github.io/react/).
 

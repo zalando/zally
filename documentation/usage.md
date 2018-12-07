@@ -8,8 +8,8 @@ to a running instance of Zally Server. Here is a request example:
 ```bash
 curl -X POST \
   -H "Content-Type: application/json" \
-  --data "{\"api_definition_string\": \"${api-specification}\""
-    ${zally-server-base-url}/api-violations
+  --data '{"api_definition_string": "openapi: 3.0.2"}' \
+    localhost:8000/api-violations
 ```
 
 And here is a response example:
@@ -61,9 +61,9 @@ by typing:
 
 ```bash
 zally \
-  --linter-service ${zally-server-url} \
+  --linter-service localhost:8000 \
   --format pretty \
-  lint ${api-file}
+  lint api.yaml
 ```
 
 You can also list supported rules by executing `zally rules`.

@@ -2,7 +2,7 @@
 
 ## Rule Set
 
-Rule Set is a bundle or a package of rules which belong together. Usually, a Rule Set
+A Rule Set is a bundle or a package of rules. Usually, a Rule Set
 represents a logical grouping of rules (e.g. a company's REST guidelines and/or
 compliance requirements).
 
@@ -13,16 +13,26 @@ compliance requirements).
 
 ## Rule
 
-Rule is an abstract entity, it refers to a entry of the guidelines which can be
+A Rule is an abstract entity, it refers to a entry of the guidelines which can be
 automatically checked.
 
 *Example*: "Use standardized HTTP response codes"
 
 *Implementation*: [`UseStandardHttpStatusCodesRule.kt`](../server/src/main/java/de/zalando/zally/rule/zalando/UseStandardHttpStatusCodesRule.kt)
 
+```Kotlin
+@Rule(
+    ruleSet = ZalandoRuleSet::class,
+    id = "150",
+    severity = Severity.MUST,
+    title = "Use Standard HTTP Status Codes"
+)
+class UseStandardHttpStatusCodesRule(@Autowired rulesConfig: Config) { }
+```
+
 ## Check
 
-Check implements one aspect of a Rule. Rule can contain one or multiple Checks.
+A Check implements one aspect of a Rule. Rule can contain one or multiple Checks.
 
 *Example*: "Only standardized response codes are used"
 
