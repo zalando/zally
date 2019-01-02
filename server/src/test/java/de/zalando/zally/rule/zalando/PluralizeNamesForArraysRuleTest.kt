@@ -1,6 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.ZallyAssertions
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -27,9 +28,11 @@ class PluralizeNamesForArraysRuleTest {
 
         val violations = rule.checkArrayPropertyNamesArePlural(context)
 
-        assertThat(violations).isNotEmpty
-        assertThat(violations[0].description).containsPattern(".*Array property names has to be pluralized.*")
-        assertThat(violations[0].pointer.toString()).isEqualTo("/components/schemas/car/properties/feature")
+        ZallyAssertions
+            .assertThat(violations)
+            .isNotEmpty
+            .descriptionsAllEqualTo("Array property name appears to be singular: feature")
+            .pointersEqualTo("/components/schemas/car/properties/feature")
     }
 
     @Test

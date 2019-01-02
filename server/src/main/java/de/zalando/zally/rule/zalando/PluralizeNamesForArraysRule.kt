@@ -16,7 +16,7 @@ import de.zalando.zally.util.getAllSchemas
 )
 class PluralizeNamesForArraysRule {
 
-    val description = "Array property names has to be pluralized"
+    val description = "Array property name appears to be singular"
 
     @Check(severity = Severity.SHOULD)
     fun checkArrayPropertyNamesArePlural(context: Context): List<Violation> =
@@ -24,5 +24,5 @@ class PluralizeNamesForArraysRule {
             .flatMap { it.properties.orEmpty().entries }
             .filter { "array" == it.value.type }
             .filterNot { isPlural(it.key) }
-            .map { context.violation("$description: ${it.key} ", it.value) }
+            .map { context.violation("$description: ${it.key}", it.value) }
 }
