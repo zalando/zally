@@ -51,7 +51,7 @@
     "pug": "2.0.0-rc.4",
     "react": "16.2.0",
     "react-ace": "5.8.0",
-    "react-dom": "16.2.0",
+    "react-dom": "16.2.1",
     "react-router": "4.2.0",
     "react-router-bootstrap": "0.24.4",
     "react-router-dom": "4.2.2",
@@ -86,7 +86,7 @@
     "uglifyjs-webpack-plugin": "1.1.4",
     "webpack": "3.10.0",
     "webpack-bundle-analyzer": "2.9.1",
-    "webpack-dev-server": "2.9.7",
+    "webpack-dev-server": "3.1.11",
     "webpack-merge": "4.1.1"
   }
 }
