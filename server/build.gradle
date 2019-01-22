@@ -3,7 +3,7 @@ configurations {
 }
 
 def versions = [
-        jacoco: '0.7.8',
+        jacoco: '0.8.2',
 ]
 
 buildscript {
