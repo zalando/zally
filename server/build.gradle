@@ -3,7 +3,7 @@ configurations {
 }
 
 def versions = [
-        jacoco: '0.7.8',
+        jacoco: '0.8.2',
 ]
 
 buildscript {
@@ -104,6 +104,7 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test:$spring_boot_version")
     testCompile("org.assertj:assertj-core:3.11.0")
     testCompile('com.jayway.jsonpath:json-path-assert:2.4.0')
+    testCompile('org.mockito:mockito-core:2.23.4')
 
     ktlint("com.github.shyiko:ktlint:0.27.0")
 }
