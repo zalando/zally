@@ -38,13 +38,13 @@ class UseStandardHttpStatusCodesRule(@Autowired rulesConfig: Config) {
      * @param context the context to validate
      * @return list of identified violations
      */
-    @Check(severity = Severity.MUST)
+    @Check(severity = Severity.SHOULD)
     fun checkWellUnderstoodResponseCodesUsage(context: Context): List<Violation> =
         context.validateOperations { (method, operation) ->
             operation?.responses.orEmpty().filterNot { (status, _) ->
                 isAllowed(method, status)
             }.map { (_, response) ->
-                context.violation("Operations must use standard HTTP status codes", response)
+                context.violation("Operations should use well-understood HTTP status codes", response)
             }
         }
 
