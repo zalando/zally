@@ -52,6 +52,7 @@ Please consult the following documents for more information:
 - [How to operate](documentation/operation.md) Zally tools
 - [How to use Zally](documentation/usage.md)
 - [How to develop new Rules](documentation/rule-development.md)
+- [Building Under Windows Subsystem for Linux](documentation/build-under-wsl.md)
 
 ## Contributing
 
