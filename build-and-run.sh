@@ -14,7 +14,7 @@ WEB_UI_DIR=${SCRIPT_DIR}/web-ui
 GITHUB_INTEGRATION_DIR=${SCRIPT_DIR}/github_integration
 
 # Build server
-cd ${SERVER_DIR} && ./gradlew clean build
+cd ${SERVER_DIR} && ./gradlew build
 
 # Build web ui
 cd ${WEB_UI_DIR} && yarn && yarn build
@@ -22,7 +22,7 @@ cd ${WEB_UI_DIR} && yarn && yarn build
 if [[ "$@" == "--bark" ]]; then
 
     #Build Bark
-    cd ${GITHUB_INTEGRATION_DIR} && ./gradlew clean build
+    cd ${GITHUB_INTEGRATION_DIR} && ./gradlew build
 
     # Docker-compose
     cd ${SCRIPT_DIR} && docker-compose -f docker-compose.yaml -f docker-compose-bark.yaml up --build
