@@ -24,19 +24,19 @@ import org.zalando.stups.oauth2.spring.server.TokenInfoResourceServerTokenServic
 open class OAuthConfiguration : ResourceServerConfigurerAdapter() {
 
     @Value("\${spring.oauth2.resource.tokenInfoUri}")
-    private val tokenInfoUri: String? = null
+    private lateinit var tokenInfoUri: String
 
     @Autowired
-    private val problemSupport: SecurityProblemSupport? = null
+    private lateinit var problemSupport: SecurityProblemSupport
 
     @Throws(Exception::class)
-    override fun configure(resources: ResourceServerSecurityConfigurer?) {
-        resources!!.expressionHandler(ExtendedOAuth2WebSecurityExpressionHandler())
+    override fun configure(resources: ResourceServerSecurityConfigurer) {
+        resources.expressionHandler(ExtendedOAuth2WebSecurityExpressionHandler())
     }
 
     @Throws(Exception::class)
-    override fun configure(http: HttpSecurity?) {
-        http!!
+    override fun configure(http: HttpSecurity) {
+        http
             .httpBasic().disable()
             .requestMatchers().antMatchers("/**")
             .and()
@@ -63,6 +63,6 @@ open class OAuthConfiguration : ResourceServerConfigurerAdapter() {
 
     @Bean
     open fun customResourceTokenServices(): ResourceServerTokenServices {
-        return TokenInfoResourceServerTokenServices(tokenInfoUri!!)
+        return TokenInfoResourceServerTokenServices(tokenInfoUri)
     }
 }

@@ -7,7 +7,6 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
-import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
     severity = Severity.SHOULD,
     title = "Limit number of Sub-resources level"
 )
-class LimitNumberOfSubResourcesRule(@Autowired rulesConfig: Config) {
+class LimitNumberOfSubResourcesRule(rulesConfig: Config) {
     private val subResourcesLimit = rulesConfig.getConfig(javaClass.simpleName).getInt("subresources_limit")
     private val description = "Number of sub-resources should not exceed $subResourcesLimit"
 

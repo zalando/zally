@@ -16,11 +16,11 @@ class RestSupportedRulesTest : RestApiBaseTest() {
     private val ignoredRules = listOf("TestCheckAlwaysReport3MustViolations")
 
     @Autowired
-    private val implementedRules: RulesManager? = null
+    private lateinit var implementedRules: RulesManager
 
     @Test
     fun testRulesCount() {
-        assertThat(supportedRules.size).isEqualTo(implementedRules!!.size())
+        assertThat(supportedRules.size).isEqualTo(implementedRules.size())
     }
 
     @Test
@@ -63,7 +63,7 @@ class RestSupportedRulesTest : RestApiBaseTest() {
         count += getSupportedRules("MaY", null).size
         count += getSupportedRules("HiNt", null).size
 
-        assertThat(count).isEqualTo(implementedRules!!.size())
+        assertThat(count).isEqualTo(implementedRules.size())
     }
 
     @Test
@@ -80,7 +80,7 @@ class RestSupportedRulesTest : RestApiBaseTest() {
     @Test
     fun testFilterByActiveTrue() {
         val rules = getSupportedRules(null, true)
-        assertThat(rules.size).isEqualTo(implementedRules!!.size() - ignoredRules.size)
+        assertThat(rules.size).isEqualTo(implementedRules.size() - ignoredRules.size)
     }
 
     @Test

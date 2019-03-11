@@ -9,7 +9,6 @@ import de.zalando.zally.exception.MissingApiDefinitionException
 import de.zalando.zally.rule.ApiValidator
 import de.zalando.zally.rule.RulesPolicy
 import de.zalando.zally.rule.api.Severity
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -25,8 +24,7 @@ import java.util.UUID
 
 @CrossOrigin
 @RestController
-class ApiViolationsController @Autowired
-constructor(
+class ApiViolationsController(
     private val rulesValidator: ApiValidator,
     private val apiDefinitionReader: ApiDefinitionReader,
     private val apiReviewRepository: ApiReviewRepository,
@@ -45,7 +43,7 @@ constructor(
 
         val requestPolicy = retrieveRulesPolicy(request)
 
-        val violations = rulesValidator.validate(apiDefinition!!, requestPolicy)
+        val violations = rulesValidator.validate(apiDefinition, requestPolicy)
         val review = ApiReview(request, userAgent.orEmpty(), apiDefinition, violations)
         apiReviewRepository.save(review)
 
@@ -71,10 +69,9 @@ constructor(
     }
 
     private fun retrieveRulesPolicy(request: ApiDefinitionRequest): RulesPolicy = request.ignoreRules
-        ?.let { configPolicy.withMoreIgnores(request.ignoreRules!!) }
-        ?: configPolicy
+        .let { configPolicy.withMoreIgnores(request.ignoreRules) }
 
-    private fun retrieveApiDefinition(request: ApiDefinitionRequest): String? = try {
+    private fun retrieveApiDefinition(request: ApiDefinitionRequest): String = try {
         apiDefinitionReader.read(request)
     } catch (e: MissingApiDefinitionException) {
         apiReviewRepository.save(ApiReview(request, "", ""))

@@ -7,7 +7,6 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.v3.oas.models.PathItem
-import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * Validate that HTTP methods and statuses align as expected
@@ -18,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired
     severity = Severity.MUST,
     title = "Use Standard HTTP Status Codes"
 )
-class UseStandardHttpStatusCodesRule(@Autowired rulesConfig: Config) {
+class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
 
     private val wellUnderstoodResponseCodesAndVerbs = rulesConfig
         .getConfig("${javaClass.simpleName}.well_understood")

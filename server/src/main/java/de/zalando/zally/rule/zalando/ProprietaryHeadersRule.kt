@@ -8,7 +8,6 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.v3.oas.models.headers.Header
 import io.swagger.v3.oas.models.parameters.Parameter
-import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -16,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
     severity = Severity.MUST,
     title = "Use Only the Specified Proprietary Zalando Headers"
 )
-class ProprietaryHeadersRule(@Autowired rulesConfig: Config) {
+class ProprietaryHeadersRule(rulesConfig: Config) {
     private val zalandoHeaders = rulesConfig.getConfig(javaClass.simpleName).getStringList("zalando_headers")
     private val standardRequestHeaders =
         rulesConfig.getConfig(javaClass.simpleName).getStringList("standard_request_headers")
