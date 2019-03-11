@@ -23,22 +23,22 @@ import javax.persistence.OneToMany
 @Entity
 data class PullRequestValidation(
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "pull_request_validation_id")
-        var id: Long? = null,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pull_request_validation_id")
+    var id: Long? = null,
 
-        @Type(type = "StringJsonObject")
-        var pullRequestInfo: String? = null,
+    @Type(type = "StringJsonObject")
+    var pullRequestInfo: String? = null,
 
-        @OneToMany(fetch = FetchType.EAGER, mappedBy = "pullRequestValidation", cascade = arrayOf(CascadeType.ALL),
-                orphanRemoval = true)
-        var apiValidations: List<ApiValidation> = ArrayList(),
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pullRequestValidation", cascade = arrayOf(CascadeType.ALL),
+        orphanRemoval = true)
+    var apiValidations: List<ApiValidation> = emptyList(),
 
-        @CreatedDate
-        @Column(nullable = false)
-        @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentOffsetDateTime",
-                parameters = arrayOf(Parameter(name = "javaZone", value = "UTC")))
-        var createdOn: OffsetDateTime? = null
+    @CreatedDate
+    @Column(nullable = false)
+    @Type(type = "org.jadira.usertype.dateandtime.threeten.PersistentOffsetDateTime",
+        parameters = arrayOf(Parameter(name = "javaZone", value = "UTC")))
+    var createdOn: OffsetDateTime? = null
 
 )

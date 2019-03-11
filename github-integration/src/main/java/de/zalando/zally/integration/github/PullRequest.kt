@@ -10,22 +10,22 @@ import org.kohsuke.github.PagedIterable
 import java.nio.charset.StandardCharsets
 import java.util.Optional
 
-open class PullRequest(private val yamlMapper: ObjectMapper,
-                       private val repository: GHRepository,
-                       val eventInfo: PullRequestEvent,
-                       private val changedFiles: PagedIterable<GHPullRequestFileDetail>) {
+class PullRequest(private val yamlMapper: ObjectMapper,
+                  private val repository: GHRepository,
+                  val eventInfo: PullRequestEvent,
+                  private val changedFiles: PagedIterable<GHPullRequestFileDetail>) {
 
     private val ZALLY_CONFIGURATION_PATH = ".zally.yaml"
 
-    open fun updateCommitState(state: GHCommitState, url: String?, description: String) {
+    fun updateCommitState(state: GHCommitState, url: String?, description: String) {
         repository.createCommitStatus(commitHash(), state, url, description, "Zally")
     }
 
-    open fun getConfiguration(): Optional<Configuration> =
+    fun getConfiguration(): Optional<Configuration> =
             getFileContents(ZALLY_CONFIGURATION_PATH)
             .map { yamlMapper.readValue(it, Configuration::class.java) }
 
-    open fun getApiDefinitions(): Map<String, Optional<String>> {
+    fun getApiDefinitions(): Map<String, Optional<String>> {
         val configuration = getConfiguration()
 
         if (!configuration.isPresent) {
@@ -37,7 +37,7 @@ open class PullRequest(private val yamlMapper: ObjectMapper,
         }.toMap()
     }
 
-    open fun isAPIChanged(): Boolean {
+    fun isAPIChanged(): Boolean {
         val changedFiles = getChangedFiles()
         return changedFiles.contains(ZALLY_CONFIGURATION_PATH)
                 || getConfiguration().get().apiDefinitions.intersect(changedFiles).isNotEmpty()

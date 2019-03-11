@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.rule.HttpHeadersRule
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
@@ -17,7 +16,7 @@ import de.zalando.zally.util.getAllHeaders
 )
 class AvoidLinkHeadersRule(rulesConfig: Config) {
 
-    private val headersWhitelist = rulesConfig.getStringList(HttpHeadersRule::class.simpleName + ".whitelist").toSet()
+    private val headersWhitelist = rulesConfig.getStringList("HttpHeadersRule.whitelist").toSet()
 
     private val description = "Do Not Use Link Headers with JSON entities"
 

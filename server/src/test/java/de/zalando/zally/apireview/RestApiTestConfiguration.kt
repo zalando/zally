@@ -16,12 +16,12 @@ import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
 
 @Configuration
-open class RestApiTestConfiguration {
+class RestApiTestConfiguration {
 
     @Bean
     @Primary
     @Profile("test")
-    open fun rules(): Collection<Any> {
+    fun rules(): Collection<Any> {
         return listOf(
             TestCheckIsOpenApi3(),
             TestCheckAlwaysReport3MustViolations(),

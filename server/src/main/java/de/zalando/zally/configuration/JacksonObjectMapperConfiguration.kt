@@ -15,17 +15,17 @@ import org.springframework.context.annotation.Primary
 import org.zalando.problem.ProblemModule
 
 @Configuration
-open class JacksonObjectMapperConfiguration {
+class JacksonObjectMapperConfiguration {
 
     @Bean
     @Primary
-    open fun createObjectMapper(): ObjectMapper {
+    fun createObjectMapper(): ObjectMapper {
         return configure(ObjectMapper())
     }
 
     @Bean
     @Qualifier("yamlObjectMapper")
-    open fun createYamlObjectMapper(): ObjectMapper {
+    fun createYamlObjectMapper(): ObjectMapper {
         return configure(ObjectMapper(YAMLFactory()))
     }
 

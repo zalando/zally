@@ -22,11 +22,11 @@ import java.net.URL
     severity = Severity.MUST,
     title = "Provide API Specification using OpenAPI"
 )
-open class UseOpenApiRule(rulesConfig: Config) {
+class UseOpenApiRule(rulesConfig: Config) {
 
     private val log = LoggerFactory.getLogger(UseOpenApiRule::class.java)
 
-    open val description = "Given file is not OpenAPI 2.0 compliant."
+    val description = "Given file is not OpenAPI 2.0 compliant."
 
     private val jsonSchemaValidators: Map<OpenApiVersion, JsonSchemaValidator>
 

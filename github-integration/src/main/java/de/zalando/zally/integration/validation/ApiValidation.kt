@@ -18,20 +18,19 @@ import javax.persistence.ManyToOne
 @EntityListeners(value = AuditingEntityListener::class)
 @Entity
 data class ApiValidation(
+    @ManyToOne
+    @JoinColumn(name = "pull_request_validation_id")
+    val pullRequestValidation: PullRequestValidation,
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "api_validation_id")
-        var id: Long? = null,
+    val fileName: String,
 
-        @ManyToOne
-        @JoinColumn(name="pull_request_validation_id")
-        var pullRequestValidation: PullRequestValidation? = null,
+    val apiDefinition: String,
 
-        var fileName: String? = null,
+    @Type(type = "StringJsonObject")
+    val violations: String,
 
-        var apiDefinition: String? = null,
-
-        @Type(type = "StringJsonObject")
-        var violations: String? = null
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "api_validation_id")
+    val id: Long = 0
 )

@@ -122,14 +122,16 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     }
 
     private fun apiReview(date: LocalDate, apiName: String?, userAgent: String): ApiReview {
-        val review = ApiReview(ApiDefinitionRequest(), "", "dummyApiDefinition", createRandomViolations())
-        review.day = date
-        review.name = apiName
-        review.apiId = "48aa0090-25ef-11e8-b467-0ed5f89f718b"
-        review.numberOfEndpoints = 2
-        review.userAgent = userAgent
-
-        return review
+        return ApiReview(
+            request = ApiDefinitionRequest(),
+            userAgent = userAgent,
+            apiDefinition = "dummyApiDefinition",
+            violations = createRandomViolations(),
+            day = date,
+            name = apiName,
+            apiId = "48aa0090-25ef-11e8-b467-0ed5f89f718b",
+            numberOfEndpoints = 2
+        )
     }
 
     private fun createRandomViolations(): List<Result> {
