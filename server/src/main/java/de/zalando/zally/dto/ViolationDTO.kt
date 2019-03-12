@@ -9,7 +9,7 @@ data class ViolationDTO(
     val description: String? = null,
     val violationType: Severity? = null,
     val ruleLink: String? = null,
-    @JsonInclude(Include.NON_NULL) @Deprecated("Use `pointer` instead.") val paths: List<String>? = null,
+    @JsonInclude(Include.NON_NULL) @Deprecated("Use `pointer` instead.") val paths: List<String> = emptyList(),
     @JsonInclude(Include.NON_NULL) val pointer: String? = null,
     val startLine: Int? = null,
     val endLine: Int? = null
