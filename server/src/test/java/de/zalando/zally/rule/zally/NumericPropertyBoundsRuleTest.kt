@@ -10,7 +10,7 @@ import org.junit.Test
 
 class NumericPropertyBoundsRuleTest {
 
-    private val cut = NumericPropertyBoundsRule(testConfig)
+    private val cut = NumericPropertyBoundsRule()
 
     @Test
     fun `checkNumericBounds with bounded integer returns no violations`() {
