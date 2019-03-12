@@ -33,6 +33,13 @@ Supports:
 
 Unused definitions cause confusion and should be avioded.
 
+## S007: Define maximum length for string properties
+
+Implementations often have limits imposed on the length of strings and
+these should be expressed clearly in the API specification. If left
+unspecified then clients or servers may make inappropriate assumptions
+and fail unexpectedly when supplied extra long strings.
+
 ## H001: Base path can be extracted
 
 If all paths start with the same prefix then it would be cleaner to extract that into the basePath rather than repeating for each path.

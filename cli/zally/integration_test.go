@@ -54,7 +54,7 @@ func TestIntegrationWithLocalYamlFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spa.yaml"})
 
 		assert.Contains(t, out, "MUST violations: 43")
-		assert.Contains(t, out, "SHOULD violations: 1")
+		assert.Contains(t, out, "SHOULD violations: 41")
 		assert.Contains(t, out, "MAY violations: 5")
 		assert.Contains(t, out, "HINT violations: 0")
 
@@ -68,7 +68,7 @@ func TestIntegrationWithSomeOtherLocalYamlFile(t *testing.T) {
 
 		assert.Contains(t, out, "Provide API Specification using OpenAPI")
 		assert.Contains(t, out, "MUST violations: 32")
-		assert.Contains(t, out, "SHOULD violations: 46")
+		assert.Contains(t, out, "SHOULD violations: 108")
 		assert.Contains(t, out, "MAY violations: 11")
 		assert.Contains(t, out, "HINT violations: 0")
 
@@ -81,7 +81,7 @@ func TestIntegrationWithLocalJsonFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spp.json"})
 
 		assert.Contains(t, out, "MUST violations: 20")
-		assert.Contains(t, out, "SHOULD violations: 15")
+		assert.Contains(t, out, "SHOULD violations: 43")
 		assert.Contains(t, out, "MAY violations: 10")
 		assert.Contains(t, out, "HINT violations: 0")
 
@@ -96,7 +96,7 @@ func TestIntegrationWithRemoteYamlFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", ts.URL + "/api_spa.yaml"})
 
 		assert.Contains(t, out, "MUST violations: 43")
-		assert.Contains(t, out, "SHOULD violations: 1")
+		assert.Contains(t, out, "SHOULD violations: 41")
 		assert.Contains(t, out, "MAY violations: 5")
 		assert.Contains(t, out, "HINT violations: 0")
 
@@ -112,7 +112,7 @@ func TestIntegrationWithRemoteJsonFile(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", ts.URL + "/api_spp.json"})
 
 		assert.Contains(t, out, "MUST violations: 20")
-		assert.Contains(t, out, "SHOULD violations: 15")
+		assert.Contains(t, out, "SHOULD violations: 43")
 		assert.Contains(t, out, "MAY violations: 1")
 		assert.Contains(t, out, "HINT violations: 0")
 
@@ -125,7 +125,7 @@ func TestIntegrationWithNoMustViolations(t *testing.T) {
 		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/no_must_violations.yaml"})
 
 		assert.Contains(t, out, "MUST violations: 0")
-		assert.Contains(t, out, "SHOULD violations: 0")
+		assert.Contains(t, out, "SHOULD violations: 42")
 		assert.Contains(t, out, "MAY violations: 21")
 		assert.Contains(t, out, "HINT violations: 0")
 
