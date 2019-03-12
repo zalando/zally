@@ -86,15 +86,15 @@ class ValidationServiceTest {
         then(validationRepository).should().save(any<PullRequestValidation>())
     }
 
-    private fun okApiResponse() = ApiDefinitionResponse().apply {
-        violations = listOf(Violation("v-1", "vd-1", ViolationType.SHOULD, "rl-1", listOf("path-1")))
+    private fun okApiResponse() = ApiDefinitionResponse(
+        violations = listOf(Violation("v-1", "vd-1", ViolationType.SHOULD, "rl-1", listOf("path-1"))),
         violationsCount = mapOf("should" to 1)
-    }
+    )
 
-    private fun badApiResponse() = ApiDefinitionResponse().apply {
-        violations = listOf(Violation("v-2", "vd-2", ViolationType.MUST, "rl-2", listOf("path-2")))
+    private fun badApiResponse() = ApiDefinitionResponse(
+        violations = listOf(Violation("v-2", "vd-2", ViolationType.MUST, "rl-2", listOf("path-2"))),
         violationsCount = mapOf("must" to 1)
-    }
+    )
 
     private fun simpleConfiguration() = Configuration().apply {
         this.apiDefinitions = listOf("foo/bar.yaml")

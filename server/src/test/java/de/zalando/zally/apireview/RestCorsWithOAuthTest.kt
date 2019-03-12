@@ -18,6 +18,6 @@ class RestCorsWithOAuthTest : RestApiBaseTest() {
     }
 
     private fun optionsRequest(url: String): HttpStatus {
-        return restTemplate!!.exchange(url, HttpMethod.OPTIONS, RequestEntity.EMPTY, String::class.java).statusCode
+        return restTemplate.exchange(url, HttpMethod.OPTIONS, RequestEntity.EMPTY, String::class.java).statusCode
     }
 }

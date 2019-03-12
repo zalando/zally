@@ -9,7 +9,6 @@ import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
 import de.zalando.zally.util.WordUtil.isPlural
 import io.swagger.v3.oas.models.PathItem
-import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -17,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
     severity = Severity.MUST,
     title = "Pluralize Resource Names"
 )
-class PluralizeResourceNamesRule(@Autowired rulesConfig: Config) {
+class PluralizeResourceNamesRule(rulesConfig: Config) {
 
     private val slash = "/"
 

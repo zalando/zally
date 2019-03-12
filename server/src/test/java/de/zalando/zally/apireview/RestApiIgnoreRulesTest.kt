@@ -12,6 +12,6 @@ class RestApiIgnoreRulesTest : RestApiBaseTest() {
     @Throws(IOException::class)
     fun testShouldNotReportViolationsIfIgnoreIsPresent() {
         val response = sendApiDefinition(readApiDefinition("fixtures/openapi3_petstore_expanded.json"))
-        assertThat(response!!.violations).isEmpty()
+        assertThat(response.violations).isEmpty()
     }
 }

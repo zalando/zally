@@ -16,10 +16,10 @@ open class WebMvcConfiguration : WebMvcConfigurerAdapter() {
 
     @Autowired
     @Qualifier("yamlObjectMapper")
-    private val yamlObjectMapper: ObjectMapper? = null
+    private lateinit var yamlObjectMapper: ObjectMapper
 
-    override fun configureContentNegotiation(configurer: ContentNegotiationConfigurer?) {
-        configurer!!
+    override fun configureContentNegotiation(configurer: ContentNegotiationConfigurer) {
+        configurer
             .favorPathExtension(true)
             .favorParameter(false)
             .ignoreAcceptHeader(false)
@@ -29,10 +29,10 @@ open class WebMvcConfiguration : WebMvcConfigurerAdapter() {
             .mediaType(MEDIA_TYPE_APP_XYAML.subtype, MEDIA_TYPE_APP_XYAML)
     }
 
-    override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>?) {
-        val yamlConverter = MappingJackson2HttpMessageConverter(yamlObjectMapper!!)
+    override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
+        val yamlConverter = MappingJackson2HttpMessageConverter(yamlObjectMapper)
         yamlConverter.supportedMediaTypes = Arrays.asList(MEDIA_TYPE_TEXT_XYAML, MEDIA_TYPE_APP_XYAML)
-        converters!!.add(yamlConverter)
+        converters.add(yamlConverter)
     }
 
     companion object {

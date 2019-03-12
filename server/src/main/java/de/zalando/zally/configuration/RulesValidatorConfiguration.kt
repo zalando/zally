@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Primary
 open class RulesValidatorConfiguration {
 
     @Autowired
-    private val compositeValidator: CompositeRulesValidator? = null
+    private lateinit var compositeValidator: CompositeRulesValidator
 
     @Bean
     @Primary
-    open fun validator(): ApiValidator? {
+    open fun validator(): ApiValidator {
         return compositeValidator
     }
 }

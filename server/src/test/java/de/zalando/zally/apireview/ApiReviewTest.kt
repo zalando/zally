@@ -12,7 +12,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.IOException
 import java.util.Arrays.asList
-import java.util.Collections.emptyList
 
 class ApiReviewTest {
 
@@ -48,7 +47,7 @@ class ApiReviewTest {
     @Throws(IOException::class)
     fun shouldParseApiNameFromApiDefinition() {
         val apiDefinition = resourceToString("fixtures/limitNumberOfResourcesValid.json")
-        val apiReview = ApiReview(ApiDefinitionRequest(), "", apiDefinition, emptyList())
+        val apiReview = ApiReview(ApiDefinitionRequest(), "", apiDefinition)
         assertThat(apiReview.name).isEqualTo("Test Service")
     }
 

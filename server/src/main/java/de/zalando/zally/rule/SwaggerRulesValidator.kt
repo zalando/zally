@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.models.Swagger
 import io.swagger.parser.SwaggerParser
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 /**
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Component
  * on set of rules. It will sort the output by path.
  */
 @Component
-class SwaggerRulesValidator(@Autowired rules: RulesManager) : RulesValidator<Swagger>(rules) {
+class SwaggerRulesValidator(rules: RulesManager) : RulesValidator<Swagger>(rules) {
     private var ast: ReverseAst? = null
 
     override fun parse(content: String): ContentParseResult<Swagger> {
