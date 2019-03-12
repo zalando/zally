@@ -14,8 +14,8 @@ import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 
-@TypeDefs(value = TypeDef(name = "StringJsonObject", typeClass = StringJsonUserType::class))
-@EntityListeners(value = AuditingEntityListener::class)
+@TypeDefs(TypeDef(name = "StringJsonObject", typeClass = StringJsonUserType::class))
+@EntityListeners(AuditingEntityListener::class)
 @Entity
 data class ApiValidation(
     @ManyToOne

@@ -12,7 +12,7 @@ class ReportController(private val reportService: ReportService) {
 
     val log by logger()
 
-    @GetMapping(path = arrayOf("/reports/{id}"))
+    @GetMapping(path = ["/reports/{id}"])
     fun getValidation(@PathVariable("id") id: Long): ModelAndView {
         log.info("Requested validations with id: {}", id)
 
