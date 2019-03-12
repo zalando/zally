@@ -22,19 +22,20 @@ import javax.persistence.OneToMany
 
 @Suppress("unused")
 @Entity
-class ApiReview(request: ApiDefinitionRequest,
-                val userAgent: String = "",
-                @Suppress("CanBeParameter") private val apiDefinition: String,
-                violations: List<Result> = emptyList(),
-                val name: String? = OpenApiHelper.extractApiName(apiDefinition),
-                val apiId: String? = OpenApiHelper.extractApiId(apiDefinition),
-                @Column(nullable = false) @Type(
-                    type = "org.jadira.usertype.dateandtime.threeten.PersistentOffsetDateTime",
-                    parameters = [Parameter(name = "javaZone", value = "UTC")]
-                ) val created: OffsetDateTime = Instant.now().atOffset(ZoneOffset.UTC),
-                @Column(nullable = false)
-                val day: LocalDate? = created.toLocalDate(),
-                val numberOfEndpoints: Int = EndpointCounter.count(apiDefinition)
+class ApiReview(
+    request: ApiDefinitionRequest,
+    val userAgent: String = "",
+    @Suppress("CanBeParameter") private val apiDefinition: String,
+    violations: List<Result> = emptyList(),
+    val name: String? = OpenApiHelper.extractApiName(apiDefinition),
+    val apiId: String? = OpenApiHelper.extractApiId(apiDefinition),
+    @Column(nullable = false) @Type(
+        type = "org.jadira.usertype.dateandtime.threeten.PersistentOffsetDateTime",
+        parameters = [Parameter(name = "javaZone", value = "UTC")]
+    ) val created: OffsetDateTime = Instant.now().atOffset(ZoneOffset.UTC),
+    @Column(nullable = false)
+    val day: LocalDate? = created.toLocalDate(),
+    val numberOfEndpoints: Int = EndpointCounter.count(apiDefinition)
 ) : Serializable {
 
     @Id
@@ -59,5 +60,4 @@ class ApiReview(request: ApiDefinitionRequest,
 
     private fun countViolations(severity: Severity) =
         ruleViolations.stream().filter { r -> r.type === severity }.count().toInt()
-
 }

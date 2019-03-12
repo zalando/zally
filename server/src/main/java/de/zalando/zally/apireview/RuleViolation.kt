@@ -14,8 +14,10 @@ import javax.persistence.Id
 import javax.persistence.ManyToOne
 
 @Entity
-class RuleViolation(@Suppress("unused") @JsonIgnore @ManyToOne(optional = false) val apiReview: ApiReview,
-                    result: Result) : Serializable {
+class RuleViolation(
+    @Suppress("unused") @JsonIgnore @ManyToOne(optional = false) val apiReview: ApiReview,
+    result: Result
+) : Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,5 +53,4 @@ class RuleViolation(@Suppress("unused") @JsonIgnore @ManyToOne(optional = false)
     @Column(nullable = false)
     @get:Deprecated("")
     val occurrence: Int = 1
-
 }
