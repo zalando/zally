@@ -276,6 +276,7 @@ components:
       description: Linting Response
       required:
       - violations
+      - violations_count
       properties:
         violations:
           type: array
@@ -360,6 +361,7 @@ components:
       - title
       - description
       - violation_type
+      - paths
       properties:
         title:
           type: string
