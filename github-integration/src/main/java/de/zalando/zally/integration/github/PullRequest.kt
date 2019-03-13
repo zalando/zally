@@ -10,7 +10,7 @@ import org.kohsuke.github.PagedIterable
 import java.nio.charset.StandardCharsets
 import java.util.Optional
 
-//open for mocking
+//open for mocking 
 open class PullRequest(private val yamlMapper: ObjectMapper,
                        private val repository: GHRepository,
                        val eventInfo: PullRequestEvent,
