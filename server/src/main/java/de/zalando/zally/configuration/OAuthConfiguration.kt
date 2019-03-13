@@ -19,9 +19,9 @@ import org.zalando.stups.oauth2.spring.server.TokenInfoResourceServerTokenServic
 
 @Configuration
 @EnableResourceServer
-@Profile(value = "production")
+@Profile("production")
 @Import(SecurityProblemSupport::class)
-open class OAuthConfiguration : ResourceServerConfigurerAdapter() {
+class OAuthConfiguration : ResourceServerConfigurerAdapter() {
 
     @Value("\${spring.oauth2.resource.tokenInfoUri}")
     private lateinit var tokenInfoUri: String
@@ -62,7 +62,7 @@ open class OAuthConfiguration : ResourceServerConfigurerAdapter() {
     }
 
     @Bean
-    open fun customResourceTokenServices(): ResourceServerTokenServices {
+    fun customResourceTokenServices(): ResourceServerTokenServices {
         return TokenInfoResourceServerTokenServices(tokenInfoUri)
     }
 }

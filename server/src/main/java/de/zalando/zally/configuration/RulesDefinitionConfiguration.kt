@@ -15,10 +15,10 @@ import org.springframework.core.type.filter.AnnotationTypeFilter
  * Register classes annotated with [Rule] as BeanDefinition prior to any Bean instantiation.
  */
 @Configuration
-open class RulesDefinitionConfiguration {
+class RulesDefinitionConfiguration {
 
     @Bean
-    open fun rulesDefinitions(): BeanDefinitionRegistryPostProcessor {
+    fun rulesDefinitions(): BeanDefinitionRegistryPostProcessor {
         return object : BeanDefinitionRegistryPostProcessor {
             @Throws(BeansException::class)
             override fun postProcessBeanDefinitionRegistry(registry: BeanDefinitionRegistry) {

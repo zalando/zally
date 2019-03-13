@@ -33,22 +33,22 @@ class ValidationService(private val githubService: GithubService,
 
             if (!configuration.isPresent) {
                 storeResultAndUpdateStatus(
-                        RequestStatus.error("Could not find zally configuration file"), pullRequest, null)
+                    RequestStatus.error("Could not find zally configuration file"), pullRequest, null)
                 return
             }
 
             val apiDefinitions = pullRequest.getApiDefinitions()
             if (!apiDefinitions.all {
-                it.value.isPresent
-            }) {
+                    it.value.isPresent
+                }) {
                 storeResultAndUpdateStatus(
-                        RequestStatus.error("Could not find swagger file"), pullRequest, null)
+                    RequestStatus.error("Could not find swagger file"), pullRequest, null)
                 return
             }
 
             if (!pullRequest.isAPIChanged()) {
                 storeResultAndUpdateStatus(
-                        RequestStatus.success("No API changes detected"), pullRequest, null)
+                    RequestStatus.success("No API changes detected"), pullRequest, null)
                 return
             }
 
@@ -78,12 +78,12 @@ class ValidationService(private val githubService: GithubService,
 
             if (invalid) {
                 storeResultAndUpdateStatus(
-                        RequestStatus.error("API Review: ${validationResult[ViolationType.MUST]} MUST, " +
-                                "${validationResult[ViolationType.SHOULD]} SHOULD, " +
-                                "${validationResult[ViolationType.MAY]} MAY, " +
-                                "${validationResult[ViolationType.HINT]} HINT violations found"),
-                        pullRequest,
-                        validationResults
+                    RequestStatus.error("API Review: ${validationResult[ViolationType.MUST]} MUST, " +
+                        "${validationResult[ViolationType.SHOULD]} SHOULD, " +
+                        "${validationResult[ViolationType.MAY]} MAY, " +
+                        "${validationResult[ViolationType.HINT]} HINT violations found"),
+                    pullRequest,
+                    validationResults
                 )
                 return
             }
@@ -92,20 +92,20 @@ class ValidationService(private val githubService: GithubService,
 
             if (hasErrors) {
                 storeResultAndUpdateStatus(
-                        RequestStatus.success("API Review: ${validationResult[ViolationType.MUST]} MUST, " +
-                                "${validationResult[ViolationType.SHOULD]} SHOULD, " +
-                                "${validationResult[ViolationType.MAY]} MAY, " +
-                                "${validationResult[ViolationType.HINT]} HINT violations found"),
-                        pullRequest,
-                        validationResults
+                    RequestStatus.success("API Review: ${validationResult[ViolationType.MUST]} MUST, " +
+                        "${validationResult[ViolationType.SHOULD]} SHOULD, " +
+                        "${validationResult[ViolationType.MAY]} MAY, " +
+                        "${validationResult[ViolationType.HINT]} HINT violations found"),
+                    pullRequest,
+                    validationResults
                 )
                 return
             }
 
             storeResultAndUpdateStatus(
-                    RequestStatus.success("API Review: No violations :+1:"),
-                    pullRequest,
-                    validationResults
+                RequestStatus.success("API Review: No violations :+1:"),
+                pullRequest,
+                validationResults
             )
         } catch (e: Exception) {
             val errorRequestState = RequestStatus.failure("Failed with internal server error")
@@ -124,21 +124,19 @@ class ValidationService(private val githubService: GithubService,
     private fun reportLink(id: Long?): String = "$serverUrl/reports/$id"
 
     private fun storeValidationResults(pullRequest: PullRequest, validationResults: Map<String, ApiValidationResult>?): PullRequestValidation =
-            validationRepository.save(
-                    PullRequestValidation().apply {
-                        pullRequestInfo = jsonObjectMapper.writeValueAsString(pullRequest.eventInfo)
-                        val that = this
-                        if (validationResults != null) {
-                            apiValidations = validationResults.map {
-                                ApiValidation().apply {
-                                    fileName = it.key
-                                    violations = jsonObjectMapper.writeValueAsString(it.value.result)
-                                    apiDefinition = it.value.definition
-                                    pullRequestValidation = that
-                                }
-                            }
-                        }
-                    })
+        validationRepository.save(
+            PullRequestValidation().apply {
+                pullRequestInfo = jsonObjectMapper.writeValueAsString(pullRequest.eventInfo)
+                val that = this
+                apiValidations = validationResults?.map {
+                    ApiValidation(
+                        fileName = it.key,
+                        violations = jsonObjectMapper.writeValueAsString(it.value.result),
+                        apiDefinition = it.value.definition,
+                        pullRequestValidation = that
+                    )
+                }.orEmpty()
+            })
 
     data class RequestStatus(val commitState: GHCommitState, val description: String) {
         companion object {

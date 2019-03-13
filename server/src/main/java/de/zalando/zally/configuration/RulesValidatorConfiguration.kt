@@ -8,14 +8,14 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 
 @Configuration
-open class RulesValidatorConfiguration {
+class RulesValidatorConfiguration {
 
     @Autowired
     private lateinit var compositeValidator: CompositeRulesValidator
 
     @Bean
     @Primary
-    open fun validator(): ApiValidator {
+    fun validator(): ApiValidator {
         return compositeValidator
     }
 }

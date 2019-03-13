@@ -1,6 +1,6 @@
 package de.zalando.zally.integration.mock
 
-import de.zalando.zally.integration.config.logger
+import mu.KotlinLogging
 import ru.yandex.qatools.embed.postgresql.EmbeddedPostgres
 import javax.annotation.PostConstruct
 import javax.annotation.PreDestroy
@@ -9,7 +9,7 @@ class PostgresqlMock(private val dbName: String = "barks",
                      private val port: Int = 5454,
                      private val postgres: EmbeddedPostgres = EmbeddedPostgres()) {
 
-    private val log by logger()
+    private val log = KotlinLogging.logger {}
 
     @PostConstruct
     fun setup() {
