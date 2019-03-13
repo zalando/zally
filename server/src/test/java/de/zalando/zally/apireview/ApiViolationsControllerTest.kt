@@ -25,12 +25,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class ApiViolationsControllerTest {
 
     @Autowired
-    private val mvc: MockMvc? = null
+    private lateinit var mvc: MockMvc
 
     @Test
     @Throws(Exception::class)
     fun violationsResponseReferencesFullGuidelinesUrl() {
-        mvc!!.perform(
+        mvc.perform(
             post("/api-violations")
                 .contentType("application/json")
                 .content("{\"api_definition_string\":\"\"}")
@@ -41,7 +41,7 @@ class ApiViolationsControllerTest {
 
     @Test
     fun `getExistingViolationResponse with no previous apis responds NotFound`() {
-        mvc!!.perform(
+        mvc.perform(
             get("/api-violations/00000000-0000-0000-0000-000000000000")
                 .accept("application/json")
         )
@@ -51,7 +51,7 @@ class ApiViolationsControllerTest {
     @Test
     fun `getExistingViolationResponse with existing responds NotFound`() {
 
-        val location = mvc!!.perform(
+        val location = mvc.perform(
             post("/api-violations")
                 .contentType("application/json")
                 .content("{\"api_definition_string\":\"\"}")
@@ -78,7 +78,7 @@ class ApiViolationsControllerTest {
     fun `all rules must be able to cope with recursive api specifications`() {
         val objectMapper = JacksonObjectMapperConfiguration().createObjectMapper()
         val request = objectMapper.writeValueAsString(ApiDefinitionRequest(apiDefinitionString = recursiveSpec))
-        mvc!!.perform(
+        mvc.perform(
             post("/api-violations")
                 .contentType("application/json")
                 .content(request)
@@ -95,7 +95,7 @@ class ApiViolationsControllerTest {
     fun `all rules must be able to cope with empty (minimal) api specifications`() {
         val objectMapper = JacksonObjectMapperConfiguration().createObjectMapper()
         val request = objectMapper.writeValueAsString(ApiDefinitionRequest(apiDefinitionString = "openapi: 3.0.1"))
-        mvc!!.perform(
+        mvc.perform(
             post("/api-violations")
                 .contentType("application/json")
                 .content(request)

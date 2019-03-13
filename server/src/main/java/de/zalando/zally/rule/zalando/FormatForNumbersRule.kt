@@ -7,7 +7,6 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.getAllSchemas
-import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
     severity = Severity.MUST,
     title = "Define Format for Type Number and Integer"
 )
-class FormatForNumbersRule(@Autowired rulesConfig: Config) {
+class FormatForNumbersRule(rulesConfig: Config) {
     private val description = """Numeric properties must have valid format specified"""
 
     private val numberTypes = listOf("integer", "number")

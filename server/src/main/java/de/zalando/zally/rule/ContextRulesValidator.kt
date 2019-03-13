@@ -2,7 +2,6 @@ package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.api.Context
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 /**
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Component
  * on set of rules.
  */
 @Component
-class ContextRulesValidator(@Autowired rules: RulesManager) : RulesValidator<Context>(rules) {
+class ContextRulesValidator(rules: RulesManager) : RulesValidator<Context>(rules) {
 
     override fun parse(content: String): ContentParseResult<Context> {
         // first try to parse an OpenAPI (version 3+)

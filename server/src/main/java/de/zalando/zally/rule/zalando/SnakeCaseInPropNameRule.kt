@@ -7,7 +7,6 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
     severity = Severity.MUST,
     title = "Property Names Must be ASCII snake_case"
 )
-class SnakeCaseInPropNameRule(@Autowired config: Config) {
+class SnakeCaseInPropNameRule(config: Config) {
     private val description = "Property name has to be snake_case"
 
     private val checker = CaseChecker.load(config)

@@ -28,10 +28,10 @@ import java.time.LocalDate
 abstract class RestApiBaseTest {
 
     @Autowired
-    protected var restTemplate: TestRestTemplate? = null
+    protected lateinit var restTemplate: TestRestTemplate
 
     @Autowired
-    protected var apiReviewRepository: ApiReviewRepository? = null
+    protected lateinit var apiReviewRepository: ApiReviewRepository
 
     protected val reviewStatistics: ReviewStatistics
         get() = getReviewStatisticsBetween(null, null)
@@ -41,17 +41,17 @@ abstract class RestApiBaseTest {
 
     @Before
     fun cleanDatabase() {
-        apiReviewRepository!!.deleteAll()
+        apiReviewRepository.deleteAll()
     }
 
     protected fun <T> sendApiDefinition(request: ApiDefinitionRequest, responseType: Class<T>): ResponseEntity<T> =
-        restTemplate!!.postForEntity(API_VIOLATIONS_URL, request, responseType)
+        restTemplate.postForEntity(API_VIOLATIONS_URL, request, responseType)
 
-    protected fun sendApiDefinition(request: ApiDefinitionRequest): ApiDefinitionResponse? {
+    protected fun sendApiDefinition(request: ApiDefinitionRequest): ApiDefinitionResponse {
         val responseEntity = sendApiDefinition(request, ApiDefinitionResponse::class.java)
 
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.OK)
-        return responseEntity.body
+        return responseEntity.body!!
     }
 
     protected fun <T> getReviewStatisticsBetween(from: Any?, to: Any?, responseType: Class<T>): ResponseEntity<T> {
@@ -62,7 +62,7 @@ abstract class RestApiBaseTest {
             .encode()
             .toUriString()
 
-        return restTemplate!!.getForEntity(url, responseType)
+        return restTemplate.getForEntity(url, responseType)
     }
 
     protected fun <T> getReviewStatisticsByUserAgent(userAgent: Any, responseType: Class<T>): ResponseEntity<T> {
@@ -72,7 +72,7 @@ abstract class RestApiBaseTest {
             .encode()
             .toUriString()
 
-        return restTemplate!!.getForEntity(url, responseType)
+        return restTemplate.getForEntity(url, responseType)
     }
 
     protected fun getReviewStatisticsBetween(from: LocalDate?, to: LocalDate?): ReviewStatistics {
@@ -90,7 +90,7 @@ abstract class RestApiBaseTest {
     protected fun getSupportedRules(ruleType: String?, active: Boolean?): List<RuleDTO> {
         val responseEntity = getSupportedRules(ruleType, active, RulesListDTO::class.java)
         assertThat(responseEntity.statusCode).isEqualTo(HttpStatus.OK)
-        return responseEntity.body!!.rules!!
+        return responseEntity.body!!.rules
     }
 
     protected fun <T> getSupportedRules(
@@ -103,7 +103,7 @@ abstract class RestApiBaseTest {
             .queryParam("is_active", active)
             .build().encode().toUriString()
 
-        return restTemplate!!.getForEntity(url, responseType)
+        return restTemplate.getForEntity(url, responseType)
     }
 
     companion object {

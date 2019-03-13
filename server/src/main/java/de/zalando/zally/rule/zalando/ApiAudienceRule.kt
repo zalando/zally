@@ -6,7 +6,6 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -14,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
     severity = Severity.MUST,
     title = "Provide API Audience"
 )
-class ApiAudienceRule(@Autowired rulesConfig: Config) {
+class ApiAudienceRule(rulesConfig: Config) {
     private val validAudiences = rulesConfig.getStringList("${javaClass.simpleName}.audiences").toSet()
 
     private val noApiAudienceDesc = "API Audience must be provided"

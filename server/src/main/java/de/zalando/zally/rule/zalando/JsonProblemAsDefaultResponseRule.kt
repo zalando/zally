@@ -30,7 +30,7 @@ class JsonProblemAsDefaultResponseRule {
     @Check(severity = Severity.MAY)
     fun checkDefaultResponseIsProblemJson(context: Context): List<Violation> = responsesPerOperation(context)
         .filter { "default" in it.second.keys }
-        .flatMap { it.second["default"]!!.content.orEmpty().entries }
+        .flatMap { it.second.getValue("default").content.orEmpty().entries }
         .filter { (contentType, _) -> contentType in validContentTypes }
         .filterNot { it.value?.schema?.`$ref` in validRefs || isProblemJsonSchema(it.value?.schema) }
         .map { context.violation("problem json has to be used as default response (${validRefs[0]})", it.value) }

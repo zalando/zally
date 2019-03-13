@@ -4,7 +4,6 @@ import de.zalando.zally.apireview.ApiReviewRepository
 import de.zalando.zally.exception.InsufficientTimeIntervalParameterException
 import de.zalando.zally.exception.TimeParameterIsInTheFutureException
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,8 +16,7 @@ import java.time.ZoneOffset
 
 @CrossOrigin
 @RestController
-class ReviewStatisticsController @Autowired
-constructor(private val apiReviewRepository: ApiReviewRepository) {
+class ReviewStatisticsController(private val apiReviewRepository: ApiReviewRepository) {
 
     @ResponseBody
     @GetMapping("/review-statistics")

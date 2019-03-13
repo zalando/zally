@@ -8,7 +8,6 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.getAllHeaders
-import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -16,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
     severity = Severity.MUST,
     title = "Avoid Link in Header Rule"
 )
-class AvoidLinkHeadersRule(@Autowired rulesConfig: Config) {
+class AvoidLinkHeadersRule(rulesConfig: Config) {
 
     private val headersWhitelist = rulesConfig.getStringList(HttpHeadersRule::class.simpleName + ".whitelist").toSet()
 

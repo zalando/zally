@@ -27,7 +27,7 @@ automatically checked.
     severity = Severity.MUST,
     title = "Use Standard HTTP Status Codes"
 )
-class UseStandardHttpStatusCodesRule(@Autowired rulesConfig: Config) { }
+class UseStandardHttpStatusCodesRule(rulesConfig: Config) { }
 ```
 
 ## Check

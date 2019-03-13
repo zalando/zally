@@ -7,7 +7,6 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil.isPathVariable
-import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
     severity = Severity.SHOULD,
     title = "Limit number of resource types"
 )
-class LimitNumberOfResourcesRule(@Autowired rulesConfig: Config) {
+class LimitNumberOfResourcesRule(rulesConfig: Config) {
     private val resourceTypesLimit = rulesConfig.getConfig(javaClass.simpleName).getInt("resource_types_limit")
 
     @Check(severity = Severity.SHOULD)

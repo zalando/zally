@@ -14,7 +14,6 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import java.net.URL
 
 @Rule(
@@ -23,7 +22,7 @@ import java.net.URL
     severity = Severity.MUST,
     title = "Provide API Specification using OpenAPI"
 )
-open class UseOpenApiRule(@Autowired rulesConfig: Config) {
+open class UseOpenApiRule(rulesConfig: Config) {
 
     private val log = LoggerFactory.getLogger(UseOpenApiRule::class.java)
 
