@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Profile("dev", "test")
 @Configuration
-open class NoSecurityConfiguration : WebSecurityConfigurerAdapter() {
+class NoSecurityConfiguration : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {

@@ -31,9 +31,9 @@ import org.springframework.test.context.junit4.SpringRunner
 import uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = arrayOf(Application::class, EmbeddedPostgresqlConfiguration::class))
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [Application::class, EmbeddedPostgresqlConfiguration::class])
 @ActiveProfiles("test")
-@Sql(scripts = arrayOf("/sql/cleanup-data.sql"), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql("/sql/cleanup-data.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class ValidationPersistenceTest {
     companion object {
         @ClassRule @JvmField val githubServer = JadlerRule(GithubMock(JadlerMocker(JdkStubHttpServer(8088)))) {

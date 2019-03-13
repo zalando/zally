@@ -18,7 +18,7 @@ class AtMostOneBodyParameterRule {
 
     @Check(Severity.MUST)
     fun validate(context: Context): List<Violation> = context.swagger?.paths
-        .orEmpty().flatMap { (pattern, path) ->
+        .orEmpty().flatMap { (_, path) ->
             path.operations.flatMap { op ->
                 op.parameters.orEmpty().filter { it is BodyParameter }.let { bodies ->
                     if (bodies.size > 1) {

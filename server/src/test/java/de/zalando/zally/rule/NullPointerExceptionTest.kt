@@ -416,7 +416,7 @@ class NullPointerExceptionTest(private val spec: String) {
 
     @Rule
     @JvmField
-    val springMethodRule = SpringMethodRule()
+    final val springMethodRule = SpringMethodRule()
 
     @Autowired
     private lateinit var policy: RulesPolicy

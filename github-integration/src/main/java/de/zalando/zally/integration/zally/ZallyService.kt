@@ -2,7 +2,7 @@ package de.zalando.zally.integration.zally
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
-import de.zalando.zally.integration.config.logger
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
@@ -11,7 +11,7 @@ class ZallyService(@Qualifier("yamlObjectMapper") private val yamlObjectMapper: 
                    private val jsonObjectMapper: ObjectMapper,
                    private val zallyClient: ZallyClient) {
 
-    private val log by logger()
+    private val log = KotlinLogging.logger {}
     private val jsonNodeFactory = JsonNodeFactory.instance
 
     fun validate(swaggerFile: String): ApiDefinitionResponse {

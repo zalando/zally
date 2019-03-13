@@ -1,7 +1,7 @@
 package de.zalando.zally.integration
 
-import de.zalando.zally.integration.config.logger
 import de.zalando.zally.integration.validation.ValidationService
+import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest
 class ValidationController(private val validationService: ValidationService) {
     private val PULL_REQUEST_EVENT_NAME = "pull_request"
 
-    val log by logger()
+    private val log = KotlinLogging.logger {}
 
     @PostMapping("/github-webhook")
     @ResponseStatus(HttpStatus.ACCEPTED)

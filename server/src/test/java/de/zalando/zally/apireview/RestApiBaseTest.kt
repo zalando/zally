@@ -22,7 +22,7 @@ import java.time.LocalDate
 @RunWith(SpringRunner::class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = arrayOf(Application::class, RestApiTestConfiguration::class)
+    classes = [Application::class, RestApiTestConfiguration::class]
 )
 @ActiveProfiles("test")
 abstract class RestApiBaseTest {

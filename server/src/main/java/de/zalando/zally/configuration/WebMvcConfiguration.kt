@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import java.util.Arrays
 
 @Configuration
-open class WebMvcConfiguration : WebMvcConfigurerAdapter() {
+class WebMvcConfiguration : WebMvcConfigurerAdapter() {
 
     @Autowired
     @Qualifier("yamlObjectMapper")
