@@ -15,13 +15,12 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.MediaType.TEXT_HTML_VALUE
 import org.springframework.web.client.RestTemplate
-import java.util.Collections.emptyList
 
 class ApiDefinitionReaderTest {
 
     private val contentInJson = "{\"swagger\":\"2.0\"}"
 
-    private var reader: ApiDefinitionReader? = null
+    private lateinit var reader: ApiDefinitionReader
 
     @Before
     fun setUp() {
@@ -36,20 +35,20 @@ class ApiDefinitionReaderTest {
 
     @Test(expected = MissingApiDefinitionException::class)
     fun shouldThrowMissingApiDefinitionExceptionWhenDefinitionIsNotFound() {
-        reader!!.read(ApiDefinitionRequest())
+        reader.read(ApiDefinitionRequest())
     }
 
     @Test
     fun shouldReturnStringWhenApiDefinitionIsFound() {
-        val request = ApiDefinitionRequest(contentInJson, null, "http://zalando.de", emptyList())
-        val result = reader!!.read(request)
+        val request = ApiDefinitionRequest(contentInJson, null, "http://zalando.de")
+        val result = reader.read(request)
         assertEquals(contentInJson, result)
     }
 
     @Test
     fun shouldReadJsonSwaggerDefinitionFromUrl() {
         val url = JadlerUtil.stubResource("test.json", contentInJson)
-        val result = reader!!.read(ApiDefinitionRequest.fromUrl(url))
+        val result = reader.read(ApiDefinitionRequest.fromUrl(url))
         assertEquals(contentInJson, result)
     }
 
@@ -57,7 +56,7 @@ class ApiDefinitionReaderTest {
     fun shouldReadYamlSwaggerDefinitionFromUrl() {
         val contentInYaml = "swagger: \"2.0\""
         val url = JadlerUtil.stubResource("test.yaml", contentInYaml, APPLICATION_X_YAML_VALUE)
-        val result = reader!!.read(ApiDefinitionRequest.fromUrl(url))
+        val result = reader.read(ApiDefinitionRequest.fromUrl(url))
 
         assertEquals(contentInYaml, result)
     }
@@ -65,15 +64,15 @@ class ApiDefinitionReaderTest {
     @Test
     fun shouldPreferRawSpecification() {
         val rawYaml = "raw: yaml"
-        val request = ApiDefinitionRequest("{\"some\": \"json\"", rawYaml, "http://zalando.de", emptyList())
-        val result = reader!!.read(request)
+        val request = ApiDefinitionRequest("{\"some\": \"json\"", rawYaml, "http://zalando.de")
+        val result = reader.read(request)
         assertEquals(rawYaml, result)
     }
 
     @Test
     fun shouldRetryLoadingOfUrlIfEndsWithSpecialEncodedCharacters() {
         val url = JadlerUtil.stubResource("test.json", contentInJson)
-        val result = reader!!.read(ApiDefinitionRequest.fromUrl("$url%3D%3D"))
+        val result = reader.read(ApiDefinitionRequest.fromUrl("$url%3D%3D"))
         assertEquals(contentInJson, result)
     }
 
@@ -81,14 +80,14 @@ class ApiDefinitionReaderTest {
     fun shouldErrorBadRequestWhenDefinitionFromUrlUnsuccessful() {
         val url = JadlerUtil.stubResource("test.json", "", HttpStatus.UNAUTHORIZED.value(), APPLICATION_JSON_VALUE)
 
-        reader!!.read(ApiDefinitionRequest.fromUrl(url))
+        reader.read(ApiDefinitionRequest.fromUrl(url))
     }
 
     @Test(expected = InaccessibleResourceUrlException::class)
     fun shouldErrorBadRequestWhenDefinitionFromUrlWrongContentType() {
         val url = JadlerUtil.stubResource("test.json", "", HttpStatus.OK.value(), TEXT_HTML_VALUE)
 
-        reader!!.read(ApiDefinitionRequest.fromUrl(url))
+        reader.read(ApiDefinitionRequest.fromUrl(url))
     }
 
     companion object {

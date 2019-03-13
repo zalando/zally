@@ -9,8 +9,8 @@ import de.zalando.zally.integration.zally.ZallyService
 import org.kohsuke.github.GHCommitState
 import org.kohsuke.github.GHCommitState.ERROR
 import org.kohsuke.github.GHCommitState.FAILURE
-import org.kohsuke.github.GHCommitState.SUCCESS
 import org.kohsuke.github.GHCommitState.PENDING
+import org.kohsuke.github.GHCommitState.SUCCESS
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
@@ -66,11 +66,11 @@ class ValidationService(private val githubService: GithubService,
             }.toMap().toMutableMap()
 
             validationResults.flatMap {
-                it.value.result.violations ?: emptyList()
+                it.value.result.violations
             }.forEach {
                 val violationType = it.violationType
                 if (violationType != null) {
-                    validationResult[violationType] = validationResult[violationType]!! + 1
+                    validationResult[violationType] = validationResult.getValue(violationType) + 1
                 }
             }
 

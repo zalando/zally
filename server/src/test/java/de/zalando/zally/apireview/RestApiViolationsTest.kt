@@ -16,7 +16,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.actuate.autoconfigure.web.server.LocalManagementPort
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.MediaType
@@ -27,11 +26,8 @@ import java.io.IOException
 
 class RestApiViolationsTest : RestApiBaseTest() {
 
-    @LocalManagementPort
-    private val managementPort: Int = 0
-
     @Autowired
-    private val wac: WebApplicationContext? = null
+    private lateinit var wac: WebApplicationContext
 
     @Before
     fun setUp() {
@@ -48,9 +44,9 @@ class RestApiViolationsTest : RestApiBaseTest() {
     fun shouldValidateGivenApiDefinition() {
         val response = sendApiDefinition(readApiDefinition("fixtures/openapi3_petstore_expanded.json"))
 
-        val violations = response!!.violations
+        val violations = response.violations
         assertThat(violations).hasSize(3)
-        assertThat(violations!![0].description).isEqualTo("TestCheckAlwaysReport3MustViolations #1")
+        assertThat(violations[0].description).isEqualTo("TestCheckAlwaysReport3MustViolations #1")
         assertThat(violations[1].description).isEqualTo("TestCheckAlwaysReport3MustViolations #2")
         assertThat(violations[2].description).isEqualTo("TestCheckAlwaysReport3MustViolations #3")
         assertThat(response.externalId).isNotNull()
@@ -61,8 +57,8 @@ class RestApiViolationsTest : RestApiBaseTest() {
     fun shouldReturnCounters() {
         val response = sendApiDefinition(readApiDefinition("fixtures/openapi3_petstore_expanded.json"))
 
-        val count = response!!.violationsCount
-        assertThat(count!!["must"]).isEqualTo(3)
+        val count = response.violationsCount
+        assertThat(count["must"]).isEqualTo(3)
         assertThat(count["should"]).isEqualTo(0)
         assertThat(count["may"]).isEqualTo(0)
         assertThat(count["hint"]).isEqualTo(0)
@@ -74,18 +70,17 @@ class RestApiViolationsTest : RestApiBaseTest() {
     fun shouldIgnoreRulesWithVendorExtension() {
         val response = sendApiDefinition(readApiDefinition("fixtures/openapi3_petstore_ignored.json"))
 
-        val violations = response!!.violations
+        val violations = response.violations
         assertThat(violations).isEmpty()
     }
 
     @Test
     @Throws(IOException::class)
     fun shouldIgnoreRulesWithApiParameter() {
-        val request = readApiDefinition("fixtures/openapi3_petstore_expanded.json")
-        request.ignoreRules = listOf("TestCheckAlwaysReport3MustViolations")
+        val request = readApiDefinition("fixtures/openapi3_petstore_expanded.json").copy(ignoreRules = listOf("TestCheckAlwaysReport3MustViolations"))
         val response = sendApiDefinition(request)
 
-        val violations = response!!.violations
+        val violations = response.violations
         assertThat(violations).isEmpty()
         assertThat(response.externalId).isNotNull()
     }
@@ -108,7 +103,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Test
     @Throws(IOException::class)
     fun shouldRespondWithBadRequestWhenApiDefinitionFieldIsMissing() {
-        val responseEntity = restTemplate!!.postForEntity(
+        val responseEntity = restTemplate.postForEntity(
             RestApiBaseTest.API_VIOLATIONS_URL, ImmutableMap.of("my_api", "dummy"), ErrorResponse::class.java
         )
 
@@ -125,10 +120,10 @@ class RestApiViolationsTest : RestApiBaseTest() {
             ApiDefinitionRequest.fromJson("\"no swagger definition\"")
         )
 
-        assertThat(response!!.violations).hasSize(5)
-        assertThat(response.violations!![0].title).isEqualTo("TestUseOpenApiRule")
-        assertThat(response.violations!![0].description).isEqualTo("attribute openapi is not of type `object`")
-        assertThat(response.violations!![1].title).isEqualTo("TestCheckIsOpenApi3")
+        assertThat(response.violations).hasSize(5)
+        assertThat(response.violations[0].title).isEqualTo("TestUseOpenApiRule")
+        assertThat(response.violations[0].description).isEqualTo("attribute openapi is not of type `object`")
+        assertThat(response.violations[1].title).isEqualTo("TestCheckIsOpenApi3")
         assertThat(response.externalId).isNotNull()
     }
 
@@ -139,10 +134,10 @@ class RestApiViolationsTest : RestApiBaseTest() {
 
         val violations = sendApiDefinition(
             ApiDefinitionRequest.fromUrl(definitionUrl)
-        )!!.violations
+        ).violations
 
         assertThat(violations).hasSize(3)
-        assertThat(violations!![0].description).isEqualTo("TestCheckAlwaysReport3MustViolations #1")
+        assertThat(violations[0].description).isEqualTo("TestCheckAlwaysReport3MustViolations #1")
         assertThat(violations[1].description).isEqualTo("TestCheckAlwaysReport3MustViolations #2")
         assertThat(violations[2].description).isEqualTo("TestCheckAlwaysReport3MustViolations #3")
     }
@@ -154,17 +149,17 @@ class RestApiViolationsTest : RestApiBaseTest() {
 
         val violations = sendApiDefinition(
             ApiDefinitionRequest.fromUrl(definitionUrl)
-        )!!.violations
+        ).violations
 
         assertThat(violations).hasSize(3)
-        assertThat(violations!![0].title).isEqualTo("TestCheckAlwaysReport3MustViolations")
+        assertThat(violations[0].title).isEqualTo("TestCheckAlwaysReport3MustViolations")
     }
 
     @Test
     @Throws(Exception::class)
     fun shouldReturn404WhenHostNotRecognised() {
         val request = ApiDefinitionRequest.fromUrl("http://remote-localhost/test.yaml")
-        val responseEntity = restTemplate!!.postForEntity(
+        val responseEntity = restTemplate.postForEntity(
             RestApiBaseTest.API_VIOLATIONS_URL, request, ErrorResponse::class.java
         )
 
@@ -187,8 +182,8 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Throws(IOException::class)
     fun shouldStoreSuccessfulApiReviewRequest() {
         sendApiDefinition(readApiDefinition("fixtures/openapi3_petstore_expanded.json"))
-        assertThat(apiReviewRepository!!.count()).isEqualTo(1L)
-        assertThat(apiReviewRepository!!.findAll().iterator().next().isSuccessfulProcessed).isTrue()
+        assertThat(apiReviewRepository.count()).isEqualTo(1L)
+        assertThat(apiReviewRepository.findAll().iterator().next().isSuccessfulProcessed).isTrue()
     }
 
     @Test
@@ -198,14 +193,14 @@ class RestApiViolationsTest : RestApiBaseTest() {
             ErrorResponse::class.java
         )
 
-        assertThat(apiReviewRepository!!.count()).isEqualTo(1L)
-        assertThat(apiReviewRepository!!.findAll().iterator().next().isSuccessfulProcessed).isFalse()
+        assertThat(apiReviewRepository.count()).isEqualTo(1L)
+        assertThat(apiReviewRepository.findAll().iterator().next().isSuccessfulProcessed).isFalse()
     }
 
     @Test
     @Throws(Exception::class)
     fun shouldAcceptYamlAndRespondWithJson() {
-        val mockMvc = MockMvcBuilders.webAppContextSetup(wac!!).build()
+        val mockMvc = MockMvcBuilders.webAppContextSetup(wac).build()
         val requestBuilder = MockMvcRequestBuilders.post("/api-violations")
             .contentType(WebMvcConfiguration.MEDIA_TYPE_APP_XYAML)
             .accept(MediaType.APPLICATION_JSON)
@@ -220,7 +215,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Test
     @Throws(Exception::class)
     fun shouldNotAcceptYamlWithoutCorrectContentType() {
-        val mockMvc = MockMvcBuilders.webAppContextSetup(wac!!).build()
+        val mockMvc = MockMvcBuilders.webAppContextSetup(wac).build()
         val requestBuilder = MockMvcRequestBuilders.post("/api-violations")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)

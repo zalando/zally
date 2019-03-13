@@ -9,7 +9,6 @@ import de.zalando.zally.rule.api.Violation
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.oas.models.security.SecurityScheme
-import org.springframework.beans.factory.annotation.Autowired
 import java.util.SortedSet
 
 @Rule(
@@ -18,7 +17,7 @@ import java.util.SortedSet
     severity = Severity.MUST,
     title = "Secure All Endpoints With Scopes"
 )
-class SecureAllEndpointsWithScopesRule(@Autowired rulesConfig: Config) {
+class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
 
     private val scopeRegex = Regex(
         rulesConfig.getString(

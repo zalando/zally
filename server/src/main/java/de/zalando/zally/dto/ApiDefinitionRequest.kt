@@ -8,13 +8,13 @@ data class ApiDefinitionRequest(
 
     @JsonRawValue
     @JsonDeserialize(using = JsonRawValueDeserializer::class)
-    var apiDefinition: String? = null,
+    val apiDefinition: String? = null,
 
-    var apiDefinitionString: String? = null,
+    val apiDefinitionString: String? = null,
 
-    var apiDefinitionUrl: String? = null,
+    val apiDefinitionUrl: String? = null,
 
-    var ignoreRules: List<String>? = emptyList()
+    val ignoreRules: List<String> = emptyList()
 ) {
     /** for java invocations: it doesn't have overloaded constructors */
     companion object Factory {

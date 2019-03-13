@@ -8,7 +8,6 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.getAllSchemas
 import io.swagger.v3.oas.models.media.Schema
-import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -16,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
     severity = Severity.MUST,
     title = "Use common field names"
 )
-class CommonFieldTypesRule(@Autowired rulesConfig: Config) {
+class CommonFieldTypesRule(rulesConfig: Config) {
 
     @Suppress("UNCHECKED_CAST")
     private val commonFields = rulesConfig.getConfig("${javaClass.simpleName}.common_types").entrySet()
