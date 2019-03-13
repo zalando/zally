@@ -31,7 +31,6 @@ and (with its online editor) API definitions.
 - Rich Check configuration
 - Ignore functionality (`x-zally-ignore` extension)
 - Java/Kotlin API for new Checks + helper functions
-- Permanils to linting results and statistics
 
 ## Quick start guide
 
