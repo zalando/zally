@@ -56,7 +56,7 @@ class RestApiTestConfiguration {
     class TestCheckAlwaysReport3MustViolations {
 
         @Check(severity = Severity.MUST)
-        fun validate(json: JsonNode): Iterable<Violation> {
+        fun validate(@Suppress("UNUSED_PARAMETER") json: JsonNode): Iterable<Violation> {
             return listOf(
                 Violation("TestCheckAlwaysReport3MustViolations #1", JsonPointers.EMPTY),
                 Violation("TestCheckAlwaysReport3MustViolations #2", JsonPointers.EMPTY),
@@ -70,7 +70,7 @@ class RestApiTestConfiguration {
     class TestUseOpenApiRule {
 
         @Check(severity = Severity.HINT)
-        fun validate(context: Context): Iterable<Violation> {
+        fun validate(@Suppress("UNUSED_PARAMETER") context: Context): Iterable<Violation> {
             return emptyList()
         }
     }
