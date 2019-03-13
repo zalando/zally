@@ -6,7 +6,7 @@
 
 <img src="logo.png" width="200" height="200" />
 
-Zally is a quality assuarance tool. It's a linter for OpenAPI specifications, which:
+Zally is a quality assurance tool. It's a linter for OpenAPI specifications, which:
 
 - Increases the quality of APIs
 - Checks compliance

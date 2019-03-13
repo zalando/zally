@@ -1,11 +1,10 @@
 package de.zalando.zally.integration.zally
 
 data class Violation(
-
-        var title: String? = null,
-        var description: String? = null,
-        var violationType: ViolationType? = null,
-        var ruleLink: String? = null,
-        var paths: List<String>? = null
+    val title: String? = null,
+    val description: String? = null,
+    val violationType: ViolationType? = null,
+    val ruleLink: String? = null,
+    val paths: List<String>? = emptyList() //null values can actually be stored in the DB
 
 )

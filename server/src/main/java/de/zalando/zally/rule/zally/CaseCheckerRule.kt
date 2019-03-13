@@ -7,7 +7,6 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import org.springframework.beans.factory.annotation.Autowired
 
 @Rule(
     ruleSet = ZallyRuleSet::class,
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
     severity = Severity.MUST,
     title = "Check case of various terms"
 )
-class CaseCheckerRule(@Autowired config: Config) {
+class CaseCheckerRule(config: Config) {
 
     private val checker = CaseChecker.load(config)
 

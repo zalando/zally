@@ -12,16 +12,16 @@ import org.springframework.context.annotation.Configuration
 open class RulesManagerConfiguration {
 
     @Autowired
-    private val context: ApplicationContext? = null
+    private lateinit var context: ApplicationContext
 
     @Bean
     open fun rules(): Collection<Any> {
-        return context!!.getBeansWithAnnotation(Rule::class.java).values
+        return context.getBeansWithAnnotation(Rule::class.java).values
     }
 
     @Bean
     open fun rulesManager(): RulesManager {
-        val rules = context!!.getBean("rules", Collection::class.java)
+        val rules = context.getBean("rules", Collection::class.java)
         val details = rules
             .filterNotNull()
             .map { instance ->

@@ -4,11 +4,10 @@ import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.util.Json
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class JsonRulesValidator(@Autowired rules: RulesManager) : RulesValidator<JsonNode>(rules) {
+class JsonRulesValidator(rules: RulesManager) : RulesValidator<JsonNode>(rules) {
     private var ast: ReverseAst? = null
 
     override fun parse(content: String): ContentParseResult<JsonNode> {

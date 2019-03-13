@@ -60,11 +60,13 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
 
     private fun handleMap(map: Map<*, *>, pointer: JsonPointer, defaultMarker: Marker?): Deque<Node> {
         return ArrayDeque<Node>(
-            map
-                .filter { (key, value) -> key is String && value != null }
-                .map { (key, value) ->
-                    Node(value!!, pointer.append(JsonPointers.escape(key as String)), getMarker(map) ?: defaultMarker)
+            map.mapNotNull { (key, value) ->
+                if (key is String && value != null) {
+                    Node(value, pointer.append(JsonPointers.escape(key)), getMarker(map) ?: defaultMarker)
+                } else {
+                    null
                 }
+            }
         )
     }
 

@@ -85,9 +85,9 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     @Test
     fun shouldReturnNumberOfUniqueApiReviewsBasedOnApiName() {
         val now = TestDateUtil.now().toLocalDate()
-        apiReviewRepository!!.save(apiReview(now, "API A", ""))
-        apiReviewRepository!!.save(apiReview(now, "API B", ""))
-        apiReviewRepository!!.save(apiReview(now, "API B", ""))
+        apiReviewRepository.save(apiReview(now, "API A", ""))
+        apiReviewRepository.save(apiReview(now, "API B", ""))
+        apiReviewRepository.save(apiReview(now, "API B", ""))
 
         val statistics = reviewStatistics
 
@@ -98,8 +98,8 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     @Test
     fun shouldFilterByUserAgent() {
         val now = TestDateUtil.now().toLocalDate()
-        apiReviewRepository!!.save(apiReview(now, null, "curl"))
-        apiReviewRepository!!.save(apiReview(now, null, ""))
+        apiReviewRepository.save(apiReview(now, null, "curl"))
+        apiReviewRepository.save(apiReview(now, null, ""))
 
         var statistics = reviewStatistics
         assertThat(statistics.totalReviews).isEqualTo(2)
@@ -117,7 +117,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
             currentDate = currentDate.plusDays(1L)
         }
 
-        apiReviewRepository!!.saveAll(reviews)
+        apiReviewRepository.saveAll(reviews)
         return reviews
     }
 

@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration
 open class RulesConfigConfiguration {
 
     @Value("\${rules-config-path}")
-    private val rulesConfigPath: String? = null
+    private lateinit var rulesConfigPath: String
 
     @Bean
     open fun createRulesConfig(): Config {
-        return ConfigFactory.load(rulesConfigPath!!)
+        return ConfigFactory.load(rulesConfigPath)
     }
 }
