@@ -1,11 +1,8 @@
 package de.zalando.zally.rule.zally
 
 import de.zalando.zally.getOpenApiContextFromContent
-import de.zalando.zally.getSwaggerContextFromContent
 import de.zalando.zally.rule.ZallyAssertions
-import de.zalando.zally.testConfig
 import org.intellij.lang.annotations.Language
-import org.junit.Ignore
 import org.junit.Test
 
 class NumericPropertyBoundsRuleTest {
