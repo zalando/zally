@@ -29,9 +29,9 @@ class StringPropertyLengthBoundsRule {
 
     private fun checkStringLengthBoundsReversed(context: Context, schema: Schema<Any>): List<Violation> =
         when {
-            schema.minLength != null
-                && schema.maxLength != null
-                && schema.minLength > schema.maxLength
+            schema.minLength != null &&
+                schema.maxLength != null &&
+                schema.minLength > schema.maxLength
             -> context.violations("minLength > maxLength is invalid", schema)
             else -> emptyList()
         }
