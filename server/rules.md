@@ -33,6 +33,14 @@ Supports:
 
 Unused definitions cause confusion and should be avioded.
 
+## S006: Define bounds for numeric properties
+
+Numeric properties typically have bounds associated with them and these
+should be expressed clearly in the API specification. If left
+unspecified then the minimum or maximum will be defined by the
+property's format (signed `int32` or `int64` for `integer` types,
+`float` or `double` for `number` types).
+
 ## H001: Base path can be extracted
 
 If all paths start with the same prefix then it would be cleaner to extract that into the basePath rather than repeating for each path.

@@ -38,9 +38,18 @@ class ViolationsAssert(violations: List<Violation>?) :
         return ListAssert(actual.map { it.description }).`as`("descriptions")
     }
 
-    fun pointersEqualTo(vararg pointers: String): ViolationsAssert {
-        isNotNull
-        ListAssert(actual.map { it.pointer.toString() }).`as`("pointers").containsExactly(*pointers)
+    fun pointersAllEqualTo(pointer: String): ViolationsAssert {
+        pointers().containsOnly(pointer)
         return this
+    }
+
+    fun pointersEqualTo(vararg pointers: String): ViolationsAssert {
+        pointers().containsExactly(*pointers)
+        return this
+    }
+
+    private fun pointers(): ListAssert<String> {
+        isNotNull
+        return ListAssert(actual.map { it.pointer.toString() }).`as`("pointers")
     }
 }
