@@ -5,6 +5,8 @@ package main
 import (
 	"io/ioutil"
 	"os"
+	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -39,119 +41,103 @@ func RunAppAndCaptureOutput(params []string) (string, error) {
 }
 
 func TestIntegrationWithNoParametersShowsUsage(t *testing.T) {
-	t.Run("integrationWithNoParametersShowsUsage", func(t *testing.T) {
-		out, e := RunAppAndCaptureOutput([]string{""})
+	out, e := RunAppAndCaptureOutput([]string{""})
 
-		assert.Contains(t, out, "USAGE:")
-		assert.Contains(t, out, "zally.test [global options] command [command options] [arguments...]")
+	assert.Contains(t, out, "USAGE:")
+	assert.Contains(t, out, "zally.test [global options] command [command options] [arguments...]")
 
-		assert.Nil(t, e)
-	})
+	assert.Nil(t, e)
 }
 
 func TestIntegrationWithLocalYamlFile(t *testing.T) {
-	t.Run("integrationWithLocalYamlFile", func(t *testing.T) {
-		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spa.yaml"})
-
-		assert.Contains(t, out, "MUST violations: 43")
-		assert.Contains(t, out, "SHOULD violations: 41")
-		assert.Contains(t, out, "MAY violations: 5")
-		assert.Contains(t, out, "HINT violations: 0")
-
-		assert.NotNil(t, e)
-	})
-}
-
-func TestIntegrationWithSomeOtherLocalYamlFile(t *testing.T) {
-	t.Run("integrationWithSomeOtherLocalYamlFile", func(t *testing.T) {
-		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_tinbox.yaml"})
-
-		assert.Contains(t, out, "Provide API Specification using OpenAPI")
-		assert.Contains(t, out, "MUST violations: 32")
-		assert.Contains(t, out, "SHOULD violations: 108")
-		assert.Contains(t, out, "MAY violations: 11")
-		assert.Contains(t, out, "HINT violations: 0")
-
-		assert.NotNil(t, e)
-	})
+	out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spa.yaml"})
+	assertMoreThanZeroViolations(t, out, e)
 }
 
 func TestIntegrationWithLocalJsonFile(t *testing.T) {
-	t.Run("integrationWithLocalJsonFile", func(t *testing.T) {
-		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spp.json"})
+	out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spp.json"})
 
-		assert.Contains(t, out, "MUST violations: 20")
-		assert.Contains(t, out, "SHOULD violations: 43")
-		assert.Contains(t, out, "MAY violations: 10")
-		assert.Contains(t, out, "HINT violations: 0")
-
-		assert.NotNil(t, e)
-	})
+	assertMoreThanZeroViolations(t, out, e)
 }
 
 func TestIntegrationWithRemoteYamlFile(t *testing.T) {
-	t.Run("integrationWithRemoteYamlFile", func(t *testing.T) {
-		ts := testHTTPServer()
-		defer ts.Close()
-		out, e := RunAppAndCaptureOutput([]string{"", "lint", ts.URL + "/api_spa.yaml"})
+	ts := testHTTPServer()
+	defer ts.Close()
+	out, e := RunAppAndCaptureOutput([]string{"", "lint", ts.URL + "/api_spa.yaml"})
 
-		assert.Contains(t, out, "MUST violations: 43")
-		assert.Contains(t, out, "SHOULD violations: 41")
-		assert.Contains(t, out, "MAY violations: 5")
-		assert.Contains(t, out, "HINT violations: 0")
-
-		assert.NotNil(t, e)
-	})
+	assertMoreThanZeroViolations(t, out, e)
 }
 
 func TestIntegrationWithRemoteJsonFile(t *testing.T) {
+	ts := testHTTPServer()
+	defer ts.Close()
+	out, e := RunAppAndCaptureOutput([]string{"", "lint", ts.URL + "/api_spp.json"})
 
-	t.Run("integrationWithRemoteJsonFile", func(t *testing.T) {
-		ts := testHTTPServer()
-		defer ts.Close()
-		out, e := RunAppAndCaptureOutput([]string{"", "lint", ts.URL + "/api_spp.json"})
-
-		assert.Contains(t, out, "MUST violations: 20")
-		assert.Contains(t, out, "SHOULD violations: 43")
-		assert.Contains(t, out, "MAY violations: 1")
-		assert.Contains(t, out, "HINT violations: 0")
-
-		assert.NotNil(t, e)
-	})
+	assertMoreThanZeroViolations(t, out, e)
 }
 
 func TestIntegrationWithNoMustViolations(t *testing.T) {
-	t.Run("integrationWithNoMustViolations", func(t *testing.T) {
-		out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/no_must_violations.yaml"})
+	out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/no_must_violations.yaml"})
 
-		assert.Contains(t, out, "MUST violations: 0")
-		assert.Contains(t, out, "SHOULD violations: 42")
-		assert.Contains(t, out, "MAY violations: 21")
-		assert.Contains(t, out, "HINT violations: 0")
+	must, should, may, hint := countViolations(out)
 
-		assert.Nil(t, e)
-	})
+	assert.Zero(t, must)
+	assert.True(t, should > 0)
+	assert.True(t, may > 0)
+	assert.Equal(t, 0, hint)
+	assert.Nil(t, e)
 }
 
 func TestIntegrationDisplayRulesList(t *testing.T) {
-	t.Run("integrationDisplayRulesList", func(t *testing.T) {
-		out, e := RunAppAndCaptureOutput([]string{"", "rules"})
+	out, e := RunAppAndCaptureOutput([]string{"", "rules"})
 
-		assert.Contains(t, out, "Avoid Link in Header Rule")
-		assert.Contains(t, out, "https://zalando.github.io/restful-api-guidelines/#166")
+	assert.Contains(t, out, "Avoid Link in Header Rule")
+	assert.Contains(t, out, "https://zalando.github.io/restful-api-guidelines/#166")
 
-		assert.Nil(t, e)
-	})
+	assert.Nil(t, e)
 }
 
 func TestIntegrationNotReceiveDeprecationMessage(t *testing.T) {
-	t.Run("notShowDeprecationMessage", func(t *testing.T) {
-		out, e := RunAppAndCaptureOutput([]string{"", "rules"})
+	out, e := RunAppAndCaptureOutput([]string{"", "rules"})
 
-		assert.NotContains(t, out, "Please update your CLI:")
+	assert.NotContains(t, out, "Please update your CLI:")
 
-		assert.Nil(t, e)
-	})
+	assert.Nil(t, e)
+}
+
+func assertMoreThanZeroViolations(t *testing.T, out string, e error) {
+	must, should, may, hint := countViolations(out)
+
+	assert.True(t, must > 0)
+	assert.True(t, should > 0)
+	assert.True(t, may > 0)
+	assert.Equal(t, 0, hint)
+	assert.NotNil(t, e)
+}
+
+func countViolations(out string) (int, int, int, int) {
+	must := -1
+	should := -1
+	may := -1
+	hint := -1
+	split := strings.Split(out, "\n")
+	for _, line := range split {
+		must = parseViolations(line, must, "MUST")
+		should = parseViolations(line, should, "SHOULD")
+		may = parseViolations(line, may, "MAY")
+		hint = parseViolations(line, hint, "HINT")
+	}
+	return must, should, may, hint
+}
+
+func parseViolations(line string, oldValue int, severity string) int {
+	trim := strings.TrimSpace(line)
+	prefix := severity + " violations: "
+	if strings.HasPrefix(trim, prefix) {
+		i, _ := strconv.Atoi(strings.TrimLeft(trim, prefix))
+		return i
+	}
+	return oldValue
 }
 
 func testHTTPServer() *httptest.Server {
