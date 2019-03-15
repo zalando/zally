@@ -6,17 +6,13 @@ language: java
 jdk:
   - oraclejdk8
 
-env:
-  DEP_VERSION="0.3.2"
+go:
+  - 1.11.4
 
 before_install:
-  - eval "$(GIMME_GO_VERSION=1.8.3 gimme)"
+  - eval "$(GIMME_GO_VERSION=1.11.4 gimme)"
   - sudo apt-get install jq
   - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/2.0.2/codacy-coverage-reporter-2.0.2-assembly.jar
-
-  # Install golang/dep (https://github.com/golang/dep/blob/master/docs/FAQ.md#how-do-i-use-dep-in-ci)  
-  - curl -L -s https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 -o $GOPATH/bin/dep
-  - chmod +x $GOPATH/bin/dep
 
 install: true
 
@@ -41,11 +37,7 @@ script:
   - while ! echo "GET / HTTP/1.0\n" | nc localhost 8000; do sleep 1; done
 
   # Test and build CLI
-  - export ZALLY_GO_PATH="$GOPATH/src/github.com/zalando/zally"
-  - mkdir -p $ZALLY_GO_PATH
-  - cp -R . $ZALLY_GO_PATH
-  - cd $ZALLY_GO_PATH/cli/zally
-  - dep ensure
+  - cd cli/zally
   - ./test.sh integration
   - go build
   - cd $TRAVIS_BUILD_DIR
@@ -71,4 +63,4 @@ after_success:
   # Upload test code coverage report for Zally integration server
   - bash <(curl -s https://codecov.io/bash) -f github-integration/build/reports/jacoco/test/jacocoTestReport.xml
   # Upload test code coverage report for Zally CLI
-  - bash <(curl -s https://codecov.io/bash) -f $ZALLY_GO_PATH/cli/zally/coverage.txt -f $TRAVIS_BUILD_DIR/web-ui/target/coverage/lcov.info
+  - bash <(curl -s https://codecov.io/bash) -f cli/zally/coverage.txt -f $TRAVIS_BUILD_DIR/web-ui/target/coverage/lcov.info
