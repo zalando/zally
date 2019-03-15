@@ -25,7 +25,7 @@ More about Zally:
 ### Technical Dependencies
 
 - Kotlin and Java 8 (server) with Spring Boot 
-- Golang 1.7+: for CLI
+- Golang 1.11+: for CLI
 - Node.js 7.6+: for web UI
 
 Find additional details [here](https://github.com/zalando/zally/pull/65#issuecomment-269474831). With Spring 5, we consider using Kotlin also directly on the API side.
@@ -49,8 +49,7 @@ cd server
 cd ..
 
 # Build CLI tool
-go get github.com/zalando/zally/cli/zally
-cd $GOPATH/src/github.com/zalando/zally/cli/zally
+cd cli/zally
 go build
 ./zally lint /path/to/swagger/definition.yaml
 ```
