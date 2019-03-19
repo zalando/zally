@@ -29,10 +29,8 @@ twintip:
 rules-config-path: "rules-config.conf"
 
 zally:
-  # Uncomment the `ignoreRules` property below to ignore rules system wide.
-  # Rules are specified using a comma separated list of rule ids.
-  #
-  # ignoreRules: H001, S005
+  # rules to be ignored system wide
+  ignoreRules: M008, M009, M010, H001, H002, S005, S006, S007
   cli:
     releasesPage: https://github.com/zalando/zally/releases
     deprecatedCliAgents: unirest-java/1.3.11,Zally-CLI/1.0
