@@ -248,4 +248,36 @@ class StringPropertyLengthBoundsRuleTest {
             .assertThat(violations)
             .isEmpty()
     }
+
+    @Test
+    fun `checkStringLengthBounds with pattern returns no violations`() {
+        assumeTrue(
+            "Test assumes config StringPropertyLengthBoundsRule.patternImpliesLimits is 'true'",
+            cut.patternImpliesLimits
+        )
+
+        @Language("YAML")
+        val context = getOpenApiContextFromContent(
+            """
+            openapi: 3.0.2
+            info:
+              title: Thing API
+              version: 1.0.0
+            components:
+              schemas:
+                Thing:
+                  type: object
+                  properties:
+                    theString:
+                      type: string
+                      pattern: #([a-f0-9]{6}|[a-f0-9]{3})
+            """.trimIndent()
+        )
+
+        val violations = cut.checkStringLengthBounds(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .isEmpty()
+    }
 }

@@ -21,6 +21,9 @@ class StringPropertyLengthBoundsRule(config: Config) {
         .getStringList("StringPropertyLengthBoundsRule.formatWhitelist")
         .toList()
 
+    internal val patternImpliesLimits = config
+        .getBoolean("StringPropertyLengthBoundsRule.patternImpliesLimits")
+
     @Check(severity = Severity.SHOULD)
     fun checkStringLengthBounds(context: Context): List<Violation> =
         context.api
@@ -29,6 +32,7 @@ class StringPropertyLengthBoundsRule(config: Config) {
                 when {
                     schema.type != "string" -> false
                     schema.format in formatWhitelist -> false
+                    schema.pattern != null && patternImpliesLimits -> false
                     else -> true
                 }
             }
