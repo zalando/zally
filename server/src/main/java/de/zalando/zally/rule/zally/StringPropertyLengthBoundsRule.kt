@@ -1,5 +1,6 @@
 package de.zalando.zally.rule.zally
 
+import com.typesafe.config.Config
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
@@ -14,13 +15,23 @@ import io.swagger.v3.oas.models.media.Schema
     severity = Severity.SHOULD,
     title = "Define bounds for lengths of string properties"
 )
-class StringPropertyLengthBoundsRule {
+class StringPropertyLengthBoundsRule(config: Config) {
+
+    internal val formatWhitelist = config
+        .getStringList("StringPropertyLengthBoundsRule.formatWhitelist")
+        .toList()
 
     @Check(severity = Severity.SHOULD)
     fun checkStringLengthBounds(context: Context): List<Violation> =
         context.api
             .getAllProperties()
-            .filterValues { schema -> schema.type == "string" }
+            .filterValues { schema ->
+                when {
+                    schema.type != "string" -> false
+                    schema.format in formatWhitelist -> false
+                    else -> true
+                }
+            }
             .flatMap { (_, schema) ->
                 checkStringLengthBoundsReversed(context, schema) +
                     checkStringLengthBound(context, "minLength", schema.minLength, schema) +
