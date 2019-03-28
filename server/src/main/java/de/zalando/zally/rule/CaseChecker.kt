@@ -7,7 +7,9 @@ import de.zalando.zally.util.PatternUtil
 import de.zalando.zally.util.getAllHeaders
 import de.zalando.zally.util.getAllParameters
 import de.zalando.zally.util.getAllProperties
+import de.zalando.zally.util.getAllSchemas
 import io.github.config4k.extract
+import io.swagger.v3.oas.models.media.Schema
 
 /**
  * Utility class for checking cases of strings against configured requirements.
@@ -19,7 +21,8 @@ class CaseChecker(
     val pathSegments: CaseCheck? = null,
     val pathParameterNames: CaseCheck? = null,
     val queryParameterNames: CaseCheck? = null,
-    val headerNames: CaseCheck? = null
+    val headerNames: CaseCheck? = null,
+    val discriminatorValues: CaseCheck? = null
 ) {
     companion object {
         fun load(config: Config): CaseChecker = config.extract("CaseChecker")
@@ -70,6 +73,42 @@ class CaseChecker(
                 ?.let { context.violations(it, schema) }
                 .orEmpty()
         }
+
+    /**
+     * Check that discriminator values match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
+    fun checkDiscriminatorValues(context: Context): List<Violation> = context.api
+        .getAllSchemas()
+        .filter { schema -> schema.discriminator != null }
+        .flatMap { schema ->
+            checkDiscriminatorValues(context, schema)
+        }
+
+    private fun checkDiscriminatorValues(context: Context, schema: Schema<Any>): List<Violation> = when (schema.type) {
+        "object" -> {
+            schema?.properties?.values?.flatMap { checkDiscriminatorValues(context, it) }.orEmpty() +
+                checkDiscriminatorMappingKeyValues(context, schema) +
+                checkDiscriminatorPropertyEnumValues(context, schema)
+        }
+        else -> emptyList()
+    }
+
+    private fun checkDiscriminatorPropertyEnumValues(context: Context, schema: Schema<Any>): List<Violation> =
+        schema.discriminator.propertyName
+            ?.let { propertyName ->
+                val property = schema.properties[propertyName]
+                val values = property?.enum?.map { it.toString() }
+                check("Discriminator property enum value", "Discriminator property enums", discriminatorValues, values)
+                    ?.let { context.violations(it, property) }
+            }
+            .orEmpty()
+
+    private fun checkDiscriminatorMappingKeyValues(context: Context, schema: Schema<Any>): List<Violation> =
+        check("Discriminator value", "Discriminator values", discriminatorValues, schema.discriminator.mapping?.keys)
+            ?.let { context.violations(it, schema.discriminator) }
+            .orEmpty()
 
     /**
      * Check that header names match the configured requirements.
@@ -127,9 +166,9 @@ class CaseChecker(
         prefix: String,
         prefixes: String,
         check: CaseChecker.CaseCheck?,
-        inputs: Iterable<String>
+        inputs: Iterable<String>?
     ): String? {
-        if (check == null) {
+        if (check == null || inputs == null) {
             return null
         }
 

@@ -37,4 +37,8 @@ class CaseCheckerRule(config: Config) {
     @Check(severity = Severity.MUST)
     fun checkPathSegments(context: Context): List<Violation> =
         checker.checkPathSegments(context)
+
+    @Check(severity = Severity.MUST)
+    fun checkDiscriminatorValues(context: Context): List<Violation> =
+        checker.checkDiscriminatorValues(context)
 }
