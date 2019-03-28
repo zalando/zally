@@ -60,7 +60,7 @@ apply plugin: 'de.undercouch.download'
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = '4.9'
+    gradleVersion = '5.3.1'
 }
 
 jar {
