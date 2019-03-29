@@ -10,9 +10,11 @@ import java.io.StringReader
 import java.security.MessageDigest
 
 @Service
-class GithubService(private val gitHub: GitHub,
-                    @Value("\${github.secret}") private val secret: String,
-                    @Qualifier("yamlObjectMapper") private val yamlObjectMapper: ObjectMapper) {
+class GithubService(
+    private val gitHub: GitHub,
+    @Value("\${github.secret}") private val secret: String,
+    @Qualifier("yamlObjectMapper") private val yamlObjectMapper: ObjectMapper
+) {
 
     fun parsePayload(payload: String, signature: String): PullRequest {
         validatePayload(payload, signature)

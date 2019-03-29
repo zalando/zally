@@ -20,5 +20,4 @@ class EmbeddedPostgresqlConfiguration {
     fun postgresqlMock(): PostgresqlMock {
         return PostgresqlMock()
     }
-
 }

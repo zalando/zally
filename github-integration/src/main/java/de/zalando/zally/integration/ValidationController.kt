@@ -36,5 +36,4 @@ class ValidationController(private val validationService: ValidationService) {
         log.error("request failed", ex)
         return ResponseEntity<Any>(HttpStatus.INTERNAL_SERVER_ERROR)
     }
-
 }

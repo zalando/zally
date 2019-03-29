@@ -36,15 +36,19 @@ class Application {
     }
 
     @Bean
-    fun githubClient(@Value("\${github.oauthToken}") oauthToken: String,
-                     @Value("\${github.apiUrl}") apiUrl: String): GitHub {
+    fun githubClient(
+        @Value("\${github.oauthToken}") oauthToken: String,
+        @Value("\${github.apiUrl}") apiUrl: String
+    ): GitHub {
         return GitHub.connectUsingOAuth(apiUrl, oauthToken)
     }
 
     @Bean
-    fun zallyClient(@Value("\${zally.apiUrl}") apiUrl: String,
-                    requestInterceptor: RequestInterceptor,
-                    jacksonObjectMapper: ObjectMapper): ZallyClient {
+    fun zallyClient(
+        @Value("\${zally.apiUrl}") apiUrl: String,
+        requestInterceptor: RequestInterceptor,
+        jacksonObjectMapper: ObjectMapper
+    ): ZallyClient {
         return Feign.builder()
                 .requestInterceptor(requestInterceptor)
                 .decoder(JacksonDecoder(jacksonObjectMapper))

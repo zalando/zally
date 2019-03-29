@@ -34,7 +34,7 @@ import uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs
 class ValidationControllerIntegrationTest {
     companion object {
         @ClassRule @JvmField val githubServer = JadlerRule(GithubMock(JadlerMocker(JdkStubHttpServer(8088)))) {
-            it.mockGet("/user", "json/github-user-response.json")//required for app start
+            it.mockGet("/user", "json/github-user-response.json") // required for app start
         }
         @ClassRule @JvmField val zallyServer = JadlerRule(ZallyMock(JadlerMocker(JdkStubHttpServer(9099))))
     }
@@ -234,5 +234,4 @@ class ValidationControllerIntegrationTest {
             add("X-Hub-Signature", SecurityUtil.sign(secret, body))
         }
     }
-
 }
