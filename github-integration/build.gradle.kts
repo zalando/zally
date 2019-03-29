@@ -82,8 +82,15 @@ dependencies {
     compile("uk.co.datumedge:hamcrest-json:0.2")
     compile("org.postgresql:postgresql:42.1.4")
     compile("io.github.microutils:kotlin-logging:1.6.22")
+    compile("javax.xml.bind:jaxb-api:2.3.0")
+    compile("com.sun.xml.bind:jaxb-core:2.3.0")
+    compile("com.sun.xml.bind:jaxb-impl:2.3.0")
+    compile("javax.activation:activation:1.1.1")
 
-    testCompile("ru.yandex.qatools.embed:postgresql-embedded:2.4")
+    testCompile("ru.yandex.qatools.embed:postgresql-embedded:2.10") {
+        exclude("de.flapdoodle.embed", "de.flapdoodle.embed.process")
+    }
+    testCompile("de.flapdoodle.embed:de.flapdoodle.embed.process:2.0.5")
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("org.mockito:mockito-core:1.10.19")
     testCompile("net.jadler:jadler-core:1.3.0")
