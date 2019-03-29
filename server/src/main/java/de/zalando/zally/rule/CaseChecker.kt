@@ -22,7 +22,8 @@ class CaseChecker(
     val pathParameterNames: CaseCheck? = null,
     val queryParameterNames: CaseCheck? = null,
     val headerNames: CaseCheck? = null,
-    val discriminatorValues: CaseCheck? = null
+    val discriminatorValues: CaseCheck? = null,
+    val enumValues: CaseCheck? = null
 ) {
     companion object {
         fun load(config: Config): CaseChecker = config.extract("CaseChecker")
@@ -109,6 +110,34 @@ class CaseChecker(
         check("Discriminator value", "Discriminator values", discriminatorValues, schema.discriminator.mapping?.keys)
             ?.let { context.violations(it, schema.discriminator) }
             .orEmpty()
+
+    /**
+     * Check that enum values match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
+    fun checkEnumValues(context: Context): List<Violation> = context.api
+        .getAllSchemas()
+        .flatMap { schema ->
+            checkEnumValues(context, schema)
+        }
+
+    private fun checkEnumValues(context: Context, schema: Schema<Any>): List<Violation> = when (schema.type) {
+        "string" -> {
+            check("Enum value", "Enum values", enumValues, schema.enum?.map { it.toString() })
+                ?.let { context.violations(it, schema) }
+                .orEmpty()
+        }
+        "object" -> {
+            schema.properties
+                .filterKeys { key -> key != schema.discriminator?.propertyName }
+                .values
+                .flatMap { schema ->
+                    checkEnumValues(context, schema)
+                }
+        }
+        else -> emptyList()
+    }
 
     /**
      * Check that header names match the configured requirements.

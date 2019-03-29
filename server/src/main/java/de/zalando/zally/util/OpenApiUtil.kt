@@ -45,6 +45,7 @@ fun OpenAPI.getAllHeaders(): Set<HeaderElement> {
  * @return a collection of schemas
  */
 fun OpenAPI.getAllSchemas(): Collection<Schema<Any>> = this.components?.schemas.orEmpty().values +
+    this.components?.parameters.orEmpty().mapNotNull { it.value.schema } +
     this.components?.responses.orEmpty().values.flatMap { it.content.orEmpty().values.mapNotNull { it.schema } } +
     this.components?.requestBodies.orEmpty().values.flatMap { it.content.orEmpty().values.mapNotNull { it.schema } } +
     this.paths.orEmpty().flatMap {

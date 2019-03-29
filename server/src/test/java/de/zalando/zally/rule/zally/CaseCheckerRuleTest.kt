@@ -254,4 +254,84 @@ class CaseCheckerRuleTest {
             .descriptionsAllMatch("Discriminator property enum value 'InVaLiD' does not match .*".toRegex())
             .pointersEqualTo("/definitions/Pet/properties/petType")
     }
+
+    @Test
+    fun `checkEnumValues with invalid discriminator returns no violations`() {
+        @Language("YAML")
+        val context = getOpenApiContextFromContent(
+            """
+            openapi: '3.0.0'
+            components:
+              schemas:
+                Pet:
+                  type: object
+                  required:
+                  - pet_type
+                  properties:
+                    pet_type:
+                      type: string
+                      enum: [ InVaLiD ]
+                  discriminator:
+                    propertyName: pet_type
+            """.trimIndent()
+        )
+
+        val violations = cut.checkEnumValues(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .isEmpty()
+    }
+
+    @Test
+    fun `checkEnumValues with invalid enum returns violations`() {
+        @Language("YAML")
+        val context = getOpenApiContextFromContent(
+            """
+            openapi: '3.0.0'
+            components:
+              schemas:
+                Pet:
+                  type: object
+                  properties:
+                    huntingSkill:
+                      type: string
+                      enum:
+                      - InVaLiD
+            """.trimIndent()
+        )
+
+        val violations = cut.checkEnumValues(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsAllMatch("Enum value 'InVaLiD' does not match .*".toRegex())
+            .pointersEqualTo("/components/schemas/Pet/properties/huntingSkill")
+    }
+
+    @Test
+    fun `checkEnumValues with invalid parameter enum returns violations`() {
+        @Language("YAML")
+        val context = getOpenApiContextFromContent(
+            """
+            openapi: '3.0.0'
+            components:
+              parameters:
+                huntingSkill:
+                  name: huntingSkill
+                  in: query
+                  schema:
+                    type: string
+                    enum:
+                    - InVaLiD
+            """.trimIndent()
+        )
+
+        val violations = cut.checkEnumValues(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsAllMatch("Enum value 'InVaLiD' does not match .*".toRegex())
+            .pointersEqualTo("/components/parameters/huntingSkill/schema")
+    }
 }
