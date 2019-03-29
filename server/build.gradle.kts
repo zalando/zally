@@ -11,11 +11,13 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm").version("1.3.21")
-    kotlin("plugin.jpa").version("1.3.21")
-    kotlin("plugin.noarg").version("1.3.21")
-    kotlin("plugin.spring").version("1.3.21")
-    kotlin("plugin.allopen").version("1.3.21")
+    val kotlinVersion = "1.3.21"
+
+    kotlin("jvm").version(kotlinVersion)
+    kotlin("plugin.jpa").version(kotlinVersion)
+    kotlin("plugin.noarg").version(kotlinVersion)
+    kotlin("plugin.spring").version(kotlinVersion)
+    kotlin("plugin.allopen").version(kotlinVersion)
 
     id("jacoco")
     id("org.springframework.boot") version "2.0.4.RELEASE"
@@ -41,21 +43,18 @@ allprojects {
     }
 }
 
-val versions = mapOf(
-        "jacoco" to "0.8.2"
-)
-
 dependencies {
-    val spring_boot_version = "2.0.4.RELEASE"
+    val springBootVersion = "2.0.4.RELEASE"
+    val jadlerVersion = "1.3.0"
 
     compile(project("zally-rule-api"))
-
+    compile("org.jetbrains.kotlin:kotlin-stdlib")
     compile("io.swagger.parser.v3:swagger-parser:2.0.2")
     compile("com.github.java-json-tools:json-schema-validator:2.2.10")
-    compile("org.springframework.boot:spring-boot-starter-web:$spring_boot_version")
-    compile("org.springframework.boot:spring-boot-starter-undertow:$spring_boot_version")
-    compile("org.springframework.boot:spring-boot-starter-actuator:$spring_boot_version")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa:$spring_boot_version") {
+    compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
+    compile("org.springframework.boot:spring-boot-starter-undertow:$springBootVersion")
+    compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion") {
         exclude("org.hibernate", "hibernate-entitymanager")
     }
     compile("org.flywaydb:flyway-core:5.1.4")
@@ -72,24 +71,23 @@ dependencies {
     compile("org.zalando.stups:stups-spring-oauth2-server:1.0.22")
     compile("org.zalando:problem-spring-web:0.23.0")
     compile("org.zalando:twintip-spring-web:1.1.0")
-    compile("org.jetbrains.kotlin:kotlin-stdlib")
     compile("io.github.config4k:config4k:0.4.1")
 
     compile("de.mpg.mpi-inf:javatools:1.1")
 
     testCompile(project("zally-rule-api"))
 
-    testCompile("net.jadler:jadler-core:1.3.0")
-    testCompile("net.jadler:jadler-jdk:1.3.0")
-    testCompile("net.jadler:jadler-junit:1.3.0")
-    testCompile("org.springframework.boot:spring-boot-starter-test:$spring_boot_version")
+    testCompile("net.jadler:jadler-core:$jadlerVersion")
+    testCompile("net.jadler:jadler-jdk:$jadlerVersion")
+    testCompile("net.jadler:jadler-junit:$jadlerVersion")
+    testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
     testCompile("org.assertj:assertj-core:3.11.0")
     testCompile("com.jayway.jsonpath:json-path-assert:2.4.0")
     testCompile("org.mockito:mockito-core:2.23.4")
 }
 
 jacoco {
-    toolVersion = versions["jacoco"]!!
+    toolVersion = "0.8.2"
 }
 
 tasks.register("downloadJsonSchema", Download::class) {
