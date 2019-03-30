@@ -7,6 +7,7 @@ import de.zalando.zally.testConfig
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
+@Suppress("UndocumentedPublicFunction")
 class CaseCheckerRuleTest {
 
     private val cut = CaseCheckerRule(testConfig)
