@@ -118,9 +118,7 @@ tasks.jacocoTestReport {
 }
 
 tasks.jar {
-    archiveBaseName.set("bark")
     archiveVersion.set("1.0.0")
-    archiveFileName.set("bark.jar")
 }
 
 tasks.wrapper {
