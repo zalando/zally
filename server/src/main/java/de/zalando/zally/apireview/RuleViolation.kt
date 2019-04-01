@@ -25,13 +25,13 @@ class RuleViolation(
     val id: Long = 0
 
     @Column(nullable = false)
-    val name: String = "${result.rule.title} (${result.rule.id})"
+    val name: String = "${result.title} (${result.id})"
 
     @Column(nullable = false)
-    val ruleTitle: String = result.rule.title
+    val ruleTitle: String = result.title
 
     @Column(nullable = false)
-    val ruleUrl: String = result.ruleSet.url(result.rule).toString()
+    val ruleUrl: String = result.url.toString()
 
     @Column(nullable = false)
     val description: String = result.description

@@ -3,14 +3,12 @@ package de.zalando.zally.apireview
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.dto.ApiDefinitionRequest
 import de.zalando.zally.rule.Result
-import de.zalando.zally.rule.TestRuleSet
-import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
-import de.zalando.zally.rule.zalando.UseOpenApiRule
 import de.zalando.zally.util.resourceToString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.IOException
+import java.net.URI
 import java.util.Arrays.asList
 
 class ApiReviewTest {
@@ -52,5 +50,12 @@ class ApiReviewTest {
     }
 
     private fun result(severity: Severity, pointer: JsonPointer): Result =
-        Result(TestRuleSet(), UseOpenApiRule::class.java.getAnnotation(Rule::class.java), "", severity, pointer)
+        Result(
+            id = "TestRuleId",
+            url = URI.create("http://rules.example.com/test"),
+            title = "Test Rule Title",
+            description = "Description of test rule",
+            violationType = severity,
+            pointer = pointer
+        )
 }
