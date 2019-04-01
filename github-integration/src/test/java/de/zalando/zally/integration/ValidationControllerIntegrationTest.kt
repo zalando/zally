@@ -62,12 +62,7 @@ class ValidationControllerIntegrationTest {
 
         val response = restTemplate.postForEntity("/github-webhook", HttpEntity(body, headers), String::class.java)
 
-        assertThat(response.statusCode, `is`(HttpStatus.ACCEPTED))
-
-        githubServer.mock.verifyThatRequest()
-                .havingMethodEqualTo("POST")
-                .havingPath(Matchers.containsString("/statuses/"))
-                .receivedNever()
+        assertThat(response.statusCode, `is`(HttpStatus.NOT_FOUND))
     }
 
     @Test
