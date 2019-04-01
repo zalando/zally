@@ -52,5 +52,12 @@ class ApiReviewTest {
     }
 
     private fun result(severity: Severity, pointer: JsonPointer): Result =
-        Result(TestRuleSet(), UseOpenApiRule::class.java.getAnnotation(Rule::class.java), "", severity, pointer)
+        Result(
+            id = UseOpenApiRule::class.java.getAnnotation(Rule::class.java).id,
+            url = TestRuleSet().url(UseOpenApiRule::class.java.getAnnotation(Rule::class.java)),
+            title = UseOpenApiRule::class.java.getAnnotation(Rule::class.java).title,
+            description = "",
+            violationType = severity,
+            pointer = pointer
+        )
 }

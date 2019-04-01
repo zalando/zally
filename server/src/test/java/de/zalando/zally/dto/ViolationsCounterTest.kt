@@ -97,14 +97,14 @@ class ViolationsCounterTest {
     }
 
     private fun listOfResults(count: Int, severity: Severity): List<Result> {
-        val ruleSet = ZalandoRuleSet()
         return List(count) {
             Result(
-                ruleSet,
-                AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java),
-                "Test Description",
-                severity,
-                JsonPointer.compile("/pointer")
+                id = AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java).id,
+                url = ZalandoRuleSet().url(AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java)),
+                title = AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java).title,
+                description = "Test Description",
+                violationType = severity,
+                pointer = JsonPointer.compile("/pointer")
             )
         }
     }

@@ -28,8 +28,9 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
             is ParsedWithErrors ->
                 parseResult.violations.map { violation ->
                     Result(
-                        ruleSet = useOpenApiRule.ruleSet,
-                        rule = useOpenApiRule.rule,
+                        id = useOpenApiRule.rule.id,
+                        url = useOpenApiRule.ruleSet.url(useOpenApiRule.rule),
+                        title = useOpenApiRule.rule.title,
                         description = violation.description,
                         violationType = useOpenApiRule.rule.severity,
                         pointer = violation.pointer,
@@ -64,8 +65,8 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
             details.method.invoke(details.instance, root)
         } catch (e: InvocationTargetException) {
             throw RuntimeException(
-                "check invocation failed: ruleId=${details.rule.id} " +
-                    "ruleTitle=${details.rule.title} checkName=${details.method.name} reason=${e.targetException}", e
+                "check invocation failed: id=${details.rule.id} " +
+                    "title=${details.rule.title} checkName=${details.method.name} reason=${e.targetException}", e
             )
         }
 
@@ -82,7 +83,15 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
                 ignore(root, it.pointer, details.rule.id)
             }
             .map {
-                Result(details.ruleSet, details.rule, it.description, details.check.severity, it.pointer, locator.locate(it.pointer))
+                Result(
+                    id = details.rule.id,
+                    url = details.ruleSet.url(details.rule),
+                    title = details.rule.title,
+                    description = it.description,
+                    violationType = details.check.severity,
+                    pointer = it.pointer,
+                    lines = locator.locate(it.pointer)
+                )
             }
     }
 

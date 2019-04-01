@@ -137,11 +137,12 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     private fun createRandomViolations(): List<Result> {
         return listOf(
             Result(
-                ZalandoRuleSet(),
-                AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java),
-                "",
-                Severity.MUST,
-                JsonPointer.compile("/pointer")
+                id = AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java).id,
+                url = ZalandoRuleSet().url(AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java)),
+                title = AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java).title,
+                description = "",
+                violationType = Severity.MUST,
+                pointer = JsonPointer.compile("/pointer")
             )
         )
     }
