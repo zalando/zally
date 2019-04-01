@@ -2,16 +2,14 @@ package de.zalando.zally.dto
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.Result
-import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Severity.HINT
 import de.zalando.zally.rule.api.Severity.MAY
 import de.zalando.zally.rule.api.Severity.MUST
 import de.zalando.zally.rule.api.Severity.SHOULD
-import de.zalando.zally.rule.zalando.AvoidTrailingSlashesRule
-import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.net.URI
 
 class ViolationsCounterTest {
 
@@ -99,10 +97,10 @@ class ViolationsCounterTest {
     private fun listOfResults(count: Int, severity: Severity): List<Result> {
         return List(count) {
             Result(
-                id = AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java).id,
-                url = ZalandoRuleSet().url(AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java)),
-                title = AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java).title,
-                description = "Test Description",
+                id = "TestRuleId",
+                url = URI.create("http://rules.example.com/test"),
+                title = "Test Rule Title",
+                description = "Description of test rule",
                 violationType = severity,
                 pointer = JsonPointer.compile("/pointer")
             )
