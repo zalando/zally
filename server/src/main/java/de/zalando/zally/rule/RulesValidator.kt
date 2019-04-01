@@ -4,20 +4,16 @@ import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.ContentParseResult.NotApplicable
 import de.zalando.zally.rule.ContentParseResult.ParsedSuccessfully
 import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
+import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.rule.zalando.UseOpenApiRule
 import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationTargetException
+import java.net.URI
 
 abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidator {
 
     private val log = LoggerFactory.getLogger(RulesValidator::class.java)
     private val reader = ObjectTreeReader()
-
-    private val useOpenApiRule: RuleDetails by lazy {
-        rules.rules.firstOrNull { it.rule.id == UseOpenApiRule.id }
-            ?: throw IllegalStateException("""Rule "${UseOpenApiRule::class.simpleName}" must be registered in "${RulesManager::class.simpleName}".""")
-    }
 
     override fun validate(content: String, policy: RulesPolicy): List<Result> {
         val parseResult = parse(content)
@@ -28,11 +24,11 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
             is ParsedWithErrors ->
                 parseResult.violations.map { violation ->
                     Result(
-                        id = useOpenApiRule.rule.id,
-                        url = useOpenApiRule.ruleSet.url(useOpenApiRule.rule),
-                        title = useOpenApiRule.rule.title,
+                        id = "InternalRuleSet",
+                        url = URI.create("https://github.com/zalando/zally/blob/master/server/rules.md"),
+                        title = "Unable to parse API specification",
                         description = violation.description,
-                        violationType = useOpenApiRule.rule.severity,
+                        violationType = Severity.MUST,
                         pointer = violation.pointer,
                         lines = locator.locate(violation.pointer)
                     )

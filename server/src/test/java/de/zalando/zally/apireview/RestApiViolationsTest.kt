@@ -121,7 +121,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
         )
 
         assertThat(response.violations).hasSize(5)
-        assertThat(response.violations[0].title).isEqualTo("TestUseOpenApiRule")
+        assertThat(response.violations[0].title).isEqualTo("Unable to parse API specification")
         assertThat(response.violations[0].description).isEqualTo("attribute openapi is not of type `object`")
         assertThat(response.violations[1].title).isEqualTo("TestCheckIsOpenApi3")
         assertThat(response.externalId).isNotNull()
