@@ -20,8 +20,10 @@ class ValidationController(private val validationService: ValidationService) {
 
     @PostMapping("/github-webhook", headers = arrayOf("X-GitHub-Event=pull_request"))
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun validatePullRequest(@RequestBody payload: String,
-                            @RequestHeader(value = "X-Hub-Signature") signature: String) {
+    fun validatePullRequest(
+        @RequestBody payload: String,
+        @RequestHeader(value = "X-Hub-Signature") signature: String
+    ) {
 
         log.info("Received pull request event on webhook")
 

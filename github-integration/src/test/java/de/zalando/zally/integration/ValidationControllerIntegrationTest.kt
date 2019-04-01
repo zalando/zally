@@ -7,7 +7,6 @@ import de.zalando.zally.integration.mock.JadlerRule
 import de.zalando.zally.integration.mock.ZallyMock
 import net.jadler.JadlerMocker
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Before
