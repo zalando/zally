@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
 @Service
-class ZallyService(@Qualifier("yamlObjectMapper") private val yamlObjectMapper: ObjectMapper,
-                   private val jsonObjectMapper: ObjectMapper,
-                   private val zallyClient: ZallyClient) {
+class ZallyService(
+    @Qualifier("yamlObjectMapper") private val yamlObjectMapper: ObjectMapper,
+    private val jsonObjectMapper: ObjectMapper,
+    private val zallyClient: ZallyClient
+) {
 
     private val log = KotlinLogging.logger {}
     private val jsonNodeFactory = JsonNodeFactory.instance
@@ -27,5 +29,4 @@ class ZallyService(@Qualifier("yamlObjectMapper") private val yamlObjectMapper: 
         log.info("Zally validation response {}", validationResult)
         return validationResult
     }
-
 }

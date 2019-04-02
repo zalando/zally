@@ -10,9 +10,11 @@ import java.net.URL
 /**
  * Immutable class that represents important pull request event information
  */
-data class PullRequestEvent(val pullRequest: PullRequestInfo,
-                            val repository: RepositoryInfo,
-                            val sender: UserInfo) {
+data class PullRequestEvent(
+    val pullRequest: PullRequestInfo,
+    val repository: RepositoryInfo,
+    val sender: UserInfo
+) {
 
     companion object {
         operator fun invoke(event: GHEventPayload.PullRequest): PullRequestEvent {
@@ -22,14 +24,14 @@ data class PullRequestEvent(val pullRequest: PullRequestInfo,
                     UserInfo(event.sender))
         }
     }
-
 }
 
 data class PullRequestInfo(
-        val url: URL,
-        val htmlUrl: URL,
-        val title: String,
-        val head: CommitPointer) {
+    val url: URL,
+    val htmlUrl: URL,
+    val title: String,
+    val head: CommitPointer
+) {
 
     companion object {
         operator fun invoke(pr: GHPullRequest): PullRequestInfo =
@@ -38,9 +40,10 @@ data class PullRequestInfo(
 }
 
 data class CommitPointer(
-        val ref: String,
-        val sha: String,
-        val user: UserInfo) {
+    val ref: String,
+    val sha: String,
+    val user: UserInfo
+) {
 
     companion object {
         operator fun invoke(commit: GHCommitPointer) =
@@ -48,9 +51,11 @@ data class CommitPointer(
     }
 }
 
-data class RepositoryInfo(val name: String,
-                          val url: URL,
-                          val htmlUrl: URL) {
+data class RepositoryInfo(
+    val name: String,
+    val url: URL,
+    val htmlUrl: URL
+) {
 
     companion object {
         operator fun invoke(repo: GHRepository): RepositoryInfo =
@@ -58,10 +63,12 @@ data class RepositoryInfo(val name: String,
     }
 }
 
-data class UserInfo(val login: String,
-                    val url: URL,
-                    val htmlUrl: URL,
-                    val avatarUrl: String) {
+data class UserInfo(
+    val login: String,
+    val url: URL,
+    val htmlUrl: URL,
+    val avatarUrl: String
+) {
 
     companion object {
         operator fun invoke(user: GHUser): UserInfo =

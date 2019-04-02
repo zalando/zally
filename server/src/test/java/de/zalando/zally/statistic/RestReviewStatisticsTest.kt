@@ -5,15 +5,13 @@ import de.zalando.zally.apireview.ApiReview
 import de.zalando.zally.apireview.RestApiBaseTest
 import de.zalando.zally.dto.ApiDefinitionRequest
 import de.zalando.zally.rule.Result
-import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
-import de.zalando.zally.rule.zalando.AvoidTrailingSlashesRule
-import de.zalando.zally.rule.zalando.ZalandoRuleSet
 import de.zalando.zally.util.ErrorResponse
 import de.zalando.zally.util.TestDateUtil
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.springframework.http.HttpStatus.BAD_REQUEST
+import java.net.URI
 import java.time.LocalDate
 
 class RestReviewStatisticsTest : RestApiBaseTest() {
@@ -137,11 +135,12 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
     private fun createRandomViolations(): List<Result> {
         return listOf(
             Result(
-                ZalandoRuleSet(),
-                AvoidTrailingSlashesRule::class.java.getAnnotation(Rule::class.java),
-                "",
-                Severity.MUST,
-                JsonPointer.compile("/pointer")
+                id = "TestRuleId",
+                url = URI.create("http://rules.example.com/test"),
+                title = "Test Rule Title",
+                description = "Description of test rule",
+                violationType = Severity.MUST,
+                pointer = JsonPointer.compile("/pointer")
             )
         )
     }

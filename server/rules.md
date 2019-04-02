@@ -2,6 +2,12 @@
 
 Zally comes with a number of Rule Sets which can be selected and used. The built in rule sets are documented below.
 
+# InternalRuleSet
+
+Internal rules which exist simply for the purpose of reporting fatal
+errors found while attempting to parse the API specification.
+The rules cannot be disabled or configured.
+
 # ZalandoRuleSet
 
 Primarily Zally exists to enforce the various guidelines of the [Zalando RESTful API and Event Scheme Guidelines](http://zalando.github.io/restful-api-guidelines/). Individual rules descriptions won't be repeated here.

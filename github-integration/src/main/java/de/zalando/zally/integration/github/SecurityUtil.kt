@@ -15,5 +15,4 @@ object SecurityUtil {
 
         return "sha1=${String(Hex.encode(result))}"
     }
-
 }
