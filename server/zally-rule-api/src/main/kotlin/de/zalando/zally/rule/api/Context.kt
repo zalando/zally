@@ -36,8 +36,8 @@ interface Context {
      * @return a list of Violations and/or nulls where no violations are necessary
      */
     fun validatePaths(
-            pathFilter: (Map.Entry<String, PathItem?>) -> Boolean = { true },
-            action: (Map.Entry<String, PathItem?>) -> List<Violation?>
+        pathFilter: (Map.Entry<String, PathItem?>) -> Boolean = { true },
+        action: (Map.Entry<String, PathItem?>) -> List<Violation?>
     ): List<Violation>
 
     /**

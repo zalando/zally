@@ -19,5 +19,4 @@ class ReportController(private val reportService: ReportService) {
         val report = reportService.getReport(id)
         return ModelAndView("reports", "report", report)
     }
-
 }

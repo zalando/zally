@@ -15,11 +15,13 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class ValidationService(private val githubService: GithubService,
-                        private val zallyService: ZallyService,
-                        private val validationRepository: ValidationRepository,
-                        private val jsonObjectMapper: ObjectMapper,
-                        @Value("\${bark.serverUrl}") private val serverUrl: String) {
+class ValidationService(
+    private val githubService: GithubService,
+    private val zallyService: ZallyService,
+    private val validationRepository: ValidationRepository,
+    private val jsonObjectMapper: ObjectMapper,
+    @Value("\${bark.serverUrl}") private val serverUrl: String
+) {
 
     fun validatePullRequest(payload: String, signature: String) {
 
@@ -114,9 +116,11 @@ class ValidationService(private val githubService: GithubService,
         }
     }
 
-    private fun storeResultAndUpdateStatus(status: RequestStatus,
-                                           pullRequest: PullRequest,
-                                           reviewResponse: Map<String, ApiValidationResult>?) {
+    private fun storeResultAndUpdateStatus(
+        status: RequestStatus,
+        pullRequest: PullRequest,
+        reviewResponse: Map<String, ApiValidationResult>?
+    ) {
         val validation = storeValidationResults(pullRequest, reviewResponse)
         pullRequest.updateCommitState(status.commitState, reportLink(validation.id), status.description)
     }

@@ -8,8 +8,10 @@ import de.zalando.zally.integration.zally.ApiDefinitionResponse
 import org.springframework.stereotype.Service
 
 @Service
-class ReportService(private val validationRepository: ValidationRepository,
-                    private val jsonObjectMapper: ObjectMapper) {
+class ReportService(
+    private val validationRepository: ValidationRepository,
+    private val jsonObjectMapper: ObjectMapper
+) {
 
     fun getReport(id: Long): Report {
         val validation = validationRepository.findById(id).orElseThrow({ ValidationNotFoundException("Not found Validation with id $id") })
@@ -20,13 +22,16 @@ class ReportService(private val validationRepository: ValidationRepository,
             DefinitionValidationResult(it.fileName, it.apiDefinition, apiDefinitionResponse)
         })
     }
-
 }
 
-data class Report(val id: Long?,
-                  val pullRequestEvent: PullRequestEvent?,
-                  val validationResults: List<DefinitionValidationResult>)
+data class Report(
+    val id: Long?,
+    val pullRequestEvent: PullRequestEvent?,
+    val validationResults: List<DefinitionValidationResult>
+)
 
-data class DefinitionValidationResult(val fileName: String?,
-                                      val apiDefinition: String?,
-                                      val apiDefinitionResponse: ApiDefinitionResponse?)
+data class DefinitionValidationResult(
+    val fileName: String?,
+    val apiDefinition: String?,
+    val apiDefinitionResponse: ApiDefinitionResponse?
+)

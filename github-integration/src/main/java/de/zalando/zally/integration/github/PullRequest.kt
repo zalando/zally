@@ -10,11 +10,13 @@ import org.kohsuke.github.PagedIterable
 import java.nio.charset.StandardCharsets
 import java.util.Optional
 
-//open for mocking 
-open class PullRequest(private val yamlMapper: ObjectMapper,
-                       private val repository: GHRepository,
-                       val eventInfo: PullRequestEvent,
-                       private val changedFiles: PagedIterable<GHPullRequestFileDetail>) {
+// open for mocking 
+open class PullRequest(
+    private val yamlMapper: ObjectMapper,
+    private val repository: GHRepository,
+    val eventInfo: PullRequestEvent,
+    private val changedFiles: PagedIterable<GHPullRequestFileDetail>
+) {
 
     private val ZALLY_CONFIGURATION_PATH = ".zally.yaml"
 
@@ -40,8 +42,8 @@ open class PullRequest(private val yamlMapper: ObjectMapper,
 
     open fun isAPIChanged(): Boolean {
         val changedFiles = getChangedFiles()
-        return changedFiles.contains(ZALLY_CONFIGURATION_PATH)
-                || getConfiguration().get().apiDefinitions.intersect(changedFiles).isNotEmpty()
+        return changedFiles.contains(ZALLY_CONFIGURATION_PATH) ||
+                getConfiguration().get().apiDefinitions.intersect(changedFiles).isNotEmpty()
     }
 
     private fun getFileContents(path: String): Optional<String> =

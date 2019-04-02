@@ -8,5 +8,4 @@ interface ZallyClient {
     @RequestLine("POST /api-violations")
     @Headers("Content-Type: application/json")
     fun validate(content: String): ApiDefinitionResponse
-
 }

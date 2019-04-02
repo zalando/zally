@@ -99,5 +99,4 @@ class ValidationServiceTest {
     private fun simpleConfiguration() = Configuration().apply {
         this.apiDefinitions = listOf("foo/bar.yaml")
     }
-
 }

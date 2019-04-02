@@ -6,5 +6,4 @@ import java.util.Optional
 interface ValidationRepository : JpaRepository<PullRequestValidation, Long> {
 
     fun findById(id: Long): Optional<PullRequestValidation>
-
 }

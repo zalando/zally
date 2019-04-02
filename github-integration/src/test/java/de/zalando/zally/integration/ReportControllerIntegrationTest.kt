@@ -33,14 +33,14 @@ import org.springframework.test.context.junit4.SpringRunner
 class ReportControllerIntegrationTest {
     companion object {
         @ClassRule @JvmField val githubServer = JadlerRule(GithubMock(JadlerMocker(JdkStubHttpServer(8088)))) {
-            it.mockGet("/user", "json/github-user-response.json")//required for app start
+            it.mockGet("/user", "json/github-user-response.json") // required for app start
         }
     }
 
     @Autowired
     lateinit var restTemplate: TestRestTemplate
 
-    //todo verify html?
+    // todo verify html?
 
     @Test
     fun shouldReturnExistingValidation() {
@@ -58,5 +58,4 @@ class ReportControllerIntegrationTest {
         val response = restTemplate.exchange("/reports/555", HttpMethod.GET, entity, String::class.java)
         assertThat(response.statusCode, `is`(HttpStatus.NOT_FOUND))
     }
-
 }
