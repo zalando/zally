@@ -16,10 +16,16 @@ import de.zalando.zally.util.PatternUtil.isPathVariable
 )
 class LimitNumberOfResourcesRule(rulesConfig: Config) {
     private val resourceTypesLimit = rulesConfig.getConfig(javaClass.simpleName).getInt("resource_types_limit")
+    private val pathWhitelist = rulesConfig.getConfig(javaClass.simpleName).getStringList("path_whitelist").map { it.toRegex() }
 
     @Check(severity = Severity.SHOULD)
     fun checkLimitOfResources(context: Context): Violation? {
-        val resourceTypes = resourceTypes(context.api.paths.orEmpty().keys)
+        val paths = context.api
+            .paths
+            .orEmpty()
+            .keys
+            .filterNot { isWhitelisted(it) }
+        val resourceTypes = resourceTypes(paths)
         return if (resourceTypes.size > resourceTypesLimit) {
             context.violation(
                 "Identified ${resourceTypes.size} resource resource types, " +
@@ -48,4 +54,6 @@ class LimitNumberOfResourcesRule(rulesConfig: Config) {
                 components
         }.joinToString(prefix = "/", separator = "/")
     }
+
+    fun isWhitelisted(path: String): Boolean = pathWhitelist.any { it.matches(path) }
 }
