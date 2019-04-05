@@ -3,7 +3,6 @@ package de.zalando.zally.rule
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
-import io.swagger.parser.OpenAPIParser
 import io.swagger.util.Yaml
 import org.intellij.lang.annotations.Language
 import org.junit.ClassRule
@@ -365,23 +364,17 @@ class NullPointerExceptionTest(private val spec: String) {
                     - name: Parameter name
 
                 """.trimIndent()
-
-            val api = OpenAPIParser().readContents(spec, null, null).openAPI
-            val root = Yaml.mapper().convertValue(api, ObjectNode::class.java)
-
-            return variations(root)
+            return variations(spec)
         }
 
         private fun openAPIPetstoreVariations(): Iterable<String> {
             val spec = NullPointerExceptionTest::class.java.getResource("/fixtures/openapi3_petstore.yaml").readText()
-            val api = OpenAPIParser().readContents(spec, null, null).openAPI
-            val root = Yaml.mapper().convertValue(api, ObjectNode::class.java)
-
-            return variations(root)
+            return variations(spec)
         }
 
-        private fun variations(root: JsonNode): Iterable<String> {
-            return listOf(root.pretty()) + variations(root, root)
+        private fun variations(spec: String): Iterable<String> {
+            val read = ObjectTreeReader().read(spec)
+            return listOf(read.pretty()) + variations(read, read)
         }
 
         private fun variations(root: JsonNode, current: JsonNode): Iterable<String> {
