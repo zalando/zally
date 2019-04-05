@@ -412,14 +412,11 @@ class NullPointerExceptionTest(private val spec: String) {
     final val springMethodRule = SpringMethodRule()
 
     @Autowired
-    private lateinit var policy: RulesPolicy
-
-    @Autowired
     private lateinit var validator: CompositeRulesValidator
 
     @Test
     fun `validate with spec does not throw NullPointerException`() {
         println(spec)
-        validator.validate(spec, policy)
+        validator.validate(spec, RulesPolicy(emptyArray()))
     }
 }
