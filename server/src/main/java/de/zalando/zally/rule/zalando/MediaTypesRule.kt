@@ -5,8 +5,11 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import io.swagger.v3.oas.models.Operation
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.media.Content
 import io.swagger.v3.oas.models.media.MediaType
+import io.swagger.v3.oas.models.parameters.RequestBody
+import io.swagger.v3.oas.models.responses.ApiResponse
 
 /**
  * @see "https://opensource.zalando.com/restful-api-guidelines/#172"
@@ -30,34 +33,40 @@ class MediaTypesRule {
 
     @Check(severity = Severity.SHOULD)
     fun validate(context: Context): List<Violation> =
-        context.validateOperations { (_, operation) ->
-            operation.mediaTypes()
-                .filterNot { (type, _) ->
-                    isStandardJsonMediaType(type)
-                }
-                .filterNot { (type, _) ->
-                    isVersionedMediaType(type)
-                }
-                .map { (_, value) ->
-                    context.violation(description, value)
-                }
-        }
-
-    private fun Operation?.mediaTypes(): List<Pair<String, MediaType>> = mediaTypesConsumed() + mediaTypesProduced()
-
-    private fun Operation?.mediaTypesConsumed() =
-        this?.requestBody?.content?.map { (name, type) ->
-            name to type
-        }.orEmpty()
-
-    private fun Operation?.mediaTypesProduced() =
-        this?.responses?.values?.flatMap {
-            it.content?.map { (name, type) ->
-                name to type
-            }.orEmpty()
-        }.orEmpty()
+        context.api.mediaTypes()
+            .filterNot { (type, _) ->
+                isStandardJsonMediaType(type)
+            }
+            .filterNot { (type, _) ->
+                isVersionedMediaType(type)
+            }
+            .map { (_, value) ->
+                context.violation(description, value)
+            }
 
     fun isStandardJsonMediaType(mediaType: String): Boolean = mediaType in standardMediaTypes
 
     fun isVersionedMediaType(mediaType: String): Boolean = "^\\w+/[-+.\\w]+;(v|version)=\\d+$".toRegex().matches(mediaType)
+
+    private fun OpenAPI.mediaTypes(): List<Pair<String, MediaType>> =
+        requestBodies().map { it.content }.flatMap { it.mediaTypes() } +
+            apiResponses().map { it.content }.flatMap { it.mediaTypes() }
+
+    private fun OpenAPI.requestBodies(): List<RequestBody> = components?.requestBodies?.values.orEmpty() +
+        paths?.values?.flatMap { path ->
+            path?.readOperations()?.mapNotNull { op ->
+                op?.requestBody
+            }.orEmpty()
+        }.orEmpty()
+
+    private fun OpenAPI.apiResponses(): Collection<ApiResponse> = components?.responses?.values.orEmpty() +
+        paths?.values?.flatMap { path ->
+            path?.readOperations()?.flatMap { op ->
+                op?.responses?.values.orEmpty()
+            }.orEmpty()
+        }.orEmpty()
+
+    private fun Content?.mediaTypes() = this
+        ?.map { it.key to it.value }
+        .orEmpty()
 }

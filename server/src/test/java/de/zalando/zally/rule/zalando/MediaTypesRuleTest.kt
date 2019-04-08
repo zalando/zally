@@ -130,6 +130,33 @@ class MediaTypesRuleTest {
     }
 
     @Test
+    fun `invalid shared components cause violations`() {
+        @Language("YAML")
+        val context = getOpenApiContextFromContent(
+            """
+            openapi: 3.0.0
+            components:
+              requestBodies:
+                NamedRequest:
+                  content:
+                    "application/invalid": {}
+              responses:
+                NamedResponse:
+                  description: description
+                  content:
+                    "application/invalid": {}
+            """.trimIndent())
+
+        val result = rule.validate(context)
+        assertThat(result).hasSameElementsAs(
+            listOf(
+                v("/components/requestBodies/NamedRequest/content/application~1invalid"),
+                v("/components/responses/NamedResponse/content/application~1invalid")
+            )
+        )
+    }
+
+    @Test
     fun `the SPP API generates violations`() {
         val context = getContextFromFixture("api_spp.json")
         val result = rule.validate(context)
