@@ -5,8 +5,6 @@ import de.zalando.zally.getContextFromFixture
 import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
-import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
 import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
@@ -16,32 +14,32 @@ class MediaTypesRuleTest {
 
     @Test
     fun `isApplicationJsonOrProblemJson for valid input`() {
-        assertThat(isApplicationJsonOrProblemJson("application/json")).isTrue()
-        assertThat(isApplicationJsonOrProblemJson("application/problem+json")).isTrue()
+        assertThat(rule.isApplicationJsonOrProblemJson("application/json")).isTrue()
+        assertThat(rule.isApplicationJsonOrProblemJson("application/problem+json")).isTrue()
     }
 
     @Test
     fun `isApplicationJsonOrProblemJson for invalid input`() {
-        assertThat(isApplicationJsonOrProblemJson("application/vnd.api+json")).isFalse()
-        assertThat(isApplicationJsonOrProblemJson("application/x.zalando.contract+json")).isFalse()
+        assertThat(rule.isApplicationJsonOrProblemJson("application/vnd.api+json")).isFalse()
+        assertThat(rule.isApplicationJsonOrProblemJson("application/x.zalando.contract+json")).isFalse()
     }
 
     @Test
     fun `isCustomMediaTypeWithVersioning for valid input`() {
-        assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;v=12")).isTrue()
-        assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;v=34")).isTrue()
-        assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;version=123")).isTrue()
-        assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;version=345")).isTrue()
+        assertThat(rule.isCustomMediaTypeWithVersioning("application/vnd.api+json;v=12")).isTrue()
+        assertThat(rule.isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;v=34")).isTrue()
+        assertThat(rule.isCustomMediaTypeWithVersioning("application/vnd.api+json;version=123")).isTrue()
+        assertThat(rule.isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;version=345")).isTrue()
     }
 
     @Test
     fun `isCustomMediaTypeWithVersioning for invalid input`() {
-        assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json")).isFalse()
-        assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json")).isFalse()
-        assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;ver=1")).isFalse()
-        assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;v:1")).isFalse()
-        assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;version=")).isFalse()
-        assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;")).isFalse()
+        assertThat(rule.isCustomMediaTypeWithVersioning("application/vnd.api+json")).isFalse()
+        assertThat(rule.isCustomMediaTypeWithVersioning("application/x.zalando.contract+json")).isFalse()
+        assertThat(rule.isCustomMediaTypeWithVersioning("application/vnd.api+json;ver=1")).isFalse()
+        assertThat(rule.isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;v:1")).isFalse()
+        assertThat(rule.isCustomMediaTypeWithVersioning("application/vnd.api+json;version=")).isFalse()
+        assertThat(rule.isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;")).isFalse()
     }
 
     @Test

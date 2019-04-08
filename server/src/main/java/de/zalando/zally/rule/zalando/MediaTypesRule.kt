@@ -5,8 +5,6 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
-import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
 
 /**
  * @see "https://opensource.zalando.com/restful-api-guidelines/#172"
@@ -19,6 +17,8 @@ import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
 )
 class MediaTypesRule {
 
+    private val APPLICATION_PROBLEM_JSON_PATTERN = "^application/(problem\\+)?json$".toRegex()
+    private val CUSTOM_WITH_VERSIONING_PATTERN = "^\\w+/[-+.\\w]+;v(ersion)?=\\d+$".toRegex()
     private val description = "Custom media types should only be used for versioning"
 
     @Check(severity = Severity.SHOULD)
@@ -34,4 +34,10 @@ class MediaTypesRule {
 
     private fun isViolatingMediaType(mediaType: String) =
         !isApplicationJsonOrProblemJson(mediaType) && !isCustomMediaTypeWithVersioning(mediaType)
+
+    fun isApplicationJsonOrProblemJson(mediaType: String): Boolean =
+        mediaType.matches(APPLICATION_PROBLEM_JSON_PATTERN)
+
+    fun isCustomMediaTypeWithVersioning(mediaType: String): Boolean =
+        mediaType.matches(CUSTOM_WITH_VERSIONING_PATTERN)
 }
