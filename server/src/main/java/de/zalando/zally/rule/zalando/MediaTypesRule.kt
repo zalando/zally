@@ -5,6 +5,8 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import io.swagger.v3.oas.models.Operation
+import io.swagger.v3.oas.models.media.MediaType
 
 /**
  * @see "https://opensource.zalando.com/restful-api-guidelines/#172"
@@ -17,27 +19,45 @@ import de.zalando.zally.rule.api.Violation
 )
 class MediaTypesRule {
 
-    private val APPLICATION_PROBLEM_JSON_PATTERN = "^application/((problem|json-patch|merge-patch)\\+)?json$".toRegex()
-    private val CUSTOM_WITH_VERSIONING_PATTERN = "^\\w+/[-+.\\w]+;v(ersion)?=\\d+$".toRegex()
     private val description = "Custom media types should only be used for versioning"
+
+    private val standardMediaTypes = listOf(
+        "application/json",
+        "application/problem+json",
+        "application/json-patch+json",
+        "application/merge-patch+json"
+    )
 
     @Check(severity = Severity.SHOULD)
     fun validate(context: Context): List<Violation> =
         context.validateOperations { (_, operation) ->
-            val consumedMediaTypes = operation?.requestBody?.content?.entries.orEmpty().toList()
-            val producedMediaTypes = operation?.responses?.values.orEmpty().toList()
-                .flatMap { it.content?.entries.orEmpty() }
-            (consumedMediaTypes + producedMediaTypes)
-                .filter { isViolatingMediaType(it.key) }
-                .map { context.violation(description, it.value) }
+            operation.mediaTypes()
+                .filterNot { (type, _) ->
+                    isStandardJsonMediaType(type)
+                }
+                .filterNot { (type, _) ->
+                    isVersionedMediaType(type)
+                }
+                .map { (_, value) ->
+                    context.violation(description, value)
+                }
         }
 
-    private fun isViolatingMediaType(mediaType: String) =
-        !isApplicationJsonOrProblemJson(mediaType) && !isCustomMediaTypeWithVersioning(mediaType)
+    private fun Operation?.mediaTypes(): List<Pair<String, MediaType>> = mediaTypesConsumed() + mediaTypesProduced()
 
-    fun isApplicationJsonOrProblemJson(mediaType: String): Boolean =
-        mediaType.matches(APPLICATION_PROBLEM_JSON_PATTERN)
+    private fun Operation?.mediaTypesConsumed() =
+        this?.requestBody?.content?.map { (name, type) ->
+            name to type
+        }.orEmpty()
 
-    fun isCustomMediaTypeWithVersioning(mediaType: String): Boolean =
-        mediaType.matches(CUSTOM_WITH_VERSIONING_PATTERN)
+    private fun Operation?.mediaTypesProduced() =
+        this?.responses?.values?.flatMap {
+            it.content?.map { (name, type) ->
+                name to type
+            }.orEmpty()
+        }.orEmpty()
+
+    fun isStandardJsonMediaType(mediaType: String): Boolean = mediaType in standardMediaTypes
+
+    fun isVersionedMediaType(mediaType: String): Boolean = "^\\w+/[-+.\\w]+;(v|version)=\\d+$".toRegex().matches(mediaType)
 }
