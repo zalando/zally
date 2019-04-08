@@ -17,7 +17,7 @@ import de.zalando.zally.rule.api.Violation
 )
 class MediaTypesRule {
 
-    private val APPLICATION_PROBLEM_JSON_PATTERN = "^application/(problem\\+)?json$".toRegex()
+    private val APPLICATION_PROBLEM_JSON_PATTERN = "^application/((problem|json-patch|merge-patch)\\+)?json$".toRegex()
     private val CUSTOM_WITH_VERSIONING_PATTERN = "^\\w+/[-+.\\w]+;v(ersion)?=\\d+$".toRegex()
     private val description = "Custom media types should only be used for versioning"
 

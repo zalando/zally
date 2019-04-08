@@ -16,6 +16,8 @@ class MediaTypesRuleTest {
     fun `isApplicationJsonOrProblemJson for valid input`() {
         assertThat(rule.isApplicationJsonOrProblemJson("application/json")).isTrue()
         assertThat(rule.isApplicationJsonOrProblemJson("application/problem+json")).isTrue()
+        assertThat(rule.isApplicationJsonOrProblemJson("application/json-patch+json")).isTrue()
+        assertThat(rule.isApplicationJsonOrProblemJson("application/merge-patch+json")).isTrue()
     }
 
     @Test
