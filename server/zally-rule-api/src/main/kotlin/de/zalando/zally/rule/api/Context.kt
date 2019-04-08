@@ -100,7 +100,7 @@ interface Context {
      * @param pointer an existing pointer or null
      * @return the new Violation
      */
-    fun violation(description: String, pointer: JsonPointer? = null): Violation
+    fun violation(description: String, pointer: JsonPointer?): Violation
 
     /**
      * Check whether a location should be ignored by a specific rule.

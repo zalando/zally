@@ -13,6 +13,7 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.ast.JsonPointers
 import org.slf4j.LoggerFactory
 import java.net.URL
 
@@ -62,7 +63,7 @@ class UseOpenApiRule(rulesConfig: Config) {
         // -> JSON must start with '{' and end with '}'
         val cleanedUpSource = context.source.trim()
         return if (cleanedUpSource.startsWith("{") && cleanedUpSource.endsWith("}")) {
-            context.violation("must use YAML format")
+            context.violation("must use YAML format", JsonPointers.EMPTY)
         } else {
             null
         }

@@ -1,5 +1,6 @@
 package de.zalando.zally.rule.zalando
 
+import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
@@ -19,14 +20,15 @@ class ApiIdentifierRule {
     private val invalidApiIdDesc = "API Identifier doesn't match the pattern $apiIdPattern"
 
     private val extensionName = "x-api-id"
+    private val extensionPointer = JsonPointer.compile("/info/$extensionName")
 
     @Check(severity = Severity.MUST)
     fun validate(context: Context): Violation? {
         val apiId = context.api.info?.extensions?.get(extensionName)
 
         return when {
-            apiId == null || apiId !is String -> context.violation(noApiIdDesc)
-            !apiId.matches(apiIdPattern) -> context.violation(invalidApiIdDesc)
+            apiId == null || apiId !is String -> context.violation(noApiIdDesc, extensionPointer)
+            !apiId.matches(apiIdPattern) -> context.violation(invalidApiIdDesc, extensionPointer)
             else -> null
         }
     }
