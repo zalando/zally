@@ -1,9 +1,10 @@
 package de.zalando.zally.rule
 
+import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
-import io.swagger.parser.OpenAPIParser
+import de.zalando.zally.util.ast.JsonPointers
 import io.swagger.util.Yaml
 import org.intellij.lang.annotations.Language
 import org.junit.ClassRule
@@ -20,26 +21,26 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule
 @RunWith(Parameterized::class)
 @SpringBootTest
 @ActiveProfiles("test")
-class NullPointerExceptionTest(private val spec: String) {
+class NullPointerExceptionTest(
+    private val name: String,
+    private val spec: String
+) {
     companion object {
         @ClassRule
         @JvmField
         val springClassRule = SpringClassRule()
 
-        @Parameterized.Parameters
+        @Parameterized.Parameters(name = "{0}")
         @JvmStatic
-        fun parameters(): List<Array<Any>> {
-            val parameters = mutableListOf<Any>()
-
-            parameters.addAll(parametersFromFullFeaturedSpec())
-            parameters.addAll(openAPIPetstoreVariations())
-
-            return parameters.map { arrayOf(it) }
-        }
+        fun parameters(): Iterable<Array<String>> = (
+            parametersFromFullFeaturedSpec() +
+            parametersFromPetstore()
+        )
+        .asIterable()
 
         private fun JsonNode.pretty(): String = Yaml.pretty().writeValueAsString(this)
 
-        private fun parametersFromFullFeaturedSpec(): Iterable<String> {
+        private fun parametersFromFullFeaturedSpec(): Sequence<Array<String>> {
             @Language("YAML")
             val spec = """
                 openapi: '3.0.1'
@@ -365,53 +366,63 @@ class NullPointerExceptionTest(private val spec: String) {
                     - name: Parameter name
 
                 """.trimIndent()
-
-            val api = OpenAPIParser().readContents(spec, null, null).openAPI
-            val root = Yaml.mapper().convertValue(api, ObjectNode::class.java)
-
-            return variations(root)
+            return parameters("full", spec)
         }
 
-        private fun openAPIPetstoreVariations(): Iterable<String> {
-            val spec = NullPointerExceptionTest::class.java.getResource("/fixtures/openapi3_petstore.yaml").readText()
-            val api = OpenAPIParser().readContents(spec, null, null).openAPI
-            val root = Yaml.mapper().convertValue(api, ObjectNode::class.java)
+        private fun parametersFromPetstore(): Sequence<Array<String>> =
+            parameters("petstore", NullPointerExceptionTest::class.java.getResource("/fixtures/openapi3_petstore.yaml").readText())
 
-            return variations(root)
+        private fun parameters(name: String, spec: String): Sequence<Array<String>> {
+            val root = ObjectTreeReader().read(spec)
+            return sequenceOf(arrayOf("$name unmodified", spec)) +
+            root.allJsonPointers().reversed().asSequence().flatMap { pointer ->
+                pointer.head()?.let { head ->
+                    val last = pointer.last()
+                    val parent = root.at(head)
+                    when (parent) {
+                        is ObjectNode -> {
+                            parent.set(last.matchingProperty, null)
+                            val param1 = arrayOf("$name with null $pointer", root.pretty())
+
+                            parent.remove(last.matchingProperty)
+                            val param2 = arrayOf("$name with removed $pointer", root.pretty())
+
+                            sequenceOf(param1, param2)
+                        }
+                        is ArrayNode -> {
+                            parent.set(last.matchingIndex, null)
+                            val param1 = arrayOf("$name with null $pointer", root.pretty())
+
+                            parent.remove(last.matchingIndex)
+                            val param2 = arrayOf("$name with removed $pointer", root.pretty())
+
+                            sequenceOf(param1, param2)
+                        }
+                        else -> emptySequence()
+                    }
+                }.orEmpty()
+            }
         }
 
-        private fun variations(root: JsonNode): Iterable<String> {
-            return listOf(root.pretty()) + variations(root, root)
-        }
-
-        private fun variations(root: JsonNode, current: JsonNode): Iterable<String> {
-            val variations = mutableListOf<String>()
-            when (current) {
+        private fun JsonNode?.allJsonPointers(): List<JsonPointer> =
+            listOf(JsonPointers.EMPTY) +
+            when (this) {
                 is ObjectNode -> {
-                    current.fieldNames().asSequence().toList().reversed().forEach { name ->
-                        variations += variations(root, current[name])
-
-                        current.set(name, null)
-                        variations += root.pretty()
-
-                        current.remove(name)
-                        variations += root.pretty()
+                    fields().asSequence().toList().flatMap { (name, node) ->
+                        node.allJsonPointers().map {
+                            JsonPointers.escape(name).append(it)
+                        }
                     }
                 }
                 is ArrayNode -> {
-                    (0 until current.size()).reversed().forEach { index ->
-                        variations += variations(root, current[index])
-
-                        current.set(index, null)
-                        variations += root.pretty()
-
-                        current.remove(index)
-                        variations += root.pretty()
+                    (0 until size()).flatMap { index ->
+                        get(index).allJsonPointers().map {
+                            JsonPointers.escape(index.toString()).append(it)
+                        }
                     }
                 }
+                else -> emptyList<JsonPointer>()
             }
-            return variations
-        }
     }
 
     @Rule
@@ -419,14 +430,10 @@ class NullPointerExceptionTest(private val spec: String) {
     final val springMethodRule = SpringMethodRule()
 
     @Autowired
-    private lateinit var policy: RulesPolicy
-
-    @Autowired
     private lateinit var validator: CompositeRulesValidator
 
     @Test
     fun `validate with spec does not throw NullPointerException`() {
-        println(spec)
-        validator.validate(spec, policy)
+        validator.validate(spec, RulesPolicy(emptyArray()))
     }
 }
