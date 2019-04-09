@@ -41,6 +41,16 @@ allprojects {
     tasks.withType(KotlinCompile::class.java).all {
         kotlinOptions.jvmTarget = "1.8"
     }
+
+    tasks.register("sourcesJar", Jar::class) {
+        dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+        archiveClassifier.set("sources")
+        from(sourceSets["main"].allSource)
+    }
+
+    artifacts {
+        add("archives", tasks["sourcesJar"])
+    }
 }
 
 dependencies {
