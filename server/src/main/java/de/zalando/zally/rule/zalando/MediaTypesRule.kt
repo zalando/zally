@@ -22,6 +22,8 @@ import io.swagger.v3.oas.models.responses.ApiResponse
 )
 class MediaTypesRule {
 
+    private val versionedMediaType = "^\\w+/[-+.\\w]+;(v|version)=\\d+$".toRegex()
+
     private val description = "Custom media types should only be used for versioning"
 
     private val standardMediaTypes = listOf(
@@ -34,19 +36,15 @@ class MediaTypesRule {
     @Check(severity = Severity.SHOULD)
     fun validate(context: Context): List<Violation> =
         context.api.mediaTypes()
-            .filterNot { (type, _) ->
-                isStandardJsonMediaType(type)
-            }
-            .filterNot { (type, _) ->
-                isVersionedMediaType(type)
-            }
-            .map { (_, value) ->
-                context.violation(description, value)
-            }
+            .filterNot { (type, _) -> isStandardJsonMediaType(type) }
+            .filterNot { (type, _) -> isVersionedMediaType(type) }
+            .map { (_, value) -> context.violation(description, value) }
 
     fun isStandardJsonMediaType(mediaType: String): Boolean = mediaType in standardMediaTypes
 
-    fun isVersionedMediaType(mediaType: String): Boolean = "^\\w+/[-+.\\w]+;(v|version)=\\d+$".toRegex().matches(mediaType)
+    fun isVersionedMediaType(mediaType: String): Boolean {
+        return versionedMediaType.matches(mediaType)
+    }
 
     private fun OpenAPI.mediaTypes(): List<Pair<String, MediaType>> =
         requestBodies().map { it.content }.flatMap { it.mediaTypes() } +
