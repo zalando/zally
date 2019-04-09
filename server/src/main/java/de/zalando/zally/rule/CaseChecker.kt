@@ -89,7 +89,7 @@ class CaseChecker(
 
     private fun checkDiscriminatorValues(context: Context, schema: Schema<Any>): List<Violation> = when (schema.type) {
         "object" -> {
-            schema?.properties?.values?.flatMap { checkDiscriminatorValues(context, it) }.orEmpty() +
+            schema.properties?.values?.flatMap { checkDiscriminatorValues(context, it) }.orEmpty() +
                 checkDiscriminatorMappingKeyValues(context, schema) +
                 checkDiscriminatorPropertyEnumValues(context, schema)
         }
@@ -97,7 +97,7 @@ class CaseChecker(
     }
 
     private fun checkDiscriminatorPropertyEnumValues(context: Context, schema: Schema<Any>): List<Violation> =
-        schema.discriminator.propertyName
+        schema.discriminator?.propertyName
             ?.let { propertyName ->
                 val property = schema.properties[propertyName]
                 val values = property?.enum?.map { it.toString() }
@@ -107,7 +107,7 @@ class CaseChecker(
             .orEmpty()
 
     private fun checkDiscriminatorMappingKeyValues(context: Context, schema: Schema<Any>): List<Violation> =
-        check("Discriminator value", "Discriminator values", discriminatorValues, schema.discriminator.mapping?.keys)
+        check("Discriminator value", "Discriminator values", discriminatorValues, schema.discriminator?.mapping?.keys)
             ?.let { context.violations(it, schema.discriminator) }
             .orEmpty()
 
@@ -130,11 +130,12 @@ class CaseChecker(
         }
         "object" -> {
             schema.properties
-                .filterKeys { key -> key != schema.discriminator?.propertyName }
-                .values
-                .flatMap { schema ->
+                ?.filterKeys { key -> key != schema.discriminator?.propertyName }
+                ?.values
+                ?.flatMap { schema ->
                     checkEnumValues(context, schema)
                 }
+                .orEmpty()
         }
         else -> emptyList()
     }
