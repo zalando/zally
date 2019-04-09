@@ -1,6 +1,5 @@
 package de.zalando.zally.util
 
-import de.zalando.zally.util.PatternUtil.hasTrailingSlash
 import de.zalando.zally.util.PatternUtil.isPathVariable
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -10,12 +9,6 @@ import org.junit.Test
  * Unit tests for patterns utility
  */
 class PatternUtilTest {
-
-    @Test
-    fun checkHasTrailingSlash() {
-        assertTrue(hasTrailingSlash("blah/"))
-        assertFalse(hasTrailingSlash("blah"))
-    }
 
     @Test
     fun checkIsPathVariable() {

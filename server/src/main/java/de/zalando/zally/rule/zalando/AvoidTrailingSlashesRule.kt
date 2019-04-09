@@ -5,7 +5,6 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.PatternUtil
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -19,7 +18,15 @@ class AvoidTrailingSlashesRule {
     @Check(severity = Severity.MUST)
     fun validate(context: Context): List<Violation> =
         context.validatePaths(
-            pathFilter = { PatternUtil.hasTrailingSlash(it.key) }
+            pathFilter = { (path, _) ->
+                path.trim().let { trimmed ->
+                    when {
+                        trimmed == "/" -> false
+                        trimmed.endsWith("/") -> true
+                        else -> false
+                    }
+                }
+            }
         ) {
             context.violations(description, it.value)
         }

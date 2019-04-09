@@ -9,8 +9,6 @@ object PatternUtil {
     private val APPLICATION_PROBLEM_JSON_PATTERN = "^application/(problem\\+)?json$".toRegex()
     private val CUSTOM_WITH_VERSIONING_PATTERN = "^\\w+/[-+.\\w]+;v(ersion)?=\\d+$".toRegex()
 
-    fun hasTrailingSlash(input: String): Boolean = input.trim { it <= ' ' }.endsWith("/")
-
     fun isPathVariable(input: String): Boolean = input.matches(PATH_VARIABLE_PATTERN)
 
     fun isApplicationJsonOrProblemJson(mediaType: String): Boolean =

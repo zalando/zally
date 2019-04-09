@@ -31,6 +31,7 @@ class AvoidTrailingSlashesRuleTest {
             """
             openapi: '3.0.0'
             paths:
+              /: {}
               /api/test-api: {}
         """.trimIndent()
         )
