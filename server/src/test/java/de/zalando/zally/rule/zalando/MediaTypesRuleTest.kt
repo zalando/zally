@@ -5,8 +5,6 @@ import de.zalando.zally.getContextFromFixture
 import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.PatternUtil.isApplicationJsonOrProblemJson
-import de.zalando.zally.util.PatternUtil.isCustomMediaTypeWithVersioning
 import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
@@ -15,33 +13,35 @@ import org.junit.Test
 class MediaTypesRuleTest {
 
     @Test
-    fun `isApplicationJsonOrProblemJson for valid input`() {
-        assertThat(isApplicationJsonOrProblemJson("application/json")).isTrue()
-        assertThat(isApplicationJsonOrProblemJson("application/problem+json")).isTrue()
+    fun `isStandardJsonMediaType for valid input`() {
+        assertThat(rule.isStandardJsonMediaType("application/json")).isTrue()
+        assertThat(rule.isStandardJsonMediaType("application/problem+json")).isTrue()
+        assertThat(rule.isStandardJsonMediaType("application/json-patch+json")).isTrue()
+        assertThat(rule.isStandardJsonMediaType("application/merge-patch+json")).isTrue()
     }
 
     @Test
-    fun `isApplicationJsonOrProblemJson for invalid input`() {
-        assertThat(isApplicationJsonOrProblemJson("application/vnd.api+json")).isFalse()
-        assertThat(isApplicationJsonOrProblemJson("application/x.zalando.contract+json")).isFalse()
+    fun `isStandardJsonMediaType for invalid input`() {
+        assertThat(rule.isStandardJsonMediaType("application/vnd.api+json")).isFalse()
+        assertThat(rule.isStandardJsonMediaType("application/x.zalando.contract+json")).isFalse()
     }
 
     @Test
-    fun `isCustomMediaTypeWithVersioning for valid input`() {
-        assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;v=12")).isTrue()
-        assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;v=34")).isTrue()
-        assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;version=123")).isTrue()
-        assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;version=345")).isTrue()
+    fun `isVersionedMediaType for valid input`() {
+        assertThat(rule.isVersionedMediaType("application/vnd.api+json;v=12")).isTrue()
+        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json;v=34")).isTrue()
+        assertThat(rule.isVersionedMediaType("application/vnd.api+json;version=123")).isTrue()
+        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json;version=345")).isTrue()
     }
 
     @Test
-    fun `isCustomMediaTypeWithVersioning for invalid input`() {
-        assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json")).isFalse()
-        assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json")).isFalse()
-        assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;ver=1")).isFalse()
-        assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;v:1")).isFalse()
-        assertThat(isCustomMediaTypeWithVersioning("application/vnd.api+json;version=")).isFalse()
-        assertThat(isCustomMediaTypeWithVersioning("application/x.zalando.contract+json;")).isFalse()
+    fun `isVersionedMediaType for invalid input`() {
+        assertThat(rule.isVersionedMediaType("application/vnd.api+json")).isFalse()
+        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json")).isFalse()
+        assertThat(rule.isVersionedMediaType("application/vnd.api+json;ver=1")).isFalse()
+        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json;v:1")).isFalse()
+        assertThat(rule.isVersionedMediaType("application/vnd.api+json;version=")).isFalse()
+        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json;")).isFalse()
     }
 
     @Test
@@ -125,6 +125,33 @@ class MediaTypesRuleTest {
             listOf(
                 v("/paths/~1path1/get/responses/200/content/application~1vnd.api+json"),
                 v("/paths/~1path2/get/responses/200/content/application~1x.zalando.contract+json")
+            )
+        )
+    }
+
+    @Test
+    fun `invalid shared components cause violations`() {
+        @Language("YAML")
+        val context = getOpenApiContextFromContent(
+            """
+            openapi: 3.0.0
+            components:
+              requestBodies:
+                NamedRequest:
+                  content:
+                    "application/invalid": {}
+              responses:
+                NamedResponse:
+                  description: description
+                  content:
+                    "application/invalid": {}
+            """.trimIndent())
+
+        val result = rule.validate(context)
+        assertThat(result).hasSameElementsAs(
+            listOf(
+                v("/components/requestBodies/NamedRequest/content/application~1invalid"),
+                v("/components/responses/NamedResponse/content/application~1invalid")
             )
         )
     }
