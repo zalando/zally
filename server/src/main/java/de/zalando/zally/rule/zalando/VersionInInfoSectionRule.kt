@@ -1,5 +1,6 @@
 package de.zalando.zally.rule.zalando
 
+import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
@@ -20,8 +21,8 @@ class VersionInInfoSectionRule {
     fun checkAPIVersion(context: Context): Violation? {
         val version = context.api.info?.version?.trim()
         return when {
-            version == null -> context.violation("$description: version is missing")
-            !version.matches(versionRegex) -> context.violation("$description: incorrect format")
+            version == null -> context.violation("$description: version is missing", JsonPointer.compile("/info/version"))
+            !version.matches(versionRegex) -> context.violation("$description: incorrect format", JsonPointer.compile("/info/version"))
             else -> null
         }
     }

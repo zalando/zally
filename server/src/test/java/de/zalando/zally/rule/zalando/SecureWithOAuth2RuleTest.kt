@@ -2,6 +2,7 @@ package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.ZallyAssertions
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -60,11 +61,11 @@ class SecureWithOAuth2RuleTest {
         """.trimIndent()
         val context = getOpenApiContextFromContent(content)
 
-        val violation = rule.checkSecuritySchemesOnlyOAuth2IsUsed(context)
+        val violations = rule.checkSecuritySchemesOnlyOAuth2IsUsed(context)
 
-        assertThat(violation).isNotNull
-        assertThat(violation!!.description).isEqualTo("Only OAuth2 is allowed to secure the API")
-        assertThat(violation.pointer.toString()).isEqualTo("/components/securitySchemes")
+        ZallyAssertions.assertThat(violations)
+            .descriptionsEqualTo("Only OAuth2 is allowed to secure the API")
+            .pointersEqualTo("/components/securitySchemes/company-oauth2")
     }
 
     @Test
@@ -75,9 +76,9 @@ class SecureWithOAuth2RuleTest {
         """.trimIndent()
         val context = getOpenApiContextFromContent(content)
 
-        val violation = rule.checkSecuritySchemesOnlyOAuth2IsUsed(context)
+        val violations = rule.checkSecuritySchemesOnlyOAuth2IsUsed(context)
 
-        assertThat(violation).isNull()
+        assertThat(violations).isEmpty()
     }
 
     @Test

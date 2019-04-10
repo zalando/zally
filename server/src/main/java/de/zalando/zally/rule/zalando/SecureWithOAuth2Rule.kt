@@ -1,5 +1,6 @@
 package de.zalando.zally.rule.zalando
 
+import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
@@ -19,18 +20,18 @@ class SecureWithOAuth2Rule {
     fun checkSecuritySchemesOAuth2IsUsed(context: Context): Violation? {
         val oauth2IsUsed = context.api.components.securitySchemes.values.any { SecurityScheme.Type.OAUTH2 == it.type }
 
-        return if (!oauth2IsUsed) context.violation("API has to be secured by OAuth2")
+        return if (!oauth2IsUsed) context.violation("API has to be secured by OAuth2", JsonPointer.compile("/components/securitySchemes"))
         else null
     }
 
     @Check(severity = Severity.MUST)
-    fun checkSecuritySchemesOnlyOAuth2IsUsed(context: Context): Violation? {
-        val otherSecuritySchemeIsUsed =
-            context.api.components.securitySchemes.values.any { SecurityScheme.Type.OAUTH2 != it.type }
-
-        return if (otherSecuritySchemeIsUsed) context.violation("Only OAuth2 is allowed to secure the API")
-        else null
-    }
+    fun checkSecuritySchemesOnlyOAuth2IsUsed(context: Context): List<Violation> =
+        context.api.components?.securitySchemes?.values
+            ?.filter { it.type != SecurityScheme.Type.OAUTH2 }
+            ?.map {
+                context.violation("Only OAuth2 is allowed to secure the API", it)
+            }
+            .orEmpty()
 
     @Check(severity = Severity.MUST)
     fun checkUsedScopesAreSpecified(context: Context): List<Violation> {
