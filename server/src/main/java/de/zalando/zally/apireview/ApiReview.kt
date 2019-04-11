@@ -25,7 +25,7 @@ import javax.persistence.OneToMany
 class ApiReview(
     request: ApiDefinitionRequest,
     val userAgent: String = "",
-    @Suppress("CanBeParameter") private val apiDefinition: String,
+    @Suppress("CanBeParameter") val apiDefinition: String,
     violations: List<Result> = emptyList(),
     val name: String? = OpenApiHelper.extractApiName(apiDefinition),
     val apiId: String? = OpenApiHelper.extractApiId(apiDefinition),

@@ -248,6 +248,14 @@ components:
       schema:
         type: string
         format: uuid
+    IncludeApiDefinition:
+      name: include_api_definition
+      in: query
+      description: Whether to include the API definition in the response
+      required: false
+      schema:
+        type: boolean
+        default: false
 
   schemas:
     LintingRequest:
@@ -288,6 +296,9 @@ components:
           description: Custom server message
         violations_count:
           $ref: '#/components/schemas/ViolationsCount'
+        api_definition:
+          type: string
+          description: Specification object in OpenAPI format
 
     SupportedRulesResponse:
       type: object

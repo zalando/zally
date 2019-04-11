@@ -3,18 +3,22 @@ package de.zalando.zally.apireview
 import de.zalando.zally.configuration.JacksonObjectMapperConfiguration
 import de.zalando.zally.dto.ApiDefinitionRequest
 import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.notNullValue
+import org.hamcrest.Matchers.nullValue
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @RunWith(SpringRunner::class)
@@ -49,7 +53,7 @@ class ApiViolationsControllerTest {
     }
 
     @Test
-    fun `getExistingViolationResponse with existing responds NotFound`() {
+    fun `getExistingViolationResponse with existing responds Ok without api_definition`() {
 
         val location = mvc.perform(
             post("/api-violations")
@@ -64,7 +68,33 @@ class ApiViolationsControllerTest {
                 .accept("application/json")
         )
             .andExpect(status().isOk)
-            .andExpect(content().string(containsString("https://zalando.github.io/restful-api-guidelines")))
+            .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+            .andExpect(jsonPath("$.external_id", notNullValue()))
+            .andExpect(jsonPath("$.violations", notNullValue()))
+            .andExpect(jsonPath("$.api_definition", nullValue()))
+    }
+
+    @Test
+    fun `getExistingViolationResponse with existing and include_api_definition responds Ok with api_definition`() {
+
+        val location = mvc.perform(
+            post("/api-violations")
+                .contentType("application/json")
+                .content("{\"api_definition_string\":\"\"}")
+        )
+            .andExpect(status().isOk)
+            .andReturn().response.getHeaderValue("Location")!!
+
+        mvc.perform(
+            get(location.toString())
+                .param("include_api_definition", "true")
+                .accept("application/json")
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+            .andExpect(jsonPath("$.external_id", notNullValue()))
+            .andExpect(jsonPath("$.violations", notNullValue()))
+            .andExpect(jsonPath("$.api_definition", notNullValue()))
     }
 
     /**

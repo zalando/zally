@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.util.UriComponentsBuilder
@@ -61,11 +62,12 @@ class ApiViolationsController(
     @ResponseBody
     @GetMapping("/api-violations/{externalId}")
     fun getExistingViolationResponse(
-        @PathVariable(value = "externalId") externalId: UUID
+        @PathVariable(value = "externalId") externalId: UUID,
+        @RequestParam(value = "include_api_definition", required = false, defaultValue = "false") includeApiDefinition: Boolean
     ): ApiDefinitionResponse {
         val review = apiReviewRepository.findByExternalId(externalId) ?: throw ApiReviewNotFoundException()
 
-        return buildApiDefinitionResponse(review)
+        return buildApiDefinitionResponse(review, includeApiDefinition)
     }
 
     private fun retrieveRulesPolicy(request: ApiDefinitionRequest): RulesPolicy = request.ignoreRules
@@ -81,7 +83,7 @@ class ApiViolationsController(
         throw e
     }
 
-    private fun buildApiDefinitionResponse(review: ApiReview): ApiDefinitionResponse = ApiDefinitionResponse(
+    private fun buildApiDefinitionResponse(review: ApiReview, includeApiDefinition: Boolean = false): ApiDefinitionResponse = ApiDefinitionResponse(
         externalId = review.externalId,
         message = serverMessageService.serverMessage(review.userAgent),
         violations = review.ruleViolations.orEmpty().map {
@@ -101,6 +103,7 @@ class ApiViolationsController(
             Severity.SHOULD to review.shouldViolations,
             Severity.MAY to review.mayViolations,
             Severity.HINT to review.hintViolations
-        ).map { it.first.name.toLowerCase() to it.second }.toMap()
+        ).map { it.first.name.toLowerCase() to it.second }.toMap(),
+        apiDefinition = if (includeApiDefinition) review.apiDefinition else null
     )
 }
