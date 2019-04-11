@@ -60,6 +60,7 @@ export class URL extends Violations {
           pending={this.state.pending}
           complete={this.state.ajaxComplete}
           errorMsgText={this.state.error}
+          externalId={this.state.externalId}
           violations={this.state.violations}
           successMsgTitle={this.state.successMsgTitle}
           successMsgText={this.state.successMsgText}

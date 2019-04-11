@@ -6,12 +6,14 @@ export class Violations extends Component {
 
     this.Storage = this.props.Storage;
     this.getApiViolations = this.props.getApiViolations;
+    this.getApiViolationsByExternalId = this.props.getApiViolationsByExternalId;
 
     this.state = {
       error: null,
       pending: false,
       ajaxComplete: false,
       inputValue: '',
+      externalId: null,
       violations: [],
       violationsCount: {
         could: 0,
@@ -34,6 +36,7 @@ export class Violations extends Component {
         this.setState({
           pending: false,
           ajaxComplete: true,
+          externalId: response.external_id,
           violations: response.violations,
           violationsCount: response.violations_count,
         });

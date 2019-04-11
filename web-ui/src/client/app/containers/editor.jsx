@@ -4,6 +4,7 @@ import { Violations } from './violations.jsx';
 import { ViolationsResult } from '../components/violations.jsx';
 import { EditorInputForm } from '../components/editor.jsx';
 import { Dialog } from '../components/dialog.jsx';
+import { id } from 'brace/worker/json';
 
 export const editorErrorToAnnotations = error => {
   if (!error || !error.mark) {
@@ -22,15 +23,58 @@ export const editorErrorToAnnotations = error => {
 export class Editor extends Violations {
   constructor(props) {
     super(props);
+    if (
+      props &&
+      props.match &&
+      props.match.params &&
+      props.match.params.externalId
+    ) {
+      this.state.externalId = props.match.params.externalId;
+    } else {
+      this.state.externalId = null;
+    }
     this.state.editorDirty = true;
-    this.state.editorValue = this.Storage.getItem('editor-value') || '';
+    this.state.editorValue =
+      (!this.state.externalId && this.Storage.getItem('editor-value')) || '';
     this.handleOnInputValueChange = this.handleOnInputValueChange.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleHideOverlay = this.handleHideOverlay.bind(this);
   }
 
   componentDidMount() {
-    this.updateInputValue(this.state.editorValue);
+    if (this.state.externalId) {
+      this.getApiViolationsByExternalId(this.state.externalId)
+        .then(response => {
+          this.setState({
+            pending: false,
+            ajaxComplete: true,
+            externalId: response.external_id,
+            violations: response.violations,
+            violationsCount: response.violations_count,
+            editorValue: response.api_definition,
+          });
+          this.Storage.setItem('editor-value', this.state.editorValue);
+          this.updateInputValue(this.state.editorValue);
+        })
+        .catch(error => {
+          console.error(error); // eslint-disable-line no-console
+          this.setState({
+            pending: false,
+            ajaxComplete: true,
+            error: error.detail || Violations.DEFAULT_ERROR_MESSAGE,
+            violations: [],
+            violationsCount: {
+              could: 0,
+              hint: 0,
+              must: 0,
+              should: 0,
+            },
+          });
+          return Promise.reject(error);
+        });
+    } else {
+      this.updateInputValue(this.state.editorValue);
+    }
   }
 
   handleFormSubmit(event) {
@@ -95,6 +139,7 @@ export class Editor extends Violations {
                 pending={this.state.pending}
                 complete={this.state.ajaxComplete}
                 errorMsgText={this.state.error}
+                externalId={this.state.externalId}
                 violations={this.state.violations}
                 successMsgTitle={this.state.successMsgTitle}
                 successMsgText={this.state.successMsgText}
@@ -107,6 +152,7 @@ export class Editor extends Violations {
             pending={this.state.pending}
             complete={this.state.ajaxComplete}
             errorMsgText={this.state.error}
+            externalId={this.state.externalId}
             violations={this.state.violations}
             successMsgTitle={this.state.successMsgTitle}
             successMsgText={this.state.successMsgText}

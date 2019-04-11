@@ -10,6 +10,7 @@ export function ViolationsTab({
   authenticated,
   getApiViolationsByURL,
   getApiViolationsBySchema,
+  getApiViolationsByExternalId,
   getSupportedRules,
   getFile,
   Storage,
@@ -82,6 +83,18 @@ export function ViolationsTab({
               render={props => (
                 <Editor
                   getApiViolations={getApiViolationsBySchema}
+                  getApiViolationsByExternalId={getApiViolationsByExternalId}
+                  Storage={Storage}
+                  {...props}
+                />
+              )}
+            />
+            <Route
+              path="/editor/:externalId"
+              render={props => (
+                <Editor
+                  getApiViolations={getApiViolationsBySchema}
+                  getApiViolationsByExternalId={getApiViolationsByExternalId}
                   Storage={Storage}
                   {...props}
                 />

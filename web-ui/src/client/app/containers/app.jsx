@@ -14,6 +14,7 @@ export function App(props) {
     Storage,
     getApiViolationsByURL,
     getApiViolationsBySchema,
+    getApiViolationsByExternalId,
     getSupportedRules,
     getFile,
   } = props;
@@ -58,6 +59,7 @@ export function App(props) {
                 getSupportedRules={getSupportedRules}
                 getApiViolationsByURL={getApiViolationsByURL}
                 getApiViolationsBySchema={getApiViolationsBySchema}
+                getApiViolationsByExternalId={getApiViolationsByExternalId}
                 getFile={getFile}
                 Storage={Storage}
                 {...props}
