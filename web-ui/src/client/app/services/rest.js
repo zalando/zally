@@ -46,7 +46,7 @@ export const RestService = {
       .fetch(
         `${
           window.env.ZALLY_API_URL
-        }/api-violations/${externalId}?include_api_definition=true`,
+        }/api-violations/${externalId}`,
         options
       )
       .then(response => response.json())

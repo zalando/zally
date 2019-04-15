@@ -248,14 +248,6 @@ components:
       schema:
         type: string
         format: uuid
-    IncludeApiDefinition:
-      name: include_api_definition
-      in: query
-      description: Whether to include the API definition in the response
-      required: false
-      schema:
-        type: boolean
-        default: false
 
   schemas:
     LintingRequest:
