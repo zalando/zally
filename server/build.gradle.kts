@@ -52,8 +52,8 @@ allprojects {
     }
 
     tasks.withType(DokkaTask::class.java).all {
-        outputFormat = "javadoc"
-        outputDirectory = "$buildDir/javadoc"
+        outputFormat = "html"
+        outputDirectory = "$buildDir/dokka-html"
         reportUndocumented = false
     }
 
