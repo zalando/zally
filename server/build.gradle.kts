@@ -61,6 +61,7 @@ allprojects {
         dependsOn(tasks["dokka"])
         archiveClassifier.set("javadoc")
         from(tasks["dokka"])
+        from("src/main/javadoc")
     }
 
     tasks.register("sourcesJar", Jar::class) {
