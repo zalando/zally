@@ -1,4 +1,5 @@
 import de.undercouch.gradle.tasks.download.Download
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
@@ -25,6 +26,7 @@ plugins {
     id("com.github.ben-manes.versions") version "0.20.0"
     id("de.undercouch.download") version "3.4.3"
     id("org.jlleitschuh.gradle.ktlint") version "7.2.1"
+    id("org.jetbrains.dokka") version "0.9.18"
 }
 
 allprojects {
@@ -32,14 +34,34 @@ allprojects {
     apply(plugin = "java")
     apply(plugin = "kotlin")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    apply(plugin = "org.jetbrains.dokka")
 
     repositories {
         jcenter()
         mavenCentral()
     }
 
+    dependencies {
+        compile("org.jetbrains.kotlin:kotlin-stdlib")
+
+        testCompile("junit:junit:4.12")
+    }
+
     tasks.withType(KotlinCompile::class.java).all {
         kotlinOptions.jvmTarget = "1.8"
+    }
+
+    tasks.withType(DokkaTask::class.java).all {
+        outputFormat = "html"
+        outputDirectory = "$buildDir/dokka-html"
+        reportUndocumented = false
+    }
+
+    tasks.register("javadocJar", Jar::class) {
+        dependsOn(tasks["dokka"])
+        archiveClassifier.set("javadoc")
+        from(tasks["dokka"])
+        from("src/main/javadoc")
     }
 
     tasks.register("sourcesJar", Jar::class) {
@@ -49,6 +71,7 @@ allprojects {
     }
 
     artifacts {
+        add("archives", tasks["javadocJar"])
         add("archives", tasks["sourcesJar"])
     }
 }
@@ -58,7 +81,6 @@ dependencies {
     val jadlerVersion = "1.3.0"
 
     compile(project("zally-rule-api"))
-    compile("org.jetbrains.kotlin:kotlin-stdlib")
     compile("io.swagger.parser.v3:swagger-parser:2.0.2")
     compile("com.github.java-json-tools:json-schema-validator:2.2.10")
     compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
