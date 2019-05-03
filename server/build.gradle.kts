@@ -27,14 +27,19 @@ plugins {
     id("de.undercouch.download") version "3.4.3"
     id("org.jlleitschuh.gradle.ktlint") version "7.2.1"
     id("org.jetbrains.dokka") version "0.9.18"
+    id("maven-publish")
 }
 
 allprojects {
+
+    val group = "de.zalando"
+    val projVersion = "1.0.0-dev"
 
     apply(plugin = "java")
     apply(plugin = "kotlin")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "maven-publish")
 
     repositories {
         jcenter()
@@ -74,6 +79,33 @@ allprojects {
         add("archives", tasks["javadocJar"])
         add("archives", tasks["sourcesJar"])
     }
+
+    publishing {
+        publications {
+            create<MavenPublication>("mavenJava") {
+                groupId = group
+                artifactId = project.name
+                version = if (projVersion.endsWith("-dev")) projVersion.replace("-dev", "-SNAPSHOT") else projVersion
+
+                from(components["java"])
+                artifact(tasks["sourcesJar"])
+                artifact(tasks["javadocJar"])
+            }
+        }
+        repositories {
+            maven {
+                val releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+                val snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+                val isSnapshot = projVersion.toString().endsWith("-SNAPSHOT")
+                url = uri(if (isSnapshot) snapshotsRepoUrl else releasesRepoUrl)
+                credentials {
+                    // defined in travis project settings or in $HOME/.gradle/gradle.properties
+                    username = System.getenv("OSSRH_JIRA_USERNAME")
+                    password = System.getenv("OSSRH_JIRA_PASSWORD")
+                }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -99,7 +131,8 @@ dependencies {
     compile("com.fasterxml.jackson.module:jackson-module-parameter-names")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     compile("com.fasterxml.jackson.datatype:jackson-datatype-jdk8")
-    compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9+")
+    // 2.9+ is invalid for maven publish
+    compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
     compile("org.zalando.stups:stups-spring-oauth2-server:1.0.22")
     compile("org.zalando:problem-spring-web:0.23.0")
     compile("org.zalando:twintip-spring-web:1.1.0")
@@ -149,8 +182,8 @@ tasks.jacocoTestReport {
 }
 
 tasks.jar {
-    archiveBaseName.set("zally")
-    archiveVersion.set("1.0.0")
+    archiveBaseName.set(project.name)
+    archiveVersion.set(version)
 }
 
 tasks.processResources {
