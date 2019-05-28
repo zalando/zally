@@ -119,6 +119,10 @@ footer {
  * editor
  */
 
+.editor-tab {
+  height: calc(100% - 5rem);
+}
+
 .editor {
   border: 1px solid #dadada;
   margin-bottom: 1.2rem;
@@ -146,6 +150,7 @@ footer {
 .editor-dialog__container .dc-dialog__body {
   height: calc(100% - 7rem);
   position: relative;
+  overflow: hidden;
 }
 
 .editor-dialog__container {
@@ -189,3 +194,19 @@ footer {
   margin: 0;
   height: 100%;
 }
+
+.violations-container {
+  overflow: scroll;
+  height: 90%;
+}
+
+.dc-column {
+  height: 100%;
+}
+
+@-moz-document url-prefix() {
+  .dc-container {
+    height: 80%;
+  }
+}
+

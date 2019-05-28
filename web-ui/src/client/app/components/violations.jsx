@@ -12,17 +12,19 @@ export function Violations(props) {
           {props.violations.length ? <h3>VIOLATIONS</h3> : ''}
         </div>
       </div>
-      <FluidContainer>
-        <div className="dc-row">
-          <div className="dc-column">
-            <ul className="violations-content">
-              {props.violations.map((violation, index) => {
-                return <Violation key={index} violation={violation} />;
-              })}
-            </ul>
+      <div className="violations-container">
+        <FluidContainer>
+          <div className="dc-row">
+            <div className="dc-column">
+              <ul className="violations-content">
+                {props.violations.map((violation, index) => {
+                  return <Violation key={index} violation={violation} />;
+                })}
+              </ul>
+            </div>
           </div>
-        </div>
-      </FluidContainer>
+        </FluidContainer>
+      </div>
     </div>
   );
 }
