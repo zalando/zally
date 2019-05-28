@@ -38,6 +38,7 @@ script:
 
   # Test and build CLI
   - cd cli/zally
+  - ./test.sh
   - ./test.sh integration
   - go build
   - cd $TRAVIS_BUILD_DIR

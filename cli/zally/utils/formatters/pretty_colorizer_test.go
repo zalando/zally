@@ -31,9 +31,9 @@ func TestColorizeByTypeFuncIsUsingColors(t *testing.T) {
 		tests.AssertEquals(t, aurora.Cyan("abcde"), result("abcde"))
 	})
 
-	t.Run("Returns gray by default", func(t *testing.T) {
+	t.Run("Returns white by default", func(t *testing.T) {
 		result := colorizer.ColorizeByTypeFunc("WHATEVER")
-		tests.AssertEquals(t, aurora.Gray("abcde"), result("abcde"))
+		tests.AssertEquals(t, aurora.White("abcde"), result("abcde"))
 	})
 }
 
