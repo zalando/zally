@@ -26,6 +26,6 @@ func (c *PrettyColorizer) ColorizeByTypeFunc(ruleType string) func(interface{}) 
 	case "HINT":
 		return c.auroraInstance.Cyan
 	default:
-		return c.auroraInstance.Gray
+		return c.auroraInstance.White
 	}
 }

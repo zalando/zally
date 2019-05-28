@@ -32,7 +32,7 @@ func TestYAMLReader(t *testing.T) {
 
 		tests.AssertEquals(
 			t,
-			"yaml: line 2: could not find expected ':'",
+			"yaml: line 3: could not find expected ':'",
 			err.Error())
 		tests.AssertEquals(t, json.RawMessage(nil), result)
 	})
