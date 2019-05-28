@@ -90,7 +90,7 @@
     "supertest": "3.0.0",
     "uglifyjs-webpack-plugin": "1.1.4",
     "webpack": "3.10.0",
-    "webpack-bundle-analyzer": "2.9.1",
+    "webpack-bundle-analyzer": "3.3.2",
     "webpack-cli": "2.1.5",
     "webpack-dev-server": "2.11.1",
     "webpack-merge": "4.1.1"
