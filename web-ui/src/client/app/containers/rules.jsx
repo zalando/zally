@@ -86,7 +86,7 @@ export class Rules extends Component {
     }
 
     return (
-      <div>
+      <div className="violations-container">
         <div className="dc-row">
           <div className="dc-column">
             <div className="dc-column__contents">
