@@ -8,11 +8,13 @@
   },
   "scripts": {
     "start": "NODE_ENV=production node server.js",
-    "dev": "webpack-dev-server --config ./webpack/dev.js & NODE_ENV=development nodemon server.js",
+    "dev":
+      "webpack-dev-server --config ./webpack/dev.js & NODE_ENV=development nodemon server.js",
     "build": "webpack --config ./webpack/prod.js",
     "lint": "eslint src --ext .jsx --ext .js",
     "lint:fix": "eslint src --ext .jsx --ext .js --fix",
-    "lint:report": "yarn run lint -- -f checkstyle --output-file target/checkstyle.xml",
+    "lint:report":
+      "yarn run lint -- -f checkstyle --output-file target/checkstyle.xml",
     "jest": "NODE_ENV=test jest --coverage",
     "test": "yarn run lint:report && yarn run jest",
     "test:watch": "NODE_ENV=test jest --watch",
@@ -25,10 +27,7 @@
   },
   "lint-staged": {
     "linters": {
-      "*.{js,jsx,json,scss}": [
-        "prettier --write",
-        "git add"
-      ]
+      "*.{js,jsx,json,scss}": ["prettier --write", "git add"]
     }
   },
   "prettier": {
@@ -36,11 +35,7 @@
     "trailingComma": "es5",
     "singleQuote": true
   },
-  "keywords": [
-    "API",
-    "Linter",
-    "Zally"
-  ],
+  "keywords": ["API", "Linter", "Zally"],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/zalando/zally/issues"
@@ -88,11 +83,11 @@
     "sass-loader": "6.0.6",
     "style-loader": "0.19.0",
     "supertest": "3.0.0",
-    "uglifyjs-webpack-plugin": "1.1.4",
-    "webpack": "3.10.0",
+    "uglifyjs-webpack-plugin": "2.1.3",
+    "webpack": "4.32.2",
     "webpack-bundle-analyzer": "3.3.2",
-    "webpack-cli": "2.1.5",
-    "webpack-dev-server": "2.11.1",
-    "webpack-merge": "4.1.1"
+    "webpack-cli": "3.3.2",
+    "webpack-dev-server": "3.4.1",
+    "webpack-merge": "4.2.1"
   }
 }
