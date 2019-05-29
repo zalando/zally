@@ -9,6 +9,18 @@ jdk:
 go:
   - 1.11.4
 
+node_js:
+  - "10"
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  yarn: true
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
 before_install:
   - eval "$(GIMME_GO_VERSION=1.11.4 gimme)"
   - sudo apt-get install jq
