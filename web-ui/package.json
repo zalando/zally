@@ -4,7 +4,7 @@
   "description": "Zally API Linter Web UI",
   "main": "src/server/index.js",
   "engines": {
-    "node": ">=7.6"
+    "node": ">=10"
   },
   "scripts": {
     "start": "NODE_ENV=production node server.js",
@@ -61,10 +61,10 @@
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
-    "babel-core": "6.26.0",
-    "babel-loader": "7.1.2",
-    "babel-preset-env": "1.6.1",
-    "babel-preset-react": "6.24.1",
+    "@babel/core": "7.4.5",
+    "@babel/preset-env": "7.4.5",
+    "@babel/preset-react": "7.0.0",
+    "babel-loader": "8.0.6",
     "codecov": "3.0.0",
     "css-loader": "0.28.7",
     "enzyme": "3.2.0",
