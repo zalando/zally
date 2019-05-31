@@ -1,4 +1,4 @@
-/* global global, jasmine */
+/* global global */
 
 import { RestService } from '../rest.js';
 import { client } from '../http-client.js';
@@ -84,9 +84,9 @@ describe('RestService', () => {
     return RestService.getApiViolationsByURL(apiDefinitionURL).then(
       violations => {
         expect(violations).toBe(mockViolations);
-        expect(client.fetch).toHaveBeenCalledWith(jasmine.any(String), {
+        expect(client.fetch).toHaveBeenCalledWith(expect.any(String), {
           method: 'POST',
-          headers: jasmine.any(Object),
+          headers: expect.any(Object),
           body: JSON.stringify({ api_definition_url: apiDefinitionURL }),
         });
       }
@@ -102,9 +102,9 @@ describe('RestService', () => {
     return RestService.getApiViolationsBySchema(apiDefinitionSchema).then(
       violations => {
         expect(violations).toBe(mockViolations);
-        expect(client.fetch).toHaveBeenCalledWith(jasmine.any(String), {
+        expect(client.fetch).toHaveBeenCalledWith(expect.any(String), {
           method: 'POST',
-          headers: jasmine.any(Object),
+          headers: expect.any(Object),
           body: JSON.stringify({ api_definition_string: apiDefinitionSchema }),
         });
       }

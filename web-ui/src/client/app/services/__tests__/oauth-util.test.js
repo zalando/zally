@@ -43,17 +43,23 @@ describe('me', () => {
     client.fetch.mockReset();
   });
 
-  test('resolve with a "user" object', () => {
+  test('resolve with a "user" object', done => {
     const mockMe = {};
     client.fetch.mockReturnValueOnce(
       Promise.resolve({
         json: () => mockMe,
       })
     );
-    me().then(body => {
-      expect(body).toBeDefined();
-      expect(body).toBe(mockMe);
-    });
+    me().then(
+      body => {
+        expect(body).toBeDefined();
+        expect(body).toBe(mockMe);
+        done();
+      },
+      error => {
+        done(error);
+      }
+    );
   });
 
   test('reject with an error if token is not valid', done => {
