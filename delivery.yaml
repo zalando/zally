@@ -5,11 +5,11 @@ build_steps:
     apt-get install --no-install-recommends -y jq
     curl -fLOsS https://delivery.cloud.zalando.com/utils/ensure-docker && sh ensure-docker
     docker pull registry.opensource.zalan.do/stups/openjdk:latest
-    docker pull node:7
+    docker pull node:10
 - desc: "Build and Test"
   cmd: |
     docker run --rm -w /build -v $PWD/server:/build:rw registry.opensource.zalan.do/stups/openjdk:latest ./gradlew build --info
-    docker run --rm -w /build -v $PWD/web-ui:/build:rw node:7 bash -c 'npm install -q ; npm test ; npm run build'
+    docker run --rm -w /build -v $PWD/web-ui:/build:rw node:10 bash -c 'npm install -q ; npm test ; npm run build'
     docker run --rm -w /build -v $PWD/github-integration:/build:rw registry.opensource.zalan.do/stups/openjdk:latest ./gradlew build -x test --info
 - desc: "Build and Push Docker Images"
   cmd: bash .delivery/build-and-push.sh

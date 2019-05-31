@@ -33,8 +33,6 @@ requesting violations check at a given Zally server.
 
     ```bash
     go get -v github.com/goreleaser/goreleaser
-    cd $GOPATH/src/github.com/goreleaser/goreleaser
-    go install
     ```
 
     Alternatively you can download a latest release from [goreleaser Releases Page](https://github.com/goreleaser/goreleaser/releases)

@@ -1,5 +1,3 @@
-/* global global */
-
 describe('oauth-firewall', () => {
   let mockMe, mockCreateAnonymousUser, firewall;
 

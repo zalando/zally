@@ -3,26 +3,10 @@
 const { debug } = require('../debug');
 
 describe('debug', () => {
-  console.log = jest.genMockFn();
-
-  afterEach(() => {
-    delete global.window;
-  });
+  console.log = jest.fn();
 
   describe("don't log", () => {
-    test('log if window is not defined', () => {
-      debug();
-      expect(console.log).not.toHaveBeenCalled();
-    });
-
-    test('if window.env is not defined', () => {
-      global.window = {};
-      debug();
-      expect(console.log).not.toHaveBeenCalled();
-    });
-
     test("don't log if window.env.DEBUG is != true", () => {
-      global.window = { env: { DEBUG: false } };
       debug();
       expect(console.log).not.toHaveBeenCalled();
     });
@@ -30,17 +14,17 @@ describe('debug', () => {
 
   describe('log', () => {
     beforeEach(() => {
-      global.window = { env: { DEBUG: true } };
-      delete console.debug;
+      global.window.env = { DEBUG: true };
     });
 
     test('if window.env.DEBUG is == true', () => {
+      console.debug = 'not a function';
       debug();
       expect(console.log).toHaveBeenCalled();
     });
 
     test('using console.debug, if window.env.DEBUG is == true and console.debug is a function', () => {
-      console.debug = jest.genMockFn();
+      console.debug = jest.fn();
       debug();
       expect(console.debug).toHaveBeenCalled();
     });

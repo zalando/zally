@@ -9,6 +9,18 @@ jdk:
 go:
   - 1.11.4
 
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  yarn: true
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.cache/go-build
+    - $HOME/gopath/pkg/mod
+    - node_modules
+
 before_install:
   - eval "$(GIMME_GO_VERSION=1.11.4 gimme)"
   - sudo apt-get install jq
@@ -48,8 +60,9 @@ script:
 
   # Unit-test web UI
   - cd web-ui
-  - node --version
   - npm --version
+  - nvm install 10
+  - node --version
   - yarn --version
   - yarn install -q
   - yarn test

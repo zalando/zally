@@ -1,5 +1,3 @@
-/* global global */
-
 const { RequestMock } = require('../__mocks__/util-mocks');
 
 const createAuthorizedRequest = () => {

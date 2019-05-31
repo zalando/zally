@@ -1,5 +1,3 @@
-/* global global */
-
 describe('run', () => {
   const mockRender = jest.fn();
   const mockFirewall = jest.fn();

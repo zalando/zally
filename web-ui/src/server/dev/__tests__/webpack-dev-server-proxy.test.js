@@ -1,6 +1,6 @@
 'use strict';
 
-/* global jasmine */
+/* global */
 
 describe('webpack-dev-server-proxy', () => {
   let webpackDevServerProxy, mockWebpackDevServerProxyHandlerFactory, appMock;
@@ -23,7 +23,7 @@ describe('webpack-dev-server-proxy', () => {
     webpackDevServerProxy(appMock);
     expect(appMock.use).toHaveBeenCalledWith(
       webpackDevServerProxy.DEFAULTS.publicPath,
-      jasmine.any(Function)
+      expect.any(Function)
     );
     expect(mockWebpackDevServerProxyHandlerFactory).toHaveBeenCalledWith(
       webpackDevServerProxy.DEFAULTS
@@ -37,7 +37,7 @@ describe('webpack-dev-server-proxy', () => {
         https: true,
       },
     });
-    expect(appMock.use).toHaveBeenCalledWith('/assets', jasmine.any(Function));
+    expect(appMock.use).toHaveBeenCalledWith('/assets', expect.any(Function));
     expect(mockWebpackDevServerProxyHandlerFactory).toHaveBeenCalledWith({
       publicPath: '/assets',
       protocol: 'https',
