@@ -60,8 +60,9 @@ script:
 
   # Unit-test web UI
   - cd web-ui
-  - node --version
   - npm --version
+  - npm install #to get node 10
+  - node --version
   - yarn --version
   - yarn install -q
   - yarn test
