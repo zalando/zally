@@ -34,6 +34,25 @@ export const RestService = {
     });
   },
 
+  getApiViolationsByExternalId(externalId) {
+    const options = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    };
+    return client
+      .fetch(
+        `${
+          window.env.ZALLY_API_URL
+        }/api-violations/${externalId}`,
+        options
+      )
+      .then(response => response.json())
+      .catch(response => response.json().then(body => Promise.reject(body)));
+  },
+
   getSupportedRules() {
     const options = {
       method: 'GET',

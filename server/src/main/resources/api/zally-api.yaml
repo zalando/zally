@@ -288,6 +288,9 @@ components:
           description: Custom server message
         violations_count:
           $ref: '#/components/schemas/ViolationsCount'
+        api_definition:
+          type: string
+          description: Specification object in OpenAPI format
 
     SupportedRulesResponse:
       type: object

@@ -43,6 +43,16 @@ describe('ViolationsTab container component', () => {
     expect(component.find('Editor')).toHaveLength(1);
     expect(component.find('Rules')).toHaveLength(0);
   });
+  test('render the Editor tab on /editor/:externalId', () => {
+    const component = mount(
+      <StaticRouter location={{ pathname: '/editor/:externalId' }}>
+        <ViolationsTab authenticated />
+      </StaticRouter>
+    );
+    expect(component.find('URL')).toHaveLength(0);
+    expect(component.find('Editor')).toHaveLength(1);
+    expect(component.find('Rules')).toHaveLength(0);
+  });
   test('render the Rules tab on /rules', () => {
     const component = mount(
       <StaticRouter location={{ pathname: '/rules' }}>

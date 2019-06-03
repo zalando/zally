@@ -52,7 +52,6 @@ describe('Violations component', () => {
   test('should render empty list of violation', () => {
     const component = shallow(<Violations violations={[]} />);
     expect(component.find('Violation')).toHaveLength(0);
-    expect(component.find('h3')).toHaveLength(0);
   });
 });
 
