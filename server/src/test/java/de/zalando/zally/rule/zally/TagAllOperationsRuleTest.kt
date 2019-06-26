@@ -13,7 +13,8 @@ class TagAllOperationsRuleTest {
 
     private fun TagAllOperationsRule.checkAll(context: Context): List<Violation> =
         checkOperationsAreTagged(context) +
-            checkOperationTagsAreDefined(context)
+            checkOperationTagsAreDefined(context) +
+            checkDefinedTagsAreDescribed(context)
 
     @Test
     fun `checkAll with 'noop' spec returns no violations`() {
@@ -39,6 +40,7 @@ class TagAllOperationsRuleTest {
             swagger: '2.0'
             tags:
               - name: Things
+                description: Operations dealing with Things
             paths:
               '/things':
                 post:
@@ -103,5 +105,24 @@ class TagAllOperationsRuleTest {
             .assertThat(violations)
             .pointersEqualTo("/paths/~1things/post")
             .descriptionsEqualTo("Tag 'Things' is not defined")
+    }
+
+    @Test
+    fun `checkDefinedTagsAreDescribed without tag description returns violation`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent(
+            """
+            swagger: '2.0'
+            tags:
+              - name: Things
+            """.trimIndent()
+        )
+
+        val violations = cut.checkDefinedTagsAreDescribed(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .pointersEqualTo("/tags/0")
+            .descriptionsEqualTo("Tag 'Things' has no description")
     }
 }

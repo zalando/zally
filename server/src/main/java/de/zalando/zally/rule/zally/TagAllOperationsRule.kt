@@ -36,4 +36,12 @@ class TagAllOperationsRule {
             }
         }
     }
+
+    @Check(severity = Severity.MUST)
+    fun checkDefinedTagsAreDescribed(context: Context): List<Violation> = context.api.tags
+        .orEmpty()
+        .filter { it.description == null }
+        .map {
+            context.violation("Tag '${it.name}' has no description", it)
+        }
 }
