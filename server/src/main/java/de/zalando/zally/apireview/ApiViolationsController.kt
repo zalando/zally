@@ -84,18 +84,20 @@ class ApiViolationsController(
     private fun buildApiDefinitionResponse(review: ApiReview): ApiDefinitionResponse = ApiDefinitionResponse(
         externalId = review.externalId,
         message = serverMessageService.serverMessage(review.userAgent),
-        violations = review.ruleViolations.orEmpty().map {
-            ViolationDTO(
-                it.ruleTitle,
-                it.description,
-                it.type,
-                it.ruleUrl,
-                listOfNotNull(it.locationPointer),
-                it.locationPointer,
-                it.locationLineStart,
-                it.locationLineEnd
-            )
-        },
+        violations = review.ruleViolations
+            .sortedBy(RuleViolation::type)
+            .map {
+                ViolationDTO(
+                    it.ruleTitle,
+                    it.description,
+                    it.type,
+                    it.ruleUrl,
+                    listOfNotNull(it.locationPointer),
+                    it.locationPointer,
+                    it.locationLineStart,
+                    it.locationLineEnd
+                )
+            },
         violationsCount = listOf(
             Severity.MUST to review.mustViolations,
             Severity.SHOULD to review.shouldViolations,
