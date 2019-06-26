@@ -148,6 +148,31 @@ class CaseCheckerRuleTest {
     }
 
     @Test
+    fun `checkTagNames returns violations`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent(
+            """
+            swagger: '2.0'
+            tags:
+              - name: iNvAlId!
+            paths:
+              /things:
+                get:
+                  tags:
+                    - iNvAlId!
+                  description: Get things
+            """.trimIndent()
+        )
+
+        val violations = cut.checkTagNames(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .descriptionsAllMatch("Tag 'iNvAlId!' does not match .*".toRegex())
+            .pointersEqualTo("/tags/0", "/paths/~1things/get/tags")
+    }
+
+    @Test
     fun `checkPathSegments returns violations`() {
         @Language("YAML")
         val context = getSwaggerContextFromContent(

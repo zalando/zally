@@ -55,6 +55,10 @@ class CaseCheckerParameterizedTest(private val param: TestParam) {
                 "Hyphenated-Pascal-Case",
                 listOf("Test-Case", "X-Flow-Id", "ETag", "Test-Case1234", "Test-Case-1234"),
                 listOf("test-Case", "TestCase", "testCase", "1234-Test-Case")
+            ) + parameters(
+                "Title Case",
+                listOf("Test Case", "TestCase", "Test-Case"),
+                listOf("test-Case")
             )
 
             val excess = parameters.map { it.case }.toSet() - checker.cases.keys

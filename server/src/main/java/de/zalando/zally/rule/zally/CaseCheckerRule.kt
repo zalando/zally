@@ -55,6 +55,15 @@ class CaseCheckerRule(config: Config) {
         checker.checkHeadersNames(context)
 
     /**
+     * Check that tag names match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
+    @Check(severity = Severity.MUST)
+    fun checkTagNames(context: Context): List<Violation> =
+        checker.checkTagNames(context)
+
+    /**
      * Check that path segments match the configured requirements.
      * @param context The specification context to check.
      * @return a list of Violations, possibly empty.
