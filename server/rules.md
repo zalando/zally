@@ -34,10 +34,23 @@ Supports:
 - schema property names
 - query parameter names
 - path parameter names
+- tag names
+
+## M011: Checks that all operations are tagged
+
+Tags are often used to group operations together in generated
+documentation and so it's useful to ensure that all operations are
+properly tagged. This rule ensures that:
+
+- All operations have at least one tag
+- All tags are defined in the top level `tags:` section
+  (defining order of groups)
+- All defined tags are used
+- All defined tags have a description
 
 ## S005: Do not leave unused definitions
 
-Unused definitions cause confusion and should be avioded.
+Unused definitions cause confusion and should be avoided.
 
 ## S006: Define bounds for numeric properties
 
