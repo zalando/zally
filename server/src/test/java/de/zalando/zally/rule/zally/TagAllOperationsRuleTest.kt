@@ -2,6 +2,8 @@ package de.zalando.zally.rule.zally
 
 import de.zalando.zally.getSwaggerContextFromContent
 import de.zalando.zally.rule.ZallyAssertions
+import de.zalando.zally.rule.api.Context
+import de.zalando.zally.rule.api.Violation
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
@@ -9,8 +11,12 @@ class TagAllOperationsRuleTest {
 
     private val cut = TagAllOperationsRule()
 
+    private fun TagAllOperationsRule.checkAll(context: Context): List<Violation> =
+        checkOperationsAreTagged(context) +
+            checkOperationTagsAreDefined(context)
+
     @Test
-    fun `checkOperationsAreTagged with no operations returns no violations`() {
+    fun `checkAll with 'noop' spec returns no violations`() {
         @Language("YAML")
         val context = getSwaggerContextFromContent(
             """
@@ -18,7 +24,7 @@ class TagAllOperationsRuleTest {
             """.trimIndent()
         )
 
-        val violations = cut.checkOperationsAreTagged(context)
+        val violations = cut.checkAll(context)
 
         ZallyAssertions
             .assertThat(violations)
@@ -26,11 +32,13 @@ class TagAllOperationsRuleTest {
     }
 
     @Test
-    fun `checkOperationsAreTagged with well tagged operations returns no violations`() {
+    fun `checkAll with 'perfect' spec returns no violations`() {
         @Language("YAML")
         val context = getSwaggerContextFromContent(
             """
             swagger: '2.0'
+            tags:
+              - name: Things
             paths:
               '/things':
                 post:
@@ -42,7 +50,7 @@ class TagAllOperationsRuleTest {
             """.trimIndent()
         )
 
-        val violations = cut.checkOperationsAreTagged(context)
+        val violations = cut.checkAll(context)
 
         ZallyAssertions
             .assertThat(violations)
@@ -70,5 +78,30 @@ class TagAllOperationsRuleTest {
             .assertThat(violations)
             .pointersEqualTo("/paths/~1things/post")
             .descriptionsEqualTo("Operation has no tag")
+    }
+
+    @Test
+    fun `checkOperationTagsAreDefined with undefined tag returns violation`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent(
+            """
+            swagger: '2.0'
+            paths:
+              '/things':
+                post:
+                  tags:
+                    - Things
+                  responses:
+                    200:
+                      description: Done
+            """.trimIndent()
+        )
+
+        val violations = cut.checkOperationTagsAreDefined(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .pointersEqualTo("/paths/~1things/post")
+            .descriptionsEqualTo("Tag 'Things' is not defined")
     }
 }

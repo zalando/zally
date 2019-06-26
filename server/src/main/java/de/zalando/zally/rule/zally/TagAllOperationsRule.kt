@@ -23,4 +23,17 @@ class TagAllOperationsRule {
                 else -> emptyList<Violation>()
             }
         }
+
+    @Check(severity = Severity.MUST)
+    fun checkOperationTagsAreDefined(context: Context): List<Violation> {
+        val defined = context.api.tags
+            .map { it.name }
+            .toSet()
+
+        return context.validateOperations { (_, operation) ->
+            operation?.tags.orEmpty().filter { it !in defined }.flatMap {
+                context.violations("Tag '$it' is not defined", operation)
+            }
+        }
+    }
 }
