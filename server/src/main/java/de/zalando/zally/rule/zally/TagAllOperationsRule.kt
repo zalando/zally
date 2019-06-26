@@ -38,6 +38,22 @@ class TagAllOperationsRule {
     }
 
     @Check(severity = Severity.MUST)
+    fun checkDefinedTagsAreUsed(context: Context): List<Violation> {
+        val used = context.api.paths?.values
+            .orEmpty()
+            .flatMap { it.readOperations() }
+            .flatMap { it?.tags.orEmpty() }
+            .toSet()
+
+        return context.api.tags
+            .orEmpty()
+            .filter { it.name !in used }
+            .map {
+                context.violation("Tag '${it.name}' is not used", it)
+            }
+    }
+
+    @Check(severity = Severity.MUST)
     fun checkDefinedTagsAreDescribed(context: Context): List<Violation> = context.api.tags
         .orEmpty()
         .filter { it.description == null }

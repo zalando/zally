@@ -14,6 +14,7 @@ class TagAllOperationsRuleTest {
     private fun TagAllOperationsRule.checkAll(context: Context): List<Violation> =
         checkOperationsAreTagged(context) +
             checkOperationTagsAreDefined(context) +
+            checkDefinedTagsAreUsed(context) +
             checkDefinedTagsAreDescribed(context)
 
     @Test
@@ -105,6 +106,25 @@ class TagAllOperationsRuleTest {
             .assertThat(violations)
             .pointersEqualTo("/paths/~1things/post")
             .descriptionsEqualTo("Tag 'Things' is not defined")
+    }
+
+    @Test
+    fun `checkDefinedTagsAreUsed with unused tag returns violation`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent(
+            """
+            swagger: '2.0'
+            tags:
+              - name: Things
+            """.trimIndent()
+        )
+
+        val violations = cut.checkDefinedTagsAreUsed(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .pointersEqualTo("/tags/0")
+            .descriptionsEqualTo("Tag 'Things' is not used")
     }
 
     @Test
