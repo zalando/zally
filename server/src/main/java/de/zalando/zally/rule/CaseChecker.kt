@@ -22,6 +22,7 @@ class CaseChecker(
     val pathParameterNames: CaseCheck? = null,
     val queryParameterNames: CaseCheck? = null,
     val headerNames: CaseCheck? = null,
+    val tagNames: CaseCheck? = null,
     val discriminatorValues: CaseCheck? = null,
     val enumValues: CaseCheck? = null
 ) {
@@ -154,6 +155,38 @@ class CaseChecker(
         }
 
     /**
+     * Check that tag names match the configured requirements.
+     * @param context The specification context to check.
+     * @return a list of Violations, possibly empty.
+     */
+    fun checkTagNames(context: Context): List<Violation> =
+        checkTagNamesDefined(context) +
+            checkTagNamesUsed(context)
+
+    private fun checkTagNamesDefined(context: Context): List<Violation> = context.api
+        .tags
+        .orEmpty()
+        .filter { it != null && it.name != null }
+        .flatMap { tag ->
+            check("Tag", "Tags", tagNames, tag.name)
+                ?.let { context.violations(it, tag) }
+                .orEmpty()
+        }
+
+    private fun checkTagNamesUsed(context: Context): List<Violation> = context.api
+        .paths
+        ?.values
+        .orEmpty()
+        .flatMap { path -> path.readOperations() }
+        .flatMap { op ->
+            op?.tags.orEmpty().flatMap { name ->
+                check("Tag", "Tags", tagNames, name)
+                    ?.let { context.violations(it, op.tags) }
+                    .orEmpty()
+            }
+        }
+
+    /**
      * Check that path parameter names match the configured requirements.
      * @param context The specification context to check.
      * @return a list of Violations, possibly empty.
@@ -172,7 +205,7 @@ class CaseChecker(
     private fun checkParameterNames(
         context: Context,
         type: String,
-        check: CaseCheck?
+        check: CaseChecker.CaseCheck?
     ): List<Violation> = context.api
         .getAllParameters().values
         .filter { type.toLowerCase() == it.`in` }
@@ -233,7 +266,7 @@ class CaseChecker(
         }
     }
 
-    private fun appendRegex(message: StringBuilder, check: CaseCheck) {
+    private fun appendRegex(message: StringBuilder, check: CaseChecker.CaseCheck) {
         if (check.allow.size > 1) {
             message.append("any of ")
         }

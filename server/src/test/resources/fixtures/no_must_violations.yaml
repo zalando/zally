@@ -89,6 +89,18 @@ parameters:
       $ref: '#/definitions/CrawledAPIDefinition'
     required: true
 
+tags:
+  - name: APIs
+    description: Description of APIs
+  - name: Applications
+    description: Description of Applications
+  - name: Definitions
+    description: Description of Definitions
+  - name: Deployments
+    description: Description of Deployments
+  - name: Versions
+    description: Description of Versions
+
 paths:
   '/apis':
     get:
