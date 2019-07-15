@@ -282,6 +282,36 @@ class CaseCheckerRuleTest {
     }
 
     @Test
+    fun `checkDiscriminatorValues with missing properties avoids NullPointerException`() {
+        val ref = "\$ref"
+
+        @Language("YAML")
+        val context = getSwaggerContextFromContent(
+            """
+            swagger: '2.0'
+            definitions:
+              Property:
+                type: object
+                discriminator: type
+              StringProperty:
+                type: object
+                allOf:
+                  - $ref: '#/definitions/Property'
+                  - type: object
+                    properties:
+                      value:
+                        type: string
+            """.trimIndent()
+        )
+
+        val violations = cut.checkDiscriminatorValues(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .isEmpty()
+    }
+
+    @Test
     fun `checkEnumValues with invalid discriminator returns no violations`() {
         @Language("YAML")
         val context = getOpenApiContextFromContent(

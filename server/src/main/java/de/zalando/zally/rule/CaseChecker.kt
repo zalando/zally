@@ -100,7 +100,7 @@ class CaseChecker(
     private fun checkDiscriminatorPropertyEnumValues(context: Context, schema: Schema<Any>): List<Violation> =
         schema.discriminator?.propertyName
             ?.let { propertyName ->
-                val property = schema.properties[propertyName]
+                val property = schema.properties?.get(propertyName)
                 val values = property?.enum?.map { it.toString() }
                 check("Discriminator property enum value", "Discriminator property enums", discriminatorValues, values)
                     ?.let { context.violations(it, property) }
