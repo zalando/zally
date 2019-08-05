@@ -64,11 +64,11 @@ look at our [contributing guidelines](CONTRIBUTING). Then check our
 
 For Zally [version 1.5](https://github.com/zalando/zally/milestone/3), we're focusing on:
 
-- Improve extansability of Zally
+- Improve extensibility of Zally
   - Plugin mechanism for Rules (Sets)
   - Utilities and helper functions for Check development
 - Improve quality by introducing a better testing approach for integration tests
-- Make the usage of Zally easier by roviding high-quality documentation for
+- Make the usage of Zally easier by providing high-quality documentation for
   - End users
   - Check developers
   - Operators and administrators
