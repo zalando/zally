@@ -48,7 +48,7 @@ class OAuthConfiguration : ResourceServerConfigurerAdapter() {
             .regexMatchers("/health/?").permitAll()
             .regexMatchers(
                 "/metrics/?(\\?.*)?",
-                "/api-violations/?(\\?)?",
+                "/api-violations/?(\\?.*)?",
                 "/supported-rules/?(\\?.*)?",
                 "/review-statistics/?(\\?.*)?"
             )
