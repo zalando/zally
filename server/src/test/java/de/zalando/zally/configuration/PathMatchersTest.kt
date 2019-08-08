@@ -46,9 +46,25 @@ class PathMatchersTest {
         assertThat(matcher.matches(request("/metrics/"))).isTrue()
         assertThat(matcher.matches(request("/metrics/?"))).isTrue()
         assertThat(matcher.matches(request("/metrics/?"))).isTrue()
+        assertThat(matcher.matches(request("/metrics/ab"))).isFalse()
         assertThat(matcher.matches(request("/metrics?parameter=value"))).isTrue()
         assertThat(matcher.matches(request("/metrics/?parameter=value"))).isTrue()
         assertThat(matcher.matches(request("/metrics-resource/?parameter=value"))).isFalse()
+    }
+
+    @Test
+    fun `regex matcher matches allows sub-paths`() {
+        val matcher = RegexRequestMatcher("/api-violations/?([a-z0-9-]+/?)?(\\?)?", null)
+        assertThat(matcher.matches(request("/api-violations"))).isTrue()
+        assertThat(matcher.matches(request("/api-violations?"))).isTrue()
+        assertThat(matcher.matches(request("/api-violations/"))).isTrue()
+        assertThat(matcher.matches(request("/api-violations/?"))).isTrue()
+        assertThat(matcher.matches(request("/api-violations/?"))).isTrue()
+        assertThat(matcher.matches(request("/api-violations/dcb5a97e-3586-44fc-b40c-90e209cf2e73"))).isTrue()
+        assertThat(matcher.matches(request("/api-violations/dcb5a97e-3586-44fc-b40c-90e209cf2e73/"))).isTrue()
+        assertThat(matcher.matches(request("/api-violations?parameter=value"))).isFalse()
+        assertThat(matcher.matches(request("/api-violations/?parameter=value"))).isFalse()
+        assertThat(matcher.matches(request("/api-violations-resource/?parameter=value"))).isFalse()
     }
 
     @Test
