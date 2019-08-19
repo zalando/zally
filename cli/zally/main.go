@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/zalando/zally/cli/zally/domain"
 )
 
 func main() {
@@ -11,6 +13,9 @@ func main() {
 	err := app.Run(os.Args)
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		if aerr, ok := err.(domain.Error); ok {
+			os.Exit(aerr.Code())
+		}
+		panic("no error code defined")
 	}
 }

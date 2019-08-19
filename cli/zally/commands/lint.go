@@ -1,16 +1,12 @@
 package commands
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"encoding/json"
-
-	"bytes"
-
 	"path/filepath"
-
 	"strings"
 
 	"github.com/urfave/cli"
@@ -30,35 +26,27 @@ var LintCommand = cli.Command{
 func lint(c *cli.Context) error {
 	if !c.Args().Present() {
 		cli.ShowCommandHelp(c, c.Command.Name)
-		return fmt.Errorf("Please specify Swagger File")
+		return domain.NewAppError(fmt.Errorf("Please specify Swagger File"),
+			domain.ClientError)
 	}
 
 	formatter, err := formatters.NewFormatter(c.GlobalString("format"))
 	if err != nil {
 		cli.ShowCommandHelp(c, c.Command.Name)
-		return err
+		return domain.NewAppError(err, domain.ClientError)
 	}
 
 	path := c.Args().First()
-	requestBuilder := utils.NewRequestBuilder(c.GlobalString("linter-service"), c.GlobalString("token"), c.App)
-
-	return lintFile(path, requestBuilder, formatter)
-}
-
-func lintFile(path string, requestBuilder *utils.RequestBuilder, formatter formatters.Formatter) error {
 	data, err := readFile(path)
 	if err != nil {
-		return err
+		return domain.NewAppError(err, domain.ClientError)
 	}
 
+	requestBuilder := utils.NewRequestBuilder(
+		c.GlobalString("linter-service"), c.GlobalString("token"), c.App)
 	violations, err := doRequest(requestBuilder, data)
 	if err != nil {
-		return err
-	}
-
-	numberOfMustViolations := len(violations.Must())
-	if numberOfMustViolations > 0 {
-		err = fmt.Errorf("Failing because: %d must violation(s) found", numberOfMustViolations)
+		return domain.NewAppError(err, domain.ServerError)
 	}
 
 	var buffer bytes.Buffer
@@ -67,7 +55,13 @@ func lintFile(path string, requestBuilder *utils.RequestBuilder, formatter forma
 
 	fmt.Print(buffer.String())
 
-	return err
+	numberOfMustViolations := len(violations.Must())
+	if numberOfMustViolations > 0 {
+		return domain.NewAppError(fmt.Errorf("Failing because: %d must violation(s) found",
+			numberOfMustViolations), domain.ValidationError)
+	}
+
+	return nil
 }
 
 func readFile(path string) (string, error) {
