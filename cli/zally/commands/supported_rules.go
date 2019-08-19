@@ -2,11 +2,9 @@ package commands
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
-
-	"encoding/json"
-
 	"strings"
 
 	"github.com/urfave/cli"
@@ -31,22 +29,23 @@ var SupportedRulesCommand = cli.Command{
 var supportedTypes = []string{}
 
 func listRules(c *cli.Context) error {
-	requestBuilder := utils.NewRequestBuilder(c.GlobalString("linter-service"), c.GlobalString("token"), c.App)
 	ruleType := strings.ToLower(c.String("type"))
 	err := validateType(ruleType)
 	if err != nil {
-		return err
+		return domain.NewAppError(err, domain.ClientError)
 	}
 
 	formatter, err := formatters.NewFormatter(c.GlobalString("format"))
 	if err != nil {
 		cli.ShowCommandHelp(c, c.Command.Name)
-		return err
+		return domain.NewAppError(err, domain.ClientError)
 	}
 
+	requestBuilder := utils.NewRequestBuilder(
+		c.GlobalString("linter-service"), c.GlobalString("token"), c.App)
 	rules, err := fetchRules(requestBuilder, ruleType)
 	if err != nil {
-		return err
+		return domain.NewAppError(err, domain.ServerError)
 	}
 
 	printRules(rules, formatter)
