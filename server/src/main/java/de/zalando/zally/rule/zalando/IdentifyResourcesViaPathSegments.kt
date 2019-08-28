@@ -10,7 +10,7 @@ import de.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "143",
     severity = Severity.MUST,
-    title = "Resources must by identified via path segments"
+    title = "Resources must be identified via path segments"
 )
 class IdentifyResourcesViaPathSegments {
     private val pathStartsWithParameter = "Path must start with a resource"
