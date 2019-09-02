@@ -21,10 +21,10 @@ func TestNewRequestBuilder(t *testing.T) {
 
 func TestRequestBuilderBuild(t *testing.T) {
 	t.Run("creates_absolute_url", func(t *testing.T) {
-		builder := NewRequestBuilder("http://example.com/", "some_token", app)
+		builder := NewRequestBuilder("http://example.com/base", "some_token", app)
 		request, err := builder.Build("GET", "/my-path?abcd=efgh", nil)
 
-		tests.AssertEquals(t, "http://example.com/my-path?abcd=efgh", request.URL.String())
+		tests.AssertEquals(t, "http://example.com/base/my-path?abcd=efgh", request.URL.String())
 		tests.AssertEquals(t, nil, err)
 	})
 

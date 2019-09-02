@@ -51,7 +51,7 @@ func (r *RequestBuilder) getAbsoluteURL(uri string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	u, err := url.Parse(uri)
+	u, err := url.Parse(base.Path + uri)
 	if err != nil {
 		return "", err
 	}
