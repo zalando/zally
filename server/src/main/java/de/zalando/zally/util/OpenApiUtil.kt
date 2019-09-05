@@ -1,6 +1,7 @@
 package de.zalando.zally.util
 
 import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.media.ArraySchema
 import io.swagger.v3.oas.models.media.Schema
 import io.swagger.v3.oas.models.parameters.Parameter
 import io.swagger.v3.oas.models.responses.ApiResponse
@@ -65,18 +66,17 @@ fun OpenAPI.getAllSchemas(): Collection<Schema<Any>> = this.components?.schemas.
  * Traverses the schemas and returns all included schemas
  * @return a collection of all transitive schemas
  */
-fun OpenAPI.getAllTransitiveSchemas(): Collection<Schema<Any>> {
-    fun isPrimitive(schema: Schema<Any>): Boolean = schema.properties.orEmpty().isEmpty()
-    val collector = mutableMapOf<Int, Schema<Any>>()
+fun OpenAPI.getAllTransitiveSchemas(): Collection<Schema<*>> {
+    val collector = mutableMapOf<Int, Schema<*>>()
 
-    tailrec fun traverseSchemas(schemasToScan: Collection<Schema<Any>>) {
-        if (schemasToScan.isEmpty()) return
-
-        val primitiveSchemas = schemasToScan.filter { isPrimitive(it) }
-        val nonPrimitiveSchemas = schemasToScan.filterNot { isPrimitive(it) }
-
-        primitiveSchemas.forEach { schema -> collector[schema.customHash()] = schema }
-        traverseSchemas(nonPrimitiveSchemas.flatMap { it.properties.values })
+    fun traverseSchemas(schemasToScan: Collection<Schema<*>>) {
+        schemasToScan.forEach { schema ->
+            when {
+                schema is ArraySchema -> traverseSchemas(listOf(schema.items))
+                schema.properties.isNullOrEmpty() -> collector[schema.customHash()] = schema
+                else -> traverseSchemas(schema.properties.values)
+            }
+        }
     }
 
     traverseSchemas(this.getAllSchemas())
@@ -123,7 +123,7 @@ fun OpenAPI.getAllParameters(): Map<String, Parameter> = this.components?.parame
  * E.g. io.swagger.v3.oas.models.media.ArraySchema#hashCode() calls super#hashCode()
  * which fails for recursive data structures (endless loop -> StackOverflow)
  */
-private fun Schema<Any>.customHash(): Int = Objects.hash(
+private fun Schema<*>.customHash(): Int = Objects.hash(
     title, multipleOf, maximum, exclusiveMaximum, minimum,
     exclusiveMinimum, maxLength, minLength, pattern, maxItems, minItems, uniqueItems, maxProperties, minProperties,
     required, type, not, properties, additionalProperties, description, format, `$ref`, nullable, readOnly, writeOnly,
