@@ -366,6 +366,7 @@ components:
 
         val schemas = context.api.getAllTransitiveSchemas()
 
-        assertThat(schemas).hasSize(2)
+        //the schema is the same
+        assertThat(schemas).hasSize(1)
     }
 }
