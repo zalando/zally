@@ -123,6 +123,4 @@ class DefaultContextFactory(@Value("\${zally.propagateAuthorizationUrls:}") val 
 
     private fun errorToViolation(error: String): Violation =
         Violation(error, JsonPointers.EMPTY)
-
-
 }

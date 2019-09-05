@@ -155,5 +155,4 @@ class DefaultContext(
         this == JsonPointers.EMPTY -> null
         else -> this
     }
-
 }

@@ -9,8 +9,10 @@ import org.springframework.stereotype.Component
  * on set of rules.
  */
 @Component
-class ContextRulesValidator(rules: RulesManager,
-                            private val defaultContextFactory: DefaultContextFactory) : RulesValidator<Context>(rules) {
+class ContextRulesValidator(
+    rules: RulesManager,
+    private val defaultContextFactory: DefaultContextFactory
+) : RulesValidator<Context>(rules) {
 
     override fun parse(content: String, authorization: String?): ContentParseResult<Context> {
         // first try to parse an OpenAPI (version 3+)
