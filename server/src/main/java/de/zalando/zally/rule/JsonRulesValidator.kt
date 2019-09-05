@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 class JsonRulesValidator(rules: RulesManager) : RulesValidator<JsonNode>(rules) {
     private var ast: ReverseAst? = null
 
-    override fun parse(content: String): ContentParseResult<JsonNode> {
+    override fun parse(content: String, authorization: String?): ContentParseResult<JsonNode> {
         return try {
             val json = ObjectTreeReader().read(content)
             ast = createAst(json)

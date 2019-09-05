@@ -1,34 +1,26 @@
 package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
-import de.zalando.zally.rule.ContentParseResult.NotApplicable
-import de.zalando.zally.rule.ContentParseResult.ParsedSuccessfully
-import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.ast.JsonPointers
 import de.zalando.zally.util.ast.MethodCallRecorder
 import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.models.Swagger
-import io.swagger.parser.SwaggerParser
-import io.swagger.parser.util.SwaggerDeserializationResult
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.oas.models.PathItem.HttpMethod
 import io.swagger.v3.oas.models.responses.ApiResponse
-import io.swagger.v3.parser.OpenAPIV3Parser
-import io.swagger.v3.parser.converter.SwaggerConverter
-import io.swagger.v3.parser.core.models.ParseOptions
-import io.swagger.v3.parser.core.models.SwaggerParseResult
-import io.swagger.v3.parser.util.ResolverFully
-import org.slf4j.LoggerFactory
 
 class DefaultContext(
     override val source: String,
     openApi: OpenAPI,
     swagger: Swagger? = null
 ) : Context {
+
+    private val extensionNames = arrayOf("getVendorExtensions", "getExtensions")
+
     private val openApiRecorder = MethodCallRecorder(openApi).skipMethods(*extensionNames)
     private val swaggerRecorder = swagger?.let { MethodCallRecorder(it).skipMethods(*extensionNames) }
     private val openApiAst = ReverseAst.fromObject(openApi).withExtensionMethodNames(*extensionNames).build()
@@ -164,99 +156,4 @@ class DefaultContext(
         else -> this
     }
 
-    companion object {
-
-        private val log = LoggerFactory.getLogger(DefaultContext::class.java)
-        private val extensionNames = arrayOf("getVendorExtensions", "getExtensions")
-
-        fun createOpenApiContext(content: String): ContentParseResult<Context> {
-            val parseResult = parseOpenApi(content)
-            if (parseResult !is ParsedSuccessfully) return parseResult.of()
-
-            val resolveResult = resolveOpenApi(parseResult.result)
-            if (resolveResult !is ParsedSuccessfully) return resolveResult.of()
-
-            return ParsedSuccessfully(DefaultContext(content, parseResult.result.openAPI))
-        }
-
-        fun createSwaggerContext(content: String): ContentParseResult<Context> {
-            val parseResult = parseSwagger(content)
-            if (parseResult !is ParsedSuccessfully) return parseResult.of()
-
-            val convertResult = convertSwaggerToOpenAPI(parseResult.result)
-            if (convertResult !is ParsedSuccessfully) return convertResult.of()
-
-            val resolveResult = resolveOpenApi(convertResult.result)
-            if (resolveResult !is ParsedSuccessfully) return resolveResult.of()
-
-            return ParsedSuccessfully(DefaultContext(content, convertResult.result.openAPI, parseResult.result.swagger))
-        }
-
-        private fun parseOpenApi(content: String): ContentParseResult<SwaggerParseResult> {
-            val parseOptions = ParseOptions()
-            parseOptions.isResolve = true
-            // parseOptions.isResolveFully = true // https://github.com/swagger-api/swagger-parser/issues/682
-            val parseResult = OpenAPIV3Parser().readContents(content, null, parseOptions)
-            return if (parseResult.openAPI === null) {
-                if (parseResult.messages.isEmpty() || parseResult.messages.contains("attribute openapi is missing")) {
-                    NotApplicable()
-                } else {
-                    ParsedWithErrors(parseResult.messages.filterNotNull().map(::errorToViolation))
-                }
-            } else {
-                ParsedSuccessfully(parseResult)
-            }
-        }
-
-        private fun resolveOpenApi(parseResult: SwaggerParseResult): ContentParseResult<SwaggerParseResult> {
-            try {
-                ResolverFully(true).resolveFully(parseResult.openAPI)
-            } catch (e: NullPointerException) {
-                log.warn("Failed to fully resolve OpenAPI schema. Error not covered by pre-resolve checks.", e)
-            }
-            return ParsedSuccessfully(parseResult)
-        }
-
-        private fun parseSwagger(content: String): ContentParseResult<SwaggerDeserializationResult> {
-            val parseResult = SwaggerParser().readWithInfo(content, true)
-            val didParse = parseResult !== null
-            val swaggerIsMissing = parseResult.messages.contains("attribute swagger is missing")
-            return if (!didParse || swaggerIsMissing) {
-                if (parseResult.messages.isEmpty() || swaggerIsMissing) {
-                    NotApplicable()
-                } else {
-                    ParsedWithErrors(parseResult.messages.mapNotNull(::errorToViolation))
-                }
-            } else {
-                ParsedSuccessfully(parseResult)
-            }
-        }
-
-        private fun convertSwaggerToOpenAPI(parseResult: SwaggerDeserializationResult): ContentParseResult<SwaggerParseResult> {
-            val convertResult = try {
-                SwaggerConverter().convert(parseResult)
-            } catch (t: Throwable) {
-                log.warn(
-                    "Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. Error not covered by pre-convert checks.",
-                    t
-                )
-                val violation = Violation("Unable to parse specification", JsonPointers.EMPTY)
-                return ParsedWithErrors(listOf(violation))
-            }
-            return if (convertResult.openAPI === null) {
-                if (convertResult.messages.orEmpty().isNotEmpty()) {
-                    ParsedWithErrors(convertResult.messages.mapNotNull(::errorToViolation))
-                } else {
-                    log.warn("Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. No error specified, but 'openAPI' is null.")
-                    val violation = Violation("Unable to parse specification", JsonPointers.EMPTY)
-                    ParsedWithErrors(listOf(violation))
-                }
-            } else {
-                ParsedSuccessfully(convertResult)
-            }
-        }
-
-        private fun errorToViolation(error: String): Violation =
-            Violation(error, JsonPointers.EMPTY)
-    }
 }

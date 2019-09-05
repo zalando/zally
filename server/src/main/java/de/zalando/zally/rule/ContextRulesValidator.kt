@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component
  * on set of rules.
  */
 @Component
-class ContextRulesValidator(rules: RulesManager) : RulesValidator<Context>(rules) {
+class ContextRulesValidator(rules: RulesManager,
+                            private val defaultContextFactory: DefaultContextFactory) : RulesValidator<Context>(rules) {
 
-    override fun parse(content: String): ContentParseResult<Context> {
+    override fun parse(content: String, authorization: String?): ContentParseResult<Context> {
         // first try to parse an OpenAPI (version 3+)
-        val parsedAsOpenApi = DefaultContext.createOpenApiContext(content)
-        return when (parsedAsOpenApi) {
+        return when (val parsedAsOpenApi = defaultContextFactory.createOpenApiContext(content, authorization)) {
             is ContentParseResult.NotApplicable ->
                 // if content was no OpenAPI, try to parse a Swagger (version 2)
-                DefaultContext.createSwaggerContext(content)
+                defaultContextFactory.createSwaggerContext(content)
             else ->
                 parsedAsOpenApi
         }

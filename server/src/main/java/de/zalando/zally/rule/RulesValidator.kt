@@ -15,8 +15,8 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
     private val log = LoggerFactory.getLogger(RulesValidator::class.java)
     private val reader = ObjectTreeReader()
 
-    override fun validate(content: String, policy: RulesPolicy): List<Result> {
-        val parseResult = parse(content)
+    override fun validate(content: String, policy: RulesPolicy, authorization: String?): List<Result> {
+        val parseResult = parse(content, authorization)
         val locator = JsonPointerLocator(content)
         return when (parseResult) {
             is NotApplicable ->
@@ -42,7 +42,7 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
         }
     }
 
-    abstract fun parse(content: String): ContentParseResult<RootT>
+    abstract fun parse(content: String, authorization: String?): ContentParseResult<RootT>
 
     private fun isCheckMethod(details: CheckDetails, root: Any) =
         when (details.method.parameters.size) {

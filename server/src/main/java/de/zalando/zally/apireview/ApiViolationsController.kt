@@ -37,13 +37,14 @@ class ApiViolationsController(
     fun validate(
         @RequestBody(required = true) request: ApiDefinitionRequest,
         @RequestHeader(value = "User-Agent", required = false) userAgent: String?,
+        @RequestHeader(value = "Authorization", required = false) authorization: String?,
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<ApiDefinitionResponse> {
         val apiDefinition = retrieveApiDefinition(request)
 
         val requestPolicy = retrieveRulesPolicy(request)
 
-        val violations = rulesValidator.validate(apiDefinition, requestPolicy)
+        val violations = rulesValidator.validate(apiDefinition, requestPolicy, authorization)
         val review = ApiReview(request, userAgent.orEmpty(), apiDefinition, violations)
         apiReviewRepository.save(review)
 
