@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import de.zalando.zally.rule.ContentParseResult
-import de.zalando.zally.rule.DefaultContext
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.rule.api.Context
 import io.swagger.models.Path
@@ -27,7 +27,7 @@ fun getFixture(fileName: String): Swagger = SwaggerParser().read("fixtures/$file
 
 fun getContextFromFixture(fileName: String): Context {
     val content = getResourceContent(fileName)
-    val openApiResult = DefaultContext.createOpenApiContext(content)
+    val openApiResult = DefaultContextFactory().createOpenApiContext(content)
     return when (openApiResult) {
         is ContentParseResult.ParsedSuccessfully ->
             openApiResult.result
@@ -37,7 +37,7 @@ fun getContextFromFixture(fileName: String): Context {
             throw RuntimeException("Parsed with violations:$errors")
         }
         is ContentParseResult.NotApplicable -> {
-            val swaggerResult = DefaultContext.createSwaggerContext(content)
+            val swaggerResult = DefaultContextFactory().createSwaggerContext(content)
             when (swaggerResult) {
                 is ContentParseResult.ParsedSuccessfully ->
                     swaggerResult.result
@@ -58,7 +58,7 @@ fun getContextFromFixture(fileName: String): Context {
 }
 
 fun getOpenApiContextFromContent(content: String): Context {
-    val openApiResult = DefaultContext.createOpenApiContext(content)
+    val openApiResult = DefaultContextFactory().createOpenApiContext(content)
     return when (openApiResult) {
         is ContentParseResult.ParsedSuccessfully ->
             openApiResult.result
@@ -73,7 +73,7 @@ fun getOpenApiContextFromContent(content: String): Context {
 }
 
 fun getSwaggerContextFromContent(content: String): Context {
-    val openApiResult = DefaultContext.createSwaggerContext(content)
+    val openApiResult = DefaultContextFactory().createSwaggerContext(content)
     return when (openApiResult) {
         is ContentParseResult.ParsedSuccessfully ->
             openApiResult.result

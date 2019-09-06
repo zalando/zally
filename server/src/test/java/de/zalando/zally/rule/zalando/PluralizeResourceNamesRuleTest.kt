@@ -3,7 +3,7 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.getContextFromFixture
 import de.zalando.zally.rule.ContentParseResult
 import de.zalando.zally.rule.ContentParseResultAssert.Companion.assertThat
-import de.zalando.zally.rule.DefaultContext
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions.assertThat
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.testConfig
@@ -175,7 +175,7 @@ class PluralizeResourceNamesRuleTest {
                 paths:
                   $path: {}
                 """.trimIndent()
-        val result = DefaultContext.createOpenApiContext(content)
+        val result = DefaultContextFactory().createOpenApiContext(content)
         assertThat(result).resultsInSuccess()
         return (result as ContentParseResult.ParsedSuccessfully).result
     }

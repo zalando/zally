@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 class SwaggerRulesValidator(rules: RulesManager) : RulesValidator<Swagger>(rules) {
     private var ast: ReverseAst? = null
 
-    override fun parse(content: String): ContentParseResult<Swagger> {
+    override fun parse(content: String, authorization: String?): ContentParseResult<Swagger> {
         return try {
             val swagger = SwaggerParser().parse(content)
             if (swagger === null) {
