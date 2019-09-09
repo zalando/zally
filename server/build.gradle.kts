@@ -114,7 +114,7 @@ dependencies {
     val jadlerVersion = "1.3.0"
 
     compile(project("zally-rule-api"))
-    compile("com.github.zeitlinger.swagger-parser:swagger-parser:v2.0.14-z3")
+    compile("com.github.zeitlinger.swagger-parser:swagger-parser:v2.0.14-z4")
     compile("com.github.java-json-tools:json-schema-validator:2.2.10")
     compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-undertow:$springBootVersion")
