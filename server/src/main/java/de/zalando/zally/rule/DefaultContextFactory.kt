@@ -77,7 +77,7 @@ class DefaultContextFactory(@Value("\${zally.propagateAuthorizationUrls:}") val 
         try {
             ResolverFully(true).resolveFully(parseResult.openAPI)
         } catch (e: NullPointerException) {
-            log.warn("Failed to fully resolve OpenAPI schema. Error not covered by pre-resolve checks.", e)
+            log.warn("Failed to fully resolve OpenAPI schema. Error not covered by pre-resolve checks.\n${parseResult.openAPI}", e)
         }
         return ContentParseResult.ParsedSuccessfully(parseResult)
     }
