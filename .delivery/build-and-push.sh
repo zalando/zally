@@ -36,6 +36,11 @@ do
   if [[ $f == github-integration/* ]]; then
     ghe_integration_changed=true
   fi
+  if [[ $f == .delivery/build-and-push.sh ]]; then
+    server_changed=true
+    web_ui_changed=true
+    ghe_integration_changed=true
+  fi
 done
 
 # Build and push Docker images
