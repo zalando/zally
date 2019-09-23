@@ -12,5 +12,5 @@ approvals:
           # Only "zalando" allowed here!
           - zalando
 
-X-Zalando-Team: architecture
+X-Zalando-Team: pitchfork
 X-Zalando-Type: code
