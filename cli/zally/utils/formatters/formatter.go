@@ -9,4 +9,5 @@ type Formatter interface {
 	FormatMessage(message string) string
 	FormatServerMessage(message string) string
 	FormatRule(rule *domain.Rule) string
+	FormatErrorMessage(message string) string
 }

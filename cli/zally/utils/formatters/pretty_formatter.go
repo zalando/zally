@@ -74,6 +74,13 @@ func (f *PrettyFormatter) FormatServerMessage(message string) string {
 	return ""
 }
 
+func (f *PrettyFormatter) FormatErrorMessage(message string) string {
+	if message != "" {
+		return fmt.Sprintf("\n%s", f.colorizer.auroraInstance.Red(message))
+	}
+	return ""
+}
+
 func (f *PrettyFormatter) formatHeader(header string) string {
 	if len(header) == 0 {
 		return ""
