@@ -26,7 +26,7 @@ plugins {
     id("com.github.ben-manes.versions") version "0.20.0"
     id("de.undercouch.download") version "3.4.3"
     id("org.jlleitschuh.gradle.ktlint") version "7.2.1"
-    id("org.jetbrains.dokka") version "0.9.18"
+    id("org.jetbrains.dokka") version "0.10.0"
     id("maven-publish")
 }
 
@@ -58,16 +58,17 @@ allprojects {
     }
 
     tasks.withType(DokkaTask::class.java).all {
-        outputFormat = "html"
-        outputDirectory = "$buildDir/dokka-html"
-        reportUndocumented = false
+        outputFormat = "javadoc"
+        outputDirectory = "$buildDir/dokka"
+        configuration {
+            reportUndocumented = false
+        }
     }
 
     tasks.register("javadocJar", Jar::class) {
         dependsOn(tasks["dokka"])
         archiveClassifier.set("javadoc")
         from(tasks["dokka"])
-        from("src/main/javadoc")
     }
 
     tasks.register("sourcesJar", Jar::class) {
