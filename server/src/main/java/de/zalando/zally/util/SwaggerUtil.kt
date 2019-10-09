@@ -25,7 +25,7 @@ fun Swagger.getAllJsonObjects(): List<ObjectDefinition> {
                 else emptyList()
             }
             val fromResponses = operation.responses.flatMap { (code, response) ->
-                findJsonObjects(response.schema, "$path $verb $code", visitedPaths)
+                findJsonObjects(response.responseSchema, "$path $verb $code", visitedPaths)
             }
             (fromParams + fromResponses)
         }

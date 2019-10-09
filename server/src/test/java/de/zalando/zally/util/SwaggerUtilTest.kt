@@ -31,7 +31,9 @@ class SwaggerUtilTest {
                 "/definitions/NameForParam",
                 "/definitions/PetName last_name",
                 "/definitions/PetName middle_name items",
-                "/definitions/Error"
+                "/definitions/Error",
+                "/definitions/Pets",
+                "/definitions/Names"
             )
         )
     }

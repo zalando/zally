@@ -133,8 +133,8 @@ class CaseChecker(
             schema.properties
                 ?.filterKeys { key -> key != schema.discriminator?.propertyName }
                 ?.values
-                ?.flatMap { schema ->
-                    checkEnumValues(context, schema)
+                ?.flatMap { propertySchema ->
+                    checkEnumValues(context, propertySchema)
                 }
                 .orEmpty()
         }
