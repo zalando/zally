@@ -18,6 +18,8 @@ requesting violations check at a given Zally server.
 1. Run tests:
 
     ```bash
+    cd zally/cli/zally
+    export GO111MODULE=on # if you don't already have this set
     ./test.sh
     ```
 
