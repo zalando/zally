@@ -1,5 +1,6 @@
 package de.zalando.zally.rule.zalando
 
+import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
@@ -38,16 +39,24 @@ class FunctionalNamingForHostnamesRule {
     internal fun isUrlValid(url: String): Boolean = functionHostnameURLRegEx.matches(url)
 
     private fun checkHostnames(audiencesToCheck: List<String>): (context: Context) -> List<Violation> = { context ->
-        val audience = context.api.info?.extensions?.get(audienceExtension)
-        val hostnames = context.api.servers.orEmpty()
-
         when {
-            audience is String && audience in audiencesToCheck -> hostnames
-                .asSequence()
-                .filterNot { isUrlValid(it.url) }
-                .map { context.violation(description, it.url) }
-                .toList()
-            else -> emptyList()
+            context.api.info?.extensions?.get(audienceExtension) !in audiencesToCheck -> emptyList()
+            context.swagger != null -> checkHostnamesInSwaggerHost(context)
+            else -> checkHostnamesInOpenAPIServers(context)
+        }
+    }
+
+    private fun checkHostnamesInOpenAPIServers(context: Context): List<Violation> = context.api.servers
+        .orEmpty()
+        .asSequence()
+        .filterNot { isUrlValid(it.url) }
+        .map { context.violation(description, it.url) }
+        .toList()
+
+    private fun checkHostnamesInSwaggerHost(context: Context): List<Violation> = context.swagger?.host.let { host ->
+        when {
+            host == null || isUrlValid(host) -> emptyList()
+            else -> context.violations(description, JsonPointer.compile("/host"))
         }
     }
 }
