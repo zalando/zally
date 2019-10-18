@@ -53,7 +53,7 @@ class FunctionalNamingForHostnamesRule {
         .map { context.violation(description, it.url) }
         .toList()
 
-    private fun checkHostnamesInSwaggerHost(context: Context): List<Violation> = context.swagger?.host.let { host ->
+    private fun checkHostnamesInSwaggerHost(context: Context): List<Violation> = context.swagger!!.host.let { host ->
         when {
             host == null || isUrlValid(host) -> emptyList()
             else -> context.violations(description, JsonPointer.compile("/host"))

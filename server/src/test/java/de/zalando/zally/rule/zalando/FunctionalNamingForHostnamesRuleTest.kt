@@ -102,7 +102,7 @@ class FunctionalNamingForHostnamesRuleTest {
 
     @Test
     fun `mustFollowFunctionalNaming should return violation for external-public Swagger APIs with invalid hostname`() {
-        val context = getSwaggerContextWithAudienceAndHostname("external-public", "incorrect url")
+        val context = getSwaggerContextWith(audience = "external-public", url = "incorrect url")
 
         val violations = rule.mustFollowFunctionalNaming(context)
 
@@ -113,23 +113,51 @@ class FunctionalNamingForHostnamesRuleTest {
 
     @Test
     fun `(must|should|may)FollowFunctionalNaming should return no violations for external-public Swagger APIs with valid hostname`() {
-        val context = getSwaggerContextWithAudienceAndHostname("external-public", "infrastructure-api-linter.zalandoapis.com")
+        val context = getSwaggerContextWith(audience = "external-public", url = "infrastructure-api-linter.zalandoapis.com")
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
         assertThat(rule.shouldFollowFunctionalNaming(context)).isEmpty()
         assertThat(rule.mayFollowFunctionalNaming(context)).isEmpty()
     }
 
-    private fun getSwaggerContextWithAudienceAndHostname(audience: String, url: String): Context {
-        @Language("YAML")
-        val content = """
+    @Test
+    fun `(must|should|may)FollowFunctionalNaming should return no violations for Swagger APIs with missing hostname`() {
+        val context = getSwaggerContextWith(audience = "external-public", url = null)
+
+        assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
+        assertThat(rule.shouldFollowFunctionalNaming(context)).isEmpty()
+        assertThat(rule.mayFollowFunctionalNaming(context)).isEmpty()
+    }
+
+    @Test
+    fun `(must|should|may)FollowFunctionalNaming should return no violations for Swagger APIs with no audience`() {
+        val context = getSwaggerContextWith(audience = null, url = "infrastructure-api-linter.zalandoapis.com")
+
+        assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
+        assertThat(rule.shouldFollowFunctionalNaming(context)).isEmpty()
+        assertThat(rule.mayFollowFunctionalNaming(context)).isEmpty()
+    }
+
+    private fun getSwaggerContextWith(audience: String?, url: String?): Context {
+
+        val content = listOfNotNull(
+            """
             swagger: '2.0'
-            info:
-              x-audience: $audience
             schemes:
               - https
-            host: $url
-        """.trimIndent()
+            """,
+            audience?.let {
+                """
+                info:
+                    x-audience: $audience
+                """
+            },
+            url?.let {
+                """
+                host: $url
+                """
+            }
+        ).joinToString(separator = "\n", transform = String::trimIndent)
 
         return getSwaggerContextFromContent(content)
     }
