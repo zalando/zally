@@ -80,6 +80,10 @@ If you have ideas for these items, please let us know.
 Feel free to join our [Gitter room](https://gitter.im/zalando/zally) or contact one
 of the [maintainers](MAINTAINERS) directly.
 
+## Alternatives 
+
+- [spectral](https://github.com/stoplightio/spectral) also lints OpenAPI v2 and v3. Rules can be written in a declarative way or using JavaScript. 
+
 ## License
 
 MIT license with an exception. See [license file](LICENSE).
