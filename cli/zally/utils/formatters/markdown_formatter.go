@@ -63,6 +63,10 @@ func (f *MarkdownFormatter) FormatServerMessage(message string) string {
 	return ""
 }
 
+func (f *MarkdownFormatter) FormatErrorMessage(message string) string {
+	return f.FormatMessage(message)
+}
+
 func (f *MarkdownFormatter) formatViolation(violation *domain.Violation) string {
 	var buffer bytes.Buffer
 
@@ -76,7 +80,7 @@ func (f *MarkdownFormatter) formatViolation(violation *domain.Violation) string 
 			fmt.Fprintf(&buffer, "- %s\n", path)
 		}
 	}
-	
+
 	fmt.Fprintf(&buffer, "\n")
 
 	return buffer.String()

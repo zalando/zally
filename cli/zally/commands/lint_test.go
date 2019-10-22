@@ -154,7 +154,7 @@ func TestLint(t *testing.T) {
 
 		err := lint(getLintContext(testServer.URL, []string{"testdata/minimal_swagger.json"}, "markdown"))
 
-		tests.AssertEquals(t, "Failing because: 1 must violation(s) found", err.Error())
+		tests.AssertEquals(t, "\nFailing because: 1 'MUST' violation(s) found\n\n", err.Error())
 	})
 }
 

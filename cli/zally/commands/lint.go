@@ -57,7 +57,7 @@ func lint(c *cli.Context) error {
 
 	numberOfMustViolations := len(violations.Must())
 	if numberOfMustViolations > 0 {
-		return domain.NewAppError(fmt.Errorf("Failing because: %d must violation(s) found",
+		return domain.NewAppError(fmt.Errorf(formatter.FormatErrorMessage("Failing because: %d 'MUST' violation(s) found"),
 			numberOfMustViolations), domain.ValidationError)
 	}
 

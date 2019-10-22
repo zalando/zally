@@ -180,7 +180,7 @@ func TestTextFormatMessage(t *testing.T) {
 	prettyFormatter := NewPrettyFormatter(NewPrettyColorizer(false))
 
 	t.Run("Formats nothing when no message", func(t *testing.T) {
-		actualResult := prettyFormatter.FormatServerMessage("")
+		actualResult := prettyFormatter.FormatMessage("")
 
 		tests.AssertEquals(t, "", actualResult)
 	})
@@ -207,5 +207,19 @@ func TestTextFormatServerMessage(t *testing.T) {
 		expectedResult := "\n\nServer message:\n===============\n\nHello world!\n\n\n"
 
 		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+}
+
+func TestFormatErrorMessage(t *testing.T) {
+	formatter := NewPrettyFormatter(NewPrettyColorizer(false))
+
+	t.Run("Formats nothing when no message", func(t *testing.T) {
+		actualResult := formatter.FormatErrorMessage("")
+		tests.AssertEquals(t, "", actualResult)
+	})
+
+	t.Run("Formats error message", func(t *testing.T) {
+		actualResult := formatter.FormatErrorMessage("Error message")
+		tests.AssertEquals(t, "\nError message", actualResult)
 	})
 }

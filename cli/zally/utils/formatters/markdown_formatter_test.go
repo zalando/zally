@@ -168,7 +168,7 @@ func TestMarkdownFormatViolation(t *testing.T) {
 
 		tests.AssertEquals(t, expectedResult, actualResult)
 	})
-	
+
 }
 
 func TestMarkdownFormatHeader(t *testing.T) {
@@ -186,4 +186,20 @@ func TestMarkdownFormatHeader(t *testing.T) {
 		result := formatter.formatHeader("")
 		tests.AssertEquals(t, "", result)
 	})
+}
+
+func TestMarkdownFormatErrorMessage(t *testing.T) {
+	var formatter MarkdownFormatter
+	t.Run("Formats nothing when no message", func(t *testing.T) {
+		answer := formatter.FormatErrorMessage("")
+		tests.AssertEquals(t, "", answer)
+	})
+
+	t.Run("Formats error message when specified", func(t *testing.T) {
+		actualResult := formatter.FormatErrorMessage("Error")
+		expectedResult := "\nError\n\n"
+
+		tests.AssertEquals(t, expectedResult, actualResult)
+	})
+
 }
