@@ -18,7 +18,8 @@ requesting violations check at a given Zally server.
 1. Run tests:
 
     ```bash
-    ./test.sh
+    cd zally
+    GO111MODULE=on ./test.sh
     ```
 
 1. Build the binary:
