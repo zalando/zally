@@ -15,6 +15,7 @@ class TagAllOperationsRuleTest {
         checkOperationsAreTagged(context) +
             checkOperationTagsAreDefined(context) +
             checkDefinedTagsAreUsed(context) +
+            checkDefinedTagsAreNamed(context) +
             checkDefinedTagsAreDescribed(context)
 
     @Test
@@ -144,5 +145,24 @@ class TagAllOperationsRuleTest {
             .assertThat(violations)
             .pointersEqualTo("/tags/0")
             .descriptionsEqualTo("Tag 'Things' has no description")
+    }
+
+    @Test
+    fun `checkDefinedTagsAreNamed without tag name returns violation`() {
+        @Language("YAML")
+        val context = getSwaggerContextFromContent(
+            """
+            swagger: '2.0'
+            tags:
+              - description: Operations dealing with Things
+            """.trimIndent()
+        )
+
+        val violations = cut.checkDefinedTagsAreNamed(context)
+
+        ZallyAssertions
+            .assertThat(violations)
+            .pointersEqualTo("/tags/0")
+            .descriptionsEqualTo("Tag has no name")
     }
 }
