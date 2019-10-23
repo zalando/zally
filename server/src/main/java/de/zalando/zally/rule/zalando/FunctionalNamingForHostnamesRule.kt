@@ -1,5 +1,6 @@
 package de.zalando.zally.rule.zalando
 
+import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
@@ -27,27 +28,33 @@ class FunctionalNamingForHostnamesRule {
         """(https://)?$functionalDomain-$functionalComponent\.zalandoapis\.com.*""".toRegex()
 
     @Check(severity = Severity.MUST)
-    fun mustFollowFunctionalNaming(context: Context): List<Violation> = checkHostnames(mustFollow)(context)
+    fun mustFollowFunctionalNaming(context: Context): List<Violation> = checkHostnames(context, mustFollow)
 
     @Check(severity = Severity.SHOULD)
-    fun shouldFollowFunctionalNaming(context: Context): List<Violation> = checkHostnames(shouldFollow)(context)
+    fun shouldFollowFunctionalNaming(context: Context): List<Violation> = checkHostnames(context, shouldFollow)
 
     @Check(severity = Severity.MAY)
-    fun mayFollowFunctionalNaming(context: Context): List<Violation> = checkHostnames(mayFollow)(context)
+    fun mayFollowFunctionalNaming(context: Context): List<Violation> = checkHostnames(context, mayFollow)
 
     internal fun isUrlValid(url: String): Boolean = functionHostnameURLRegEx.matches(url)
 
-    private fun checkHostnames(audiencesToCheck: List<String>): (context: Context) -> List<Violation> = { context ->
-        val audience = context.api.info?.extensions?.get(audienceExtension)
-        val hostnames = context.api.servers.orEmpty()
+    private fun checkHostnames(context: Context, audiencesToCheck: List<String>): List<Violation> = when {
+        context.api.info?.extensions?.get(audienceExtension) !in audiencesToCheck -> emptyList()
+        context.swagger != null -> checkHostnamesInSwaggerHost(context)
+        else -> checkHostnamesInOpenAPIServers(context)
+    }
 
+    private fun checkHostnamesInOpenAPIServers(context: Context): List<Violation> = context.api.servers
+        .orEmpty()
+        .asSequence()
+        .filterNot { isUrlValid(it.url) }
+        .map { context.violation(description, it.url) }
+        .toList()
+
+    private fun checkHostnamesInSwaggerHost(context: Context): List<Violation> = context.swagger!!.host.let { host ->
         when {
-            audience is String && audience in audiencesToCheck -> hostnames
-                .asSequence()
-                .filterNot { isUrlValid(it.url) }
-                .map { context.violation(description, it.url) }
-                .toList()
-            else -> emptyList()
+            host == null || isUrlValid(host) -> emptyList()
+            else -> context.violations(description, JsonPointer.compile("/host"))
         }
     }
 }
