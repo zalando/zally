@@ -16,12 +16,14 @@ class ReverseAst internal constructor(
     fun isIgnored(pointer: JsonPointer, ignoreValue: String): Boolean =
         generateSequence(pointer, JsonPointer::head)
             .map { pointersToNodes[it.toString()] }
-            .find { it != null }
-            ?.let {
+            .filterNotNull()
+            .find {
                 isIgnored(it.marker, ignoreValue) ||
                     it.hasChildren() && it.children.all { c -> isIgnored(c.marker, ignoreValue) }
             }
-            ?: false
+            .let {
+                it != null
+            }
 
     private fun isIgnored(marker: Marker?, ignoreValue: String): Boolean =
         marker != null &&

@@ -220,4 +220,34 @@ class ReverseAstTest {
         assertThat(ast.isIgnored(JsonPointer.compile("/info"), "218")).isTrue()
         assertThat(ast.isIgnored(JsonPointer.compile("/info/description"), "218")).isTrue()
     }
+
+    @Test
+    fun `isIgnored applies local AND inherited x-zally-ignore`() {
+        @Language("yaml")
+        val content = """
+            swagger: '2.0'
+            info:
+              title: Some API
+              version: '1.0.0'
+              contact:
+                name: Team X
+                email: team@x.com
+                url: https://team.x.com
+              x-zally-ignore: [IGNORED_AT_INFO]
+            paths: {}
+            x-zally-ignore: [IGNORED_AT_ROOT]
+            """.trimIndent()
+
+        val swagger = SwaggerParser().parse(content)
+        val ast = ReverseAst.fromObject(swagger)
+            .withExtensionMethodNames("getVendorExtensions")
+            .build()
+
+        assertThat(ast.isIgnored(JsonPointer.compile(""), "IGNORED_AT_ROOT")).isTrue()
+        assertThat(ast.isIgnored(JsonPointer.compile(""), "IGNORED_AT_INFO")).isFalse()
+        assertThat(ast.isIgnored(JsonPointer.compile("/info"), "IGNORED_AT_ROOT")).isTrue()
+        assertThat(ast.isIgnored(JsonPointer.compile("/info"), "IGNORED_AT_INFO")).isTrue()
+        assertThat(ast.isIgnored(JsonPointer.compile("/info/contact"), "IGNORED_AT_ROOT")).isTrue()
+        assertThat(ast.isIgnored(JsonPointer.compile("/info/contact"), "IGNORED_AT_INFO")).isTrue()
+    }
 }
