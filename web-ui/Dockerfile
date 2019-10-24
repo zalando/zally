@@ -1,4 +1,4 @@
-FROM registry.opensource.zalan.do/stups/node:10.15.3-45
+FROM registry.opensource.zalan.do/stups/node:12.10.0-48
 
 MAINTAINER "http://zalando.github.io/"
 
