@@ -86,7 +86,8 @@ Zally is not the only linter for OpenAPI v2 and v3. There is [an article](https:
 
 So why should you choose Zally?
 - It supports [Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/)
-- It can be used in multiple ways: RESTful API, CLI and Web interface  
+- It can be used in multiple ways: RESTful API, CLI and Web interface
+- Highly customizable (with Kotlin)  
 
 ## License
 
