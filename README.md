@@ -82,7 +82,12 @@ of the [maintainers](MAINTAINERS) directly.
 
 ## Alternatives 
 
-- [spectral](https://github.com/stoplightio/spectral) also lints OpenAPI v2 and v3. Rules can be written in a declarative way or using JavaScript. 
+Zally is not the only linter for OpenAPI v2 and v3. There is [an article](https://nordicapis.com/8-openapi-linters/) comparing different OpenAPI linters.
+
+So why should you choose Zally?
+- It supports [Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/)
+- It can be used in multiple ways: RESTful API, CLI and Web interface
+- Highly customizable (with Kotlin)  
 
 ## License
 
