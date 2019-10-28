@@ -54,6 +54,14 @@ class TagAllOperationsRule {
     }
 
     @Check(severity = Severity.MUST)
+    fun checkDefinedTagsAreNamed(context: Context): List<Violation> = context.api.tags
+        .orEmpty()
+        .filter { it.name == null }
+        .map {
+            context.violation("Tag has no name", it)
+        }
+
+    @Check(severity = Severity.MUST)
     fun checkDefinedTagsAreDescribed(context: Context): List<Violation> = context.api.tags
         .orEmpty()
         .filter { it.description == null }
