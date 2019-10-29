@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# This script builds Zally server and Zally Web UI and starts the components via docker-compose
+# This script starts the Zally components via docker-compose:
+#  the server component is separately built inside its own container.
+
 
 set -ex
 
@@ -12,9 +14,6 @@ popd > /dev/null
 SERVER_DIR=${SCRIPT_DIR}/server
 WEB_UI_DIR=${SCRIPT_DIR}/web-ui
 GITHUB_INTEGRATION_DIR=${SCRIPT_DIR}/github_integration
-
-# Build server
-cd ${SERVER_DIR} && ./gradlew build -x test
 
 # Build web ui
 cd ${WEB_UI_DIR} && yarn && yarn build
