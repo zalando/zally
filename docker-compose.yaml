@@ -1,7 +1,17 @@
+#
+# To run this container on a public URL
+# you should pass the ZALLY_API_URL environment
+# variable to docker-compose, referencing the external
+# URL of the Zally API.
+#
+# $ ZALLY_API_URL=http://157.230.116.206:8000 docker-compose up
+#
 version: '2.1'
 services:
   web-ui:
     build: ./web-ui
+    environment:
+    - ZALLY_API_URL=${ZALLY_API_URL:-http://localhost:8000}
     depends_on:
     - server
     links:
