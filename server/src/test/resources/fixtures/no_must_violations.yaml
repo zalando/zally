@@ -480,11 +480,11 @@ definitions:
         type: string
         description: Path to the API definition
         example: /swagger/api.json
-      created:
+      created_at:
         type: string
         format: date-time
         description: first time crawled
-      last_updated:
+      last_updated_at:
         type: string
         format: date-time
         description: last time crawled
@@ -508,11 +508,11 @@ definitions:
         type: string
         description: Path to the API definition
         example: /swagger/api.json
-      created:
+      created_at:
         type: string
         format: date-time
         description: first time crawled
-      last_updated:
+      last_updated_at:
         type: string
         format: date-time
         description: last time crawled
