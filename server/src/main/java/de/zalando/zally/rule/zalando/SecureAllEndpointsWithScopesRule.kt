@@ -73,7 +73,7 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
 
     private fun defined(api: OpenAPI): Map<String, Set<String>> = api.components?.securitySchemes.orEmpty()
         .filterValues { scheme -> scheme.type == SecurityScheme.Type.OAUTH2 }
-        .mapValues { it.value.allFlows().flatMap { it.scopes.keys }.toSet() }
+        .mapValues { it.value.allFlows().flatMap { it.scopes?.keys.orEmpty() }.toSet() }
 
     private fun requested(
         api: OpenAPI,

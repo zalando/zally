@@ -1,6 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getConfigFromContent
+import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.getSwaggerContextFromContent
 import de.zalando.zally.rule.ZallyAssertions
 import org.intellij.lang.annotations.Language
@@ -263,5 +264,36 @@ class SecureAllEndpointsWithScopesRuleTest {
         val violations = rule.checkOperationsAreScoped(context)
 
         ZallyAssertions.assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `checkOperationsAreScoped with no scopes defined with OpenAPI components`() {
+        @Language("YAML")
+        val yaml = """
+            openapi: 3.0.1
+            
+            paths:
+              '/things':
+                get:
+                  responses:
+                    200:
+                      description: OK
+            
+            components:      
+              securitySchemes:
+                oauth2:
+                  type: oauth2
+                  flows:
+                    clientCredentials:
+                      tokenUrl: 'https://example.com'
+            """.trimIndent()
+
+        val context = getOpenApiContextFromContent(yaml)
+
+        val violations = rule.checkOperationsAreScoped(context)
+
+        ZallyAssertions.assertThat(violations)
+            .descriptionsEqualTo("Endpoint not secured by OAuth2 scope(s)")
+            .pointersEqualTo("/paths/~1things/get")
     }
 }
