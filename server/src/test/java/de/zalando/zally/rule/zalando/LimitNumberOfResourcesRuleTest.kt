@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.ConfigFactory
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -37,7 +37,7 @@ class LimitNumberOfResourcesRuleTest {
               /resource8: {}
               /resource9: {}
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violation = rule.checkLimitOfResources(context)
 
@@ -64,7 +64,7 @@ class LimitNumberOfResourcesRuleTest {
               /whitelisted8: {}
               /whitelisted9: {}
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violation = rule.checkLimitOfResources(context)
 
@@ -79,7 +79,7 @@ class LimitNumberOfResourcesRuleTest {
             paths:
               /resource: {}
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violation = rule.checkLimitOfResources(context)
 

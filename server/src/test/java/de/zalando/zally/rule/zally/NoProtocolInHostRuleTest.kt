@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.getOpenApiContextFromContent
-import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -13,7 +12,7 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate swagger with empty swagger returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: 2.0
             """.trimIndent()
@@ -27,7 +26,7 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate swagger with simple hostname returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: 2.0
             host: google.com
@@ -42,7 +41,7 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate swagger with http protocol included returns a violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: 2.0
             host: http://google.com
@@ -58,7 +57,7 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate swagger with https protocol included returns a violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: 2.0
             host: https://google.com
@@ -74,7 +73,7 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate openapi with url including protocol returns no violations`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             servers:

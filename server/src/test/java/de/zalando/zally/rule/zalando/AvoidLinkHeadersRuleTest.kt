@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
-import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions.assertThat
 import de.zalando.zally.testConfig
 import org.intellij.lang.annotations.Language
@@ -14,7 +13,7 @@ class AvoidLinkHeadersRuleTest {
     @Test
     fun `a Swagger API with no header called Link produces no violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: 2.0
             info:
@@ -52,7 +51,7 @@ class AvoidLinkHeadersRuleTest {
     @Test
     fun `an OpenAPI 3 API with no header called Link produces no violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.0
             info:
@@ -99,7 +98,7 @@ class AvoidLinkHeadersRuleTest {
     @Test
     fun `an API with Link headers causes violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: 2.0
             info:

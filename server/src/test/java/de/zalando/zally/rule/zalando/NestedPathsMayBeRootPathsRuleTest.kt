@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -17,7 +17,7 @@ class NestedPathsMayBeRootPathsRuleTest {
             paths:
               "/countries/{country-id}/populated/cities/{city-id}": {}
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkNestedPaths(context)
 
@@ -35,7 +35,7 @@ class NestedPathsMayBeRootPathsRuleTest {
             paths:
               /pets/dogs: {}
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkNestedPaths(context)
 

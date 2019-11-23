@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
@@ -24,7 +24,7 @@ class PluralizeNamesForArraysRuleTest {
                       items:
                         type: string
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkArrayPropertyNamesArePlural(context)
 
@@ -49,7 +49,7 @@ class PluralizeNamesForArraysRuleTest {
                       items:
                         type: string
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkArrayPropertyNamesArePlural(context)
 

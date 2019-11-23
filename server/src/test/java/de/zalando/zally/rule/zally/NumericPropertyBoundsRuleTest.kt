@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -12,7 +12,7 @@ class NumericPropertyBoundsRuleTest {
     @Test
     fun `checkNumericBounds with bounded integer returns no violations`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:
@@ -41,7 +41,7 @@ class NumericPropertyBoundsRuleTest {
     @Test
     fun `checkNumericBounds with left-bounded integer returns max violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:
@@ -70,7 +70,7 @@ class NumericPropertyBoundsRuleTest {
     @Test
     fun `checkNumericBounds with right-bounded integer returns min violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:
@@ -99,7 +99,7 @@ class NumericPropertyBoundsRuleTest {
     @Test
     fun `checkNumericBounds with unbounded integer returns min and max violations`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:
@@ -127,7 +127,7 @@ class NumericPropertyBoundsRuleTest {
     @Test
     fun `checkNumericBounds with unbounded number returns min and max violations`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:

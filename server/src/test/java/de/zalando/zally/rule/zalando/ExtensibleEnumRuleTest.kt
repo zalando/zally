@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -22,7 +22,7 @@ class ExtensibleEnumRuleTest {
                         - white
                         - black
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkForEnums(context)
 
@@ -47,7 +47,7 @@ class ExtensibleEnumRuleTest {
                           - germany
                           - sweden
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkForEnums(context)
 
@@ -67,7 +67,7 @@ class ExtensibleEnumRuleTest {
                     color:
                       type: string
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkForEnums(context)
 

@@ -25,7 +25,35 @@ class DefaultContextFactory(@Value("\${zally.propagateAuthorizationUrls:}") val 
         log.info("propagate authorization for ${propagateAuthorizationUrls.contentToString()}")
     }
 
-    fun createOpenApiContext(content: String, authorization: String? = null): ContentParseResult<Context> {
+    fun getOpenApiContext(content: String): Context {
+        return when (val openApiResult = parseOpenApiContext(content)) {
+            is ContentParseResult.ParsedSuccessfully ->
+                openApiResult.result
+            is ContentParseResult.ParsedWithErrors -> {
+                val errors = openApiResult.violations.joinToString("\n  -", "\n  -", "\n")
+                throw RuntimeException("Parsed with violations:$errors")
+            }
+            is ContentParseResult.NotApplicable -> {
+                throw RuntimeException("Missing the 'openapi' property.")
+            }
+        }
+    }
+
+    fun getSwaggerContext(content: String): Context {
+        return when (val swaggerResult = parseSwaggerContext(content)) {
+            is ContentParseResult.ParsedSuccessfully ->
+                swaggerResult.result
+            is ContentParseResult.ParsedWithErrors -> {
+                val errors = swaggerResult.violations.joinToString("\n  -", "\n  -", "\n")
+                throw RuntimeException("Parsed with violations:$errors")
+            }
+            is ContentParseResult.NotApplicable -> {
+                throw RuntimeException("Missing the 'swagger' property.")
+            }
+        }
+    }
+
+    fun parseOpenApiContext(content: String, authorization: String? = null): ContentParseResult<Context> {
         val parseResult = parseOpenApi(content, authorization)
         if (parseResult !is ContentParseResult.ParsedSuccessfully) return parseResult.of()
 
@@ -35,7 +63,7 @@ class DefaultContextFactory(@Value("\${zally.propagateAuthorizationUrls:}") val 
         return ContentParseResult.ParsedSuccessfully(DefaultContext(content, parseResult.result.openAPI))
     }
 
-    fun createSwaggerContext(content: String): ContentParseResult<Context> {
+    fun parseSwaggerContext(content: String): ContentParseResult<Context> {
         val parseResult = parseSwagger(content)
         if (parseResult !is ContentParseResult.ParsedSuccessfully) return parseResult.of()
 

@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -12,7 +12,7 @@ class JsonProblemAsDefaultResponseRuleTest {
     @Test
     fun `checkContainsDefaultResponse should return violation if default response is not set`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             paths:
@@ -32,7 +32,7 @@ class JsonProblemAsDefaultResponseRuleTest {
     @Test
     fun `checkDefaultResponseIsProblemJson should return violation if not problem json is set as default response`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             paths:
@@ -58,7 +58,7 @@ class JsonProblemAsDefaultResponseRuleTest {
     @Test
     fun `checkDefaultResponseIsProblemJson should not return violation if problem json is set as default response`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             paths:
@@ -81,7 +81,7 @@ class JsonProblemAsDefaultResponseRuleTest {
     @Test
     fun `(checkDefaultResponseIsProblemJson|checkContainsDefaultResponse) should not return violation for empty specification`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
         """

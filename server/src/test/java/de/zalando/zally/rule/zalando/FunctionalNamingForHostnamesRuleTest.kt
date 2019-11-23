@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
-import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.api.Context
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
@@ -76,7 +75,7 @@ class FunctionalNamingForHostnamesRuleTest {
     @Test
     fun `(must|should|may)FollowFunctionalNaming should return no violations if audience is not set`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
         """
@@ -97,7 +96,7 @@ class FunctionalNamingForHostnamesRuleTest {
               - url: $url
         """.trimIndent()
 
-        return getOpenApiContextFromContent(content)
+        return DefaultContextFactory().getOpenApiContext(content)
     }
 
     @Test
@@ -159,6 +158,6 @@ class FunctionalNamingForHostnamesRuleTest {
             }
         ).joinToString(separator = "\n", transform = String::trimIndent)
 
-        return getSwaggerContextFromContent(content)
+        return DefaultContextFactory().getSwaggerContext(content)
     }
 }

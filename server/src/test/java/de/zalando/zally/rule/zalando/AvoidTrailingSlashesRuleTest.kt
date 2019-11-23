@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -13,7 +13,7 @@ class AvoidTrailingSlashesRuleTest {
     @Test
     fun emptySwagger() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: '3.0.0'
         """.trimIndent()
@@ -27,7 +27,7 @@ class AvoidTrailingSlashesRuleTest {
     @Test
     fun positiveCase() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: '3.0.0'
             paths:
@@ -44,7 +44,7 @@ class AvoidTrailingSlashesRuleTest {
     @Test
     fun negativeCase() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: '3.0.0'
             paths:

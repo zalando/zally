@@ -1,8 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getConfigFromContent
-import de.zalando.zally.getOpenApiContextFromContent
-import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -34,7 +33,7 @@ class SecureAllEndpointsWithScopesRuleTest {
             swagger: 2.0
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = rule.checkDefinedScopeFormats(context)
 
@@ -55,7 +54,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   sales-order.shipment-order.write: Can create shipment-orders in the sales-order app
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = rule.checkDefinedScopeFormats(context)
 
@@ -75,7 +74,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   expiry: Can perform automated expiry operations
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = rule.checkDefinedScopeFormats(context)
 
@@ -95,7 +94,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   max: Any user called Max
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = rule.checkDefinedScopeFormats(context)
 
@@ -111,7 +110,7 @@ class SecureAllEndpointsWithScopesRuleTest {
             swagger: 2.0
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = rule.checkOperationsAreScoped(context)
 
@@ -137,7 +136,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                       description: Success
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = rule.checkOperationsAreScoped(context)
 
@@ -168,7 +167,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                     - defined-scope
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = rule.checkOperationsAreScoped(context)
 
@@ -197,7 +196,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                     - undefined-scope
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = rule.checkOperationsAreScoped(context)
 
@@ -228,7 +227,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                       description: Success
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = rule.checkOperationsAreScoped(context)
 
@@ -259,7 +258,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                       description: Success
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = rule.checkOperationsAreScoped(context)
 
@@ -288,7 +287,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                       tokenUrl: 'https://example.com'
             """.trimIndent()
 
-        val context = getOpenApiContextFromContent(yaml)
+        val context = DefaultContextFactory().getOpenApiContext(yaml)
 
         val violations = rule.checkOperationsAreScoped(context)
 

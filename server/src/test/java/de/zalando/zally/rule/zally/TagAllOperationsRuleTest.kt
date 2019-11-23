@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
@@ -21,7 +21,7 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkAll with 'noop' spec returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             """.trimIndent()
@@ -37,7 +37,7 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkAll with 'perfect' spec returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             tags:
@@ -64,7 +64,7 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkOperationsAreTagged with untagged operations returns violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             paths:
@@ -87,7 +87,7 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkOperationTagsAreDefined with undefined tag returns violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             paths:
@@ -112,7 +112,7 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkDefinedTagsAreUsed with unused tag returns violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             tags:
@@ -131,7 +131,7 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkDefinedTagsAreDescribed without tag description returns violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             tags:
@@ -150,7 +150,7 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkDefinedTagsAreNamed without tag name returns violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             tags:

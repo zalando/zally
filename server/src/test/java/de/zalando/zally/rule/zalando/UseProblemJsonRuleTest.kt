@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
-import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -32,7 +31,7 @@ class UseProblemJsonRuleTest {
                             ${'$'}ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
         """.trimIndent()
 
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
         val violations = rule.validate(context)
 
         ZallyAssertions
@@ -64,7 +63,7 @@ class UseProblemJsonRuleTest {
                                 type: string
         """.trimIndent()
 
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
         val violations = rule.validate(context)
 
         ZallyAssertions
@@ -102,7 +101,7 @@ class UseProblemJsonRuleTest {
                             type: string
         """.trimIndent()
 
-        val context = getSwaggerContextFromContent(content)
+        val context = DefaultContextFactory().getSwaggerContext(content)
         val violations = rule.validate(context)
 
         ZallyAssertions
@@ -137,7 +136,7 @@ class UseProblemJsonRuleTest {
                             "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
         """.trimIndent()
 
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
         val violations = rule.validate(context)
 
         ZallyAssertions
@@ -166,7 +165,7 @@ class UseProblemJsonRuleTest {
                         "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
         """.trimIndent()
 
-        val context = getSwaggerContextFromContent(content)
+        val context = DefaultContextFactory().getSwaggerContext(content)
         val violations = rule.validate(context)
 
         ZallyAssertions
@@ -211,7 +210,7 @@ class UseProblemJsonRuleTest {
                       type: "string"
         """.trimIndent()
 
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
         val violations = rule.validate(context)
 
         ZallyAssertions
@@ -250,7 +249,7 @@ class UseProblemJsonRuleTest {
                       example: many many problems
         """.trimIndent()
 
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
         val violations = rule.validate(context)
 
         ZallyAssertions

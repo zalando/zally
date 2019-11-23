@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -15,7 +15,7 @@ class VersionInInfoSectionRuleTest {
         val spec = """
             openapi: 3.0.1
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkAPIVersion(context)
 
@@ -32,7 +32,7 @@ class VersionInInfoSectionRuleTest {
             info:
               version: 1-alpha
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkAPIVersion(context)
 
@@ -49,7 +49,7 @@ class VersionInInfoSectionRuleTest {
             info:
               version: 1.0.0
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkAPIVersion(context)
 

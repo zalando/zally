@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.testConfig
 import io.swagger.v3.parser.util.SchemaTypeUtil.DATE_TIME_FORMAT
 import io.swagger.v3.parser.util.SchemaTypeUtil.INTEGER_TYPE
@@ -63,7 +63,7 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should not return any violations for a minimal api`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
         """.trimIndent()
@@ -75,7 +75,7 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should not return any violations for a specification with non-common fields`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             components:
@@ -93,7 +93,7 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should not return any violations for a specification with valid common fields`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             components:
@@ -111,7 +111,7 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should return a violation for a specification with invalid common field in a schema`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             components:
@@ -134,7 +134,7 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should return a violation if common field has a valid type but invalid format`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             components:
@@ -158,7 +158,7 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should return a violation for invalid common field embedded in path segment as response`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             paths:
@@ -186,7 +186,7 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should return a violation for invalid common field in nested objects`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             components:
@@ -211,7 +211,7 @@ class CommonFieldTypesRuleTest {
     @Test
     fun `checkTypesOfCommonFields should also test references`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             paths:

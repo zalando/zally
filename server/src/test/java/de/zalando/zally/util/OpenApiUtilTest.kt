@@ -1,6 +1,6 @@
 package de.zalando.zally.util
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
@@ -362,7 +362,7 @@ components:
               items:
                 ${'$'}ref: "#/components/schemas/ProductResource"
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val schemas = context.api.getAllTransitiveSchemas()
 

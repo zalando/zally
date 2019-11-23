@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
-import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -23,7 +22,7 @@ class QueryParameterCollectionFormatRuleTest {
                   schema:
                     type: array
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkParametersCollectionFormat(context)
 
@@ -46,7 +45,7 @@ class QueryParameterCollectionFormatRuleTest {
                   schema:
                     type: array
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkParametersCollectionFormat(context)
 
@@ -69,7 +68,7 @@ class QueryParameterCollectionFormatRuleTest {
                 items:
                   type: string
         """.trimIndent()
-        val context = getSwaggerContextFromContent(content)
+        val context = DefaultContextFactory().getSwaggerContext(content)
 
         val violations = rule.checkParametersCollectionFormat(context)
 
