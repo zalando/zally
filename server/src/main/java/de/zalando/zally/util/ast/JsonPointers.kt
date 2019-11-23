@@ -33,11 +33,11 @@ object JsonPointers {
      * Convert an OpenAPI 3 JSON pointer to a Swagger 2 pointer.
      *
      * @param pointer OpenAPI 3 JSON pointer.
-     * @return Equivalent Swagger 2 JSON pointer or null.
+     * @return Equivalent Swagger 2 JSON pointer or the original OpenAPI 3 pointer..
      */
-    fun convertPointer(pointer: JsonPointer?): JsonPointer? = pointer
-        ?.toString()
-        ?.let { ptr ->
+    fun convertPointer(pointer: JsonPointer): JsonPointer = pointer
+        .toString()
+        .let { ptr ->
             regexToReplacement
                 .find { (regex, _) ->
                     regex.matches(ptr)
@@ -45,6 +45,7 @@ object JsonPointers {
                 ?.let { (regex, replacement) ->
                     JsonPointer.compile(regex.replace(ptr, replacement))
                 }
+                ?: pointer
         }
 
     internal fun escape(method: Method, vararg arguments: Any): JsonPointer =

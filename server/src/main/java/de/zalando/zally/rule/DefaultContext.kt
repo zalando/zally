@@ -89,8 +89,9 @@ class DefaultContext(
      * @param description the description of the Violation
      * @param value the OpenAPI or Swagger model node
      * @return the new Violation
+     * @throws IllegalStateException if value is not an OpenAPI or Swagger model element.
      */
-    override fun violations(description: String, value: Any?): List<Violation> =
+    override fun violations(description: String, value: Any): List<Violation> =
         listOf(violation(description, value))
 
     /**
@@ -99,7 +100,7 @@ class DefaultContext(
      * @param pointer an existing pointer or null
      * @return the new Violation
      */
-    override fun violations(description: String, pointer: JsonPointer?): List<Violation> =
+    override fun violations(description: String, pointer: JsonPointer): List<Violation> =
         listOf(violation(description, pointer))
 
     /**
@@ -108,9 +109,10 @@ class DefaultContext(
      * @param description the description of the Violation
      * @param value the OpenAPI or Swagger model node
      * @return the new Violation
+     * @throws IllegalStateException if value is not an OpenAPI or Swagger model element.
      */
-    override fun violation(description: String, value: Any?): Violation =
-        violation(description, pointerForValue(value))
+    override fun violation(description: String, value: Any): Violation =
+        violation(description, getJsonPointer(value))
 
     /**
      * Creates a Violation with the specified pointer, defaulting to the last recorded location.
@@ -118,8 +120,8 @@ class DefaultContext(
      * @param pointer an existing pointer or null
      * @return the new Violation
      */
-    override fun violation(description: String, pointer: JsonPointer?): Violation =
-        Violation(description, pointer ?: JsonPointers.EMPTY)
+    override fun violation(description: String, pointer: JsonPointer): Violation =
+        Violation(description, pointer)
 
     /**
      * Check whether a location should be ignored by a specific rule.
@@ -130,16 +132,19 @@ class DefaultContext(
     override fun isIgnored(pointer: JsonPointer, ruleId: String): Boolean =
         swaggerAst?.isIgnored(pointer, ruleId) ?: openApiAst.isIgnored(pointer, ruleId)
 
-    private fun pointerForValue(value: Any?): JsonPointer? = if (swaggerAst != null) {
-        val swaggerPointer = swaggerAst.getPointer(value)
-        if (swaggerPointer != null)
-            swaggerPointer
-        else {
-            // Attempt to convert an OpenAPI pointer to a Swagger pointer.
-            val openApiPointer = openApiAst.getPointer(value)
-            JsonPointers.convertPointer(openApiPointer) ?: openApiPointer
+    /**
+     * Look up the JsonPointer for an OpenAPI or Swagger model element.
+     * @return a pointer representing the value.
+     * @throws IllegalStateException if value is not an OpenAPI or Swagger model element.
+     */
+    override fun getJsonPointer(value: Any): JsonPointer = when (swaggerAst) {
+        null -> openApiAst.getPointer(value)
+            ?: error("Expected OpenAPI model element, not: $value")
+        else -> when (val swaggerPointer = swaggerAst.getPointer(value)) {
+            null -> openApiAst.getPointer(value)?.let { JsonPointers.convertPointer(it) }
+                ?: openApiAst.getPointer(value)
+                ?: error("Expected OpenAPI or Swagger model element, not: $value")
+            else -> swaggerPointer
         }
-    } else {
-        openApiAst.getPointer(value)
     }
 }

@@ -5,6 +5,7 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.ast.JsonPointers
 import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
@@ -20,8 +21,17 @@ class Use429HeaderForRateLimitRule {
 
     @Check(severity = Severity.MUST)
     fun checkHeadersForRateLimiting(context: Context): List<Violation> =
-        context.validateResponses(responseFilter = this::violatingResponse) { (_, response) ->
-            context.violations(description, response)
+        context.validateOperations { (_, operation) ->
+            operation?.responses?.let { responses ->
+                responses
+                    .filter {
+                        violatingResponse(it)
+                    }
+                    .flatMap { (status, _) ->
+                        context.violations(description,
+                            context.getJsonPointer(responses).append(JsonPointers.escape(status)))
+                    }
+            }.orEmpty()
         }
 
     private fun violatingResponse(entry: Map.Entry<String, ApiResponse?>): Boolean {

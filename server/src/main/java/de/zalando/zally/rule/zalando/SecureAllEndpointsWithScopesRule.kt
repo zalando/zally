@@ -48,16 +48,19 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
     fun checkOperationsAreScoped(context: Context): List<Violation> {
         val defined = defined(context.api)
         return context.validateOperations(pathFilter = this::pathFilter) { (_, op) ->
-            val requested = requested(context.api, op, defined)
-            val undefined = undefined(requested, defined)
-            when {
-                requested.isEmpty() -> context.violations("Endpoint not secured by OAuth2 scope(s)", op?.security ?: op)
-                undefined.isNotEmpty() -> context.violations(
-                    "Endpoint secured by undefined OAuth2 scope(s): ${undefined.joinToString()}", op?.security
+            op?.let {
+                val requested = requested(context.api, op, defined)
+                val undefined = undefined(requested, defined)
+                when {
+                    requested.isEmpty() -> context.violations("Endpoint not secured by OAuth2 scope(s)", op.security
+                        ?: op)
+                    undefined.isNotEmpty() -> context.violations(
+                        "Endpoint secured by undefined OAuth2 scope(s): ${undefined.joinToString()}", op.security
                         ?: op
-                )
-                else -> emptyList()
-            }
+                    )
+                    else -> emptyList()
+                }
+            }.orEmpty()
         }
     }
 

@@ -75,7 +75,7 @@ interface Context {
      * @param value the OpenAPI or Swagger model node
      * @return the new Violation
      */
-    fun violations(description: String, value: Any?): List<Violation>
+    fun violations(description: String, value: Any): List<Violation>
 
     /**
      * Creates a List of one Violation with the specified pointer, defaulting to the last recorded location.
@@ -83,7 +83,7 @@ interface Context {
      * @param pointer an existing pointer or null
      * @return the new Violation
      */
-    fun violations(description: String, pointer: JsonPointer?): List<Violation>
+    fun violations(description: String, pointer: JsonPointer): List<Violation>
 
     /**
      * Creates a Violation with a pointer to the OpenAPI or Swagger model node specified,
@@ -92,7 +92,7 @@ interface Context {
      * @param value the OpenAPI or Swagger model node
      * @return the new Violation
      */
-    fun violation(description: String, value: Any?): Violation
+    fun violation(description: String, value: Any): Violation
 
     /**
      * Creates a Violation with the specified pointer, defaulting to the last recorded location.
@@ -100,7 +100,7 @@ interface Context {
      * @param pointer an existing pointer or null
      * @return the new Violation
      */
-    fun violation(description: String, pointer: JsonPointer?): Violation
+    fun violation(description: String, pointer: JsonPointer): Violation
 
     /**
      * Check whether a location should be ignored by a specific rule.
@@ -109,4 +109,11 @@ interface Context {
      * @return true if the location should be ignored for this rule
      */
     fun isIgnored(pointer: JsonPointer, ruleId: String): Boolean
+
+    /**
+     * Look up the JsonPointer for an OpenAPI or Swagger model element.
+     * @return a pointer representing the value.
+     * @throws IllegalStateException if value is not an OpenAPI or Swagger model element.
+     */
+    fun getJsonPointer(value: Any): JsonPointer
 }
