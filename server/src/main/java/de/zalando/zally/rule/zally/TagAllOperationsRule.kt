@@ -27,6 +27,7 @@ class TagAllOperationsRule {
     @Check(severity = Severity.MUST)
     fun checkOperationTagsAreDefined(context: Context): List<Violation> {
         val defined = context.api.tags
+            .orEmpty()
             .map { it.name }
             .toSet()
 

@@ -18,7 +18,9 @@ class SecureWithOAuth2Rule {
 
     @Check(severity = Severity.MUST)
     fun checkSecuritySchemesOAuth2IsUsed(context: Context): Violation? {
-        val oauth2IsUsed = context.api.components.securitySchemes.values.any { SecurityScheme.Type.OAUTH2 == it.type }
+        val oauth2IsUsed = context.api.components?.securitySchemes?.values
+            .orEmpty()
+            .any { SecurityScheme.Type.OAUTH2 == it.type }
 
         return if (!oauth2IsUsed) context.violation("API has to be secured by OAuth2", JsonPointer.compile("/components/securitySchemes"))
         else null
@@ -37,13 +39,16 @@ class SecureWithOAuth2Rule {
     fun checkUsedScopesAreSpecified(context: Context): List<Violation> {
         if (!context.isOpenAPI3()) return emptyList()
 
-        val specifiedScopes = context.api.components.securitySchemes.entries
+        val specifiedScopes = context.api.components?.securitySchemes?.entries
+            .orEmpty()
             .filter { (_, scheme) -> SecurityScheme.Type.OAUTH2 == scheme.type }
             .flatMap { (group, scheme) ->
                 scheme.flows?.clientCredentials?.scopes.orEmpty().keys.map { scope -> group to scope }
-            }.toSet()
+            }
+            .toSet()
 
-        val usedScopes = context.api.paths.values
+        val usedScopes = context.api.paths?.values
+            .orEmpty()
             .flatMap { it?.readOperations().orEmpty().flatMap { it.security.orEmpty() } }
             .flatMap { secReq ->
                 secReq.keys.flatMap { group ->

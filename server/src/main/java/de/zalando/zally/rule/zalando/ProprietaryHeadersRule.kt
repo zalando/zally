@@ -38,7 +38,8 @@ class ProprietaryHeadersRule(rulesConfig: Config) {
         .filterNot { it.key.toLowerCase() in responseHeaders }
         .map { context.violation(responseDescription, it.value) }
 
-    private fun requestHeaders(context: Context): List<Parameter> = context.api.paths.values
+    private fun requestHeaders(context: Context): List<Parameter> = context.api.paths?.values
+        .orEmpty()
         .flatMap {
             it?.readOperations().orEmpty()
                 .flatMap {
@@ -47,7 +48,8 @@ class ProprietaryHeadersRule(rulesConfig: Config) {
                 }
         }
 
-    private fun responseHeaders(context: Context): List<Map.Entry<String, Header>> = context.api.paths.values
+    private fun responseHeaders(context: Context): List<Map.Entry<String, Header>> = context.api.paths?.values
+        .orEmpty()
         .flatMap {
             it?.readOperations().orEmpty()
                 .flatMap {
