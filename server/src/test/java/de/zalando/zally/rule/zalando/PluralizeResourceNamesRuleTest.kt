@@ -1,12 +1,12 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getContextFromFixture
 import de.zalando.zally.rule.ContentParseResult
 import de.zalando.zally.rule.ContentParseResultAssert.Companion.assertThat
 import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions.assertThat
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.testConfig
+import io.swagger.parser.util.ClasspathHelper.loadFileFromClasspath
 import org.junit.Test
 
 class PluralizeResourceNamesRuleTest {
@@ -15,14 +15,14 @@ class PluralizeResourceNamesRuleTest {
 
     @Test
     fun positiveCase() {
-        val context = getContextFromFixture("pluralizeResourcesValid.json")
+        val context = DefaultContextFactory().getSwaggerContext(loadFileFromClasspath("fixtures/pluralizeResourcesValid.json"))
         val violations = rule.validate(context)
         assertThat(violations).isEmpty()
     }
 
     @Test
     fun negativeCase() {
-        val context = getContextFromFixture("pluralizeResourcesInvalid.json")
+        val context = DefaultContextFactory().getSwaggerContext(loadFileFromClasspath("fixtures/pluralizeResourcesInvalid.json"))
         val violations = rule.validate(context)
         assertThat(violations)
             .descriptionsEqualTo(
@@ -37,28 +37,28 @@ class PluralizeResourceNamesRuleTest {
 
     @Test
     fun positiveCaseSpp() {
-        val context = getContextFromFixture("api_spp.json")
+        val context = DefaultContextFactory().getSwaggerContext(loadFileFromClasspath("fixtures/api_spp.json"))
         val violations = rule.validate(context)
         assertThat(violations).isEmpty()
     }
 
     @Test
     fun positiveCasePathsWithTheApiPrefix() {
-        val context = getContextFromFixture("spp_with_paths_having_api_prefix.json")
+        val context = DefaultContextFactory().getSwaggerContext(loadFileFromClasspath("fixtures/spp_with_paths_having_api_prefix.json"))
         val violations = rule.validate(context)
         assertThat(violations).isEmpty()
     }
 
     @Test
     fun positiveCaseNoMustViolations() {
-        val context = getContextFromFixture("no_must_violations.yaml")
+        val context = DefaultContextFactory().getSwaggerContext(loadFileFromClasspath("fixtures/no_must_violations.yaml"))
         val violations = rule.validate(context)
         assertThat(violations).isEmpty()
     }
 
     @Test
     fun negativeCaseTinbox() {
-        val context = getContextFromFixture("api_tinbox.yaml")
+        val context = DefaultContextFactory().getSwaggerContext(loadFileFromClasspath("fixtures/api_tinbox.yaml"))
         val violations = rule.validate(context)
         assertThat(violations)
             .pointersEqualTo(
@@ -175,7 +175,7 @@ class PluralizeResourceNamesRuleTest {
                 paths:
                   $path: {}
                 """.trimIndent()
-        val result = DefaultContextFactory().createOpenApiContext(content)
+        val result = DefaultContextFactory().parseOpenApiContext(content)
         assertThat(result).resultsInSuccess()
         return (result as ContentParseResult.ParsedSuccessfully).result
     }

@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.getOpenApiContextFromContent
-import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -13,7 +12,7 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate swagger with no paths returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: 2.0
             """.trimIndent()
@@ -27,7 +26,7 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate swagger with no common first segments returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: 2.0
             paths:
@@ -45,7 +44,7 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate swagger with single path returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: 2.0
             paths:
@@ -61,7 +60,7 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate swagger with common first segment returns violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: 2.0
             paths:
@@ -80,7 +79,7 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate swagger with multiple common first segments returns violation`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: 2.0
             paths:
@@ -100,7 +99,7 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate swagger with common prefix but no common first segments returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: 2.0
             paths:
@@ -119,7 +118,7 @@ class ExtractBasePathRuleTest {
     @Test
     fun `validate openapi with common first segment returns violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             paths:

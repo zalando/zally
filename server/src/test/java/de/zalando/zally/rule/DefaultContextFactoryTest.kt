@@ -21,7 +21,7 @@ class DefaultContextFactoryTest {
                 but: no
                 property: called OpenAPI
             """
-        val result = defaultContextFactory.createOpenApiContext(content)
+        val result = defaultContextFactory.parseOpenApiContext(content)
         assertThat(result).resultsInNotApplicable()
     }
 
@@ -34,7 +34,7 @@ class DefaultContextFactoryTest {
         val content = """
                 openapi: 3.0.0
             """
-        val result = defaultContextFactory.createOpenApiContext(content)
+        val result = defaultContextFactory.parseOpenApiContext(content)
         assertThat(result).resultsInSuccess()
     }
 
@@ -52,7 +52,7 @@ class DefaultContextFactoryTest {
                     authorizationUrl: https://identity.some-server/auth
                 paths: {}
             """
-        val result = defaultContextFactory.createOpenApiContext(content)
+        val result = defaultContextFactory.parseOpenApiContext(content)
         assertThat(result).resultsInSuccess()
     }
 
@@ -66,7 +66,7 @@ class DefaultContextFactoryTest {
                   version: 1.0.0
                 paths: {}
             """
-        val result = defaultContextFactory.createOpenApiContext(content)
+        val result = defaultContextFactory.parseOpenApiContext(content)
         assertThat(result).resultsInSuccess()
         val success = result as ContentParseResult.ParsedSuccessfully
         assertThat(success.result.isOpenAPI3()).isTrue()
@@ -82,7 +82,7 @@ class DefaultContextFactoryTest {
                   title: Pets API
                 paths: {}
             """.trimIndent()
-        val result = defaultContextFactory.createOpenApiContext(content)
+        val result = defaultContextFactory.parseOpenApiContext(content)
         assertThat(result).resultsInNotApplicable()
     }
 
@@ -98,7 +98,7 @@ class DefaultContextFactoryTest {
                 but: no
                 property: called OpenAPI
             """
-        val result = defaultContextFactory.createSwaggerContext(content)
+        val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInNotApplicable()
     }
 
@@ -108,7 +108,7 @@ class DefaultContextFactoryTest {
         val content = """
               swagger: 2.0
             """
-        val result = defaultContextFactory.createSwaggerContext(content)
+        val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
     }
 
@@ -124,7 +124,7 @@ class DefaultContextFactoryTest {
                     # type: oauth2
                 paths: {}
             """.trimIndent()
-        val result = defaultContextFactory.createSwaggerContext(content)
+        val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
     }
 
@@ -146,7 +146,7 @@ class DefaultContextFactoryTest {
                     #   foo: Description of 'foo'
                 paths: {}
             """.trimIndent()
-        val result = defaultContextFactory.createSwaggerContext(content)
+        val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
     }
 
@@ -160,7 +160,7 @@ class DefaultContextFactoryTest {
                   version: 1.0.0
                 paths: {}
             """.trimIndent()
-        val result = defaultContextFactory.createSwaggerContext(content)
+        val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
         val success = result as ContentParseResult.ParsedSuccessfully
         assertThat(success.result.isOpenAPI3()).isFalse()
@@ -204,7 +204,7 @@ class DefaultContextFactoryTest {
                         items:
                           ${'$'}ref: '#/definitions/ReadNode'
             """.trimIndent()
-        val result = defaultContextFactory.createSwaggerContext(content)
+        val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
         val success = result as ContentParseResult.ParsedSuccessfully
         assertThat(success.result.isOpenAPI3()).isFalse()
@@ -255,7 +255,7 @@ class DefaultContextFactoryTest {
                   - oauth2:
                     - 'cross-device-graph-service.read'
         """.trimIndent()
-        val result = defaultContextFactory.createSwaggerContext(content)
+        val result = defaultContextFactory.parseSwaggerContext(content)
         ContentParseResultAssert.assertThat(result).resultsInSuccess()
     }
 }

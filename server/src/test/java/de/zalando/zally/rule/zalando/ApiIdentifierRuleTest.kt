@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions.assertThat
 import de.zalando.zally.rule.api.Context
 import org.junit.Test
@@ -47,6 +47,6 @@ class ApiIdentifierRuleTest {
             paths: {}
             """.trimIndent()
 
-        return getOpenApiContextFromContent(content)
+        return DefaultContextFactory().getOpenApiContext(content)
     }
 }

@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
-import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
@@ -17,7 +16,7 @@ class SecureWithOAuth2RuleTest {
         val content = """
             openapi: 3.0.1
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violation = rule.checkSecuritySchemesOAuth2IsUsed(context)
 
@@ -42,7 +41,7 @@ class SecureWithOAuth2RuleTest {
                       scopes:
                         read: read access to the resources of this API
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violation = rule.checkSecuritySchemesOAuth2IsUsed(context)
 
@@ -59,7 +58,7 @@ class SecureWithOAuth2RuleTest {
                 company-oauth2:
                   type: apiKey
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkSecuritySchemesOnlyOAuth2IsUsed(context)
 
@@ -74,7 +73,7 @@ class SecureWithOAuth2RuleTest {
         val content = """
             openapi: 3.0.1
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkSecuritySchemesOnlyOAuth2IsUsed(context)
 
@@ -103,7 +102,7 @@ class SecureWithOAuth2RuleTest {
                       scopes:
                         read: read access to the resources of this API
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkUsedScopesAreSpecified(context)
 
@@ -134,7 +133,7 @@ class SecureWithOAuth2RuleTest {
                       scopes:
                         read: read access to the resources of this API
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkUsedScopesAreSpecified(context)
 
@@ -150,7 +149,7 @@ class SecureWithOAuth2RuleTest {
               title: Old API
               version: 1
         """.trimIndent()
-        val context = getSwaggerContextFromContent(content)
+        val context = DefaultContextFactory().getSwaggerContext(content)
 
         val violations = rule.checkUsedScopesAreSpecified(context)
 

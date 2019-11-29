@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -19,7 +19,7 @@ class AtMostOneBodyParameterRuleTest {
               version: 1.0.0
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = cut.validate(context)
 
@@ -48,7 +48,7 @@ class AtMostOneBodyParameterRuleTest {
                       description: Done
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = cut.validate(context)
 
@@ -82,7 +82,7 @@ class AtMostOneBodyParameterRuleTest {
                       description: Done
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = cut.validate(context)
 

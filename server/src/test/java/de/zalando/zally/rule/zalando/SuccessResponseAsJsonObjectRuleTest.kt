@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -26,7 +26,7 @@ class SuccessResponseAsJsonObjectRuleTest {
                             items:
                               type: string
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkJSONObjectIsUsedAsSuccessResponseType(context)
 
@@ -50,7 +50,7 @@ class SuccessResponseAsJsonObjectRuleTest {
                           schema:
                             type: object
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkJSONObjectIsUsedAsSuccessResponseType(context)
 
@@ -78,7 +78,7 @@ class SuccessResponseAsJsonObjectRuleTest {
                     name:
                       type: string
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkJSONObjectIsUsedAsSuccessResponseType(context)
 

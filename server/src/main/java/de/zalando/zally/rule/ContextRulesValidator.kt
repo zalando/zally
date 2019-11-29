@@ -16,10 +16,10 @@ class ContextRulesValidator(
 
     override fun parse(content: String, authorization: String?): ContentParseResult<Context> {
         // first try to parse an OpenAPI (version 3+)
-        return when (val parsedAsOpenApi = defaultContextFactory.createOpenApiContext(content, authorization)) {
+        return when (val parsedAsOpenApi = defaultContextFactory.parseOpenApiContext(content, authorization)) {
             is ContentParseResult.NotApplicable ->
                 // if content was no OpenAPI, try to parse a Swagger (version 2)
-                defaultContextFactory.createSwaggerContext(content)
+                defaultContextFactory.parseSwaggerContext(content)
             else ->
                 parsedAsOpenApi
         }

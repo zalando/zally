@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -13,7 +13,7 @@ class ApiMetaInformationRuleTest {
         val spec = """
             openapi: 3.0.1
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoTitle(context)
 
@@ -29,7 +29,7 @@ class ApiMetaInformationRuleTest {
             info:
               title: Awesome API
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoTitle(context)
 
@@ -41,7 +41,7 @@ class ApiMetaInformationRuleTest {
         val spec = """
             openapi: 3.0.1
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoDescription(context)
 
@@ -57,7 +57,7 @@ class ApiMetaInformationRuleTest {
             info:
               description: super awesome mega turbo laser API
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoDescription(context)
 
@@ -69,7 +69,7 @@ class ApiMetaInformationRuleTest {
         val spec = """
             openapi: 3.0.1
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoVersion(context)
 
@@ -85,7 +85,7 @@ class ApiMetaInformationRuleTest {
             info:
               version: alpha-beta-gamma-version.1.1.1.1.1
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoVersion(context)
 
@@ -101,7 +101,7 @@ class ApiMetaInformationRuleTest {
             info:
               version: 1.0.0
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoVersion(context)
 
@@ -113,7 +113,7 @@ class ApiMetaInformationRuleTest {
         val spec = """
             openapi: 3.0.1
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkContactName(context)
 
@@ -130,7 +130,7 @@ class ApiMetaInformationRuleTest {
               contact:
                 name: Awesome Team
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkContactName(context)
 
@@ -142,7 +142,7 @@ class ApiMetaInformationRuleTest {
         val spec = """
             openapi: 3.0.1
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkContactUrl(context)
 
@@ -159,7 +159,7 @@ class ApiMetaInformationRuleTest {
               contact:
                 url: https://awesome-team.company.com
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkContactUrl(context)
 
@@ -171,7 +171,7 @@ class ApiMetaInformationRuleTest {
         val spec = """
             openapi: 3.0.1
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkContactEmail(context)
 
@@ -188,7 +188,7 @@ class ApiMetaInformationRuleTest {
               contact:
                 email: awesome-team@company.com
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkContactEmail(context)
 

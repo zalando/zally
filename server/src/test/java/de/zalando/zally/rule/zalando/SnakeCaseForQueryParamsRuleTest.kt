@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -20,7 +20,7 @@ class SnakeCaseForQueryParamsRuleTest {
                     - name: filterExpensiveArticles
                       in: query
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkQueryParameter(context)
 
@@ -40,7 +40,7 @@ class SnakeCaseForQueryParamsRuleTest {
                     - name: filter_expensive_articles
                       in: query
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkQueryParameter(context)
 

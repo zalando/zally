@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions
 import de.zalando.zally.testConfig
 import org.intellij.lang.annotations.Language
@@ -14,7 +14,7 @@ class StringPropertyLengthBoundsRuleTest {
     @Test
     fun `checkStringLengthBounds with bounded string length returns no violations`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:
@@ -42,7 +42,7 @@ class StringPropertyLengthBoundsRuleTest {
     @Test
     fun `checkStringLengthBounds with left-bounded string length returns max violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:
@@ -70,7 +70,7 @@ class StringPropertyLengthBoundsRuleTest {
     @Test
     fun `checkStringLengthBounds with right-bounded string length returns min violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:
@@ -98,7 +98,7 @@ class StringPropertyLengthBoundsRuleTest {
     @Test
     fun `checkStringLengthBounds with unbounded string length returns min and max violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:
@@ -125,7 +125,7 @@ class StringPropertyLengthBoundsRuleTest {
     @Test
     fun `checkStringLengthBounds with negative bounded string length returns min and max violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:
@@ -154,7 +154,7 @@ class StringPropertyLengthBoundsRuleTest {
     @Test
     fun `checkStringLengthBounds with reversed bounded string length returns min and max violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:
@@ -190,7 +190,7 @@ class StringPropertyLengthBoundsRuleTest {
         )
 
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:
@@ -225,7 +225,7 @@ class StringPropertyLengthBoundsRuleTest {
         )
 
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:
@@ -257,7 +257,7 @@ class StringPropertyLengthBoundsRuleTest {
         )
 
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.2
             info:

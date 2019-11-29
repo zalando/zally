@@ -1,10 +1,10 @@
 package de.zalando.zally.rule.zalando
 
 import com.fasterxml.jackson.core.JsonPointer
-import de.zalando.zally.getContextFromFixture
-import de.zalando.zally.getOpenApiContextFromContent
 import de.zalando.zally.rule.DefaultContext
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.api.Violation
+import io.swagger.parser.util.ClasspathHelper.loadFileFromClasspath
 import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
@@ -53,7 +53,7 @@ class MediaTypesRuleTest {
     @Test
     fun `versioned custom media type causes no violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.0
             paths:
@@ -72,7 +72,7 @@ class MediaTypesRuleTest {
     @Test
     fun `custom media type without versioning causes violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.0
             paths:
@@ -95,7 +95,7 @@ class MediaTypesRuleTest {
     @Test
     fun `only some of multiple paths without versioning causes violation`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.0
             paths:
@@ -132,7 +132,7 @@ class MediaTypesRuleTest {
     @Test
     fun `invalid shared components cause violations`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.0
             components:
@@ -158,7 +158,7 @@ class MediaTypesRuleTest {
 
     @Test
     fun `the SPP API generates violations`() {
-        val context = getContextFromFixture("api_spp.json")
+        val context = DefaultContextFactory().getSwaggerContext(loadFileFromClasspath("fixtures/api_spp.json"))
         val result = rule.validate(context)
         assertThat(result).hasSameElementsAs(
             listOf(
@@ -177,7 +177,7 @@ class MediaTypesRuleTest {
 
     @Test
     fun `the SPA API generates no violations`() {
-        val context = getContextFromFixture("api_spa.yaml")
+        val context = DefaultContextFactory().getSwaggerContext(loadFileFromClasspath("fixtures/api_spa.yaml"))
         assertThat(rule.validate(context)).isEmpty()
     }
 

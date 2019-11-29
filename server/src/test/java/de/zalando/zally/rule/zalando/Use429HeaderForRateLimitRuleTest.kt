@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
-import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -21,7 +20,7 @@ class Use429HeaderForRateLimitRuleTest {
                   responses:
                     429: {}
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkHeadersForRateLimiting(context)
 
@@ -43,7 +42,7 @@ class Use429HeaderForRateLimitRuleTest {
                       headers:
                         Retry-After: {}
         """.trimIndent()
-        val context = getOpenApiContextFromContent(content)
+        val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkHeadersForRateLimiting(context)
 
@@ -60,7 +59,7 @@ class Use429HeaderForRateLimitRuleTest {
                 get:
                   description: asd
             """.trimIndent()
-        val context = getSwaggerContextFromContent(content)
+        val context = DefaultContextFactory().getSwaggerContext(content)
 
         val violations = rule.checkHeadersForRateLimiting(context)
 

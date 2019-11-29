@@ -1,5 +1,6 @@
 package de.zalando.zally.rule.zalando
 
+import com.fasterxml.jackson.core.JsonPointer
 import com.typesafe.config.Config
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
@@ -8,7 +9,7 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
 import de.zalando.zally.util.WordUtil.isPlural
-import io.swagger.v3.oas.models.PathItem
+import de.zalando.zally.util.ast.JsonPointers
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -32,10 +33,10 @@ class PluralizeResourceNamesRule(rulesConfig: Config) {
 
     @Check(severity = Severity.MUST)
     fun validate(context: Context): List<Violation> {
-        return context.validatePaths { (path, definition) ->
+        return context.validatePaths { (path, _) ->
             pathSegments(sanitizedPath(path, whitelist))
                 .filter { isNonViolating(it) }
-                .map { violation(context, it, definition) }
+                .map { violation(context, it, JsonPointer.compile("/paths").append(JsonPointers.escape(path))) }
         }
     }
 
@@ -52,6 +53,6 @@ class PluralizeResourceNamesRule(rulesConfig: Config) {
     private fun isNonViolating(it: String) =
         !PatternUtil.isPathVariable(it) && !isPlural(it)
 
-    private fun violation(context: Context, term: String, definition: PathItem?) =
-        context.violation("Resource '$term' appears to be singular", definition)
+    private fun violation(context: Context, term: String, pointer: JsonPointer) =
+        context.violation("Resource '$term' appears to be singular", pointer)
 }

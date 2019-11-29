@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -17,7 +17,7 @@ class NoVersionInUriRuleTest {
             servers:
               - url: "https://inter.net/api/v1.0"
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkServerURLs(context)
 
@@ -35,7 +35,7 @@ class NoVersionInUriRuleTest {
             paths:
               /shop/orders-v1/{order-id}: {}
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkServerURLs(context)
 
@@ -53,7 +53,7 @@ class NoVersionInUriRuleTest {
             servers:
               - url: "https://inter.net/api/"
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkServerURLs(context)
 

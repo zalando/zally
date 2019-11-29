@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.api.Context
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
@@ -93,6 +93,6 @@ class IdentifyResourcesViaPathSegmentsTest {
               $path: {}
         """.trimIndent()
 
-        return getOpenApiContextFromContent(content)
+        return DefaultContextFactory().getOpenApiContext(content)
     }
 }

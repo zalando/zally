@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
@@ -22,7 +22,7 @@ class SnakeCaseInPropNameRuleTest {
                     superMegaLaserTurboArticle:
                       type: boolean
             """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkPropertyNames(context)
 
@@ -43,7 +43,7 @@ class SnakeCaseInPropNameRuleTest {
                     article_title:
                       type: string
             """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkPropertyNames(context)
 
@@ -62,7 +62,7 @@ class SnakeCaseInPropNameRuleTest {
                     _links:
                       type: string
             """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkPropertyNames(context)
 

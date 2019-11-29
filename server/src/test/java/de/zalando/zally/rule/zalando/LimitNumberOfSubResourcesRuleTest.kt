@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
@@ -18,7 +18,7 @@ class LimitNumberOfSubResourcesRuleTest {
               paths:
                 /worlds/{world-id}/countries/{country-id}/states/{state-id}/cities/{city-id}/streets/{street-id}: {}
               """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkNumberOfSubResources(context)
 
@@ -35,7 +35,7 @@ class LimitNumberOfSubResourcesRuleTest {
             paths:
               /articles: {}
         """.trimIndent()
-        val context = getOpenApiContextFromContent(spec)
+        val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkNumberOfSubResources(context)
 

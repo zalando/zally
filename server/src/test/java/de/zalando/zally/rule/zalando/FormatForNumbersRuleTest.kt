@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.getOpenApiContextFromContent
-import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
@@ -28,7 +27,7 @@ class FormatForNumbersRuleTest {
                       format: decimal
             """.trimIndent()
 
-        val violations = rule.checkNumberFormat(getOpenApiContextFromContent(content))
+        val violations = rule.checkNumberFormat(DefaultContextFactory().getOpenApiContext(content))
 
         assertThat(violations).isEmpty()
     }
@@ -49,7 +48,7 @@ class FormatForNumbersRuleTest {
                       type: number
             """.trimIndent()
 
-        val violations = rule.checkNumberFormat(getOpenApiContextFromContent(content))
+        val violations = rule.checkNumberFormat(DefaultContextFactory().getOpenApiContext(content))
 
         assertThat(violations).isNotEmpty
         assertThat(violations[0].description).matches(".*Numeric properties must have valid format.*")
@@ -73,7 +72,7 @@ class FormatForNumbersRuleTest {
                       format: weird_number_format
             """.trimIndent()
 
-        val violations = rule.checkNumberFormat(getOpenApiContextFromContent(content))
+        val violations = rule.checkNumberFormat(DefaultContextFactory().getOpenApiContext(content))
 
         assertThat(violations).isNotEmpty
         assertThat(violations[0].description).matches(".*Numeric properties must have valid format.*")
@@ -89,7 +88,7 @@ class FormatForNumbersRuleTest {
               title: Empty API
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = rule.checkNumberFormat(context)
 
@@ -115,7 +114,7 @@ class FormatForNumbersRuleTest {
                           - name: Named thing
             """.trimIndent()
 
-        val context = getSwaggerContextFromContent(yaml)
+        val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = rule.checkNumberFormat(context)
 

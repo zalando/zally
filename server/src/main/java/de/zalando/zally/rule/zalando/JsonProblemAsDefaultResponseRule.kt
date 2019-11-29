@@ -36,7 +36,8 @@ class JsonProblemAsDefaultResponseRule {
         .map { context.violation("problem json has to be used as default response (${validRefs[0]})", it.value) }
 
     private fun responsesPerOperation(context: Context): Collection<Pair<Operation, Map<String, ApiResponse>>> =
-        context.api.paths.values
+        context.api.paths?.values
+            .orEmpty()
             .flatMap {
                 it?.readOperations().orEmpty()
                     .map { operation -> Pair(operation, operation.responses.orEmpty()) }

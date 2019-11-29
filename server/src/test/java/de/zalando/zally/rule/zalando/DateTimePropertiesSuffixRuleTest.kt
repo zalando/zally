@@ -3,7 +3,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.ConfigValueFactory
-import de.zalando.zally.getOpenApiContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
@@ -38,7 +38,7 @@ class DateTimePropertiesSuffixRuleTest {
                       type: string
                       format: date-time
             """.trimIndent()
-        val violations = rule.validate(getOpenApiContextFromContent(content))
+        val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations).isEmpty()
     }
 
@@ -67,7 +67,7 @@ class DateTimePropertiesSuffixRuleTest {
                       type: string
                       format: date                  
             """.trimIndent()
-        val violations = rule.validate(getOpenApiContextFromContent(content))
+        val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations).isEmpty()
     }
 
@@ -92,7 +92,7 @@ class DateTimePropertiesSuffixRuleTest {
                     modified:
                       type: int                                          
             """.trimIndent()
-        val violations = rule.validate(getOpenApiContextFromContent(content))
+        val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations).isEmpty()
     }
 
@@ -121,7 +121,7 @@ class DateTimePropertiesSuffixRuleTest {
                       type: string
                       format: date
             """.trimIndent()
-        val violations = rule.validate(getOpenApiContextFromContent(content))
+        val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations.map { it.description }).containsExactly(
             rule.generateMessage("created", "string", "date-time"),
             rule.generateMessage("occurred", "string", "date"),
@@ -151,7 +151,7 @@ class DateTimePropertiesSuffixRuleTest {
             """.trimIndent()
         val newConfig = testConfig.withValue("DateTimePropertiesSuffixRule/patterns", ConfigValueFactory.fromIterable(listOf("was_.*")))
         val customRule = DateTimePropertiesSuffixRule(newConfig)
-        val violations = customRule.validate(getOpenApiContextFromContent(content))
+        val violations = customRule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations.map { it.description }).containsExactly(
             customRule.generateMessage("created", "string", "date-time"),
             customRule.generateMessage("modified", "string", "date")

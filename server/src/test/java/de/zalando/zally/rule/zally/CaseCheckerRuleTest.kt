@@ -1,7 +1,6 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.getOpenApiContextFromContent
-import de.zalando.zally.getSwaggerContextFromContent
+import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.ZallyAssertions
 import de.zalando.zally.testConfig
 import org.intellij.lang.annotations.Language
@@ -15,7 +14,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkPropertyNames returns violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             definitions:
@@ -37,7 +36,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkPathParameterNames with InVaLiD! returns violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             paths:
@@ -60,7 +59,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkPathParameterNames with kebab-case returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             paths:
@@ -82,7 +81,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkPathParameterNames with snake_case returns no violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             paths:
@@ -104,7 +103,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkQueryParameterNames returns violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             paths:
@@ -127,7 +126,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkHeaderNames returns violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             paths:
@@ -150,7 +149,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkTagNames returns violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             tags:
@@ -175,7 +174,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkPathSegments returns violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             paths:
@@ -195,7 +194,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkDiscriminatorValues with invalid mapping returns violations`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: '3.0.0'
             components:
@@ -225,7 +224,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkDiscriminatorValues with invalid enum returns violations`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: '3.0.0'
             components:
@@ -254,7 +253,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkDiscriminatorValues with invalid swagger enum returns violations`() {
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             definitions:
@@ -286,7 +285,7 @@ class CaseCheckerRuleTest {
         val ref = "\$ref"
 
         @Language("YAML")
-        val context = getSwaggerContextFromContent(
+        val context = DefaultContextFactory().getSwaggerContext(
             """
             swagger: '2.0'
             definitions:
@@ -314,7 +313,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkEnumValues with invalid discriminator returns no violations`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: '3.0.0'
             components:
@@ -342,7 +341,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkEnumValues with invalid enum returns violations`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: '3.0.0'
             components:
@@ -368,7 +367,7 @@ class CaseCheckerRuleTest {
     @Test
     fun `checkEnumValues with invalid parameter enum returns violations`() {
         @Language("YAML")
-        val context = getOpenApiContextFromContent(
+        val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: '3.0.0'
             components:
