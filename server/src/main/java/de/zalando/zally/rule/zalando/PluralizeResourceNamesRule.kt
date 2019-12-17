@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zalando
 import com.fasterxml.jackson.core.JsonPointer
 import com.typesafe.config.Config
 import de.zalando.zally.core.JsonPointers
+import de.zalando.zally.core.plus
 import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
@@ -37,7 +38,7 @@ class PluralizeResourceNamesRule(rulesConfig: Config) {
         return context.validatePaths { (path, _) ->
             pathSegments(sanitizedPath(path, whitelist))
                 .filter { isNonViolating(it) }
-                .map { violation(context, it, "/paths".toJsonPointer().append(JsonPointers.escape(path))) }
+                .map { violation(context, it, "/paths".toJsonPointer() + JsonPointers.escape(path)) }
         }
     }
 

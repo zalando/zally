@@ -13,3 +13,9 @@ val EMPTY_JSON_POINTER: JsonPointer = JsonPointer.compile(null)
  * @throws IllegalArgumentException if the string is invalid.
  */
 fun String.toJsonPointer(): JsonPointer = JsonPointer.compile(this)
+
+/**
+ * Concatenates two JsonPointer instances together.
+ * @return the combined JsonPointer
+ */
+operator fun JsonPointer.plus(other: JsonPointer): JsonPointer = append(other)

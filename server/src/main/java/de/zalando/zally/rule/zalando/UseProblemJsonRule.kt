@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.io.Resources
 import de.zalando.zally.core.EMPTY_JSON_POINTER
+import de.zalando.zally.core.plus
 import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.rule.api.Check
@@ -49,8 +50,7 @@ class UseProblemJsonRule {
                             .let {
                                 Violation(
                                     "${it.description} ${validation.description}",
-                                    it.pointer.append(validation.pointer)
-                                        ?: EMPTY_JSON_POINTER
+                                    it.pointer + validation.pointer
                                 )
                             }
                     }

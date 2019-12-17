@@ -3,12 +3,13 @@ package de.zalando.zally.rule.zally
 import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import de.zalando.zally.core.EMPTY_JSON_POINTER
+import de.zalando.zally.core.JsonPointers
+import de.zalando.zally.core.plus
+import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.core.JsonPointers
-import de.zalando.zally.core.toJsonPointer
 
 /**
  * Rule highlighting that x-zally-ignore should be used sparingly
@@ -40,13 +41,13 @@ class AvoidXZallyIgnoreRule {
 
     private fun validateArrayNode(pointer: JsonPointer, node: JsonNode): List<Violation> =
         node.asSequence().toList().mapIndexed { index, childNode ->
-            val childPointer = pointer.append("/$index".toJsonPointer())
+            val childPointer = pointer + "/$index".toJsonPointer()
             validateTree(childPointer, childNode)
         }.flatten()
 
     private fun validateObjectNode(pointer: JsonPointer, node: JsonNode): List<Violation> =
         node.fields().asSequence().toList().flatMap { (name, childNode) ->
-            val childPointer = pointer.append(JsonPointers.escape(name))
+            val childPointer = pointer + JsonPointers.escape(name)
             when (name) {
                 xZallyIgnore -> validateXZallyIgnore(childPointer, childNode)
                 else -> validateTree(childPointer, childNode)
