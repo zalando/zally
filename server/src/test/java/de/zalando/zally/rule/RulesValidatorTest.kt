@@ -1,11 +1,11 @@
 package de.zalando.zally.rule
 
 import com.fasterxml.jackson.databind.JsonNode
+import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.core.JsonPointers
 import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -27,7 +27,7 @@ class RulesValidatorTest {
 
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.SHOULD)
-        fun validate(swagger: Swagger): List<Violation> = listOf("dummy1", "dummy2").map { Violation(it, JsonPointers.EMPTY) }
+        fun validate(swagger: Swagger): List<Violation> = listOf("dummy1", "dummy2").map { Violation(it, EMPTY_JSON_POINTER) }
     }
 
     @Rule(
@@ -40,7 +40,7 @@ class RulesValidatorTest {
 
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
-        fun validate(swagger: Swagger): Violation? = Violation("dummy3", JsonPointers.EMPTY)
+        fun validate(swagger: Swagger): Violation? = Violation("dummy3", EMPTY_JSON_POINTER)
     }
 
     @Rule(

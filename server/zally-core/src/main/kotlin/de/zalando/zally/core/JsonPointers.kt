@@ -8,8 +8,6 @@ import java.lang.reflect.Method
  */
 object JsonPointers {
 
-    val EMPTY: JsonPointer = "".toJsonPointer()
-
     private val regexToReplacement =
         listOf(
             "^/servers/.*$" to "/basePath",

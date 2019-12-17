@@ -2,6 +2,7 @@ package de.zalando.zally.rule.zally
 
 import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
+import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -28,7 +29,7 @@ class AvoidXZallyIgnoreRule {
      * @return Violation iff x-zally-ignore is in use
      */
     @Check(severity = Severity.HINT)
-    fun validate(root: JsonNode): List<Violation> = validateTree(JsonPointers.EMPTY, root)
+    fun validate(root: JsonNode): List<Violation> = validateTree(EMPTY_JSON_POINTER, root)
 
     private fun validateTree(pointer: JsonPointer, node: JsonNode): List<Violation> =
         when {

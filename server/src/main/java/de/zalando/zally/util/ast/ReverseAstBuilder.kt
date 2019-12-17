@@ -3,6 +3,7 @@ package de.zalando.zally.util.ast
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.core.JsonPointers
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
@@ -16,7 +17,7 @@ import kotlin.collections.set
 class ReverseAstBuilder<T : Any> internal constructor(root: T) {
     private val extensionMethodNames = HashSet<String>()
 
-    private val nodes = ArrayDeque<Node>(listOf(Node(root, JsonPointers.EMPTY, null)))
+    private val nodes = ArrayDeque<Node>(listOf(Node(root, EMPTY_JSON_POINTER, null)))
     private val objectsToNodes = IdentityHashMap<Any, Node>()
     private val pointersToNodes = HashMap<String, Node>()
 

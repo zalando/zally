@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
+import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.core.JsonPointers
 import io.swagger.util.Yaml
 import org.intellij.lang.annotations.Language
@@ -405,7 +406,7 @@ class NullPointerExceptionTest(
         }
 
         private fun JsonNode?.allJsonPointers(): List<JsonPointer> =
-            listOf(JsonPointers.EMPTY) +
+            listOf(EMPTY_JSON_POINTER) +
             when (this) {
                 is ObjectNode -> {
                     fields().asSequence().toList().flatMap { (name, node) ->

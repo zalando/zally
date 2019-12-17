@@ -1,7 +1,7 @@
 package de.zalando.zally.apireview
 
 import com.fasterxml.jackson.databind.JsonNode
-import de.zalando.zally.core.JsonPointers
+import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.TestRuleSet
 import de.zalando.zally.rule.api.Check
@@ -55,9 +55,9 @@ class RestApiTestConfiguration {
         @Check(severity = Severity.MUST)
         fun validate(@Suppress("UNUSED_PARAMETER") json: JsonNode): Iterable<Violation> {
             return listOf(
-                Violation("TestCheckAlwaysReport3MustViolations #1", JsonPointers.EMPTY),
-                Violation("TestCheckAlwaysReport3MustViolations #2", JsonPointers.EMPTY),
-                Violation("TestCheckAlwaysReport3MustViolations #3", JsonPointers.EMPTY)
+                Violation("TestCheckAlwaysReport3MustViolations #1", EMPTY_JSON_POINTER),
+                Violation("TestCheckAlwaysReport3MustViolations #2", EMPTY_JSON_POINTER),
+                Violation("TestCheckAlwaysReport3MustViolations #3", EMPTY_JSON_POINTER)
             )
         }
     }
