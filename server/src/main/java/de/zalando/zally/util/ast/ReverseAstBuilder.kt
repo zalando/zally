@@ -3,6 +3,7 @@ package de.zalando.zally.util.ast
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.JsonPointers
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.ArrayDeque

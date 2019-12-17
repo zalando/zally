@@ -9,7 +9,7 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
 import de.zalando.zally.util.WordUtil.isPlural
-import de.zalando.zally.util.ast.JsonPointers
+import de.zalando.zally.core.JsonPointers
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,

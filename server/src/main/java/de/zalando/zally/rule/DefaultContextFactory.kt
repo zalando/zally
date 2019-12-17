@@ -2,7 +2,7 @@ package de.zalando.zally.rule
 
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.ast.JsonPointers
+import de.zalando.zally.core.JsonPointers
 import io.swagger.parser.SwaggerParser
 import io.swagger.parser.util.SwaggerDeserializationResult
 import io.swagger.v3.parser.OpenAPIV3Parser

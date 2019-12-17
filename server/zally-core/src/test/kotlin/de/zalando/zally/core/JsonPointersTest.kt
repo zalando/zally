@@ -1,4 +1,4 @@
-package de.zalando.zally.util.ast
+package de.zalando.zally.core
 
 import com.fasterxml.jackson.core.JsonPointer
 import io.swagger.models.Swagger

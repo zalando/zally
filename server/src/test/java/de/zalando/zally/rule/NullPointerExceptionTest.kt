@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
-import de.zalando.zally.util.ast.JsonPointers
+import de.zalando.zally.core.JsonPointers
 import io.swagger.util.Yaml
 import org.intellij.lang.annotations.Language
 import org.junit.ClassRule

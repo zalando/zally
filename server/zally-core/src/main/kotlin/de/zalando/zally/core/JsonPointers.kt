@@ -1,4 +1,4 @@
-package de.zalando.zally.util.ast
+package de.zalando.zally.core
 
 import com.fasterxml.jackson.core.JsonPointer
 import java.lang.reflect.Method
@@ -48,14 +48,14 @@ object JsonPointers {
                 ?: pointer
         }
 
-    internal fun escape(method: Method, vararg arguments: Any): JsonPointer =
+    fun escape(method: Method, vararg arguments: Any): JsonPointer =
         escape(method.name
             .let { if (it.startsWith("get")) it.drop(3) else it }
             .decapitalize()
             .let { if (arguments.isNotEmpty()) it + arguments[0] else it })
 
     // https://tools.ietf.org/html/rfc6901
-    internal fun escape(unescaped: String): JsonPointer = unescaped
+    fun escape(unescaped: String): JsonPointer = unescaped
         .replace("~", "~0")
         .replace("/", "~1")
         .let { JsonPointer.compile("/$it") }
