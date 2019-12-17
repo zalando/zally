@@ -1,9 +1,9 @@
 package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.toSwaggerJsonPointer
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.core.JsonPointers
 import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.models.Swagger
 import io.swagger.v3.oas.models.OpenAPI
@@ -138,11 +138,13 @@ class DefaultContext(
      * @throws IllegalStateException if value is not an OpenAPI or Swagger model element.
      */
     override fun getJsonPointer(value: Any): JsonPointer = when (swaggerAst) {
-        null -> openApiAst.getPointer(value)
+        null -> openApiAst
+            .getPointer(value)
             ?: error("Expected OpenAPI model element, not: $value")
         else -> when (val swaggerPointer = swaggerAst.getPointer(value)) {
-            null -> openApiAst.getPointer(value)?.let { JsonPointers.convertPointer(it) }
-                ?: openApiAst.getPointer(value)
+            null -> openApiAst
+                .getPointer(value)
+                ?.let { it.toSwaggerJsonPointer() ?: it }
                 ?: error("Expected OpenAPI or Swagger model element, not: $value")
             else -> swaggerPointer
         }
