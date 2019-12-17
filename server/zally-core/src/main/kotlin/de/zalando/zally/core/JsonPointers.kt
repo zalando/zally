@@ -1,7 +1,6 @@
 package de.zalando.zally.core
 
 import com.fasterxml.jackson.core.JsonPointer
-import java.lang.reflect.Method
 
 /**
  * Utility to convert OpenAPI 3 JSON pointers to Swagger 2 pointers.
@@ -45,16 +44,4 @@ object JsonPointers {
                 }
                 ?: pointer
         }
-
-    fun escape(method: Method, vararg arguments: Any): JsonPointer =
-        escape(method.name
-            .let { if (it.startsWith("get")) it.drop(3) else it }
-            .decapitalize()
-            .let { if (arguments.isNotEmpty()) it + arguments[0] else it })
-
-    // https://tools.ietf.org/html/rfc6901
-    fun escape(unescaped: String): JsonPointer = unescaped
-        .replace("~", "~0")
-        .replace("/", "~1")
-        .let { "/$it".toJsonPointer() }
 }

@@ -1,6 +1,5 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.core.JsonPointers
 import de.zalando.zally.core.plus
 import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
@@ -24,17 +23,17 @@ class IdentifyResourcesViaPathSegments {
     @Check(severity = Severity.MUST)
     fun pathStartsWithResource(context: Context): List<Violation> = context.validatePaths(
         pathFilter = { pathStartingWithAParameter.matches(it.key) },
-        action = { context.violations(pathStartsWithParameter, "/paths".toJsonPointer() + JsonPointers.escape(it.key)) })
+        action = { context.violations(pathStartsWithParameter, "/paths".toJsonPointer() + it.key) })
 
     private val pathContainingSuccessiveParameters = """.*\}/\{.*""".toRegex()
     @Check(severity = Severity.MUST)
     fun pathDoesNotContainSuccessiveParameters(context: Context): List<Violation> = context.validatePaths(
         pathFilter = { pathContainingSuccessiveParameters.matches(it.key) },
-        action = { context.violations(pathContainsSuccessiveParameters, "/paths".toJsonPointer() + JsonPointers.escape(it.key)) })
+        action = { context.violations(pathContainsSuccessiveParameters, "/paths".toJsonPointer() + it.key) })
 
     private val pathContainingPrefixedOrSuffixedParameter = """.*/([^/]+\{[^/]+\}|\{[^/]+\}[^/]+).*""".toRegex()
     @Check(severity = Severity.MUST)
     fun pathParameterDoesNotContainPrefixAndSuffix(context: Context): List<Violation> = context.validatePaths(
         pathFilter = { pathContainingPrefixedOrSuffixedParameter.matches(it.key) },
-        action = { context.violations(pathParameterContainsPrefixOrSuffix, "/paths".toJsonPointer() + JsonPointers.escape(it.key)) })
+        action = { context.violations(pathParameterContainsPrefixOrSuffix, "/paths".toJsonPointer() + it.key) })
 }

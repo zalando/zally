@@ -19,3 +19,14 @@ fun String.toJsonPointer(): JsonPointer = JsonPointer.compile(this)
  * @return the combined JsonPointer
  */
 operator fun JsonPointer.plus(other: JsonPointer): JsonPointer = append(other)
+
+/**
+ * Escapes a string and appends it to an existing JsonPointer.
+ * Escaping implemented according to https://tools.ietf.org/html/rfc6901
+ * @return the combined JsonPointer.
+ */
+operator fun JsonPointer.plus(unescaped: String): JsonPointer = append(unescaped
+    .replace("~", "~0")
+    .replace("/", "~1")
+    .let { "/$it".toJsonPointer() }
+)
