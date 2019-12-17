@@ -1,12 +1,12 @@
 package de.zalando.zally.rule.zalando
 
-import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.JsonPointers
+import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.core.JsonPointers
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -30,6 +30,6 @@ class AvoidTrailingSlashesRule {
                 }
             }
         ) { (path, _) ->
-            context.violations(description, JsonPointer.compile("/paths").append(JsonPointers.escape(path)))
+            context.violations(description, "/paths".toJsonPointer().append(JsonPointers.escape(path)))
         }
 }

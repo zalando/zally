@@ -8,7 +8,7 @@ import java.lang.reflect.Method
  */
 object JsonPointers {
 
-    val EMPTY: JsonPointer = JsonPointer.compile("")
+    val EMPTY: JsonPointer = "".toJsonPointer()
 
     private val regexToReplacement =
         listOf(
@@ -43,7 +43,7 @@ object JsonPointers {
                     regex.matches(ptr)
                 }
                 ?.let { (regex, replacement) ->
-                    JsonPointer.compile(regex.replace(ptr, replacement))
+                    regex.replace(ptr, replacement).toJsonPointer()
                 }
                 ?: pointer
         }
@@ -58,5 +58,5 @@ object JsonPointers {
     fun escape(unescaped: String): JsonPointer = unescaped
         .replace("~", "~0")
         .replace("/", "~1")
-        .let { JsonPointer.compile("/$it") }
+        .let { "/$it".toJsonPointer() }
 }

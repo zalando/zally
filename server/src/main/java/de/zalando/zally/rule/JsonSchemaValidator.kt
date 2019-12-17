@@ -12,6 +12,7 @@ import com.github.fge.jsonschema.messages.JsonSchemaValidationBundle
 import com.github.fge.msgsimple.bundle.MessageBundle
 import com.github.fge.msgsimple.load.MessageBundles
 import com.github.fge.msgsimple.source.PropertiesMessageSource
+import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Violation
 import java.io.IOException
 
@@ -40,8 +41,7 @@ class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirect
         val node = processingMessage.asJson()
         val keyword = node.path("keyword").textValue()
         val message = node.path("message").textValue().capitalize()
-        val pointer = node.at("/instance/pointer").textValue()
-            .let { JsonPointer.compile(it) }
+        val pointer = node.at("/instance/pointer").textValue().toJsonPointer()
 
         return when (keyword) {
             Keywords.oneOf, Keywords.anyOf -> createValidationMessageWithSchemaRefs(node, message, pointer, keyword)

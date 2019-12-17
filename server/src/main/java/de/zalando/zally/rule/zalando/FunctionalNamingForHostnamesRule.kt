@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
@@ -54,7 +54,7 @@ class FunctionalNamingForHostnamesRule {
     private fun checkHostnamesInSwaggerHost(context: Context): List<Violation> = context.swagger!!.host.let { host ->
         when {
             host == null || isUrlValid(host) -> emptyList()
-            else -> context.violations(description, JsonPointer.compile("/host"))
+            else -> context.violations(description, "/host".toJsonPointer())
         }
     }
 }

@@ -2,11 +2,12 @@ package de.zalando.zally.rule.zally
 
 import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
+import de.zalando.zally.core.JsonPointers
+import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.core.JsonPointers
 
 @Rule(
     ruleSet = ZallyRuleSet::class,
@@ -31,7 +32,7 @@ class NoUnusedDefinitionsRule {
                         ?.map { it.asText() }
                         ?.map { JsonPointers.escape(it) }
                         ?.map {
-                            JsonPointer.compile("/definitions").append(it)
+                            "/definitions".toJsonPointer().append(it)
                         }
                 }
         }
@@ -52,7 +53,7 @@ class NoUnusedDefinitionsRule {
                 ?.map { it.asText() }
                 ?.map { JsonPointers.escape(it) }
                 ?.map {
-                    JsonPointer.compile("/components/schemas").append(it)
+                    "/components/schemas".toJsonPointer().append(it)
                 }
         }
 
@@ -88,7 +89,7 @@ class NoUnusedDefinitionsRule {
             .map { it.asText() }
             .filter { it.startsWith("#") }
             .map { it.substring(1) }
-            .map { JsonPointer.compile(it) }
+            .map { it.toJsonPointer() }
 
     private fun unused(
         root: JsonNode,
@@ -96,7 +97,7 @@ class NoUnusedDefinitionsRule {
         description: String,
         used: Set<JsonPointer>
     ): List<Violation> {
-        val ptr = JsonPointer.compile(pointer)
+        val ptr = pointer.toJsonPointer()
         return root.at(ptr)
             ?.fieldNames()
             ?.asSequence()

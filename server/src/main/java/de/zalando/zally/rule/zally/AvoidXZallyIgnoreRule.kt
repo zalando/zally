@@ -7,6 +7,7 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.core.JsonPointers
+import de.zalando.zally.core.toJsonPointer
 
 /**
  * Rule highlighting that x-zally-ignore should be used sparingly
@@ -38,7 +39,7 @@ class AvoidXZallyIgnoreRule {
 
     private fun validateArrayNode(pointer: JsonPointer, node: JsonNode): List<Violation> =
         node.asSequence().toList().mapIndexed { index, childNode ->
-            val childPointer = pointer.append(JsonPointer.compile("/$index"))
+            val childPointer = pointer.append("/$index".toJsonPointer())
             validateTree(childPointer, childNode)
         }.flatten()
 

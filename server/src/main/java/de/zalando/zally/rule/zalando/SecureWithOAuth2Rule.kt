@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
@@ -22,7 +22,7 @@ class SecureWithOAuth2Rule {
             .orEmpty()
             .any { SecurityScheme.Type.OAUTH2 == it.type }
 
-        return if (!oauth2IsUsed) context.violation("API has to be secured by OAuth2", JsonPointer.compile("/components/securitySchemes"))
+        return if (!oauth2IsUsed) context.violation("API has to be secured by OAuth2", "/components/securitySchemes".toJsonPointer())
         else null
     }
 
