@@ -1,9 +1,9 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.openApiWithOperations
-import de.zalando.zally.rule.DefaultContext
-import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.core.rulesConfig
+import de.zalando.zally.core.DefaultContext
+import de.zalando.zally.core.DefaultContextFactory
 import de.zalando.zally.rule.api.Context
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language

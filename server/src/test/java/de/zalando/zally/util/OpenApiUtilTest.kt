@@ -1,6 +1,6 @@
 package de.zalando.zally.util
 
-import de.zalando.zally.rule.DefaultContextFactory
+import de.zalando.zally.core.DefaultContextFactory
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation

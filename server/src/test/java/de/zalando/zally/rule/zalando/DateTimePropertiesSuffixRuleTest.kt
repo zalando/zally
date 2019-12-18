@@ -4,7 +4,7 @@ package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.ConfigValueFactory
 import de.zalando.zally.core.rulesConfig
-import de.zalando.zally.rule.DefaultContextFactory
+import de.zalando.zally.core.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
