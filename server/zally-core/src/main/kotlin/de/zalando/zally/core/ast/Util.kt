@@ -1,4 +1,4 @@
-package de.zalando.zally.util.ast
+package de.zalando.zally.core.ast
 
 internal object Util {
     val PRIMITIVES = setOf(

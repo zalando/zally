@@ -1,11 +1,11 @@
-package de.zalando.zally.util.ast
+package de.zalando.zally.core.ast
 
 import com.fasterxml.jackson.core.JsonPointer
 
 /**
  * A stack node for tree-traversal.
  */
-data class Node(
+internal data class Node(
     val obj: Any,
     val pointer: JsonPointer,
     val marker: Marker?,

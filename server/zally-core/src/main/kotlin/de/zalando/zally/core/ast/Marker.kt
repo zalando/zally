@@ -1,6 +1,6 @@
-package de.zalando.zally.util.ast
+package de.zalando.zally.core.ast
 
-data class Marker(
+internal data class Marker(
     val type: String,
     val values: Collection<String>
 ) {

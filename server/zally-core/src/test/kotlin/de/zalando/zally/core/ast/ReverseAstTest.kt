@@ -1,7 +1,7 @@
-package de.zalando.zally.util.ast
+package de.zalando.zally.core.ast
 
-import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.core.ObjectTreeReader
+import de.zalando.zally.core.toJsonPointer
 import io.swagger.parser.OpenAPIParser
 import io.swagger.parser.SwaggerParser
 import io.swagger.util.Json
