@@ -7,7 +7,7 @@ import com.google.common.io.Resources
 import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.core.plus
 import de.zalando.zally.rule.JsonSchemaValidator
-import de.zalando.zally.rule.ObjectTreeReader
+import de.zalando.zally.core.ObjectTreeReader
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule

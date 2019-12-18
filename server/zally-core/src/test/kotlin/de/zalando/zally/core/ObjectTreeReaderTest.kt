@@ -1,4 +1,4 @@
-package de.zalando.zally.rule
+package de.zalando.zally.core
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test

@@ -1,6 +1,7 @@
 package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.ObjectTreeReader
 import de.zalando.zally.rule.ContentParseResult.NotApplicable
 import de.zalando.zally.rule.ContentParseResult.ParsedSuccessfully
 import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors

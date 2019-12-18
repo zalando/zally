@@ -1,4 +1,4 @@
-package de.zalando.zally.rule
+package de.zalando.zally.core
 
 import com.fasterxml.jackson.databind.JsonNode
 import io.swagger.parser.util.DeserializationUtils
