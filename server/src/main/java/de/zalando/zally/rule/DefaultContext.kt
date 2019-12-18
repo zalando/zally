@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.core.toSwaggerJsonPointer
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.ast.ReverseAst
+import de.zalando.zally.core.ast.ReverseAst
 import io.swagger.models.Swagger
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation

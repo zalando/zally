@@ -1,4 +1,4 @@
-package de.zalando.zally.util.ast
+package de.zalando.zally.core.ast
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonIgnore
