@@ -1,4 +1,4 @@
-package de.zalando.zally.rule
+package de.zalando.zally.core
 
 import de.zalando.zally.rule.api.Violation
 
@@ -27,9 +27,9 @@ sealed class ContentParseResult<out RootT : Any> {
     data class ParsedSuccessfully<RootT : Any>(val result: RootT) : ContentParseResult<RootT>()
 
     inline fun <reified T : Any> of(): ContentParseResult<T> = when (this) {
-        is ContentParseResult.NotApplicable -> ContentParseResult.NotApplicable()
-        is ContentParseResult.ParsedWithErrors -> ContentParseResult.ParsedWithErrors(violations)
-        is ContentParseResult.ParsedSuccessfully -> {
+        is NotApplicable -> NotApplicable()
+        is ParsedWithErrors -> ParsedWithErrors(violations)
+        is ParsedSuccessfully -> {
             val resultT = result as? T
             if (resultT == null) throw IllegalStateException("Cannot change the type of a ParsedSuccessfully")
             else ParsedSuccessfully(resultT)

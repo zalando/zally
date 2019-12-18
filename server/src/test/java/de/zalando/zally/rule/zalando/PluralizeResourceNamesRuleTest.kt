@@ -1,12 +1,12 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.core.rulesConfig
-import de.zalando.zally.rule.ContentParseResult
-import de.zalando.zally.rule.ContentParseResultAssert.Companion.assertThat
-import de.zalando.zally.rule.DefaultContextFactory
-import de.zalando.zally.rule.api.Context
 import de.zalando.zally.test.ZallyAssertions.assertThat
+import de.zalando.zally.core.ContentParseResult.ParsedSuccessfully
+import de.zalando.zally.core.DefaultContextFactory
+import de.zalando.zally.rule.api.Context
 import io.swagger.parser.util.ClasspathHelper.loadFileFromClasspath
+import org.assertj.core.api.Assertions
 import org.junit.Test
 
 class PluralizeResourceNamesRuleTest {
@@ -176,7 +176,7 @@ class PluralizeResourceNamesRuleTest {
                   $path: {}
                 """.trimIndent()
         val result = DefaultContextFactory().parseOpenApiContext(content)
-        assertThat(result).resultsInSuccess()
-        return (result as ContentParseResult.ParsedSuccessfully).result
+        Assertions.assertThat(result).isInstanceOf(ParsedSuccessfully::class.java)
+        return (result as ParsedSuccessfully).result
     }
 }

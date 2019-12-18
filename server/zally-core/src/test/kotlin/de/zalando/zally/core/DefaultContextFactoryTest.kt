@@ -1,6 +1,6 @@
-package de.zalando.zally.rule
+package de.zalando.zally.core
 
-import de.zalando.zally.rule.ContentParseResultAssert.Companion.assertThat
+import de.zalando.zally.core.ContentParseResultAssert.Companion.assertThat
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test

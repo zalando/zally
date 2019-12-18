@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.test.ZallyAssertions.assertThat
+import de.zalando.zally.core.DefaultContextFactory
 import de.zalando.zally.rule.api.Context
 import org.junit.Test
 

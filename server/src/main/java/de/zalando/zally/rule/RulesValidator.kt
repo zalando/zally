@@ -1,10 +1,11 @@
 package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.ContentParseResult
 import de.zalando.zally.core.ObjectTreeReader
-import de.zalando.zally.rule.ContentParseResult.NotApplicable
-import de.zalando.zally.rule.ContentParseResult.ParsedSuccessfully
-import de.zalando.zally.rule.ContentParseResult.ParsedWithErrors
+import de.zalando.zally.core.ContentParseResult.NotApplicable
+import de.zalando.zally.core.ContentParseResult.ParsedSuccessfully
+import de.zalando.zally.core.ContentParseResult.ParsedWithErrors
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import org.slf4j.LoggerFactory

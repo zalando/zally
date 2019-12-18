@@ -1,6 +1,5 @@
-package de.zalando.zally.rule
+package de.zalando.zally.core
 
-import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
 import io.swagger.parser.SwaggerParser
@@ -12,17 +11,16 @@ import io.swagger.v3.parser.core.models.ParseOptions
 import io.swagger.v3.parser.core.models.SwaggerParseResult
 import io.swagger.v3.parser.util.ResolverFully
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Component
 import java.util.regex.Pattern
 
-@Component
-class DefaultContextFactory(@Value("\${zally.propagateAuthorizationUrls:}") val propagateAuthorizationUrls: Array<Pattern> = emptyArray()) {
+class DefaultContextFactory(
+    private val propagateAuthorizationUrls: List<Pattern> = emptyList()
+) {
 
     private val log = LoggerFactory.getLogger(DefaultContextFactory::class.java)
 
     init {
-        log.info("propagate authorization for ${propagateAuthorizationUrls.contentToString()}")
+        log.info("propagate authorization for $propagateAuthorizationUrls")
     }
 
     fun getOpenApiContext(content: String): Context {
