@@ -131,7 +131,6 @@ dependencies {
     kapt(project(":zally-core"))
 
     compile(project(":zally-core"))
-    compile("io.swagger.parser.v3:swagger-parser:2.0.17")
     compile("com.github.java-json-tools:json-schema-validator:2.2.10")
     compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-undertow:$springBootVersion")

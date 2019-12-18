@@ -2,6 +2,7 @@ package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
+import de.zalando.zally.core.ObjectTreeReader
 import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.util.Json
 

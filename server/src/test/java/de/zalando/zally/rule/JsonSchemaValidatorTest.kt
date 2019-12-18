@@ -1,6 +1,7 @@
 package de.zalando.zally.rule
 
 import com.google.common.io.Resources
+import de.zalando.zally.core.ObjectTreeReader
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
