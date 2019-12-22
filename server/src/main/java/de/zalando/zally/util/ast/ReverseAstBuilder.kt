@@ -97,7 +97,7 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
                         nodes.push(Node(value, pointer, marker, /* skip */true))
                     } else {
                         nodes.push(Node(value, pointer + m.name
-                            .let { if (it.startsWith("get")) it.drop(3) else it }
+                            .removePrefix("get")
                             .decapitalize(), marker))
                     }
                 }
