@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration
 class RulesPolicyConfiguration {
 
     @Value("\${zally.ignoreRules:}")
-    private lateinit var ignoredRules: Array<String>
+    private lateinit var ignoredRules: List<String>
 
     @Bean
     fun rulesPolicy(): RulesPolicy {
