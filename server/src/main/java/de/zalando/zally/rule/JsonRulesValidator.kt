@@ -4,9 +4,7 @@ import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import de.zalando.zally.util.ast.ReverseAst
 import io.swagger.util.Json
-import org.springframework.stereotype.Component
 
-@Component
 class JsonRulesValidator(rules: RulesManager) : RulesValidator<JsonNode>(rules) {
     private var ast: ReverseAst? = null
 

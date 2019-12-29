@@ -2,13 +2,11 @@ package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.rule.api.Context
-import org.springframework.stereotype.Component
 
 /**
  * This validator validates a given OpenAPI definition based
  * on set of rules.
  */
-@Component
 class ContextRulesValidator(
     rules: RulesManager,
     private val defaultContextFactory: DefaultContextFactory
