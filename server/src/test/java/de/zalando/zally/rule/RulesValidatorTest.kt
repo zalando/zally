@@ -1,5 +1,6 @@
 package de.zalando.zally.rule
 
+import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.rule.api.Check
@@ -15,7 +16,10 @@ import kotlin.reflect.full.createInstance
 @Suppress("UndocumentedPublicClass", "StringLiteralDuplication")
 class RulesValidatorTest {
 
-    private val swaggerContent = javaClass.classLoader.getResource("fixtures/api_spp.json").readText(Charsets.UTF_8)
+    private val swaggerContent = javaClass
+        .classLoader
+        .getResource("fixtures/api_spp.json")!!
+        .readText(Charsets.UTF_8)
 
     @Rule(
         ruleSet = TestRuleSet::class,
@@ -62,8 +66,7 @@ class RulesValidatorTest {
 
     @Test
     fun shouldReturnEmptyViolationsListWithoutRules() {
-        val rules = emptyList<Any>()
-        val validator = SwaggerRulesValidator(rulesManager(rules))
+        val validator = rulesValidator()
         val results = validator.validate(swaggerContent, RulesPolicy(emptyList()))
         assertThat(results)
             .isEmpty()
@@ -71,8 +74,7 @@ class RulesValidatorTest {
 
     @Test
     fun shouldReturnOneViolation() {
-        val rules = listOf(TestSecondRule())
-        val validator = SwaggerRulesValidator(rulesManager(rules))
+        val validator = rulesValidator(TestSecondRule())
         val results = validator.validate(swaggerContent, RulesPolicy(emptyList()))
         assertThat(results.map(Result::description))
             .containsExactly("dummy3")
@@ -80,8 +82,7 @@ class RulesValidatorTest {
 
     @Test
     fun shouldCollectViolationsOfAllRules() {
-        val rules = listOf(TestFirstRule())
-        val validator = SwaggerRulesValidator(rulesManager(rules))
+        val validator = rulesValidator(TestFirstRule())
         val results = validator.validate(swaggerContent, RulesPolicy(emptyList()))
         assertThat(results.map(Result::description))
             .containsExactly("dummy1", "dummy2")
@@ -89,8 +90,7 @@ class RulesValidatorTest {
 
     @Test
     fun shouldSortViolationsByViolationType() {
-        val rules = listOf(TestFirstRule(), TestSecondRule())
-        val validator = SwaggerRulesValidator(rulesManager(rules))
+        val validator = rulesValidator(TestFirstRule(), TestSecondRule())
         val results = validator.validate(swaggerContent, RulesPolicy(emptyList()))
         assertThat(results.map(Result::description))
             .containsExactly("dummy3", "dummy1", "dummy2")
@@ -98,8 +98,7 @@ class RulesValidatorTest {
 
     @Test
     fun shouldIgnoreSpecifiedRules() {
-        val rules = listOf(TestFirstRule(), TestSecondRule())
-        val validator = SwaggerRulesValidator(rulesManager(rules))
+        val validator = rulesValidator(TestFirstRule(), TestSecondRule())
         val results = validator.validate(swaggerContent, RulesPolicy(listOf("TestSecondRule")))
         assertThat(results.map(Result::description))
             .containsExactly("dummy1", "dummy2")
@@ -107,20 +106,25 @@ class RulesValidatorTest {
 
     @Test
     fun checkReturnsStringThrowsException() {
-        val rules = listOf(TestBadRule())
         assertThatThrownBy {
-            val validator = SwaggerRulesValidator(rulesManager(rules))
+            val validator = rulesValidator(TestBadRule())
             validator.validate(swaggerContent, RulesPolicy(listOf("TestCheckApiNameIsPresentRule")))
         }.hasMessage("Unsupported return type for a @Check method!: class java.lang.String")
     }
 
-    private fun rulesManager(rules: List<Any>): RulesManager {
-        return RulesManager(
-            rules.mapNotNull { instance ->
-                val rule = instance::class.java.getAnnotation(Rule::class.java)
-                val ruleSet = rule?.ruleSet?.createInstance()
-                ruleSet?.let { RuleDetails(ruleSet, rule, instance) }
-            }
-        )
-    }
+    private fun rulesValidator(vararg rules: Any): RulesValidator<Swagger> =
+        object : RulesValidator<Swagger>(rulesManager(rules)) {
+            override fun parse(content: String, authorization: String?): ContentParseResult<Swagger> =
+                ContentParseResult.ParsedSuccessfully(Swagger())
+
+            override fun ignore(root: Swagger, pointer: JsonPointer, ruleId: String): Boolean = false
+        }
+
+    private fun rulesManager(rules: Array<out Any>): RulesManager = RulesManager(
+        rules.mapNotNull { instance ->
+            val rule = instance::class.java.getAnnotation(Rule::class.java)
+            val ruleSet = rule?.ruleSet?.createInstance()
+            ruleSet?.let { RuleDetails(ruleSet, rule, instance) }
+        }
+    )
 }
