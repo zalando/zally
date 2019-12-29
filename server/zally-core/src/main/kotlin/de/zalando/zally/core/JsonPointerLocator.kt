@@ -1,4 +1,4 @@
-package de.zalando.zally.rule
+package de.zalando.zally.core
 
 import com.fasterxml.jackson.core.JsonPointer
 import org.yaml.snakeyaml.Yaml

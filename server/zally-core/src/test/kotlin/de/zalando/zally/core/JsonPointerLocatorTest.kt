@@ -1,6 +1,5 @@
-package de.zalando.zally.rule
+package de.zalando.zally.core
 
-import de.zalando.zally.core.toJsonPointer
 import org.intellij.lang.annotations.Language
 import org.junit.Assert.assertEquals
 import org.junit.Test
