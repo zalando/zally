@@ -40,7 +40,7 @@ The check references to `NiceCompanyRuleSet`:
 ```Kotlin
 package de.zalando.zally.rule.zalando
 
-import de.zalando.zally.rule.AbstractRuleSet
+import de.zalando.zally.core.AbstractRuleSet
 import de.zalando.zally.rule.api.Rule
 import org.springframework.stereotype.Component
 import java.net.URI
