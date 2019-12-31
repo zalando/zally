@@ -1,6 +1,7 @@
 package de.zalando.zally.rule
 
 import com.typesafe.config.Config
+import de.zalando.zally.core.RulesPolicy
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.RuleSet

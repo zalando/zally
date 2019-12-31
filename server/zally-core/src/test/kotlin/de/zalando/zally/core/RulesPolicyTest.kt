@@ -1,6 +1,5 @@
-package de.zalando.zally.rule
+package de.zalando.zally.core
 
-import de.zalando.zally.core.AbstractRuleSet
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity

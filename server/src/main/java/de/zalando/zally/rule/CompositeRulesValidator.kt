@@ -1,5 +1,7 @@
 package de.zalando.zally.rule
 
+import de.zalando.zally.core.RulesPolicy
+
 class CompositeRulesValidator(
     private val contextRulesValidator: ContextRulesValidator,
     private val jsonRulesValidator: JsonRulesValidator
