@@ -1,11 +1,9 @@
 package de.zalando.zally.rule
 
 import de.zalando.zally.rule.api.Rule
-import org.springframework.stereotype.Component
 import java.net.URI
 
 /** RuleSet used to contain test rules  */
-@Component
 class TestRuleSet : AbstractRuleSet() {
 
     override val id: String = javaClass.simpleName
