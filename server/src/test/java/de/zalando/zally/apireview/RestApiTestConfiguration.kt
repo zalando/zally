@@ -2,10 +2,10 @@ package de.zalando.zally.apireview
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
-import de.zalando.zally.core.EMPTY_JSON_POINTER
-import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.core.AbstractRuleSet
+import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.core.RulesManager
+import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
