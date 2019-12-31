@@ -6,9 +6,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.google.common.io.Resources
 import com.typesafe.config.Config
 import de.zalando.zally.core.EMPTY_JSON_POINTER
-import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.core.ObjectTreeReader
-import de.zalando.zally.rule.OpenApiVersion
+import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
@@ -24,6 +23,11 @@ import java.net.URL
     title = "Provide API Specification using OpenAPI"
 )
 class UseOpenApiRule(rulesConfig: Config) {
+
+    private enum class OpenApiVersion(val version: String) {
+        SWAGGER("swagger"),
+        OPENAPI3("openapi3")
+    }
 
     private val log = LoggerFactory.getLogger(UseOpenApiRule::class.java)
 
