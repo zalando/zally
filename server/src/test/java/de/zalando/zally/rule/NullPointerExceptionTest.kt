@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
+import de.zalando.zally.core.CompositeRulesValidator
 import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.core.ObjectTreeReader
 import de.zalando.zally.core.RulesPolicy

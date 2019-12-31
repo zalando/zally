@@ -1,14 +1,8 @@
-package de.zalando.zally.rule
+package de.zalando.zally.core
 
 import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.ConfigFactory
-import de.zalando.zally.core.AbstractRuleSet
-import de.zalando.zally.core.ContentParseResult
-import de.zalando.zally.core.EMPTY_JSON_POINTER
-import de.zalando.zally.core.Result
-import de.zalando.zally.core.RulesManager
-import de.zalando.zally.core.RulesPolicy
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity

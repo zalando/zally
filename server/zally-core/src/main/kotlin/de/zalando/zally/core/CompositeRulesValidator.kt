@@ -1,7 +1,4 @@
-package de.zalando.zally.rule
-
-import de.zalando.zally.core.Result
-import de.zalando.zally.core.RulesPolicy
+package de.zalando.zally.core
 
 class CompositeRulesValidator(
     private val contextRulesValidator: ContextRulesValidator,

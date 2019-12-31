@@ -1,9 +1,6 @@
-package de.zalando.zally.rule
+package de.zalando.zally.core
 
 import com.fasterxml.jackson.core.JsonPointer
-import de.zalando.zally.core.ContentParseResult
-import de.zalando.zally.core.DefaultContextFactory
-import de.zalando.zally.core.RulesManager
 import de.zalando.zally.rule.api.Context
 
 /**
