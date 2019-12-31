@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import de.zalando.zally.core.ContentParseResult
 import de.zalando.zally.core.ObjectTreeReader
+import de.zalando.zally.core.RulesManager
 import de.zalando.zally.core.ast.ReverseAst
 import io.swagger.util.Json
 
