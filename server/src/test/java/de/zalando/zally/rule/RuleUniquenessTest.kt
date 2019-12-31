@@ -1,5 +1,6 @@
 package de.zalando.zally.rule
 
+import de.zalando.zally.core.RulesManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -1,5 +1,7 @@
 package de.zalando.zally.rule
 
+import de.zalando.zally.core.RuleDetails
+import de.zalando.zally.core.RulesManager
 import de.zalando.zally.core.RulesPolicy
 import de.zalando.zally.dto.RuleDTO
 import de.zalando.zally.dto.RulesListDTO
