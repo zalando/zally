@@ -1,7 +1,7 @@
 package de.zalando.zally.dto
 
 import de.zalando.zally.core.toJsonPointer
-import de.zalando.zally.rule.Result
+import de.zalando.zally.core.Result
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Severity.HINT
 import de.zalando.zally.rule.api.Severity.MAY

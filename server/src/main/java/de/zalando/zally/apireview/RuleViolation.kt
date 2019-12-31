@@ -1,7 +1,7 @@
 package de.zalando.zally.apireview
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import de.zalando.zally.rule.Result
+import de.zalando.zally.core.Result
 import de.zalando.zally.rule.api.Severity
 import java.io.Serializable
 import javax.persistence.Column
