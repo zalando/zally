@@ -9,6 +9,7 @@ import de.zalando.zally.core.ContentParseResult.ParsedWithErrors
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.core.JsonPointerLocator
+import de.zalando.zally.core.RulesPolicy
 import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationTargetException
 import java.net.URI
