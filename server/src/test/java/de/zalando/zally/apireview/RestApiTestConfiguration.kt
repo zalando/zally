@@ -5,7 +5,7 @@ import com.typesafe.config.Config
 import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.RulesManager
-import de.zalando.zally.rule.TestRuleSet
+import de.zalando.zally.rule.AbstractRuleSet
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
+import java.net.URI
 
 @Configuration
 class RestApiTestConfiguration {
@@ -27,6 +28,19 @@ class RestApiTestConfiguration {
             TestCheckIsOpenApi3(),
             TestCheckAlwaysReport3MustViolations()
         ))
+
+    class TestRuleSet : AbstractRuleSet() {
+
+        override val id: String = javaClass.simpleName
+
+        override val title: String = "Test Rules"
+
+        override val url: URI = URI.create("http://test.example.com/")
+
+        override fun url(rule: Rule): URI {
+            return url.resolve(rule.id)
+        }
+    }
 
     /** Rule used for testing  */
     @Rule(

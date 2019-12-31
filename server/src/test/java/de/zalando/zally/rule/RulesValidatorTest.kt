@@ -13,6 +13,7 @@ import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import java.net.URI
 
 @Suppress("UndocumentedPublicClass", "StringLiteralDuplication")
 class RulesValidatorTest {
@@ -20,8 +21,21 @@ class RulesValidatorTest {
     private val swaggerContent =
         resourceToString("fixtures/api_spp.json")
 
+    class RulesValidatorTestRuleSet : AbstractRuleSet() {
+
+        override val id: String = javaClass.simpleName
+
+        override val title: String = "RulesValidator Test Rules"
+
+        override val url: URI = URI.create("http://test.example.com/")
+
+        override fun url(rule: Rule): URI {
+            return url.resolve(rule.id)
+        }
+    }
+
     @Rule(
-        ruleSet = TestRuleSet::class,
+        ruleSet = RulesValidatorTestRuleSet::class,
         id = "TestFirstRule",
         severity = Severity.SHOULD,
         title = "First Rule"
@@ -34,7 +48,7 @@ class RulesValidatorTest {
     }
 
     @Rule(
-        ruleSet = TestRuleSet::class,
+        ruleSet = RulesValidatorTestRuleSet::class,
         id = "TestSecondRule",
         severity = Severity.MUST,
         title = "Second Rule"
@@ -47,7 +61,7 @@ class RulesValidatorTest {
     }
 
     @Rule(
-        ruleSet = TestRuleSet::class,
+        ruleSet = RulesValidatorTestRuleSet::class,
         id = "TestBadRule",
         severity = Severity.MUST,
         title = "Third Rule"
