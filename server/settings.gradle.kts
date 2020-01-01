@@ -1,3 +1,7 @@
 rootProject.name = "zally"
 
-include("zally-rule-api", "zally-core")
+include(
+    "zally-rule-api",
+    "zally-core",
+    "zally-test"
+)
