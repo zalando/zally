@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zally
 
 import de.zalando.zally.rule.ObjectTreeReader
-import de.zalando.zally.rule.ZallyAssertions
+import de.zalando.zally.test.ZallyAssertions
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 

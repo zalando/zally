@@ -3,7 +3,7 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.rule.ContentParseResult
 import de.zalando.zally.rule.ContentParseResultAssert.Companion.assertThat
 import de.zalando.zally.rule.DefaultContextFactory
-import de.zalando.zally.rule.ZallyAssertions.assertThat
+import de.zalando.zally.test.ZallyAssertions.assertThat
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.testConfig
 import io.swagger.parser.util.ClasspathHelper.loadFileFromClasspath
