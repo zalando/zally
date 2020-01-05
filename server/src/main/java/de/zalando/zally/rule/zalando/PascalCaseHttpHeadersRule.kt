@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.Config
-import de.zalando.zally.rule.CaseChecker
+import de.zalando.zally.core.CaseChecker
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule

@@ -1,6 +1,7 @@
 package de.zalando.zally.rule
 
 import de.zalando.zally.core.rulesConfig
+import de.zalando.zally.core.CaseChecker
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.junit.runner.RunWith
