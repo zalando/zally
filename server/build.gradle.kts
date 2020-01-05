@@ -153,7 +153,6 @@ dependencies {
     compile("org.zalando.stups:stups-spring-oauth2-server:1.0.22")
     compile("org.zalando:problem-spring-web:0.23.0")
     compile("org.zalando:twintip-spring-web:1.1.0")
-    compile("io.github.config4k:config4k:0.4.1")
 
     compile("de.mpg.mpi-inf:javatools:1.1")
 

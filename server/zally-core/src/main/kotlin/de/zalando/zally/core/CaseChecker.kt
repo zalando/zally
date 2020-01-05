@@ -1,4 +1,4 @@
-package de.zalando.zally.rule
+package de.zalando.zally.core
 
 import com.typesafe.config.Config
 import de.zalando.zally.rule.api.Context
@@ -206,7 +206,7 @@ class CaseChecker(
     private fun checkParameterNames(
         context: Context,
         type: String,
-        check: CaseChecker.CaseCheck?
+        check: CaseCheck?
     ): List<Violation> = context.api
         .getAllParameters().values
         .filter { type.toLowerCase() == it.`in` }
@@ -216,20 +216,20 @@ class CaseChecker(
                 .orEmpty()
         }
 
-    internal fun check(prefix: String, prefixes: String, check: CaseChecker.CaseCheck?, input: String): String? =
+    internal fun check(prefix: String, prefixes: String, check: CaseCheck?, input: String): String? =
         check(prefix, prefixes, check, listOf(input))
 
     internal fun check(
         prefix: String,
         prefixes: String,
-        check: CaseChecker.CaseCheck?,
+        check: CaseCheck?,
         vararg inputs: String
     ): String? = check(prefix, prefixes, check, inputs.asIterable())
 
     internal fun check(
         prefix: String,
         prefixes: String,
-        check: CaseChecker.CaseCheck?,
+        check: CaseCheck?,
         inputs: Iterable<String>?
     ): String? {
         if (check == null || inputs == null) {
@@ -267,7 +267,7 @@ class CaseChecker(
         }
     }
 
-    private fun appendRegex(message: StringBuilder, check: CaseChecker.CaseCheck) {
+    private fun appendRegex(message: StringBuilder, check: CaseCheck) {
         if (check.allow.size > 1) {
             message.append("any of ")
         }
