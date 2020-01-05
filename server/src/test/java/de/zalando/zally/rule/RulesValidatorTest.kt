@@ -9,6 +9,7 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
+import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
@@ -16,10 +17,8 @@ import org.junit.Test
 @Suppress("UndocumentedPublicClass", "StringLiteralDuplication")
 class RulesValidatorTest {
 
-    private val swaggerContent = javaClass
-        .classLoader
-        .getResource("fixtures/api_spp.json")!!
-        .readText(Charsets.UTF_8)
+    private val swaggerContent =
+        resourceToString("fixtures/api_spp.json")
 
     @Rule(
         ruleSet = TestRuleSet::class,
@@ -119,4 +118,7 @@ class RulesValidatorTest {
 
             override fun ignore(root: Swagger, pointer: JsonPointer, ruleId: String): Boolean = false
         }
+
+    private fun resourceToString(resourceName: String): String =
+        IOUtils.toString(ClassLoader.getSystemResourceAsStream(resourceName))
 }

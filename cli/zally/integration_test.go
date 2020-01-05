@@ -50,12 +50,12 @@ func TestIntegrationWithNoParametersShowsUsage(t *testing.T) {
 }
 
 func TestIntegrationWithLocalYamlFile(t *testing.T) {
-	out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spa.yaml"})
+	out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/zally-test/src/main/resources/fixtures/api_spa.yaml"})
 	assertMoreThanZeroViolations(t, out, e)
 }
 
 func TestIntegrationWithLocalJsonFile(t *testing.T) {
-	out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/api_spp.json"})
+	out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/zally-test/src/main/resources/fixtures/api_spp.json"})
 
 	assertMoreThanZeroViolations(t, out, e)
 }
@@ -77,7 +77,7 @@ func TestIntegrationWithRemoteJsonFile(t *testing.T) {
 }
 
 func TestIntegrationWithNoMustViolations(t *testing.T) {
-	out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/src/test/resources/fixtures/no_must_violations.yaml"})
+	out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/zally-test/src/main/resources/fixtures/no_must_violations.yaml"})
 
 	must, should, may, hint := countViolations(out)
 
@@ -146,7 +146,7 @@ func testHTTPServer() *httptest.Server {
 }
 
 func fileHandler(w http.ResponseWriter, r *http.Request) {
-	absolutePath, _ := filepath.Abs("../../server/src/test/resources/fixtures/" + r.URL.Path[1:])
+	absolutePath, _ := filepath.Abs("../../server/zally-test/src/main/resources/fixtures/" + r.URL.Path[1:])
 
 	file, err := os.Open(absolutePath)
 	if err != nil {
