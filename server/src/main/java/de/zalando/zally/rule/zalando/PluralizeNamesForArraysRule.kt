@@ -6,7 +6,7 @@ import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.WordUtil.isPlural
-import de.zalando.zally.util.getAllSchemas
+import de.zalando.zally.core.util.getAllSchemas
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,

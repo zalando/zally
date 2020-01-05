@@ -5,7 +5,7 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.getAllTransitiveSchemas
+import de.zalando.zally.core.util.getAllTransitiveSchemas
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,

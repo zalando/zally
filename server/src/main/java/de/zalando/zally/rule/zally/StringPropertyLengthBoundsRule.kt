@@ -1,12 +1,12 @@
 package de.zalando.zally.rule.zally
 
 import com.typesafe.config.Config
+import de.zalando.zally.core.util.getAllProperties
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.getAllProperties
 import io.swagger.v3.oas.models.media.Schema
 
 @Rule(

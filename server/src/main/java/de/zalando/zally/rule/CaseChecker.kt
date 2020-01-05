@@ -4,10 +4,10 @@ import com.typesafe.config.Config
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.util.PatternUtil
-import de.zalando.zally.util.getAllHeaders
-import de.zalando.zally.util.getAllParameters
-import de.zalando.zally.util.getAllProperties
-import de.zalando.zally.util.getAllSchemas
+import de.zalando.zally.core.util.getAllHeaders
+import de.zalando.zally.core.util.getAllParameters
+import de.zalando.zally.core.util.getAllProperties
+import de.zalando.zally.core.util.getAllSchemas
 import io.github.config4k.extract
 import io.swagger.v3.oas.models.media.Schema
 
