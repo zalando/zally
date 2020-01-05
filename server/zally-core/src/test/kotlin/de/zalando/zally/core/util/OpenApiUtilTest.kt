@@ -1,4 +1,4 @@
-package de.zalando.zally.util
+package de.zalando.zally.core.util
 
 import de.zalando.zally.core.DefaultContextFactory
 import io.swagger.v3.oas.models.Components

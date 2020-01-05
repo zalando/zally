@@ -1,4 +1,4 @@
-package de.zalando.zally.util
+package de.zalando.zally.core.util
 
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.media.Schema
