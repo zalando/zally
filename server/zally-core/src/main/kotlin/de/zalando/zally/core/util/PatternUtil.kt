@@ -1,4 +1,4 @@
-package de.zalando.zally.util
+package de.zalando.zally.core.util
 
 /**
  * Utility library for matching common patterns

@@ -3,7 +3,7 @@ package de.zalando.zally.rule
 import com.typesafe.config.Config
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.PatternUtil
+import de.zalando.zally.core.util.PatternUtil
 import de.zalando.zally.core.util.getAllHeaders
 import de.zalando.zally.core.util.getAllParameters
 import de.zalando.zally.core.util.getAllProperties
