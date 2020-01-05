@@ -1,6 +1,6 @@
-package de.zalando.zally.util
+package de.zalando.zally.core.util
 
-import de.zalando.zally.util.PatternUtil.isPathVariable
+import de.zalando.zally.core.util.PatternUtil.isPathVariable
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
