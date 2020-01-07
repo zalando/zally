@@ -1,6 +1,6 @@
 package de.zalando.zally.util.ast
 
-import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.util.resourceToString
 import io.swagger.parser.OpenAPIParser
@@ -64,23 +64,23 @@ class ReverseAstTest {
         val spec = SwaggerParser().parse(content)
         val ast = ReverseAst.fromObject(spec).withExtensionMethodNames("getVendorExtensions").build()
 
-        var pointer = JsonPointer.compile("/paths/~1tests/get/responses/200/description")
+        var pointer = "/paths/~1tests/get/responses/200/description".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
         assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
 
-        pointer = JsonPointer.compile("/paths/~1tests/get")
+        pointer = "/paths/~1tests/get".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
         assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
 
-        pointer = JsonPointer.compile("/paths/~1tests")
+        pointer = "/paths/~1tests".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
         assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
 
-        pointer = JsonPointer.compile("/paths")
+        pointer = "/paths".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
         assertThat(ast.getIgnoreValues(pointer)).isEmpty()
 
-        pointer = JsonPointer.compile("/paths/others")
+        pointer = "/paths/others".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
         assertThat(ast.getIgnoreValues(pointer)).isEmpty()
     }
@@ -128,23 +128,23 @@ class ReverseAstTest {
         val map = Json.mapper().convertValue(json, Map::class.java)
         val ast = ReverseAst.fromObject(map).build()
 
-        var pointer = JsonPointer.compile("/paths/~1tests/get/responses/200/description")
+        var pointer = "/paths/~1tests/get/responses/200/description".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
         assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
 
-        pointer = JsonPointer.compile("/paths/~1tests/get")
+        pointer = "/paths/~1tests/get".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
         assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
 
-        pointer = JsonPointer.compile("/paths/~1tests")
+        pointer = "/paths/~1tests".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
         assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
 
-        pointer = JsonPointer.compile("/paths")
+        pointer = "/paths".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
         assertThat(ast.getIgnoreValues(pointer)).isEmpty()
 
-        pointer = JsonPointer.compile("/paths/others")
+        pointer = "/paths/others".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
         assertThat(ast.getIgnoreValues(pointer)).isEmpty()
     }
@@ -216,9 +216,9 @@ class ReverseAstTest {
         val swagger = SwaggerParser().parse(content)
         val ast = ReverseAst.fromObject(swagger).withExtensionMethodNames("getVendorExtensions").build()
 
-        assertThat(ast.isIgnored(JsonPointer.compile(""), "218")).isTrue()
-        assertThat(ast.isIgnored(JsonPointer.compile("/info"), "218")).isTrue()
-        assertThat(ast.isIgnored(JsonPointer.compile("/info/description"), "218")).isTrue()
+        assertThat(ast.isIgnored("".toJsonPointer(), "218")).isTrue()
+        assertThat(ast.isIgnored("/info".toJsonPointer(), "218")).isTrue()
+        assertThat(ast.isIgnored("/info/description".toJsonPointer(), "218")).isTrue()
     }
 
     @Test
@@ -243,11 +243,11 @@ class ReverseAstTest {
             .withExtensionMethodNames("getVendorExtensions")
             .build()
 
-        assertThat(ast.isIgnored(JsonPointer.compile(""), "IGNORED_AT_ROOT")).isTrue()
-        assertThat(ast.isIgnored(JsonPointer.compile(""), "IGNORED_AT_INFO")).isFalse()
-        assertThat(ast.isIgnored(JsonPointer.compile("/info"), "IGNORED_AT_ROOT")).isTrue()
-        assertThat(ast.isIgnored(JsonPointer.compile("/info"), "IGNORED_AT_INFO")).isTrue()
-        assertThat(ast.isIgnored(JsonPointer.compile("/info/contact"), "IGNORED_AT_ROOT")).isTrue()
-        assertThat(ast.isIgnored(JsonPointer.compile("/info/contact"), "IGNORED_AT_INFO")).isTrue()
+        assertThat(ast.isIgnored("".toJsonPointer(), "IGNORED_AT_ROOT")).isTrue()
+        assertThat(ast.isIgnored("".toJsonPointer(), "IGNORED_AT_INFO")).isFalse()
+        assertThat(ast.isIgnored("/info".toJsonPointer(), "IGNORED_AT_ROOT")).isTrue()
+        assertThat(ast.isIgnored("/info".toJsonPointer(), "IGNORED_AT_INFO")).isTrue()
+        assertThat(ast.isIgnored("/info/contact".toJsonPointer(), "IGNORED_AT_ROOT")).isTrue()
+        assertThat(ast.isIgnored("/info/contact".toJsonPointer(), "IGNORED_AT_INFO")).isTrue()
     }
 }

@@ -51,6 +51,7 @@ allprojects {
         compile("org.jetbrains.kotlin:kotlin-stdlib")
 
         testCompile("junit:junit:4.12")
+        testCompile("org.assertj:assertj-core:3.11.0")
     }
 
     tasks.withType(KotlinCompile::class.java).all {
@@ -114,7 +115,7 @@ dependencies {
     val springBootVersion = "2.0.4.RELEASE"
     val jadlerVersion = "1.3.0"
 
-    compile(project("zally-rule-api"))
+    compile(project(":zally-core"))
     compile("com.github.zeitlinger.swagger-parser:swagger-parser:v2.0.14-z4")
     compile("com.github.java-json-tools:json-schema-validator:2.2.10")
     compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
@@ -142,13 +143,10 @@ dependencies {
 
     compile("de.mpg.mpi-inf:javatools:1.1")
 
-    testCompile(project("zally-rule-api"))
-
     testCompile("net.jadler:jadler-core:$jadlerVersion")
     testCompile("net.jadler:jadler-jdk:$jadlerVersion")
     testCompile("net.jadler:jadler-junit:$jadlerVersion")
     testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
-    testCompile("org.assertj:assertj-core:3.11.0")
     testCompile("com.jayway.jsonpath:json-path-assert:2.4.0")
     testCompile("org.mockito:mockito-core:2.23.4")
 }

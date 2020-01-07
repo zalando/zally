@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zalando
 
-import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.rule.api.Violation
@@ -185,6 +185,6 @@ class MediaTypesRuleTest {
 
     private fun v(pointer: String) = Violation(
         description = "Custom media types should only be used for versioning",
-        pointer = JsonPointer.compile(pointer)
+        pointer = pointer.toJsonPointer()
     )
 }

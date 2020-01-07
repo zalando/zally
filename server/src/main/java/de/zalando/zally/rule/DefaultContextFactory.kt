@@ -1,8 +1,8 @@
 package de.zalando.zally.rule
 
+import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.ast.JsonPointers
 import io.swagger.parser.SwaggerParser
 import io.swagger.parser.util.SwaggerDeserializationResult
 import io.swagger.v3.parser.OpenAPIV3Parser
@@ -133,7 +133,7 @@ class DefaultContextFactory(@Value("\${zally.propagateAuthorizationUrls:}") val 
                 "Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. Error not covered by pre-convert checks.",
                 t
             )
-            val violation = Violation("Unable to parse specification", JsonPointers.EMPTY)
+            val violation = Violation("Unable to parse specification", EMPTY_JSON_POINTER)
             return ContentParseResult.ParsedWithErrors(listOf(violation))
         }
         return if (convertResult.openAPI === null) {
@@ -141,7 +141,7 @@ class DefaultContextFactory(@Value("\${zally.propagateAuthorizationUrls:}") val 
                 ContentParseResult.ParsedWithErrors(convertResult.messages.mapNotNull(::errorToViolation))
             } else {
                 log.warn("Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. No error specified, but 'openAPI' is null.")
-                val violation = Violation("Unable to parse specification", JsonPointers.EMPTY)
+                val violation = Violation("Unable to parse specification", EMPTY_JSON_POINTER)
                 ContentParseResult.ParsedWithErrors(listOf(violation))
             }
         } else {
@@ -150,5 +150,5 @@ class DefaultContextFactory(@Value("\${zally.propagateAuthorizationUrls:}") val 
     }
 
     private fun errorToViolation(error: String): Violation =
-        Violation(error, JsonPointers.EMPTY)
+        Violation(error, EMPTY_JSON_POINTER)
 }

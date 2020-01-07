@@ -1,6 +1,6 @@
 package de.zalando.zally.rule
 
-import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.toJsonPointer
 import org.intellij.lang.annotations.Language
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -19,7 +19,7 @@ class JsonPointerLocatorTest {
             """.trimIndent()
         )
 
-        assertEquals(null, locator.locate(JsonPointer.compile("/a")))
+        assertEquals(null, locator.locate("/a".toJsonPointer()))
     }
 
     @Test
@@ -31,7 +31,7 @@ class JsonPointerLocatorTest {
             """.trimIndent()
         )
 
-        assertEquals(1..1, locator.locate(JsonPointer.compile("/a")))
+        assertEquals(1..1, locator.locate("/a".toJsonPointer()))
     }
 
     @Test
@@ -45,7 +45,7 @@ class JsonPointerLocatorTest {
             """.trimIndent()
         )
 
-        assertEquals(1..3, locator.locate(JsonPointer.compile("/a")))
+        assertEquals(1..3, locator.locate("/a".toJsonPointer()))
     }
 
     @Test
@@ -61,7 +61,7 @@ class JsonPointerLocatorTest {
             """.trimIndent()
         )
 
-        assertEquals(4..5, locator.locate(JsonPointer.compile("/a/b/c/d")))
+        assertEquals(4..5, locator.locate("/a/b/c/d".toJsonPointer()))
     }
 
     @Test
@@ -73,7 +73,7 @@ class JsonPointerLocatorTest {
             """.trimIndent()
         )
 
-        assertEquals(1..1, locator.locate(JsonPointer.compile("/0")))
+        assertEquals(1..1, locator.locate("/0".toJsonPointer()))
     }
 
     @Test
@@ -90,7 +90,7 @@ class JsonPointerLocatorTest {
             """.trimIndent()
         )
 
-        assertEquals(2..3, locator.locate(JsonPointer.compile("/c/b")))
+        assertEquals(2..3, locator.locate("/c/b".toJsonPointer()))
     }
 
     @Test
@@ -107,6 +107,6 @@ class JsonPointerLocatorTest {
             """.trimIndent()
         )
 
-        assertEquals(5..6, locator.locate(JsonPointer.compile("/c/b")))
+        assertEquals(5..6, locator.locate("/c/b".toJsonPointer()))
     }
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.io.Resources
+import de.zalando.zally.core.EMPTY_JSON_POINTER
+import de.zalando.zally.core.plus
 import de.zalando.zally.rule.JsonSchemaValidator
 import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.rule.api.Check
@@ -11,7 +13,6 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.ast.JsonPointers
 import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
@@ -49,8 +50,7 @@ class UseProblemJsonRule {
                             .let {
                                 Violation(
                                     "${it.description} ${validation.description}",
-                                    it.pointer.append(validation.pointer)
-                                        ?: JsonPointers.EMPTY
+                                    it.pointer + validation.pointer
                                 )
                             }
                     }
@@ -62,7 +62,7 @@ class UseProblemJsonRule {
         response.content?.flatMap { (type, mediaType) ->
             // doesn't check media type in OpenAPI2 (Swagger) specifications because of converting issues
             if (isOpenAPI3 && !type.startsWith(problemDetailsObjectMediaType)) {
-                val message = Violation("Media type have to be 'application/problem+json'", JsonPointers.EMPTY)
+                val message = Violation("Media type have to be 'application/problem+json'", EMPTY_JSON_POINTER)
                 return listOf(Pair(mediaType, message))
             }
             val node = objectMapper.convertValue(mediaType.schema, JsonNode::class.java)

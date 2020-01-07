@@ -2,11 +2,13 @@ package de.zalando.zally.rule.zally
 
 import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
+import de.zalando.zally.core.plus
+import de.zalando.zally.core.toEscapedJsonPointer
+import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.ast.JsonPointers
 
 @Rule(
     ruleSet = ZallyRuleSet::class,
@@ -29,9 +31,8 @@ class NoUnusedDefinitionsRule {
                         ?.takeIf { it.isArray }
                         ?.toList()
                         ?.map { it.asText() }
-                        ?.map { JsonPointers.escape(it) }
                         ?.map {
-                            JsonPointer.compile("/definitions").append(it)
+                            "/definitions".toJsonPointer() + it.toEscapedJsonPointer()
                         }
                 }
         }
@@ -50,9 +51,8 @@ class NoUnusedDefinitionsRule {
                 ?.get("mapping")
                 ?.toList()
                 ?.map { it.asText() }
-                ?.map { JsonPointers.escape(it) }
                 ?.map {
-                    JsonPointer.compile("/components/schemas").append(it)
+                    "/components/schemas".toJsonPointer() + it.toEscapedJsonPointer()
                 }
         }
 
@@ -88,7 +88,7 @@ class NoUnusedDefinitionsRule {
             .map { it.asText() }
             .filter { it.startsWith("#") }
             .map { it.substring(1) }
-            .map { JsonPointer.compile(it) }
+            .map { it.toJsonPointer() }
 
     private fun unused(
         root: JsonNode,
@@ -96,11 +96,11 @@ class NoUnusedDefinitionsRule {
         description: String,
         used: Set<JsonPointer>
     ): List<Violation> {
-        val ptr = JsonPointer.compile(pointer)
+        val ptr = pointer.toJsonPointer()
         return root.at(ptr)
             ?.fieldNames()
             ?.asSequence()
-            ?.map { ptr.append(JsonPointers.escape(it)) }
+            ?.map { ptr + it.toEscapedJsonPointer() }
             ?.minus(used)
             ?.map { Violation(description, it) }
             ?.toList()

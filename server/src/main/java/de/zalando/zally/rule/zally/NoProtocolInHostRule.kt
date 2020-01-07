@@ -1,6 +1,6 @@
 package de.zalando.zally.rule.zally
 
-import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
@@ -35,7 +35,7 @@ class NoProtocolInHostRule {
             "://" in host -> listOf(
                 Violation(
                     "'$host' contains protocol information which should be listed separately as schemes",
-                    JsonPointer.compile("/host")
+                    "/host".toJsonPointer()
                 )
             )
 

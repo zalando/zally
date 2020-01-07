@@ -3,6 +3,9 @@ package de.zalando.zally.util.ast
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.EMPTY_JSON_POINTER
+import de.zalando.zally.core.plus
+import de.zalando.zally.core.toEscapedJsonPointer
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.ArrayDeque
@@ -15,7 +18,7 @@ import kotlin.collections.set
 class ReverseAstBuilder<T : Any> internal constructor(root: T) {
     private val extensionMethodNames = HashSet<String>()
 
-    private val nodes = ArrayDeque<Node>(listOf(Node(root, JsonPointers.EMPTY, null)))
+    private val nodes = ArrayDeque<Node>(listOf(Node(root, EMPTY_JSON_POINTER, null)))
     private val objectsToNodes = IdentityHashMap<Any, Node>()
     private val pointersToNodes = HashMap<String, Node>()
 
@@ -62,7 +65,7 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
         return ArrayDeque<Node>(
             map.mapNotNull { (key, value) ->
                 if (key is String && value != null) {
-                    Node(value, pointer.append(JsonPointers.escape(key)), getMarker(map) ?: defaultMarker)
+                    Node(value, pointer + key.toEscapedJsonPointer(), getMarker(map) ?: defaultMarker)
                 } else {
                     null
                 }
@@ -78,7 +81,7 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
 
     private fun handleArray(objects: Array<*>, pointer: JsonPointer, marker: Marker?): Deque<Node> =
         ArrayDeque(objects.filterNotNull().mapIndexed { i, value ->
-            Node(value, pointer.append(JsonPointers.escape(i.toString())), marker)
+            Node(value, pointer + i.toString().toEscapedJsonPointer(), marker)
         })
 
     private fun handleObject(obj: Any, pointer: JsonPointer, defaultMarker: Marker?): Deque<Node> {
@@ -94,7 +97,9 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
                         // We must not use the method name but re-use the current pointer.
                         nodes.push(Node(value, pointer, marker, /* skip */true))
                     } else {
-                        nodes.push(Node(value, pointer.append(JsonPointers.escape(m)), marker))
+                        nodes.push(Node(value, pointer + m.name
+                                .removePrefix("get")
+                                .decapitalize().toEscapedJsonPointer(), marker))
                     }
                 }
             } catch (e: ReflectiveOperationException) {

@@ -1,12 +1,13 @@
 package de.zalando.zally.rule.zalando
 
-import com.fasterxml.jackson.core.JsonPointer
+import de.zalando.zally.core.plus
+import de.zalando.zally.core.toEscapedJsonPointer
+import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.ast.JsonPointers
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -23,17 +24,17 @@ class IdentifyResourcesViaPathSegments {
     @Check(severity = Severity.MUST)
     fun pathStartsWithResource(context: Context): List<Violation> = context.validatePaths(
         pathFilter = { pathStartingWithAParameter.matches(it.key) },
-        action = { context.violations(pathStartsWithParameter, JsonPointer.compile("/paths").append(JsonPointers.escape(it.key))) })
+        action = { context.violations(pathStartsWithParameter, "/paths".toJsonPointer() + it.key.toEscapedJsonPointer()) })
 
     private val pathContainingSuccessiveParameters = """.*\}/\{.*""".toRegex()
     @Check(severity = Severity.MUST)
     fun pathDoesNotContainSuccessiveParameters(context: Context): List<Violation> = context.validatePaths(
         pathFilter = { pathContainingSuccessiveParameters.matches(it.key) },
-        action = { context.violations(pathContainsSuccessiveParameters, JsonPointer.compile("/paths").append(JsonPointers.escape(it.key))) })
+        action = { context.violations(pathContainsSuccessiveParameters, "/paths".toJsonPointer() + it.key.toEscapedJsonPointer()) })
 
     private val pathContainingPrefixedOrSuffixedParameter = """.*/([^/]+\{[^/]+\}|\{[^/]+\}[^/]+).*""".toRegex()
     @Check(severity = Severity.MUST)
     fun pathParameterDoesNotContainPrefixAndSuffix(context: Context): List<Violation> = context.validatePaths(
         pathFilter = { pathContainingPrefixedOrSuffixedParameter.matches(it.key) },
-        action = { context.violations(pathParameterContainsPrefixOrSuffix, JsonPointer.compile("/paths").append(JsonPointers.escape(it.key))) })
+        action = { context.violations(pathParameterContainsPrefixOrSuffix, "/paths".toJsonPointer() + it.key.toEscapedJsonPointer()) })
 }

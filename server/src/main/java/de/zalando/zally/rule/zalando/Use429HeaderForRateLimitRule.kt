@@ -1,11 +1,12 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.core.plus
+import de.zalando.zally.core.toEscapedJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
-import de.zalando.zally.util.ast.JsonPointers
 import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
@@ -29,7 +30,7 @@ class Use429HeaderForRateLimitRule {
                     }
                     .flatMap { (status, _) ->
                         context.violations(description,
-                            context.getJsonPointer(responses).append(JsonPointers.escape(status)))
+                                context.getJsonPointer(responses) + status.toEscapedJsonPointer())
                     }
             }.orEmpty()
         }

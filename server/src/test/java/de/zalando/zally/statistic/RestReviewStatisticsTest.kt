@@ -1,8 +1,8 @@
 package de.zalando.zally.statistic
 
-import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.apireview.ApiReview
 import de.zalando.zally.apireview.RestApiBaseTest
+import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.dto.ApiDefinitionRequest
 import de.zalando.zally.rule.Result
 import de.zalando.zally.rule.api.Severity
@@ -140,7 +140,7 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
                 title = "Test Rule Title",
                 description = "Description of test rule",
                 violationType = Severity.MUST,
-                pointer = JsonPointer.compile("/pointer")
+                pointer = "/pointer".toJsonPointer()
             )
         )
     }
