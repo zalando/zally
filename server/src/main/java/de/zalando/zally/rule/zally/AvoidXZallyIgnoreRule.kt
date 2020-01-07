@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.core.plus
+import de.zalando.zally.core.toEscapedJsonPointer
 import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
@@ -47,8 +48,8 @@ class AvoidXZallyIgnoreRule {
     private fun validateObjectNode(pointer: JsonPointer, node: JsonNode): List<Violation> =
         node.fields().asSequence().toList().flatMap { (name, childNode) ->
             when (name) {
-                xZallyIgnore -> validateXZallyIgnore(pointer + name, childNode)
-                else -> validateTree(pointer + name, childNode)
+                xZallyIgnore -> validateXZallyIgnore(pointer + name.toEscapedJsonPointer(), childNode)
+                else -> validateTree(pointer + name.toEscapedJsonPointer(), childNode)
             }
         }
 

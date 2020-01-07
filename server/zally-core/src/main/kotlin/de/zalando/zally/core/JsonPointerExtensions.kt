@@ -15,21 +15,20 @@ val EMPTY_JSON_POINTER: JsonPointer = JsonPointer.compile(null)
 fun String.toJsonPointer(): JsonPointer = JsonPointer.compile(this)
 
 /**
+ * Escapes a string as a single element JsonPointer.
+ * Escaping implemented according to https://tools.ietf.org/html/rfc6901
+ * @return the JsonPointer.
+ */
+fun String.toEscapedJsonPointer(): JsonPointer = this
+    .replace("~", "~0")
+    .replace("/", "~1")
+    .let { "/$it".toJsonPointer() }
+
+/**
  * Concatenates two JsonPointer instances together.
  * @return the combined JsonPointer
  */
 operator fun JsonPointer.plus(other: JsonPointer): JsonPointer = append(other)
-
-/**
- * Escapes a string and appends it to an existing JsonPointer.
- * Escaping implemented according to https://tools.ietf.org/html/rfc6901
- * @return the combined JsonPointer.
- */
-operator fun JsonPointer.plus(unescaped: String): JsonPointer = append(unescaped
-    .replace("~", "~0")
-    .replace("/", "~1")
-    .let { "/$it".toJsonPointer() }
-)
 
 /**
  * Convert an OpenAPI 3 JSON pointer to a Swagger 2 pointer.

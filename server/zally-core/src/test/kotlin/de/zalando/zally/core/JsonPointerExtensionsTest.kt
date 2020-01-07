@@ -1,56 +1,54 @@
 package de.zalando.zally.core
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 
 class JsonPointerExtensionsTest {
 
     @Test
     fun `toJsonPointer with valid string returns JsonPointer`() {
+        assertThat("/info/version".toJsonPointer())
+            .hasToString("/info/version")
+    }
 
-        val pointer = "/info/version".toJsonPointer()
+    @Test
+    fun `toJsonPointer with invalid string throws exception`() {
+        assertThatThrownBy {
+            "info version".toJsonPointer()
+        }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("expression must start with '/'")
+    }
 
-        assertThat(pointer).hasToString("/info/version")
+    @Test
+    fun `toEscapedJsonPointer with plain String returns escaped JsonPointer`() {
+        assertThat("version".toEscapedJsonPointer())
+            .hasToString("/version")
+    }
+
+    @Test
+    fun `toEscapedJsonPointer with String with slash returns escaped JsonPointer`() {
+        assertThat("/version".toEscapedJsonPointer())
+            .hasToString("/~1version")
+    }
+
+    @Test
+    fun `toEscapedJsonPointer with String with tilde returns escaped JsonPointer`() {
+        assertThat("~version".toEscapedJsonPointer())
+            .hasToString("/~0version")
+    }
+
+    @Test
+    fun `toEscapedJsonPointer with String with slash and tilde returns escaped JsonPointer`() {
+        assertThat("~/version".toEscapedJsonPointer())
+            .hasToString("/~0~1version")
     }
 
     @Test
     fun `plus with JsonPointer returns concatenated JsonPointer`() {
-
-        val pointer = "/info".toJsonPointer() + "/version".toJsonPointer()
-
-        assertThat(pointer).hasToString("/info/version")
-    }
-
-    @Test
-    fun `plus with plain String returns escaped JsonPointer`() {
-
-        val pointer = "/info".toJsonPointer() + "version"
-
-        assertThat(pointer).hasToString("/info/version")
-    }
-
-    @Test
-    fun `plus with String with slash returns escaped JsonPointer`() {
-
-        val pointer = "/info".toJsonPointer() + "/version"
-
-        assertThat(pointer).hasToString("/info/~1version")
-    }
-
-    @Test
-    fun `plus with String with tilde returns escaped JsonPointer`() {
-
-        val pointer = "/info".toJsonPointer() + "~version"
-
-        assertThat(pointer).hasToString("/info/~0version")
-    }
-
-    @Test
-    fun `plus with String with slash and tilde returns escaped JsonPointer`() {
-
-        val pointer = "/info".toJsonPointer() + "~/version"
-
-        assertThat(pointer).hasToString("/info/~0~1version")
+        assertThat("/info".toJsonPointer() + "/version".toJsonPointer())
+            .hasToString("/info/version")
     }
 
     @Test

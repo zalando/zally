@@ -1,6 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.core.plus
+import de.zalando.zally.core.toEscapedJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
@@ -29,7 +30,7 @@ class Use429HeaderForRateLimitRule {
                     }
                     .flatMap { (status, _) ->
                         context.violations(description,
-                            context.getJsonPointer(responses) + status)
+                                context.getJsonPointer(responses) + status.toEscapedJsonPointer())
                     }
             }.orEmpty()
         }

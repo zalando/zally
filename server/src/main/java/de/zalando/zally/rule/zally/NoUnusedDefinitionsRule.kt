@@ -3,6 +3,7 @@ package de.zalando.zally.rule.zally
 import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import de.zalando.zally.core.plus
+import de.zalando.zally.core.toEscapedJsonPointer
 import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
@@ -31,7 +32,7 @@ class NoUnusedDefinitionsRule {
                         ?.toList()
                         ?.map { it.asText() }
                         ?.map {
-                            "/definitions".toJsonPointer() + it
+                            "/definitions".toJsonPointer() + it.toEscapedJsonPointer()
                         }
                 }
         }
@@ -51,7 +52,7 @@ class NoUnusedDefinitionsRule {
                 ?.toList()
                 ?.map { it.asText() }
                 ?.map {
-                    "/components/schemas".toJsonPointer() + it
+                    "/components/schemas".toJsonPointer() + it.toEscapedJsonPointer()
                 }
         }
 
@@ -99,7 +100,7 @@ class NoUnusedDefinitionsRule {
         return root.at(ptr)
             ?.fieldNames()
             ?.asSequence()
-            ?.map { ptr + it }
+            ?.map { ptr + it.toEscapedJsonPointer() }
             ?.minus(used)
             ?.map { Violation(description, it) }
             ?.toList()

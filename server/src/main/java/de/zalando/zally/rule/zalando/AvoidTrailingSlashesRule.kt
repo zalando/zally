@@ -1,6 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.core.plus
+import de.zalando.zally.core.toEscapedJsonPointer
 import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Context
@@ -30,6 +31,6 @@ class AvoidTrailingSlashesRule {
                 }
             }
         ) { (path, _) ->
-            context.violations(description, "/paths".toJsonPointer() + path)
+            context.violations(description, "/paths".toJsonPointer() + path.toEscapedJsonPointer())
         }
 }
