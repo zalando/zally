@@ -27,19 +27,19 @@ class RulesPolicyTest {
 
     @Test
     fun shouldAcceptRuleIfNotFiltered() {
-        val policy = RulesPolicy(arrayOf("TestCheckApiNameIsPresentJsonRule", "136"))
+        val policy = RulesPolicy(listOf("TestCheckApiNameIsPresentJsonRule", "136"))
         assertTrue(policy.accepts(rule()))
     }
 
     @Test
     fun shouldNotAcceptRuleIfFiltered() {
-        val policy = RulesPolicy(arrayOf("TestCheckApiNameIsPresentJsonRule", "TestRule"))
+        val policy = RulesPolicy(listOf("TestCheckApiNameIsPresentJsonRule", "TestRule"))
         assertFalse(policy.accepts(rule()))
     }
 
     @Test
     fun withMoreIgnoresAllowsExtension() {
-        val original = RulesPolicy(emptyArray())
+        val original = RulesPolicy(emptyList())
         assertTrue(original.accepts(rule()))
 
         val extended = original.withMoreIgnores(listOf("TestCheckApiNameIsPresentJsonRule", "TestRule"))

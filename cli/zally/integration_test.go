@@ -82,9 +82,9 @@ func TestIntegrationWithNoMustViolations(t *testing.T) {
 	must, should, may, hint := countViolations(out)
 
 	assert.Zero(t, must, "No MUST violations expected")
-	assert.True(t, should == 0, "No SHOULD violation expected")
+	assert.Zero(t, should, "No SHOULD violation expected")
 	assert.True(t, may > 0, "At least one MAY violation expected")
-	assert.Equal(t, 0, hint)
+	assert.Zero(t, hint)
 	assert.Nil(t, e)
 }
 

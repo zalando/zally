@@ -436,6 +436,6 @@ class NullPointerExceptionTest(
 
     @Test
     fun `validate with spec does not throw NullPointerException`() {
-        validator.validate(spec, RulesPolicy(emptyArray()))
+        validator.validate(spec, RulesPolicy(emptyList()))
     }
 }

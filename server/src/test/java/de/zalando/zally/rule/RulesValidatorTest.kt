@@ -64,7 +64,7 @@ class RulesValidatorTest {
     fun shouldReturnEmptyViolationsListWithoutRules() {
         val rules = emptyList<Any>()
         val validator = SwaggerRulesValidator(rulesManager(rules))
-        val results = validator.validate(swaggerContent, RulesPolicy(emptyArray()))
+        val results = validator.validate(swaggerContent, RulesPolicy(emptyList()))
         assertThat(results)
             .isEmpty()
     }
@@ -73,7 +73,7 @@ class RulesValidatorTest {
     fun shouldReturnOneViolation() {
         val rules = listOf(TestSecondRule())
         val validator = SwaggerRulesValidator(rulesManager(rules))
-        val results = validator.validate(swaggerContent, RulesPolicy(emptyArray()))
+        val results = validator.validate(swaggerContent, RulesPolicy(emptyList()))
         assertThat(results.map(Result::description))
             .containsExactly("dummy3")
     }
@@ -82,7 +82,7 @@ class RulesValidatorTest {
     fun shouldCollectViolationsOfAllRules() {
         val rules = listOf(TestFirstRule())
         val validator = SwaggerRulesValidator(rulesManager(rules))
-        val results = validator.validate(swaggerContent, RulesPolicy(emptyArray()))
+        val results = validator.validate(swaggerContent, RulesPolicy(emptyList()))
         assertThat(results.map(Result::description))
             .containsExactly("dummy1", "dummy2")
     }
@@ -91,7 +91,7 @@ class RulesValidatorTest {
     fun shouldSortViolationsByViolationType() {
         val rules = listOf(TestFirstRule(), TestSecondRule())
         val validator = SwaggerRulesValidator(rulesManager(rules))
-        val results = validator.validate(swaggerContent, RulesPolicy(emptyArray()))
+        val results = validator.validate(swaggerContent, RulesPolicy(emptyList()))
         assertThat(results.map(Result::description))
             .containsExactly("dummy3", "dummy1", "dummy2")
     }
@@ -100,7 +100,7 @@ class RulesValidatorTest {
     fun shouldIgnoreSpecifiedRules() {
         val rules = listOf(TestFirstRule(), TestSecondRule())
         val validator = SwaggerRulesValidator(rulesManager(rules))
-        val results = validator.validate(swaggerContent, RulesPolicy(arrayOf("TestSecondRule")))
+        val results = validator.validate(swaggerContent, RulesPolicy(listOf("TestSecondRule")))
         assertThat(results.map(Result::description))
             .containsExactly("dummy1", "dummy2")
     }
@@ -110,7 +110,7 @@ class RulesValidatorTest {
         val rules = listOf(TestBadRule())
         assertThatThrownBy {
             val validator = SwaggerRulesValidator(rulesManager(rules))
-            validator.validate(swaggerContent, RulesPolicy(arrayOf("TestCheckApiNameIsPresentRule")))
+            validator.validate(swaggerContent, RulesPolicy(listOf("TestCheckApiNameIsPresentRule")))
         }.hasMessage("Unsupported return type for a @Check method!: class java.lang.String")
     }
 
