@@ -15,6 +15,7 @@ plugins {
     val kotlinVersion = "1.3.21"
 
     kotlin("jvm").version(kotlinVersion)
+    kotlin("kapt").version(kotlinVersion)
     kotlin("plugin.jpa").version(kotlinVersion)
     kotlin("plugin.noarg").version(kotlinVersion)
     kotlin("plugin.spring").version(kotlinVersion)
@@ -37,6 +38,7 @@ allprojects {
 
     apply(plugin = "java")
     apply(plugin = "kotlin")
+    apply(plugin = "kotlin-kapt")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "org.jetbrains.dokka")
     apply(plugin = "maven-publish")
@@ -52,6 +54,10 @@ allprojects {
 
         testCompile("junit:junit:4.12")
         testCompile("org.assertj:assertj-core:3.11.0")
+    }
+
+    kapt {
+        includeCompileClasspath = false
     }
 
     tasks.withType(KotlinCompile::class.java).all {
@@ -114,6 +120,8 @@ allprojects {
 dependencies {
     val springBootVersion = "2.0.4.RELEASE"
     val jadlerVersion = "1.3.0"
+
+    kapt(project(":zally-core"))
 
     compile(project(":zally-core"))
     compile("com.github.zeitlinger.swagger-parser:swagger-parser:v2.0.14-z4")

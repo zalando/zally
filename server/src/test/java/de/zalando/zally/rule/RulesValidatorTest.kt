@@ -2,6 +2,7 @@ package de.zalando.zally.rule
 
 import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
+import com.typesafe.config.ConfigFactory
 import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
@@ -11,7 +12,6 @@ import io.swagger.models.Swagger
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import kotlin.reflect.full.createInstance
 
 @Suppress("UndocumentedPublicClass", "StringLiteralDuplication")
 class RulesValidatorTest {
@@ -66,7 +66,7 @@ class RulesValidatorTest {
 
     @Test
     fun shouldReturnEmptyViolationsListWithoutRules() {
-        val validator = rulesValidator()
+        val validator = rulesValidator(emptyList())
         val results = validator.validate(swaggerContent, RulesPolicy(emptyList()))
         assertThat(results)
             .isEmpty()
@@ -74,7 +74,7 @@ class RulesValidatorTest {
 
     @Test
     fun shouldReturnOneViolation() {
-        val validator = rulesValidator(TestSecondRule())
+        val validator = rulesValidator(listOf(TestSecondRule()))
         val results = validator.validate(swaggerContent, RulesPolicy(emptyList()))
         assertThat(results.map(Result::description))
             .containsExactly("dummy3")
@@ -82,7 +82,7 @@ class RulesValidatorTest {
 
     @Test
     fun shouldCollectViolationsOfAllRules() {
-        val validator = rulesValidator(TestFirstRule())
+        val validator = rulesValidator(listOf(TestFirstRule()))
         val results = validator.validate(swaggerContent, RulesPolicy(emptyList()))
         assertThat(results.map(Result::description))
             .containsExactly("dummy1", "dummy2")
@@ -90,7 +90,7 @@ class RulesValidatorTest {
 
     @Test
     fun shouldSortViolationsByViolationType() {
-        val validator = rulesValidator(TestFirstRule(), TestSecondRule())
+        val validator = rulesValidator(listOf(TestFirstRule(), TestSecondRule()))
         val results = validator.validate(swaggerContent, RulesPolicy(emptyList()))
         assertThat(results.map(Result::description))
             .containsExactly("dummy3", "dummy1", "dummy2")
@@ -98,7 +98,7 @@ class RulesValidatorTest {
 
     @Test
     fun shouldIgnoreSpecifiedRules() {
-        val validator = rulesValidator(TestFirstRule(), TestSecondRule())
+        val validator = rulesValidator(listOf(TestFirstRule(), TestSecondRule()))
         val results = validator.validate(swaggerContent, RulesPolicy(listOf("TestSecondRule")))
         assertThat(results.map(Result::description))
             .containsExactly("dummy1", "dummy2")
@@ -107,24 +107,16 @@ class RulesValidatorTest {
     @Test
     fun checkReturnsStringThrowsException() {
         assertThatThrownBy {
-            val validator = rulesValidator(TestBadRule())
+            val validator = rulesValidator(listOf(TestBadRule()))
             validator.validate(swaggerContent, RulesPolicy(listOf("TestCheckApiNameIsPresentRule")))
         }.hasMessage("Unsupported return type for a @Check method!: class java.lang.String")
     }
 
-    private fun rulesValidator(vararg rules: Any): RulesValidator<Swagger> =
-        object : RulesValidator<Swagger>(rulesManager(rules)) {
+    private fun rulesValidator(rules: List<Any>): RulesValidator<Swagger> =
+        object : RulesValidator<Swagger>(RulesManager.fromInstances(ConfigFactory.empty(), rules)) {
             override fun parse(content: String, authorization: String?): ContentParseResult<Swagger> =
                 ContentParseResult.ParsedSuccessfully(Swagger())
 
             override fun ignore(root: Swagger, pointer: JsonPointer, ruleId: String): Boolean = false
         }
-
-    private fun rulesManager(rules: Array<out Any>): RulesManager = RulesManager(
-        rules.mapNotNull { instance ->
-            val rule = instance::class.java.getAnnotation(Rule::class.java)
-            val ruleSet = rule?.ruleSet?.createInstance()
-            ruleSet?.let { RuleDetails(ruleSet, rule, instance) }
-        }
-    )
 }

@@ -1,8 +1,10 @@
 package de.zalando.zally.apireview
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.typesafe.config.Config
 import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.core.toJsonPointer
+import de.zalando.zally.rule.RulesManager
 import de.zalando.zally.rule.TestRuleSet
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
@@ -19,12 +21,12 @@ class RestApiTestConfiguration {
     @Bean
     @Primary
     @Profile("test")
-    fun rules(): Collection<Any> {
-        return listOf(
+    fun rulesManager(config: Config): RulesManager = RulesManager.fromInstances(
+        config,
+        listOf(
             TestCheckIsOpenApi3(),
             TestCheckAlwaysReport3MustViolations()
-        )
-    }
+        ))
 
     /** Rule used for testing  */
     @Rule(
