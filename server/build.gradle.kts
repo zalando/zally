@@ -1,4 +1,4 @@
-import de.undercouch.gradle.tasks.download.Download
+
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -24,7 +24,6 @@ plugins {
     id("org.springframework.boot") version "2.0.4.RELEASE"
     id("io.spring.dependency-management") version "1.0.7.RELEASE"
     id("com.github.ben-manes.versions") version "0.20.0"
-    id("de.undercouch.download") version "3.4.3"
     id("org.jlleitschuh.gradle.ktlint") version "7.2.1"
     id("org.jetbrains.dokka") version "0.10.0"
     id("maven-publish")
@@ -155,18 +154,6 @@ jacoco {
     toolVersion = "0.8.2"
 }
 
-tasks.register("downloadJsonSchema", Download::class) {
-    src("http://json-schema.org/draft-04/schema")
-    dest("$rootDir/src/main/resources/schemas/json-schema.json")
-    onlyIfModified(true)
-}
-
-tasks.register("downloadSwaggerSchema", Download::class) {
-    src("http://swagger.io/v2/schema.json")
-    dest("$rootDir/src/main/resources/schemas/swagger-schema.json")
-    onlyIfModified(true)
-}
-
 tasks.bootRun {
     jvmArgs = listOf("-Dspring.profiles.active=dev")
 }
@@ -184,11 +171,6 @@ tasks.jacocoTestReport {
 tasks.jar {
     archiveBaseName.set(project.name)
     archiveVersion.set(version)
-}
-
-tasks.processResources {
-    dependsOn("downloadJsonSchema")
-    dependsOn("downloadSwaggerSchema")
 }
 
 tasks.wrapper {

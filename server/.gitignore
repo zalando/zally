@@ -1,6 +1,2 @@
 keystore.p12
 application.properties
-
-# Specifically ignore resources downloaded during Gradle build
-/src/main/resources/schemas/swagger-schema.json
-/src/main/resources/schemas/json-schema.json
