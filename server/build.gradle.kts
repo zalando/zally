@@ -132,6 +132,7 @@ dependencies {
 
     compile(project(":zally-core"))
     compile("com.github.java-json-tools:json-schema-validator:2.2.10")
+    compile("com.github.java-json-tools:json-schema-core:bf09fe87139ac1fde0755194b59130f3b2d63e3a") // hopefully fixed in 1.2.14+
     compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-undertow:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
