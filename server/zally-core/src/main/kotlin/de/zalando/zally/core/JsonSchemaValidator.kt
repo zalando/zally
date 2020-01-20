@@ -1,4 +1,4 @@
-package de.zalando.zally.rule
+package de.zalando.zally.core
 
 import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
@@ -12,7 +12,6 @@ import com.github.fge.jsonschema.messages.JsonSchemaValidationBundle
 import com.github.fge.msgsimple.bundle.MessageBundle
 import com.github.fge.msgsimple.load.MessageBundles
 import com.github.fge.msgsimple.source.PropertiesMessageSource
-import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Violation
 import java.io.IOException
 
