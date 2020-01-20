@@ -383,7 +383,7 @@ class NullPointerExceptionTest(
                     val parent = root.at(head)
                     when (parent) {
                         is ObjectNode -> {
-                            parent.set(last.matchingProperty, null)
+                            parent.set<ObjectNode>(last.matchingProperty, null)
                             val param1 = arrayOf("$name with null $pointer", root.pretty())
 
                             parent.remove(last.matchingProperty)
