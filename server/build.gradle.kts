@@ -9,6 +9,11 @@ buildscript {
         gradlePluginPortal()
         maven("https://repo.spring.io/libs-release")
     }
+
+    extra.apply {
+        // sets the jackson version that spring uses
+        set("jackson.version", "2.10.1")
+    }
 }
 
 plugins {
@@ -123,7 +128,7 @@ dependencies {
     kapt(project(":zally-core"))
 
     compile(project(":zally-core"))
-    compile("com.github.zeitlinger.swagger-parser:swagger-parser:v2.0.14-z4")
+    compile("io.swagger.parser.v3:swagger-parser:2.0.17")
     compile("com.github.java-json-tools:json-schema-validator:2.2.10")
     compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-undertow:$springBootVersion")
@@ -138,11 +143,11 @@ dependencies {
     compile("org.jadira.usertype:usertype.core:7.0.0.CR1") {
         exclude("org.hibernate", "hibernate-entitymanager")
     }
-    compile("com.fasterxml.jackson.module:jackson-module-parameter-names")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-    compile("com.fasterxml.jackson.datatype:jackson-datatype-jdk8")
-    // 2.9+ is invalid for maven publish
-    compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
+    compile("com.fasterxml.jackson.module:jackson-module-parameter-names:2.10.2")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.2")
+    compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2")
+    compile("org.yaml:snakeyaml:1.24")
     compile("org.zalando.stups:stups-spring-oauth2-server:1.0.22")
     compile("org.zalando:problem-spring-web:0.23.0")
     compile("org.zalando:twintip-spring-web:1.1.0")
