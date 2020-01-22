@@ -3,15 +3,15 @@ package de.zalando.zally.rule.zalando
 import de.zalando.zally.openApiWithOperations
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.DefaultContextFactory
+import de.zalando.zally.core.rulesConfig
 import de.zalando.zally.rule.api.Context
-import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 @Suppress("UndocumentedPublicClass")
 class UseStandardHttpStatusCodesTest {
-    private val rule = UseStandardHttpStatusCodesRule(testConfig)
+    private val rule = UseStandardHttpStatusCodesRule(rulesConfig)
 
     @Test
     fun `checkWellUnderstoodResponseCodesUsage should return no violations if the usage is correct`() {

@@ -1,13 +1,13 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.DefaultContextFactory
-import de.zalando.zally.testConfig
+import de.zalando.zally.core.rulesConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class SnakeCaseForQueryParamsRuleTest {
 
-    private val rule = SnakeCaseForQueryParamsRule(testConfig)
+    private val rule = SnakeCaseForQueryParamsRule(rulesConfig)
 
     @Test
     fun `checkQueryParameter should return violation if query parameter is not snake_case`() {

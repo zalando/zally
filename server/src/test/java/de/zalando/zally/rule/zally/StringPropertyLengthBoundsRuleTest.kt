@@ -2,14 +2,14 @@ package de.zalando.zally.rule.zally
 
 import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.test.ZallyAssertions
-import de.zalando.zally.testConfig
+import de.zalando.zally.core.rulesConfig
 import org.intellij.lang.annotations.Language
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 
 class StringPropertyLengthBoundsRuleTest {
 
-    private val cut = StringPropertyLengthBoundsRule(testConfig)
+    private val cut = StringPropertyLengthBoundsRule(rulesConfig)
 
     @Test
     fun `checkStringLengthBounds with bounded string length returns no violations`() {

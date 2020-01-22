@@ -3,15 +3,15 @@
 package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.ConfigValueFactory
+import de.zalando.zally.core.rulesConfig
 import de.zalando.zally.rule.DefaultContextFactory
-import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class DateTimePropertiesSuffixRuleTest {
 
-    private val rule = DateTimePropertiesSuffixRule(testConfig)
+    private val rule = DateTimePropertiesSuffixRule(rulesConfig)
 
     @Test
     fun `rule should pass with correct "date-time" fields`() {
@@ -149,7 +149,7 @@ class DateTimePropertiesSuffixRuleTest {
                       type: string
                       format: date
             """.trimIndent()
-        val newConfig = testConfig.withValue("DateTimePropertiesSuffixRule/patterns", ConfigValueFactory.fromIterable(listOf("was_.*")))
+        val newConfig = rulesConfig.withValue("DateTimePropertiesSuffixRule/patterns", ConfigValueFactory.fromIterable(listOf("was_.*")))
         val customRule = DateTimePropertiesSuffixRule(newConfig)
         val violations = customRule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations.map { it.description }).containsExactly(

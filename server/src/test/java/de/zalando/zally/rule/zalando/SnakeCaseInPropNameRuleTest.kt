@@ -1,14 +1,14 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.DefaultContextFactory
-import de.zalando.zally.testConfig
+import de.zalando.zally.core.rulesConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class SnakeCaseInPropNameRuleTest {
 
-    private val rule = SnakeCaseInPropNameRule(testConfig)
+    private val rule = SnakeCaseInPropNameRule(rulesConfig)
 
     @Test
     fun `checkPropertyNames should return violation if a property name is not snake_case`() {
