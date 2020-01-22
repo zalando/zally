@@ -1,4 +1,4 @@
-package de.zalando.zally.rule.zally
+package de.zalando.zally.ruleset.zally
 
 import de.zalando.zally.core.AbstractRuleSet
 import de.zalando.zally.rule.api.Rule

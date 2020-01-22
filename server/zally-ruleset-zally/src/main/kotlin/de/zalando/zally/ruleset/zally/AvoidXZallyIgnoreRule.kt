@@ -1,4 +1,4 @@
-package de.zalando.zally.rule.zally
+package de.zalando.zally.ruleset.zally
 
 import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode

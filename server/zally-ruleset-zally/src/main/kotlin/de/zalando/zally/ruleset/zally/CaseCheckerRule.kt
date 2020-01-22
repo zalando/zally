@@ -1,4 +1,4 @@
-package de.zalando.zally.rule.zally
+package de.zalando.zally.ruleset.zally
 
 import com.typesafe.config.Config
 import de.zalando.zally.core.CaseChecker

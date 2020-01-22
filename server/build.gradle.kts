@@ -135,10 +135,9 @@ dependencies {
     val springBootVersion = "2.0.4.RELEASE"
     val jadlerVersion = "1.3.0"
 
-    kapt(project(":zally-core"))
-
     compile(project(":zally-core"))
     compile(project(":zally-ruleset-zalando"))
+    compile(project(":zally-ruleset-zally"))
     compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-undertow:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")

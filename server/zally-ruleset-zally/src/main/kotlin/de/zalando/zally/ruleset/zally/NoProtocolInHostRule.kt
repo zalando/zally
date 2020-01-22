@@ -1,4 +1,4 @@
-package de.zalando.zally.rule.zally
+package de.zalando.zally.ruleset.zally
 
 import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
