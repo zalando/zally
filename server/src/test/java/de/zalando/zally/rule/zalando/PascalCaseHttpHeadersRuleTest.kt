@@ -1,14 +1,14 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.DefaultContextFactory
-import de.zalando.zally.testConfig
+import de.zalando.zally.core.rulesConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class PascalCaseHttpHeadersRuleTest {
 
-    private val rule = PascalCaseHttpHeadersRule(testConfig)
+    private val rule = PascalCaseHttpHeadersRule(rulesConfig)
 
     @Test
     fun `checkHttpHeaders should return violation if not pascal case is used`() {

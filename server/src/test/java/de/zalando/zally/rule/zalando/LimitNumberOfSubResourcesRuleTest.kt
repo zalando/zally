@@ -1,14 +1,14 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.DefaultContextFactory
-import de.zalando.zally.testConfig
+import de.zalando.zally.core.rulesConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class LimitNumberOfSubResourcesRuleTest {
 
-    private val rule = LimitNumberOfSubResourcesRule(testConfig)
+    private val rule = LimitNumberOfSubResourcesRule(rulesConfig)
 
     @Test
     fun `checkNumberOfSubResources should return violation if number of sub resources exceeds the limit`() {

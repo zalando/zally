@@ -4,14 +4,14 @@ import com.typesafe.config.ConfigFactory
 import de.zalando.zally.getResourceJson
 import de.zalando.zally.rule.DefaultContext
 import de.zalando.zally.rule.ObjectTreeReader
-import de.zalando.zally.testConfig
+import de.zalando.zally.core.rulesConfig
 import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class UseOpenApiRuleTest {
 
-    private val rule = UseOpenApiRule(testConfig)
+    private val rule = UseOpenApiRule(rulesConfig)
 
     @Test
     fun shouldNotFailOnCorrectYaml() {

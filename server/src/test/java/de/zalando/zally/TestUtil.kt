@@ -12,10 +12,6 @@ import io.swagger.v3.oas.models.responses.ApiResponse
 import io.swagger.v3.oas.models.responses.ApiResponses
 import java.io.StringReader
 
-val testConfig: Config by lazy {
-    ConfigFactory.load("rules-config.conf")
-}
-
 fun getConfigFromContent(content: String): Config = ConfigFactory.parseReader(StringReader(content))
 
 fun getResourceContent(fileName: String): String = ClasspathHelper.loadFileFromClasspath("fixtures/$fileName")

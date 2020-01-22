@@ -1,14 +1,14 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.DefaultContextFactory
-import de.zalando.zally.testConfig
+import de.zalando.zally.core.rulesConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class FormatForNumbersRuleTest {
 
-    private val rule = FormatForNumbersRule(testConfig)
+    private val rule = FormatForNumbersRule(rulesConfig)
 
     @Test
     fun `should not return a violation if number format is set`() {

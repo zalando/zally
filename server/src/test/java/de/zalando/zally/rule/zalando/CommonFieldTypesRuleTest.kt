@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.core.rulesConfig
 import de.zalando.zally.rule.DefaultContextFactory
-import de.zalando.zally.testConfig
 import io.swagger.v3.parser.util.SchemaTypeUtil.DATE_TIME_FORMAT
 import io.swagger.v3.parser.util.SchemaTypeUtil.INTEGER_TYPE
 import io.swagger.v3.parser.util.SchemaTypeUtil.STRING_TYPE
@@ -12,7 +12,7 @@ import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class CommonFieldTypesRuleTest {
-    private val rule = CommonFieldTypesRule(testConfig)
+    private val rule = CommonFieldTypesRule(rulesConfig)
 
     @Test
     fun `checkField should allow empty type`() {
