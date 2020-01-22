@@ -61,6 +61,13 @@ allprojects {
         includeCompileClasspath = false
     }
 
+    configurations.all {
+        resolutionStrategy {
+            // 1.2.10 disallows jar:file: resources, hopefully fixed in 1.2.14+
+            force("com.github.java-json-tools:json-schema-core:bf09fe87139ac1fde0755194b59130f3b2d63e3a")
+        }
+    }
+
     tasks.withType(KotlinCompile::class.java).all {
         kotlinOptions.jvmTarget = "1.8"
     }
@@ -131,8 +138,7 @@ dependencies {
     kapt(project(":zally-core"))
 
     compile(project(":zally-core"))
-    compile("com.github.java-json-tools:json-schema-validator:2.2.10")
-    compile("com.github.java-json-tools:json-schema-core:bf09fe87139ac1fde0755194b59130f3b2d63e3a") // hopefully fixed in 1.2.14+
+    compile(project(":zally-ruleset-zalando"))
     compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-undertow:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
@@ -154,8 +160,6 @@ dependencies {
     compile("org.zalando.stups:stups-spring-oauth2-server:1.0.22")
     compile("org.zalando:problem-spring-web:0.23.0")
     compile("org.zalando:twintip-spring-web:1.1.0")
-
-    compile("de.mpg.mpi-inf:javatools:1.1")
 
     testCompile(project(":zally-test"))
     testCompile("net.jadler:jadler-core:$jadlerVersion")
