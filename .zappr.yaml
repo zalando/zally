@@ -6,7 +6,8 @@
 approvals:
   groups:
     zalando:
-      minimum: 2
+      minimum: 1
+      ignore: last_committer
       from:
         orgs:
           # Only "zalando" allowed here!
