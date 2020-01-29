@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.core.toJsonPointer
-import de.zalando.zally.rule.DefaultContext
-import de.zalando.zally.rule.DefaultContextFactory
+import de.zalando.zally.core.DefaultContext
+import de.zalando.zally.core.DefaultContextFactory
 import de.zalando.zally.rule.api.Violation
 import io.swagger.parser.util.ClasspathHelper.loadFileFromClasspath
 import io.swagger.v3.oas.models.OpenAPI

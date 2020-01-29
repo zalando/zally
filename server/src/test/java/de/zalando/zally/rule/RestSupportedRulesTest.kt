@@ -1,6 +1,7 @@
 package de.zalando.zally.rule
 
 import de.zalando.zally.apireview.RestApiBaseTest
+import de.zalando.zally.core.RulesManager
 import de.zalando.zally.util.ErrorResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert.assertTrue

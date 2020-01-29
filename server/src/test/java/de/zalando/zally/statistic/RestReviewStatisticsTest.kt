@@ -4,7 +4,7 @@ import de.zalando.zally.apireview.ApiReview
 import de.zalando.zally.apireview.RestApiBaseTest
 import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.dto.ApiDefinitionRequest
-import de.zalando.zally.rule.Result
+import de.zalando.zally.core.Result
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.util.ErrorResponse
 import de.zalando.zally.util.TestDateUtil

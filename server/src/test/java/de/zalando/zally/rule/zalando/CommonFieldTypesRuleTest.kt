@@ -1,7 +1,7 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.core.rulesConfig
-import de.zalando.zally.rule.DefaultContextFactory
+import de.zalando.zally.core.DefaultContextFactory
 import io.swagger.v3.parser.util.SchemaTypeUtil.DATE_TIME_FORMAT
 import io.swagger.v3.parser.util.SchemaTypeUtil.INTEGER_TYPE
 import io.swagger.v3.parser.util.SchemaTypeUtil.STRING_TYPE

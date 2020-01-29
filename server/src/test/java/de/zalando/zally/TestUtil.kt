@@ -3,7 +3,7 @@ package de.zalando.zally
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
-import de.zalando.zally.rule.ObjectTreeReader
+import de.zalando.zally.core.ObjectTreeReader
 import io.swagger.parser.util.ClasspathHelper
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.PathItem

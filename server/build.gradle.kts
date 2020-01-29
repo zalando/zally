@@ -131,8 +131,8 @@ dependencies {
     kapt(project(":zally-core"))
 
     compile(project(":zally-core"))
-    compile("io.swagger.parser.v3:swagger-parser:2.0.17")
     compile("com.github.java-json-tools:json-schema-validator:2.2.10")
+    compile("com.github.java-json-tools:json-schema-core:bf09fe87139ac1fde0755194b59130f3b2d63e3a") // hopefully fixed in 1.2.14+
     compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-undertow:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
@@ -154,7 +154,6 @@ dependencies {
     compile("org.zalando.stups:stups-spring-oauth2-server:1.0.22")
     compile("org.zalando:problem-spring-web:0.23.0")
     compile("org.zalando:twintip-spring-web:1.1.0")
-    compile("io.github.config4k:config4k:0.4.1")
 
     compile("de.mpg.mpi-inf:javatools:1.1")
 

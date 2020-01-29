@@ -2,9 +2,9 @@ package de.zalando.zally.rule.zalando
 
 import com.typesafe.config.ConfigFactory
 import de.zalando.zally.getResourceJson
-import de.zalando.zally.rule.DefaultContext
-import de.zalando.zally.rule.ObjectTreeReader
 import de.zalando.zally.core.rulesConfig
+import de.zalando.zally.core.DefaultContext
+import de.zalando.zally.core.ObjectTreeReader
 import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test

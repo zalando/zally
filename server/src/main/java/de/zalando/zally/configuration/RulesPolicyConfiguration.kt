@@ -1,6 +1,6 @@
 package de.zalando.zally.configuration
 
-import de.zalando.zally.rule.RulesPolicy
+import de.zalando.zally.core.RulesPolicy
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

@@ -3,7 +3,7 @@ package de.zalando.zally.apireview
 import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.dto.ApiDefinitionRequest
-import de.zalando.zally.rule.Result
+import de.zalando.zally.core.Result
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.util.resourceToString
 import org.assertj.core.api.Assertions.assertThat

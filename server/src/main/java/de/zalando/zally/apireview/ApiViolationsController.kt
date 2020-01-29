@@ -6,8 +6,8 @@ import de.zalando.zally.dto.ViolationDTO
 import de.zalando.zally.exception.ApiReviewNotFoundException
 import de.zalando.zally.exception.InaccessibleResourceUrlException
 import de.zalando.zally.exception.MissingApiDefinitionException
-import de.zalando.zally.rule.ApiValidator
-import de.zalando.zally.rule.RulesPolicy
+import de.zalando.zally.core.ApiValidator
+import de.zalando.zally.core.RulesPolicy
 import de.zalando.zally.rule.api.Severity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

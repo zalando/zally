@@ -1,8 +1,8 @@
 package de.zalando.zally.rule.zally
 
-import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.test.ZallyAssertions
 import de.zalando.zally.core.rulesConfig
+import de.zalando.zally.core.DefaultContextFactory
 import org.intellij.lang.annotations.Language
 import org.junit.Assume.assumeTrue
 import org.junit.Test
