@@ -2,12 +2,12 @@ package de.zalando.zally.util.ast
 
 import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.ObjectTreeReader
-import de.zalando.zally.util.resourceToString
 import io.swagger.parser.OpenAPIParser
 import io.swagger.parser.SwaggerParser
 import io.swagger.util.Json
 import io.swagger.v3.parser.OpenAPIResolver
 import io.swagger.v3.parser.core.models.ParseOptions
+import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
@@ -250,4 +250,7 @@ class ReverseAstTest {
         assertThat(ast.isIgnored("/info/contact".toJsonPointer(), "IGNORED_AT_ROOT")).isTrue()
         assertThat(ast.isIgnored("/info/contact".toJsonPointer(), "IGNORED_AT_INFO")).isTrue()
     }
+
+    private fun resourceToString(resourceName: String): String =
+        IOUtils.toString(ClassLoader.getSystemResourceAsStream(resourceName))
 }

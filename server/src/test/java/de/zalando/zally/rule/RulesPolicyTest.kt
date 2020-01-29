@@ -8,12 +8,26 @@ import io.swagger.models.Swagger
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.net.URI
 
 class RulesPolicyTest {
 
+    class RulesPolicyTestRuleSet : AbstractRuleSet() {
+
+        override val id: String = javaClass.simpleName
+
+        override val title: String = "RulesPolicy Test Rules"
+
+        override val url: URI = URI.create("http://test.example.com/")
+
+        override fun url(rule: Rule): URI {
+            return url.resolve(rule.id)
+        }
+    }
+
     /** TestRule used for testing RulesPolicy */
     @Rule(
-        ruleSet = TestRuleSet::class,
+        ruleSet = RulesPolicyTestRuleSet::class,
         id = "TestRule",
         severity = Severity.MUST,
         title = "Test Rule"

@@ -55,9 +55,6 @@ allprojects {
 
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-stdlib")
-
-        testCompile("junit:junit:4.12")
-        testCompile("org.assertj:assertj-core:3.11.0")
     }
 
     kapt {
@@ -121,6 +118,12 @@ allprojects {
     }
 }
 
+dependencyManagement {
+    dependencies {
+        dependency("org.assertj:assertj-core:3.11.0")
+    }
+}
+
 dependencies {
     val springBootVersion = "2.0.4.RELEASE"
     val jadlerVersion = "1.3.0"
@@ -155,6 +158,7 @@ dependencies {
 
     compile("de.mpg.mpi-inf:javatools:1.1")
 
+    testCompile(project(":zally-test"))
     testCompile("net.jadler:jadler-core:$jadlerVersion")
     testCompile("net.jadler:jadler-jdk:$jadlerVersion")
     testCompile("net.jadler:jadler-junit:$jadlerVersion")

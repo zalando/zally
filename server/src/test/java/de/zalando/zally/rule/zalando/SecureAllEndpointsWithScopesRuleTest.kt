@@ -2,7 +2,7 @@ package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.getConfigFromContent
 import de.zalando.zally.rule.DefaultContextFactory
-import de.zalando.zally.rule.ZallyAssertions
+import de.zalando.zally.test.ZallyAssertions
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 

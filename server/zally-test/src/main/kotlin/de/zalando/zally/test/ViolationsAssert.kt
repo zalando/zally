@@ -1,4 +1,4 @@
-package de.zalando.zally.rule
+package de.zalando.zally.test
 
 import de.zalando.zally.rule.api.Violation
 import org.assertj.core.api.AbstractListAssert
