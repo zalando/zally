@@ -1,14 +1,14 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.core.rulesConfig
 import de.zalando.zally.rule.DefaultContextFactory
-import de.zalando.zally.test.ZallyAssertions.assertThat
 import de.zalando.zally.rule.api.Context
-import de.zalando.zally.testConfig
+import de.zalando.zally.test.ZallyAssertions.assertThat
 import org.junit.Test
 
 class ApiAudienceRuleTest {
 
-    private val rule = ApiAudienceRule(testConfig)
+    private val rule = ApiAudienceRule(rulesConfig)
 
     @Test
     fun correctApiAudienceIsSet() {

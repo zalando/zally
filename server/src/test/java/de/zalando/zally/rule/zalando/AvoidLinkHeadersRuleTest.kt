@@ -2,13 +2,13 @@ package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.test.ZallyAssertions.assertThat
-import de.zalando.zally.testConfig
+import de.zalando.zally.core.rulesConfig
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class AvoidLinkHeadersRuleTest {
 
-    private val rule = AvoidLinkHeadersRule(testConfig)
+    private val rule = AvoidLinkHeadersRule(rulesConfig)
 
     @Test
     fun `a Swagger API with no header called Link produces no violation`() {

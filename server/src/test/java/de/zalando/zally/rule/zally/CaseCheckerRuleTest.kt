@@ -2,14 +2,14 @@ package de.zalando.zally.rule.zally
 
 import de.zalando.zally.rule.DefaultContextFactory
 import de.zalando.zally.test.ZallyAssertions
-import de.zalando.zally.testConfig
+import de.zalando.zally.core.rulesConfig
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "TooManyFunctions", "StringLiteralDuplication")
 class CaseCheckerRuleTest {
 
-    private val cut = CaseCheckerRule(testConfig)
+    private val cut = CaseCheckerRule(rulesConfig)
 
     @Test
     fun `checkPropertyNames returns violations`() {

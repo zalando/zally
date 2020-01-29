@@ -1,17 +1,17 @@
 package de.zalando.zally.rule.zalando
 
+import de.zalando.zally.core.rulesConfig
 import de.zalando.zally.rule.ContentParseResult
 import de.zalando.zally.rule.ContentParseResultAssert.Companion.assertThat
 import de.zalando.zally.rule.DefaultContextFactory
-import de.zalando.zally.test.ZallyAssertions.assertThat
 import de.zalando.zally.rule.api.Context
-import de.zalando.zally.testConfig
+import de.zalando.zally.test.ZallyAssertions.assertThat
 import io.swagger.parser.util.ClasspathHelper.loadFileFromClasspath
 import org.junit.Test
 
 class PluralizeResourceNamesRuleTest {
 
-    private val rule = PluralizeResourceNamesRule(testConfig)
+    private val rule = PluralizeResourceNamesRule(rulesConfig)
 
     @Test
     fun positiveCase() {

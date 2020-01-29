@@ -1,15 +1,15 @@
 package de.zalando.zally.rule.zalando
 
 import de.zalando.zally.rule.DefaultContextFactory
+import de.zalando.zally.core.rulesConfig
 import de.zalando.zally.rule.api.Context
-import de.zalando.zally.testConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class ProprietaryHeadersRuleTest {
 
-    private val rule = ProprietaryHeadersRule(testConfig)
+    private val rule = ProprietaryHeadersRule(rulesConfig)
 
     @Test
     fun `validateRequestHeaders should return no violation for a standard header`() {

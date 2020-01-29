@@ -1,6 +1,6 @@
 package de.zalando.zally.rule
 
-import de.zalando.zally.testConfig
+import de.zalando.zally.core.rulesConfig
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,7 +18,7 @@ class CaseCheckerParameterizedTest(private val param: TestParam) {
     }
 
     companion object {
-        val checker = CaseChecker.load(testConfig)
+        val checker = CaseChecker.load(rulesConfig)
 
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
