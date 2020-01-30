@@ -12,9 +12,6 @@ interface RuleSet {
     /** A unique identifier for the RuleSet */
     val id: String
 
-    /** A user friendly heading for the RuleSet */
-    val title: String
-
     /** The base url where documentation for this RuleSet can be found */
     val url: URI
 
