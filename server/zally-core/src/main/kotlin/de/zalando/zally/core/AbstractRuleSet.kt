@@ -1,20 +1,26 @@
 package de.zalando.zally.core
 
+import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.RuleSet
+import java.net.URI
 
 abstract class AbstractRuleSet : RuleSet {
 
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
+    override val id: String
+        get() = javaClass.simpleName
 
-    override fun equals(other: Any?): Boolean {
-        return other != null &&
-            this.javaClass == other.javaClass &&
-            this.id == (other as RuleSet).id
-    }
+    override val title: String
+        get() = javaClass.simpleName.replace("([a-z]+)([A-Z])".toRegex(), "$1 $2")
 
-    override fun toString(): String {
-        return id
-    }
+    override val url: URI = URI.create("https://zally.example.com/$id")
+
+    override fun url(rule: Rule): URI = url.resolve("#${rule.id}")
+
+    override fun hashCode(): Int = id.hashCode()
+
+    override fun equals(other: Any?): Boolean = other != null &&
+        this.javaClass == other.javaClass &&
+        this.id == (other as RuleSet).id
+
+    override fun toString(): String = id
 }
