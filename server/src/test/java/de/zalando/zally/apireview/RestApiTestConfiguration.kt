@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
-import java.net.URI
 
 @Configuration
 class RestApiTestConfiguration {
@@ -29,18 +28,7 @@ class RestApiTestConfiguration {
             TestCheckAlwaysReport3MustViolations()
         ))
 
-    class TestRuleSet : AbstractRuleSet() {
-
-        override val id: String = javaClass.simpleName
-
-        override val title: String = "Test Rules"
-
-        override val url: URI = URI.create("http://test.example.com/")
-
-        override fun url(rule: Rule): URI {
-            return url.resolve(rule.id)
-        }
-    }
+    class TestRuleSet : AbstractRuleSet()
 
     /** Rule used for testing  */
     @Rule(
