@@ -9,8 +9,8 @@ class RulesManager(val config: Config, val rules: List<RuleDetails>) {
 
     companion object {
         fun fromClassLoader(config: Config) =
-            ClassLoader
-                .getSystemResources("META-INF/services/${Rule::class.java.name}")
+            javaClass.classLoader
+                .getResources("META-INF/services/${Rule::class.java.name}")
                 .asSequence()
                 .flatMap { it.readText().lineSequence() }
                 .filter { it.isNotBlank() }
