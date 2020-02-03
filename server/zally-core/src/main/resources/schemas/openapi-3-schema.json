@@ -1,6 +1,6 @@
 {
   "title": "A JSON Schema for OpenAPI 3.0.",
-  "id": "http://openapis.org/v3/schema.json#",
+  "id": "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/schemas/v3.0/schema.json#",
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "description": "This is the root document object of the OpenAPI document.",
