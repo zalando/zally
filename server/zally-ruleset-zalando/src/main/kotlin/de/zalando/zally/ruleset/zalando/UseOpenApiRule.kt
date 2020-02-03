@@ -103,7 +103,10 @@ class UseOpenApiRule(rulesConfig: Config) {
         return defaultSchemas.map { (name, file) ->
             val schemaUrl = Resources.getResource(file)
             val schema = ObjectTreeReader().read(schemaUrl)
-            JsonSchemaValidator(name.version, schema, schemaRedirects = mapOf(referencedOnlineSchema to localResource))
+            JsonSchemaValidator(name.version, schema, schemaRedirects = mapOf(
+                referencedOnlineSchema to localResource,
+                "http://openapis.org/v3/schema.json" to Resources.getResource("schemas/openapi-3-schema.json").toString())
+            )
         }.associateBy { OpenApiVersion.valueOf(it.name.toUpperCase()) }
     }
 }
