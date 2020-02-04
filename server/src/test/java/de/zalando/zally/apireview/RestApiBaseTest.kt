@@ -27,7 +27,7 @@ import java.time.LocalDate
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = [Application::class, RestApiTestConfiguration::class]
 )
-@ActiveProfiles("test")
+@ActiveProfiles("test", "limited-rules")
 abstract class RestApiBaseTest {
 
     @Autowired

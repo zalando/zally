@@ -27,7 +27,7 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule
 
 @RunWith(Parameterized::class)
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("test", "all-annotated-rules")
 class NullPointerExceptionTest(
     private val name: String,
     private val spec: String
