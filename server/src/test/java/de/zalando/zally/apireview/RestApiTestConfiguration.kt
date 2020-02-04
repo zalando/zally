@@ -10,6 +10,7 @@ import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import org.assertj.core.api.Assertions.assertThat
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -17,6 +18,24 @@ import org.springframework.context.annotation.Profile
 
 @Configuration
 class RestApiTestConfiguration {
+
+    companion object {
+        fun assertRuleManagerUsingLimitedRules(rulesManager: RulesManager) {
+            assertThat(rulesManager.rules.map { it.ruleSet.url.toString() })
+                .hasSize(2)
+                .containsOnly("https://zally.example.com/TestRuleSet")
+        }
+
+        fun assertRuleManagerUsingAllAnnotatedRules(rulesManager: RulesManager) {
+            assertThat(rulesManager.rules.map { it.ruleSet.url.toString() })
+                .isNotEmpty
+                .contains(
+                    "https://zally.example.com/TestRuleSet",
+                    "https://zalando.github.io/restful-api-guidelines/",
+                    "https://github.com/zalando/zally/blob/master/server/rules.md"
+                )
+        }
+    }
 
     @Bean
     @Primary

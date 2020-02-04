@@ -1,6 +1,8 @@
 package de.zalando.zally.apireview
 
+import de.zalando.zally.apireview.RestApiTestConfiguration.Companion.assertRuleManagerUsingDiscoveredRules
 import de.zalando.zally.configuration.JacksonObjectMapperConfiguration
+import de.zalando.zally.core.RulesManager
 import de.zalando.zally.dto.ApiDefinitionRequest
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.Matchers.containsString
@@ -31,6 +33,12 @@ class ApiViolationsControllerTest {
 
     @Autowired
     private lateinit var mvc: MockMvc
+
+    @Autowired
+    lateinit var rules: RulesManager
+
+    @Test
+    fun `correct rules are under test`() = assertRuleManagerUsingDiscoveredRules(rules)
 
     @Test
     @Throws(Exception::class)
