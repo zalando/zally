@@ -13,6 +13,8 @@ import de.zalando.zally.rule.api.Context
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.ruleset.zalando.UseOpenApiRule.OpenApiVersion.OPENAPI3
+import de.zalando.zally.ruleset.zalando.UseOpenApiRule.OpenApiVersion.SWAGGER
 import org.slf4j.LoggerFactory
 import java.net.URL
 
@@ -24,38 +26,31 @@ import java.net.URL
 )
 class UseOpenApiRule(rulesConfig: Config) {
 
-    private enum class OpenApiVersion(val version: String) {
-        SWAGGER("swagger"),
-        OPENAPI3("openapi3")
+    private enum class OpenApiVersion {
+        SWAGGER, OPENAPI3;
+
+        val resource: URL by lazy {
+            Resources.getResource("schemas/${name.toLowerCase()}-schema.json")
+        }
     }
 
     private val log = LoggerFactory.getLogger(UseOpenApiRule::class.java)
 
-    private val jsonSchemaValidators: Map<OpenApiVersion, JsonSchemaValidator>
-
-    private val defaultSchemas = mapOf(
-        OpenApiVersion.SWAGGER to "schemas/openapi-2-schema.json",
-        OpenApiVersion.OPENAPI3 to "schemas/openapi-3-schema.json"
-    )
-
-    init {
-        jsonSchemaValidators = getSchemaValidators(rulesConfig.getConfig(javaClass.simpleName))
-    }
+    private val jsonSchemaValidators = getSchemaValidators(rulesConfig.getConfig(javaClass.simpleName))
 
     @Check(severity = Severity.MUST)
     fun validateSchema(spec: JsonNode): List<Violation> {
-        val openApi3Spec = spec.get("swagger") == null
-        val currentVersion = if (openApi3Spec) OpenApiVersion.OPENAPI3.version else OpenApiVersion.SWAGGER.version
-
-        val swaggerValidator = jsonSchemaValidators[OpenApiVersion.SWAGGER]
-        val openApi3Validator = jsonSchemaValidators[OpenApiVersion.OPENAPI3]
-
-        return when {
-            openApi3Spec -> openApi3Validator?.validate(spec).orEmpty()
-            else -> swaggerValidator?.validate(spec).orEmpty()
-        }.map {
-            Violation("Does not match $currentVersion schema: ${it.description}", it.pointer)
+        val version = when {
+            spec.get("swagger") != null -> SWAGGER
+            else -> OPENAPI3
         }
+
+        return jsonSchemaValidators[version]
+            ?.validate(spec)
+            .orEmpty()
+            .map {
+            Violation("Does not match ${version.name.toLowerCase()} schema: ${it.description}", it.pointer)
+            }
     }
 
     @Check(severity = Severity.MUST)
@@ -73,8 +68,8 @@ class UseOpenApiRule(rulesConfig: Config) {
 
     private fun getSchemaValidators(ruleConfig: Config): Map<OpenApiVersion, JsonSchemaValidator> {
         return try {
-            val swaggerSchemaLink = URL(ruleConfig.getString("schema_urls.${OpenApiVersion.SWAGGER.version}"))
-            val openApiSchemaLink = URL(ruleConfig.getString("schema_urls.${OpenApiVersion.OPENAPI3.version}"))
+            val swaggerSchemaLink = URL(ruleConfig.getString("schema_urls.${SWAGGER.name.toLowerCase()}"))
+            val openApiSchemaLink = URL(ruleConfig.getString("schema_urls.${OPENAPI3.name.toLowerCase()}"))
 
             val swaggerSchema = ObjectMapper().readTree(swaggerSchemaLink)
             val openApiSchema = ObjectMapper().readTree(openApiSchemaLink)
@@ -84,8 +79,8 @@ class UseOpenApiRule(rulesConfig: Config) {
             (openApiSchema as ObjectNode).remove("id")
 
             return mapOf(
-                OpenApiVersion.SWAGGER to JsonSchemaValidator(swaggerSchema),
-                OpenApiVersion.OPENAPI3 to JsonSchemaValidator(openApiSchema)
+                SWAGGER to JsonSchemaValidator(swaggerSchema),
+                OPENAPI3 to JsonSchemaValidator(openApiSchema)
             )
         } catch (e: Exception) {
             log.warn("Unable to load swagger schemas: ${e.message}. Using default schemas instead.")
@@ -98,15 +93,15 @@ class UseOpenApiRule(rulesConfig: Config) {
         val referencedOnlineSchema = "http://json-schema.org/draft-04/schema"
         val localResource = Resources.getResource("schemas/json-schema.json").toString()
 
-        return defaultSchemas
-            .toList()
-            .map { (version, file) ->
-                val schemaUrl = Resources.getResource(file)
+        return OpenApiVersion
+            .values()
+            .map { version ->
+                val schemaUrl = version.resource
                 val schema = ObjectTreeReader().read(schemaUrl)
                 version to JsonSchemaValidator(schema, schemaRedirects = mapOf(
                     referencedOnlineSchema to localResource,
-                    "http://swagger.io/v2/schema.json" to Resources.getResource("schemas/openapi-2-schema.json").toString(),
-                    "http://openapis.org/v3/schema.json" to Resources.getResource("schemas/openapi-3-schema.json").toString())
+                    "http://swagger.io/v2/schema.json" to SWAGGER.resource.toString(),
+                    "http://openapis.org/v3/schema.json" to OPENAPI3.resource.toString())
                 )
             }
             .toMap()

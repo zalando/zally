@@ -37,7 +37,7 @@ class JsonSchemaValidatorTest {
         val onlineSchema = "http://json-schema.org/draft-04/schema"
         val localResource = Resources.getResource("schemas/json-schema.json").toString()
 
-        val file = "schemas/openapi-2-schema.json"
+        val file = "schemas/swagger-schema.json"
         val schemaUrl = Resources.getResource(file)
         val json = ObjectTreeReader().read(schemaUrl)
         var jsonSchemaValidator = JsonSchemaValidator(json, mapOf(onlineSchema to localResource))
