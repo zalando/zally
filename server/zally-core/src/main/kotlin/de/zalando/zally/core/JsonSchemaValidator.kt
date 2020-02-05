@@ -40,7 +40,8 @@ class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirect
         val node = processingMessage.asJson()
         val keyword = node.path("keyword").textValue()
         val message = node.path("message").textValue().capitalize()
-        val pointer = node.at("/instance/pointer").textValue().toJsonPointer()
+        val pointer = node.at("/instance/pointer")?.textValue()?.toJsonPointer()
+            ?: JsonPointer.empty()
 
         return when (keyword) {
             Keywords.oneOf, Keywords.anyOf -> createValidationMessageWithSchemaRefs(node, message, pointer, keyword)

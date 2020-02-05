@@ -1,6 +1,7 @@
 package de.zalando.zally.core
 
 import com.google.common.io.Resources
+import de.zalando.zally.test.ZallyAssertions.assertThat
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -46,5 +47,21 @@ class JsonSchemaValidatorTest {
         val valResult = jsonSchemaValidator.validate(specJson)
         assertThat(valResult.isEmpty()).isFalse()
         assertThat(valResult[0].description).isEqualTo("Instance failed to match at least one required schema among 2")
+    }
+
+    @Test
+    fun `invalid schemas result in empty violation pointers`() {
+        val reader = ObjectTreeReader()
+
+        val ref = "\$ref"
+        val json = reader.read("""{ "$ref": "#unresolvable" }""".trimIndent())
+
+        val result = JsonSchemaValidator("name", json)
+            .validate(reader.read("""{ "key": "value" }"""))
+
+        assertThat(result)
+            .isNotEmpty
+            .pointersAllEqualTo("")
+            .descriptionsAllEqualTo("""JSON Reference "#unresolvable" cannot be resolved""")
     }
 }
