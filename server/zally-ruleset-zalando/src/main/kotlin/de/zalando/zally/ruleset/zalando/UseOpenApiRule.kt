@@ -90,8 +90,6 @@ class UseOpenApiRule(rulesConfig: Config) {
 
     private fun getDefaultSchemaValidators(): Map<OpenApiVersion, JsonSchemaValidator> {
         // The downloadSwaggerSchema gradle task can be used to download latest versions of schemas
-        val referencedOnlineSchema = "http://json-schema.org/draft-04/schema"
-        val localResource = Resources.getResource("schemas/json-schema.json").toString()
 
         return OpenApiVersion
             .values()
@@ -99,7 +97,7 @@ class UseOpenApiRule(rulesConfig: Config) {
                 val schemaUrl = version.resource
                 val schema = ObjectTreeReader().read(schemaUrl)
                 version to JsonSchemaValidator(schema, schemaRedirects = mapOf(
-                    referencedOnlineSchema to localResource,
+                    "http://json-schema.org/draft-04/schema" to Resources.getResource("schemas/json-schema.json").toString(),
                     "http://swagger.io/v2/schema.json" to SWAGGER.resource.toString(),
                     "http://openapis.org/v3/schema.json" to OPENAPI3.resource.toString())
                 )
