@@ -1,7 +1,6 @@
 package de.zalando.zally.ruleset.zalando
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.google.common.io.Resources
 import com.typesafe.config.Config
@@ -67,40 +66,35 @@ class UseOpenApiRule(rulesConfig: Config) {
     }
 
     private fun getSchemaValidators(ruleConfig: Config): Map<OpenApiVersion, JsonSchemaValidator> {
-        return try {
-            val swaggerSchemaLink = URL(ruleConfig.getString("schema_urls.${SWAGGER.name.toLowerCase()}"))
-            val openApiSchemaLink = URL(ruleConfig.getString("schema_urls.${OPENAPI3.name.toLowerCase()}"))
+        val defaultSchemaRedirects = mapOf(
+            "http://json-schema.org/draft-04/schema" to Resources.getResource("schemas/json-schema.json"),
+            "http://swagger.io/v2/schema.json" to SWAGGER.resource,
+            "http://openapis.org/v3/schema.json" to OPENAPI3.resource,
+            "https://spec.openapis.org/oas/3.0/schema/2019-04-02" to OPENAPI3.resource)
+            .mapValues { (_, url) -> url.toString() }
 
-            val swaggerSchema = ObjectMapper().readTree(swaggerSchemaLink)
-            val openApiSchema = ObjectMapper().readTree(openApiSchemaLink)
-
-            // to avoid resolving the `id` property of the schema by the validator
-            (swaggerSchema as ObjectNode).remove("id")
-            (openApiSchema as ObjectNode).remove("id")
-
-            return mapOf(
-                SWAGGER to JsonSchemaValidator(swaggerSchema),
-                OPENAPI3 to JsonSchemaValidator(openApiSchema)
-            )
-        } catch (e: Exception) {
-            log.warn("Unable to load swagger schemas: ${e.message}. Using default schemas instead.")
-            getDefaultSchemaValidators()
-        }
-    }
-
-    private fun getDefaultSchemaValidators(): Map<OpenApiVersion, JsonSchemaValidator> {
-        // The downloadSwaggerSchema gradle task can be used to download latest versions of schemas
-
+        val reader = ObjectTreeReader()
         return OpenApiVersion
             .values()
             .map { version ->
-                val schemaUrl = version.resource
-                val schema = ObjectTreeReader().read(schemaUrl)
-                version to JsonSchemaValidator(schema, schemaRedirects = mapOf(
-                    "http://json-schema.org/draft-04/schema" to Resources.getResource("schemas/json-schema.json").toString(),
-                    "http://swagger.io/v2/schema.json" to SWAGGER.resource.toString(),
-                    "http://openapis.org/v3/schema.json" to OPENAPI3.resource.toString())
-                )
+                version to try {
+                    val url = URL(ruleConfig.getString("schema_urls.${version.name.toLowerCase()}"))
+
+                    val schema = reader.read(url)
+                        .apply {
+                            // to avoid resolving the `id` property of the schema by the validator
+                            this as ObjectNode
+                            remove("id")
+                        }
+
+                    JsonSchemaValidator(schema)
+                } catch (e: Exception) {
+                    log.warn("Unable to load swagger schemas: ${e.message}. Using default schemas instead.")
+
+                    val url = version.resource
+                    val schema = reader.read(url)
+                    JsonSchemaValidator(schema, defaultSchemaRedirects)
+                }
             }
             .toMap()
     }
