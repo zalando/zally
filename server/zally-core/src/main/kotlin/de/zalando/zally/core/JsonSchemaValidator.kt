@@ -15,7 +15,7 @@ import com.github.fge.msgsimple.source.PropertiesMessageSource
 import de.zalando.zally.rule.api.Violation
 import java.io.IOException
 
-class JsonSchemaValidator(val name: String, val schema: JsonNode, schemaRedirects: Map<String, String> = mapOf()) {
+class JsonSchemaValidator(val schema: JsonNode, schemaRedirects: Map<String, String> = mapOf()) {
 
     private object Keywords {
         const val oneOf = "oneOf"

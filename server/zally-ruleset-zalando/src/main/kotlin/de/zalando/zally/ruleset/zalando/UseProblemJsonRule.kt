@@ -31,7 +31,7 @@ class UseProblemJsonRule {
     private val problemSchemaValidator by lazy {
         val schemaUrl = Resources.getResource("schemas/problem-meta-schema.json")
         val json = ObjectTreeReader().read(schemaUrl)
-        JsonSchemaValidator("Problem", json)
+        JsonSchemaValidator(json)
     }
 
     @Check(severity = Severity.MUST)

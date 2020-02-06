@@ -15,7 +15,7 @@ class JsonSchemaValidatorTest {
         val file = "schemas/simple-schema.json"
         val schemaUrl = Resources.getResource(file)
         val json = ObjectTreeReader().read(schemaUrl)
-        val jsonSchemaValidator = JsonSchemaValidator(file, json, mapOf(onlineSchema to localResource))
+        val jsonSchemaValidator = JsonSchemaValidator(json, mapOf(onlineSchema to localResource))
 
         val jsonToValidate = ObjectTreeReader().read(
             """
@@ -40,7 +40,7 @@ class JsonSchemaValidatorTest {
         val file = "schemas/openapi-2-schema.json"
         val schemaUrl = Resources.getResource(file)
         val json = ObjectTreeReader().read(schemaUrl)
-        var jsonSchemaValidator = JsonSchemaValidator(file, json, mapOf(onlineSchema to localResource))
+        var jsonSchemaValidator = JsonSchemaValidator(json, mapOf(onlineSchema to localResource))
 
         val specJson = ObjectTreeReader().read(Resources.getResource("fixtures/api_tinbox.yaml"))
 
@@ -56,7 +56,7 @@ class JsonSchemaValidatorTest {
         val ref = "\$ref"
         val json = reader.read("""{ "$ref": "#unresolvable" }""".trimIndent())
 
-        val result = JsonSchemaValidator("name", json)
+        val result = JsonSchemaValidator(json)
             .validate(reader.read("""{ "key": "value" }"""))
 
         assertThat(result)
