@@ -93,6 +93,12 @@ class UseOpenApiRule(rulesConfig: Config) {
 
                     val url = version.resource
                     val schema = reader.read(url)
+                        .apply {
+                            // to avoid resolving the `id` property of the schema by the validator
+                            this as ObjectNode
+                            remove("id")
+                        }
+
                     JsonSchemaValidator(schema, defaultSchemaRedirects)
                 }
             }
