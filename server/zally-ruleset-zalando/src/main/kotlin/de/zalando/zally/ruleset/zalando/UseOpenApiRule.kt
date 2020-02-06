@@ -65,7 +65,7 @@ class UseOpenApiRule(rulesConfig: Config) {
         }
     }
 
-    private fun getSchemaValidators(ruleConfig: Config): Map<OpenApiVersion, JsonSchemaValidator> {
+    private fun getSchemaValidators(config: Config): Map<OpenApiVersion, JsonSchemaValidator> {
         val defaultSchemaRedirects = mapOf(
             "http://json-schema.org/draft-04/schema" to Resources.getResource("schemas/json-schema.json"),
             "http://swagger.io/v2/schema.json" to SWAGGER.resource,
@@ -77,9 +77,14 @@ class UseOpenApiRule(rulesConfig: Config) {
         return OpenApiVersion
             .values()
             .map { version ->
-                version to try {
-                    val url = URL(ruleConfig.getString("schema_urls.${version.name.toLowerCase()}"))
+                val configPath = "schema_urls.${version.name.toLowerCase()}"
 
+                val (url, schemaRedirects) = when {
+                    config.hasPath(configPath) -> URL(config.getString(configPath)) to emptyMap()
+                    else -> version.resource to defaultSchemaRedirects
+                }
+
+                try {
                     val schema = reader.read(url)
                         .apply {
                             // to avoid resolving the `id` property of the schema by the validator
@@ -87,19 +92,10 @@ class UseOpenApiRule(rulesConfig: Config) {
                             remove("id")
                         }
 
-                    JsonSchemaValidator(schema)
+                    version to JsonSchemaValidator(schema, schemaRedirects)
                 } catch (e: Exception) {
-                    log.warn("Unable to load swagger schemas: ${e.message}. Using default schemas instead.")
-
-                    val url = version.resource
-                    val schema = reader.read(url)
-                        .apply {
-                            // to avoid resolving the `id` property of the schema by the validator
-                            this as ObjectNode
-                            remove("id")
-                        }
-
-                    JsonSchemaValidator(schema, defaultSchemaRedirects)
+                    log.error("Unable to load schema: $url", e)
+                    throw e
                 }
             }
             .toMap()
