@@ -38,7 +38,13 @@ plugins {
 allprojects {
 
     val group = "de.zalando"
-    val projVersion = "1.0.0-dev"
+
+    val projVersion = when {
+        System.getenv("JITPACK") == "true" ->
+            System.getenv("VERSION")
+        else -> null
+    } ?: "1.0.0-dev"
+
 
     apply(plugin = "java")
     apply(plugin = "kotlin")
