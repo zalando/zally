@@ -138,6 +138,7 @@ dependencies {
     compile(project(":zally-core"))
     compile(project(":zally-ruleset-zalando"))
     compile(project(":zally-ruleset-zally"))
+    compile(project(":zally-ruleset-falabella"))
     compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-undertow:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")

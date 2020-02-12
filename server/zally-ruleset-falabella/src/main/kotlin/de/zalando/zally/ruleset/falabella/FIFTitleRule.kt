@@ -1,4 +1,4 @@
-package de.zalando.zally.ruleset.zally
+package de.zalando.zally.ruleset.falabella
 
 import de.zalando.zally.core.toJsonPointer
 import de.zalando.zally.rule.api.Check
@@ -8,7 +8,7 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 
 @Rule(
-    ruleSet = ZallyRuleSet::class,
+    ruleSet = FalabellaRuleSet::class,
     id = "1000",
     severity = Severity.SHOULD,
     title = "Should have 'FIF' on api title"

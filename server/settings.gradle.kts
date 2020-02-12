@@ -5,5 +5,6 @@ include(
     "zally-core",
     "zally-ruleset-zalando",
     "zally-ruleset-zally",
+    "zally-ruleset-falabella",
     "zally-test"
 )
