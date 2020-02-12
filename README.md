@@ -1,6 +1,6 @@
 # Zally
 
-## Levantar Sally Server
+## Levantar Zally Server
 ```
 git clone https://github.com/zalando/zally.git
 ```
