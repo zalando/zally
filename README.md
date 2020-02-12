@@ -80,8 +80,33 @@ class FIFTitleRule {
 
 ### Crear un set de reglas 
 
-OOF
+- Se debe implementar la interface RuleSet para crear un RuleSet propio, la interface se ve así:
 
+```
+interface RuleSet {
+
+    /** A unique identifier for the RuleSet */
+    val id: String
+
+    /** The base url where documentation for this RuleSet can be found */
+    val url: URI
+
+    /** Calculate url where a Rule is documented */
+    fun url(rule: Rule): URI
+}
+```
+- Ejemplo de un RuleSet propio (sin implementar todas las variables): 
+```
+package de.zalando.zally.ruleset.falabella
+
+import de.zalando.zally.core.AbstractRuleSet
+import de.zalando.zally.rule.api.RuleSet
+
+class FalabellaRuleSet : AbstractRuleSet(), RuleSet {
+    override val id: String = "FalabellaRuleSet"
+}
+
+```
 
 ## Ignorar reglas
 x-zally-ignore: añadir a la descripción de la api para ignorar reglas.  
