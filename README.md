@@ -1,94 +1,101 @@
-# Zally: A minimalistic, simple-to-use OpenAPI 2 and 3 linter
+# Zally
 
-[![Build Status](https://travis-ci.org/zalando/zally.svg?branch=master)](https://travis-ci.org/zalando/zally)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/05a7515011504c06b1cb35ede27ac7d4)](https://www.codacy.com/app/zally/zally?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zalando/zally&amp;utm_campaign=Badge_Grade)
-[![Join the chat at https://gitter.im/zalando/zally](https://badges.gitter.im/zalando/zally.svg)](https://gitter.im/zalando/zally?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+## Levantar Sally Server
+```
+git clone https://github.com/zalando/zally.git
+```
+```
+cd zally/server
+```
+```
+./gradlew clean build 
+```
+```
+./gradlew bootRun
+```
+El servidor estará corriendo cuando la terminal muestre un mensaje como este (no importa que salga 97%): 
+Started ApplicationKt in 76.343 seconds (JVM running for 77.092)
 
-<img src="logo.png" width="200" height="200" />
-
-Zally is a quality assurance tool. It's a linter for OpenAPI specifications, which:
-
-- Increases the quality of APIs
-- Checks compliance
-- Delivers early feedback for API designers
-- Ensures the same look-and-feel of APIs
-- Supports [API-First approach](https://opensource.zalando.com/restful-api-guidelines/#100)
-- Provides best practices and advices
-
-Its standard configuration will check your APIs against the rules defined in
-[Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/),
-but anyone can use it **out-of-the-box**.
-
-Zally's easy-to-use [CLI](cli/README.md) uses the server in the background so that
-you can check your API *on the spot*. It also features an intuitive
-[Web UI](web-ui/README.md) that shows implemented rules and lints external files
-and (with its online editor) API definitions.
-
-## Features
-
-- Support for OpenAPI 3 and (Swagger) OpenAPI 2 specifications
-- RESTful API, CLI and Web interface
-- Rich Check configuration
-- Ignore functionality (`x-zally-ignore` extension)
-- Java/Kotlin API for new Checks + helper functions
-
-## Quick start guide
-
-Trying out Zally is easy. You can build and run the whole Zally stack (web-ui, server
-and database) by executing:
-
-```bash
-./build-and-run.sh
+## Usar Zally desde la línea de comandos
+1. Levantar Zally Server
+2. En otra terminal, desde el repositorio de zally correr:
+```
+cd cli/zally/
+```
+```
+go build
+```
+3. Para ver los comandos usar:
+```
+./zally help
+```
+4. Para ver la lista de reglas:
+```
+./zally rules
+```
+5. Para usar zally
+```
+./zally lint <directorio de la definición de la API>
 ```
 
-Web UI is accessible on `http://localhost:8080`; Zally server on `http://localhost:8000`
+## Agregar reglas
 
-## Documentation and Manuals
+### Crear una regla 
 
-Please consult the following documents for more information:
+- Si se quiere crear solo una regla, se puede añadir al Ruleset de Zally sin necesidad de crear un Ruleset propio. 
+- Crear un archivo kotlin con el nombre de la regla.
+- Ejemplo de regla: 
+```
+package de.zalando.zally.ruleset.zally
+ 
+import de.zalando.zally.core.toJsonPointer
+import de.zalando.zally.rule.api.Check
+import de.zalando.zally.rule.api.Context
+import de.zalando.zally.rule.api.Rule
+import de.zalando.zally.rule.api.Severity
+import de.zalando.zally.rule.api.Violation
+ 
+@Rule(
+   ruleSet = ZallyRuleSet::class,
+   id = "1000",
+   severity = Severity.SHOULD,
+   title = "Should have 'FIF' on api title"
+)
+ 
+class FIFTitleRule {
+   val description = "'FIF' should be on the api title"
+ 
+   @Check(Severity.SHOULD)
+   fun validate(context: Context): Violation? {
+       val title = context.api.info?.title.toString()
+       if (!(title.contains("FIF"))) {
+           return context.violation("No 'FIF' on title", "/info/title".toJsonPointer())
+       } else {
+           return null
+       }
+   }
+}
+```
+- OJO: no compilará ante cualquier error de sintaxis (espacios después de corchetes, debe haber una línea en blanco al final, etc)
 
-- [Zally Concepts](documentation/concepts.md)
-- [How to operate](documentation/operation.md) Zally tools
-- [How to use Zally](documentation/usage.md)
-- [How to develop new Rules](documentation/rule-development.md)
-- [Building Under Windows Subsystem for Linux](documentation/build-under-wsl.md)
+### Crear un set de reglas 
 
-## Contributing
+WIP
 
-Zally welcomes contributions from the open source community. To get started, take a
-look at our [contributing guidelines](CONTRIBUTING). Then check our
-[Project Board](https://github.com/zalando/zally/projects/1) and
-[Issues Tracker](https://github.com/zalando/zally/issues) for ideas.
 
-## Roadmap
-
-For Zally [version 1.5](https://github.com/zalando/zally/milestone/3), we're focusing on:
-
-- Improve extensibility of Zally
-  - Plugin mechanism for Rules (Sets)
-  - Utilities and helper functions for Check development
-- Improve quality by introducing a better testing approach for integration tests
-- Make the usage of Zally easier by providing high-quality documentation for
-  - End users
-  - Check developers
-  - Operators and administrators
-
-If you have ideas for these items, please let us know.
-
-## Contact
-
-Feel free to join our [Gitter room](https://gitter.im/zalando/zally) or contact one
-of the [maintainers](MAINTAINERS) directly.
-
-## Alternatives 
-
-Zally is not the only linter for OpenAPI v2 and v3. There is [an article](https://nordicapis.com/8-openapi-linters/) comparing different OpenAPI linters.
-
-So why should you choose Zally?
-- It supports [Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/)
-- It can be used in multiple ways: RESTful API, CLI and Web interface
-- Highly customizable (with Kotlin)  
-
-## License
-
-MIT license with an exception. See [license file](LICENSE).
+## Ignorar reglas
+x-zally-ignore: añadir a la descripción de la api para ignorar reglas.  
+Se agrega en un array los números de las reglas a ignorar.
+Ejemplo de uso:
+```
+swagger: '2.0'
+x-zally-ignore: [215, 218, 219]
+info:
+  title: Some API
+  version: '1.0.0'
+  contact:
+    name: Team X
+    email: team@x.com
+    url: https://team.x.com
+paths: {}
+```
