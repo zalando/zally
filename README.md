@@ -80,7 +80,7 @@ class FIFTitleRule {
 
 ### Crear un set de reglas 
 
-WIP
+OOF
 
 
 ## Ignorar reglas
