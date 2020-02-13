@@ -1,0 +1,4 @@
+jdk:
+  - openjdk8
+install:
+  - cd server && ./gradlew assemble publishToMavenLocal --info
