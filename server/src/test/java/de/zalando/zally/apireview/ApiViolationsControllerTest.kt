@@ -1,6 +1,8 @@
 package de.zalando.zally.apireview
 
+import de.zalando.zally.apireview.RestApiTestConfiguration.Companion.assertRuleManagerUsingAllAnnotatedRules
 import de.zalando.zally.configuration.JacksonObjectMapperConfiguration
+import de.zalando.zally.core.RulesManager
 import de.zalando.zally.dto.ApiDefinitionRequest
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.Matchers.containsString
@@ -24,13 +26,19 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("test", "all-annotated-rules")
 @AutoConfigureMockMvc
 @Suppress("UnsafeCallOnNullableType")
 class ApiViolationsControllerTest {
 
     @Autowired
     private lateinit var mvc: MockMvc
+
+    @Autowired
+    lateinit var rules: RulesManager
+
+    @Test
+    fun `correct rules are under test`() = assertRuleManagerUsingAllAnnotatedRules(rules)
 
     @Test
     @Throws(Exception::class)
