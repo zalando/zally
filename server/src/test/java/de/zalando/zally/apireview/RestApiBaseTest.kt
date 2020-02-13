@@ -1,6 +1,8 @@
 package de.zalando.zally.apireview
 
 import de.zalando.zally.Application
+import de.zalando.zally.apireview.RestApiTestConfiguration.Companion.assertRuleManagerUsingLimitedRules
+import de.zalando.zally.core.RulesManager
 import de.zalando.zally.dto.ApiDefinitionRequest
 import de.zalando.zally.dto.ApiDefinitionResponse
 import de.zalando.zally.dto.RuleDTO
@@ -8,6 +10,7 @@ import de.zalando.zally.dto.RulesListDTO
 import de.zalando.zally.statistic.ReviewStatistics
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -24,7 +27,7 @@ import java.time.LocalDate
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = [Application::class, RestApiTestConfiguration::class]
 )
-@ActiveProfiles("test")
+@ActiveProfiles("test", "limited-rules")
 abstract class RestApiBaseTest {
 
     @Autowired
@@ -32,6 +35,12 @@ abstract class RestApiBaseTest {
 
     @Autowired
     protected lateinit var apiReviewRepository: ApiReviewRepository
+
+    @Autowired
+    private lateinit var rules: RulesManager
+
+    @Test
+    fun `correct rules are under test`() = assertRuleManagerUsingLimitedRules(rules)
 
     protected val reviewStatistics: ReviewStatistics
         get() = getReviewStatisticsBetween(null, null)

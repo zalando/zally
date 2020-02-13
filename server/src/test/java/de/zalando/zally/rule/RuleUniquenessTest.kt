@@ -1,5 +1,6 @@
 package de.zalando.zally.rule
 
+import de.zalando.zally.apireview.RestApiTestConfiguration.Companion.assertRuleManagerUsingAllAnnotatedRules
 import de.zalando.zally.core.RulesManager
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -11,11 +12,14 @@ import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("test", "all-annotated-rules")
 class RuleUniquenessTest {
 
     @Autowired
-    lateinit var rules: RulesManager
+    private lateinit var rules: RulesManager
+
+    @Test
+    fun `correct rules are under test`() = assertRuleManagerUsingAllAnnotatedRules(rules)
 
     @Test
     fun ruleIdsShouldBeUnique() {

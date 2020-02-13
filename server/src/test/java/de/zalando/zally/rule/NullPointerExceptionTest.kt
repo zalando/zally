@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
+import de.zalando.zally.apireview.RestApiTestConfiguration.Companion.assertRuleManagerUsingAllAnnotatedRules
 import de.zalando.zally.core.CompositeRulesValidator
 import de.zalando.zally.core.EMPTY_JSON_POINTER
 import de.zalando.zally.core.ObjectTreeReader
+import de.zalando.zally.core.RulesManager
 import de.zalando.zally.core.RulesPolicy
 import de.zalando.zally.core.plus
 import de.zalando.zally.core.toEscapedJsonPointer
@@ -25,7 +27,7 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule
 
 @RunWith(Parameterized::class)
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("test", "all-annotated-rules")
 class NullPointerExceptionTest(
     private val name: String,
     private val spec: String
@@ -437,8 +439,13 @@ class NullPointerExceptionTest(
     @Autowired
     private lateinit var validator: CompositeRulesValidator
 
+    @Autowired
+    private lateinit var rules: RulesManager
+
     @Test
     fun `validate with spec does not throw NullPointerException`() {
+        assertRuleManagerUsingAllAnnotatedRules(rules)
+
         validator.validate(spec, RulesPolicy(emptyList()))
     }
 }

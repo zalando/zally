@@ -1,6 +1,7 @@
 package de.zalando.zally.core
 
 import com.google.common.io.Resources
+import de.zalando.zally.test.ZallyAssertions.assertThat
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
@@ -14,7 +15,7 @@ class JsonSchemaValidatorTest {
         val file = "schemas/simple-schema.json"
         val schemaUrl = Resources.getResource(file)
         val json = ObjectTreeReader().read(schemaUrl)
-        val jsonSchemaValidator = JsonSchemaValidator(file, json, mapOf(onlineSchema to localResource))
+        val jsonSchemaValidator = JsonSchemaValidator(json, mapOf(onlineSchema to localResource))
 
         val jsonToValidate = ObjectTreeReader().read(
             """
@@ -36,15 +37,31 @@ class JsonSchemaValidatorTest {
         val onlineSchema = "http://json-schema.org/draft-04/schema"
         val localResource = Resources.getResource("schemas/json-schema.json").toString()
 
-        val file = "schemas/openapi-2-schema.json"
+        val file = "schemas/swagger-schema.json"
         val schemaUrl = Resources.getResource(file)
         val json = ObjectTreeReader().read(schemaUrl)
-        var jsonSchemaValidator = JsonSchemaValidator(file, json, mapOf(onlineSchema to localResource))
+        var jsonSchemaValidator = JsonSchemaValidator(json, mapOf(onlineSchema to localResource))
 
         val specJson = ObjectTreeReader().read(Resources.getResource("fixtures/api_tinbox.yaml"))
 
         val valResult = jsonSchemaValidator.validate(specJson)
         assertThat(valResult.isEmpty()).isFalse()
         assertThat(valResult[0].description).isEqualTo("Instance failed to match at least one required schema among 2")
+    }
+
+    @Test
+    fun `invalid schemas result in empty violation pointers`() {
+        val reader = ObjectTreeReader()
+
+        val ref = "\$ref"
+        val json = reader.read("""{ "$ref": "#unresolvable" }""".trimIndent())
+
+        val result = JsonSchemaValidator(json)
+            .validate(reader.read("""{ "key": "value" }"""))
+
+        assertThat(result)
+            .isNotEmpty
+            .pointersAllEqualTo("")
+            .descriptionsAllEqualTo("""JSON Reference "#unresolvable" cannot be resolved""")
     }
 }
