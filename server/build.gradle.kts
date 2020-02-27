@@ -33,6 +33,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "7.2.1"
     id("org.jetbrains.dokka") version "0.10.0"
     id("maven-publish")
+    signing
 }
 
 allprojects {
@@ -128,6 +129,10 @@ allprojects {
             }
         }
     }
+}
+
+signing {
+    sign(publishing.publications["mavenJava"])
 }
 
 dependencyManagement {

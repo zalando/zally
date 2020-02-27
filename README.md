@@ -92,3 +92,12 @@ So why should you choose Zally?
 ## License
 
 MIT license with an exception. See [license file](LICENSE).
+
+## Publish
+
+### Prerequisites
+
+* [Signing plugin](https://docs.gradle.org/current/userguide/signing_plugin.htm) configured
+* `OSSRH_JIRA_USERNAME` and `OSSRH_JIRA_PASSWORD` to access [Maven Central Repo](https://oss.sonatype.org/) are 
+configured in `$HOME/.gradle/gradle.properties` 
+ 
