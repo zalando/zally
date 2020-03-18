@@ -40,8 +40,11 @@ and database) by executing:
 ```bash
 ./build-and-run.sh
 ```
-
 Web UI is accessible on `http://localhost:8080`; Zally server on `http://localhost:8000`
+
+**Alternatively** , you can run only the server component of zally by executing the `startlocalserver.sh` script under `server/`
+
+You can modify the script if you want to reconfigure the port number or the database details
 
 ## Documentation and Manuals
 
