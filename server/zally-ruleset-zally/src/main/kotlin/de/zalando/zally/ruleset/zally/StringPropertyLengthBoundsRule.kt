@@ -33,6 +33,7 @@ class StringPropertyLengthBoundsRule(config: Config) {
                     schema.type != "string" -> false
                     schema.format in formatWhitelist -> false
                     schema.pattern != null && patternImpliesLimits -> false
+                    schema.enum != null -> false
                     else -> true
                 }
             }
