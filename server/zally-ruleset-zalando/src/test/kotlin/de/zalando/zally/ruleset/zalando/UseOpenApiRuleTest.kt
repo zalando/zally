@@ -7,6 +7,7 @@ import de.zalando.zally.core.rulesConfig
 import de.zalando.zally.ruleset.zalando.util.getResourceJson
 import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class UseOpenApiRuleTest {
@@ -99,6 +100,31 @@ class UseOpenApiRuleTest {
               version: "1.0.0"
             paths: {}
         """.trimIndent()
+        )
+
+        val violations = rule.validateSchema(jsonNode)
+
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `validateSchema should return no violation for valid OpenAPI 3 specification with uri-reference`() {
+        @Language("YAML")
+        val jsonNode = ObjectTreeReader().read(
+            """
+            openapi: 3.0.0
+            info:
+              title: Example API with contact url
+              version: 1.0.0
+              contact:
+                url: http://example.com
+            paths:
+              /path:
+                post:
+                  responses:
+                    '200':
+                      description: Example response
+            """.trimIndent()
         )
 
         val violations = rule.validateSchema(jsonNode)
