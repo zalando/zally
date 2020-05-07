@@ -11,7 +11,7 @@ FROM registry.opensource.zalan.do/stups/openjdk:latest
 
 MAINTAINER "http://zalando.github.io/"
 
-COPY src/main/resources/api/zally-api.yaml /zalando-apis/zally-api.yaml
+COPY zally-server/src/main/resources/api/zally-api.yaml /zalando-apis/zally-api.yaml
 COPY --from=builder /src/zally-server/build/libs/zally-server.jar /
 
 EXPOSE 8080
