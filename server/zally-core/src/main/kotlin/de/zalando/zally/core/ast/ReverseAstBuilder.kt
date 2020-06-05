@@ -97,9 +97,14 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
                         // We must not use the method name but re-use the current pointer.
                         nodes.push(Node(value, pointer, marker, /* skip */true))
                     } else {
-                        nodes.push(Node(value, pointer + m.name
-                                .removePrefix("get")
-                                .decapitalize().toEscapedJsonPointer(), marker))
+                        // Do not add extension names to the JsonNode path
+                        val nextPath = m.name
+                            .takeIf { it !in this.extensionMethodNames }
+                            ?.removePrefix("get")
+                            ?.decapitalize()
+                            ?: ""
+
+                        nodes.push(Node(value, pointer + nextPath.toEscapedJsonPointer(), marker))
                     }
                 }
             } catch (e: ReflectiveOperationException) {
