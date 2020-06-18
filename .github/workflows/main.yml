@@ -1,35 +1,25 @@
-# ./.github/workflows/dockerimage.yml
+# ./.github/workflows/main.yml
 
-name: Docker Image CI
-
-on:
-release:
-types: [published]
-
+name: Publish Docker
+on: [push]
 jobs:
-build:
-runs-on: ubuntu-latest
-
-        steps:
-            - uses: actions/checkout@v1
-            - name: Login to DockerHub Registry
-              run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-            - name: Get the version
-              id: vars
-              run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
-            - name: Build the tagged Docker image for server
-              run: docker build ./server --file Dockerfile --tag schweizerischebundesbahnen/zally-server:${{steps.vars.outputs.tag}}
-            - name: Push the tagged Docker image for server
-              run: docker push schweizerischebundesbahnen/zally-server:${{steps.vars.outputs.tag}}
-            - name: Build the latest Docker image for server
-              run: docker build ./server --file Dockerfile --tag schweizerischebundesbahnen/zally-server:latest
-            - name: Push the latest Docker image for server
-              run: docker push schweizerischebundesbahnen/zally-server:latest
-            - name: Build the tagged Docker image for web-ui
-              run: docker build ./web-ui --file Dockerfile --tag schweizerischebundesbahnen/zally-web-ui:${{steps.vars.outputs.tag}}
-            - name: Push the tagged Docker image for web-ui
-              run: docker push schweizerischebundesbahnen/zally-web-ui:${{steps.vars.outputs.tag}}
-            - name: Build the latest Docker image for web-ui
-              run: docker build ./web-ui --file Dockerfile --tag schweizerischebundesbahnen/zally-web-ui:latest
-            - name: Push the latest Docker image for web-ui
-              run: docker push schweizerischebundesbahnen/zally-web-ui:latest
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Publish Server Image to Registry
+      uses: HurricanKai/Publish-Docker-Github-Action@master
+      with:
+        name: schweizerischebundesbahnen/zally-server
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tagging: true
+        dockerfile: ./server/Dockerfile
+    - name: Publish Web-UI Image to Registry
+      uses: HurricanKai/Publish-Docker-Github-Action@master
+      with:
+        name: schweizerischebundesbahnen/zally-web-ui
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tagging: true
+        dockerfile: ./web-ui/Dockerfile
