@@ -1,25 +1,33 @@
-# ./.github/workflows/main.yml
+name: CI
 
-name: Publish Docker
-on: [push]
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
+
 jobs:
   build:
+    name: build
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-    - uses: actions/checkout@master
-    - name: Publish Server Image to Registry
-      uses: HurricanKai/Publish-Docker-Github-Action@master
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: build and push image
+      uses: docker/build-push-action@v1
+      env:
+        DOCKER_BUILDKIT: 1
       with:
-        name: schweizerischebundesbahnen/zally-server
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        tagging: true
-        dockerfile: ./server/Dockerfile
-    - name: Publish Web-UI Image to Registry
-      uses: HurricanKai/Publish-Docker-Github-Action@master
-      with:
-        name: schweizerischebundesbahnen/zally-web-ui
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        tagging: true
-        dockerfile: ./web-ui/Dockerfile
+        repository: schweizerischebundesbahnen/zally-server
+        path: ./server
+        tag_with_ref: true
+        add_git_labels: true
+        build_args: MAKE_TARGET=build
+        push: ${{ startsWith(github.ref, 'refs/tags/') }}
