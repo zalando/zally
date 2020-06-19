@@ -9,5 +9,9 @@ The approach talen here is to start from Zalando's ruleset and then tailor it to
 4. Rename 'ZalandoRuleSet' to 'SBBRuleSet'
 
 ## Coniguration of Rules
-- Removed "Provide API Audience (219)"
-- Removed "Following Naming Convention for Hostnames (224)"
+- Removed "Provide API Audience" (219)
+- Removed "Following Naming Convention for Hostnames" (224)
+- Removed "Use 429 With Header For Rate Limits" (153)
+- Set "Secure All Endpoints With Scopes" (105) to SHOULD
+- Set "Response As JSON Object" (110) to SHOULD
+- Set "Use Problem JSON" (176) to SHOULD
