@@ -9,7 +9,7 @@ import de.zalando.zally.rule.api.Violation
 import de.zalando.zally.core.util.PatternUtil.isPathVariable
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "146",
     severity = Severity.SHOULD,
     title = "Limit number of resource types"

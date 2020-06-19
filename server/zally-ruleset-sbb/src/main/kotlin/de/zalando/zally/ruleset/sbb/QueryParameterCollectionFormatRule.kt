@@ -9,7 +9,7 @@ import de.zalando.zally.rule.api.Violation
 import io.swagger.v3.oas.models.parameters.Parameter
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "154",
     severity = Severity.SHOULD,
     title = "Use and Specify Explicitly the Form-Style Query Format for Collection Parameters"

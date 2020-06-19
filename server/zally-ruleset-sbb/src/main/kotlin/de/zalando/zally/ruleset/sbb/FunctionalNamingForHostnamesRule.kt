@@ -8,7 +8,7 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "224",
     severity = Severity.MUST,
     title = "Follow Naming Convention for Hostnames"

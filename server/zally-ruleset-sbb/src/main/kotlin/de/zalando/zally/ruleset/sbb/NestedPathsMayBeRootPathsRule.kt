@@ -8,7 +8,7 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "145",
     severity = Severity.MAY,
     title = "Consider Using (Non-) Nested URLs"

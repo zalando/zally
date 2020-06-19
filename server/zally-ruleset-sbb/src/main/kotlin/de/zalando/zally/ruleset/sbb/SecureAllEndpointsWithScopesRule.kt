@@ -12,7 +12,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme
 import java.util.SortedSet
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "105",
     severity = Severity.MUST,
     title = "Secure All Endpoints With Scopes"
