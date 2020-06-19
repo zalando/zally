@@ -18,6 +18,7 @@ We take the approach to start from Zalando's ruleset and then tailor it to SBB's
 - Set "Use Problem JSON" (176) to SHOULD
 - Set "Prefer Compatible Extensions" (107) to MAY
 - Set "Pluralize Resource Names" (134) to SHOULD
+- Add "CamelCaseInPropName" rule (hint: it's configured via CaseChecker in reference.conf)
 
 ## Todo
 - Link to SBB ruleset (https://schweizerischebundesbahnen.github.io/api-principles/restful/)
