@@ -16,7 +16,7 @@ import de.zalando.zally.ruleset.zalando.util.WordUtil.isPlural
 @Rule(
     ruleSet = SBBRuleSet::class,
     id = "134",
-    severity = Severity.MUST,
+    severity = Severity.SHOULD,
     title = "Pluralize Resource Names"
 )
 class PluralizeResourceNamesRule(rulesConfig: Config) {
@@ -33,7 +33,7 @@ class PluralizeResourceNamesRule(rulesConfig: Config) {
             .map { it.toRegex() }
             .toTypedArray())
 
-    @Check(severity = Severity.MUST)
+    @Check(severity = Severity.SHOULD)
     fun validate(context: Context): List<Violation> {
         return context.validatePaths { (path, _) ->
             pathSegments(sanitizedPath(path, whitelist))

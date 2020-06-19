@@ -9,14 +9,14 @@ import de.zalando.zally.rule.api.Violation
 @Rule(
     ruleSet = SBBRuleSet::class,
     id = "110",
-    severity = Severity.MUST,
+    severity = Severity.SHOULD,
     title = "Response As JSON Object"
 )
 class SuccessResponseAsJsonObjectRule {
 
     private val description = "Always return JSON objects as top-level data structures to support extensibility"
 
-    @Check(severity = Severity.MUST)
+    @Check(severity = Severity.SHOULD)
     fun checkJSONObjectIsUsedAsSuccessResponseType(context: Context): List<Violation> =
         context.api.paths.orEmpty().values
             .flatMap {

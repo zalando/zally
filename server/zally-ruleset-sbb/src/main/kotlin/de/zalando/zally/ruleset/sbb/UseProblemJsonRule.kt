@@ -18,7 +18,7 @@ import io.swagger.v3.oas.models.responses.ApiResponse
 @Rule(
     ruleSet = SBBRuleSet::class,
     id = "176",
-    severity = Severity.MUST,
+    severity = Severity.SHOULD,
     title = "Use Problem JSON"
 )
 class UseProblemJsonRule {
@@ -34,7 +34,7 @@ class UseProblemJsonRule {
         JsonSchemaValidator(json)
     }
 
-    @Check(severity = Severity.MUST)
+    @Check(severity = Severity.SHOULD)
     fun validate(context: Context): List<Violation> {
         return context.api.paths.orEmpty().flatMap { (_, pathItem) ->
             pathItem?.readOperations().orEmpty().flatMap { op ->
