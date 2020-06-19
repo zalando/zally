@@ -22,6 +22,7 @@ dependencies {
     val jadlerVersion = "1.3.0"
 
     compile(project(":zally-core"))
+    compile(project(":zally-ruleset-sbb"))
     compile(project(":zally-ruleset-zalando"))
     compile(project(":zally-ruleset-zally"))
     compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
