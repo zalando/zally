@@ -10,14 +10,14 @@ import de.zalando.zally.rule.api.Violation
 @Rule(
     ruleSet = SBBRuleSet::class,
     id = "107",
-    severity = Severity.SHOULD,
+    severity = Severity.MAY,
     title = "Prefer Compatible Extensions"
 )
 class ExtensibleEnumRule {
 
     val description = "Property is not an extensible enum (use `x-extensible-enum` instead)"
 
-    @Check(severity = Severity.SHOULD)
+    @Check(severity = Severity.MAY)
     fun checkForEnums(context: Context): List<Violation> =
         context.api.getAllTransitiveSchemas()
             .filter { it.enum != null && it.enum.isNotEmpty() }
