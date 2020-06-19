@@ -10,7 +10,7 @@ import de.zalando.zally.core.util.getAllProperties
 import io.swagger.v3.oas.models.media.Schema
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "235",
     severity = Severity.SHOULD,
     title = "Name date/time properties using the \"_at\" suffix"

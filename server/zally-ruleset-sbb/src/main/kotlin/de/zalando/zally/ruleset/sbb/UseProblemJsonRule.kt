@@ -16,7 +16,7 @@ import de.zalando.zally.rule.api.Violation
 import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "176",
     severity = Severity.MUST,
     title = "Use Problem JSON"

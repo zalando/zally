@@ -12,7 +12,7 @@ import io.swagger.v3.oas.models.PathItem
  * Validate that HTTP methods and statuses align as expected
  */
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "150",
     severity = Severity.MUST,
     title = "Use Standard HTTP Status Codes"

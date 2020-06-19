@@ -9,7 +9,7 @@ import de.zalando.zally.rule.api.Violation
 import io.swagger.v3.oas.models.security.SecurityScheme
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "104",
     severity = Severity.MUST,
     title = "Secure Endpoints with OAuth 2.0"

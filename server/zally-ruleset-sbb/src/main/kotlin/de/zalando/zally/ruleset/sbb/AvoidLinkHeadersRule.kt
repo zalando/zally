@@ -9,7 +9,7 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "166",
     severity = Severity.MUST,
     title = "Avoid Link in Header Rule"

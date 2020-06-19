@@ -10,7 +10,7 @@ import io.swagger.v3.oas.models.media.Schema
 import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "151",
     severity = Severity.MUST,
     title = "Specify Success and Error Responses"
