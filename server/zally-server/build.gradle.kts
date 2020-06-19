@@ -18,6 +18,7 @@ dependencies {
     val jadlerVersion = "1.3.1"
 
     implementation(project(":zally-core"))
+    implementation(project(":zally-ruleset-sbb"))
     implementation(project(":zally-ruleset-zalando"))
     implementation(project(":zally-ruleset-zally"))
     implementation("org.springframework.boot:spring-boot-starter-web")
