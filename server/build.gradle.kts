@@ -1,4 +1,3 @@
-
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -11,9 +10,9 @@ plugins {
 
     // We need to declare these here since we are configuring them for
     // subprojects from the top level.
-    `jacoco`
+    jacoco
     `maven-publish`
-    `signing`
+    signing
     id("com.github.ben-manes.versions") version "0.20.0"
     id("org.jetbrains.dokka") version "0.10.0" apply false
 
@@ -31,13 +30,7 @@ allprojects {
 
 subprojects {
 
-    val group = "de.zalando"
-
-    val projVersion = when {
-        System.getenv("JITPACK") == "true" ->
-            System.getenv("VERSION")
-        else -> null
-    } ?: "1.0.0-dev"
+    group = "de.zalando"
 
     apply(plugin = "kotlin")
     apply(plugin = "kotlin-kapt")
@@ -84,13 +77,49 @@ subprojects {
     publishing {
         publications {
             create<MavenPublication>("mavenJava") {
-                groupId = group
-                artifactId = project.name
-                version = if (projVersion.endsWith("-dev")) projVersion.replace("-dev", "-SNAPSHOT") else projVersion
-
                 from(components["java"])
-                artifact(tasks["sourcesJar"])
-                artifact(tasks["javadocJar"])
+                pom {
+                    description.set("OpenAPI linter service")
+                    url.set("https://github.com/zalando/zally")
+                    name.set("OpenAPI linter")
+                    licenses {
+                        license {
+                            name.set("MIT License")
+                            url.set("https://opensource.org/licenses/MIT")
+                        }
+                    }
+                    developers {
+                        developer {
+                            name.set("Felix Müller")
+                            email.set("felix.mueller.berlin@googlemail.com")
+                        }
+                        developer {
+                            name.set("Mikhail Chernykh")
+                            email.set("netmisch@gmail.com")
+                        }
+                        developer {
+                            name.set("Maxim Tschumak")
+                            email.set("maxim.tschumak@gmail.com")
+                        }
+                        developer {
+                            name.set("Rui Araujo")
+                            email.set("rui.araujo@zalando.de")
+                        }
+                        developer {
+                            name.set("Tronje Krop")
+                            email.set("tronje.krop@zalando.de")
+                        }
+                        developer {
+                            name.set("Gregor Zeitlinger")
+                            email.set("gregor.zeitlinger@zalando.de")
+                        }
+                    }
+                    scm {
+                        connection.set("scm:git:git://github.com/zalando/zally.git")
+                        developerConnection.set("scm:git:ssh://github.com:zalando/zally.git")
+                        url.set("https://github.com/zalando/zally/tree/master")
+                    }
+                }
             }
         }
 
@@ -98,8 +127,7 @@ subprojects {
             maven {
                 val releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
                 val snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
-                val isSnapshot = projVersion.toString().endsWith("-SNAPSHOT")
-                url = uri(if (isSnapshot) snapshotsRepoUrl else releasesRepoUrl)
+                url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
                 credentials {
                     // defined in travis project settings or in $HOME/.gradle/gradle.properties
                     username = System.getenv("OSSRH_JIRA_USERNAME")
