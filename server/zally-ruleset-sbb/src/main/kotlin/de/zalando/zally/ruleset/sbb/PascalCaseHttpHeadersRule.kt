@@ -9,7 +9,7 @@ import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "132",
     severity = Severity.SHOULD,
     title = "Prefer Hyphenated-Pascal-Case for HTTP header fields"

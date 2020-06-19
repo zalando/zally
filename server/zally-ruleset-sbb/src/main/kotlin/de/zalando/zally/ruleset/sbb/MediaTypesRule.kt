@@ -15,7 +15,7 @@ import io.swagger.v3.oas.models.responses.ApiResponse
  * @see "https://opensource.zalando.com/restful-api-guidelines/#172"
  */
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "172",
     severity = Severity.SHOULD,
     title = "Prefer standard media type names"

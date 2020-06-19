@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory
 import java.net.URL
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "101",
     severity = Severity.MUST,
     title = "Provide API Specification using OpenAPI"

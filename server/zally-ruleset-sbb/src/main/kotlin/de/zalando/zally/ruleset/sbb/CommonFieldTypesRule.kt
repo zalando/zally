@@ -10,7 +10,7 @@ import de.zalando.zally.rule.api.Violation
 import io.swagger.v3.oas.models.media.Schema
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "174",
     severity = Severity.MUST,
     title = "Use common field names"

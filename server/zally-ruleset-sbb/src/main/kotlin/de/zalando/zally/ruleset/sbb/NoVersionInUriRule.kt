@@ -10,7 +10,7 @@ import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.oas.models.servers.Server
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "115",
     severity = Severity.MUST,
     title = "Do Not Use URI Versioning"

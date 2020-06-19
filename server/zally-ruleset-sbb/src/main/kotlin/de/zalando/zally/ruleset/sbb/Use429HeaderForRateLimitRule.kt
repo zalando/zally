@@ -10,7 +10,7 @@ import de.zalando.zally.rule.api.Violation
 import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
-    ruleSet = ZalandoRuleSet::class,
+    ruleSet = SBBRuleSet::class,
     id = "153",
     severity = Severity.MUST,
     title = "Use 429 With Header For Rate Limits"
