@@ -14,7 +14,7 @@ import java.util.SortedSet
 @Rule(
     ruleSet = SBBRuleSet::class,
     id = "105",
-    severity = Severity.MUST,
+    severity = Severity.SHOULD,
     title = "Secure All Endpoints With Scopes"
 )
 class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
@@ -30,7 +30,7 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
     )
         .map { it.toRegex() }
 
-    @Check(severity = Severity.MUST)
+    @Check(severity = Severity.SHOULD)
     fun checkDefinedScopeFormats(context: Context): List<Violation> =
         context.api.components?.securitySchemes?.values.orEmpty()
             .filter { it.type == SecurityScheme.Type.OAUTH2 }
