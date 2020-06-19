@@ -11,12 +11,12 @@ import io.swagger.v3.oas.models.parameters.Parameter
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "183",
-    severity = Severity.MUST,
-    title = "Use Only the Specified Proprietary Zalando Headers"
+    id = "TBD",
+    severity = Severity.SHOULD,
+    title = "Use Only the Specified Proprietary SBB Headers"
 )
 class ProprietaryHeadersRule(rulesConfig: Config) {
-    private val zalandoHeaders = rulesConfig.getConfig(javaClass.simpleName).getStringList("zalando_headers")
+    private val zalandoHeaders = rulesConfig.getConfig(javaClass.simpleName).getStringList("sbb_headers")
     private val standardRequestHeaders =
         rulesConfig.getConfig(javaClass.simpleName).getStringList("standard_request_headers")
     private val standardResponseHeaders =
@@ -28,12 +28,12 @@ class ProprietaryHeadersRule(rulesConfig: Config) {
     private val requestDescription = "use only standardized or specified request headers"
     private val responseDescription = "use only standardized or specified response headers"
 
-    @Check(severity = Severity.MUST)
+    @Check(severity = Severity.SHOULD)
     fun validateRequestHeaders(context: Context): List<Violation> = requestHeaders(context)
         .filterNot { it.name.toLowerCase() in requestHeaders }
         .map { context.violation(requestDescription, it) }
 
-    @Check(severity = Severity.MUST)
+    @Check(severity = Severity.SHOULD)
     fun validateResponseHeaders(context: Context): List<Violation> = responseHeaders(context)
         .filterNot { it.key.toLowerCase() in responseHeaders }
         .map { context.violation(responseDescription, it.value) }
