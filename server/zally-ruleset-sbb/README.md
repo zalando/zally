@@ -13,18 +13,21 @@ We take the approach to start from Zalando's ruleset and then tailor it to SBB's
 - Removed "Provide API Audience" (219)
 - Removed "Following Naming Convention for Hostnames" (224)
 - Removed "Use 429 With Header For Rate Limits" (153)
+- Removed "Snake_case for property names" (118) 
 - Set "Secure All Endpoints With Scopes" (105) to SHOULD
 - Set "Response As JSON Object" (110) to SHOULD
 - Set "Use Problem JSON" (176) to SHOULD
 - Set "Prefer Compatible Extensions" (107) to MAY
 - Set "Pluralize Resource Names" (134) to SHOULD
+- Set "Propietary Headers" (183) to SHOULD and specify some SBB specific ones
 - Add "CamelCaseInPropName" rule (hint: it's configured via CaseChecker in reference.conf)
 
 ## Todo
-- Link to SBB ruleset (https://schweizerischebundesbahnen.github.io/api-principles/restful/)
+- Adjust links to SBB ruleset (https://schweizerischebundesbahnen.github.io/api-principles/restful/)
 - Clearify tracing headers:
   - (X-ProcessId, X-CorrelationId) vs (X-B3-ParentSpanId, X-B3-SpanId, X-B3-TraceId)
-- Clearify headers in general (X-headers no longer en vogue)
+- Clearify headers in general (X-headers are no longer en vogue)
   - B2P: X-Contract-Id, X-Conversation-Id
   - GPV: Request-Id, Correlation-Id, Process-Id
   - EDG: X-B3-*, X-SBB-distributionChannel
+- Once headers are defined, addapt 'reference.conf' and documentation
