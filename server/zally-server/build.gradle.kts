@@ -59,3 +59,9 @@ dependencyManagement {
 tasks.bootRun {
     jvmArgs = listOf("-Dspring.profiles.active=dev")
 }
+
+tasks.withType<PublishToMavenRepository>().configureEach {
+    onlyIf {
+        false
+    }
+}
