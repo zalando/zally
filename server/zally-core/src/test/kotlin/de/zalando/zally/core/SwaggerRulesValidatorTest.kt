@@ -14,7 +14,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 
 @Suppress("UndocumentedPublicClass", "StringLiteralDuplication")
-class RulesValidatorTest {
+class SwaggerRulesValidatorTest {
 
     private val swaggerContent =
         resourceToString("fixtures/api_spp.json")

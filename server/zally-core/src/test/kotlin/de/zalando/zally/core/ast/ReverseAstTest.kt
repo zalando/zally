@@ -1,5 +1,6 @@
 package de.zalando.zally.core.ast
 
+import com.fasterxml.jackson.core.JsonPointer
 import de.zalando.zally.core.ObjectTreeReader
 import de.zalando.zally.core.toJsonPointer
 import io.swagger.parser.OpenAPIParser
@@ -219,6 +220,46 @@ class ReverseAstTest {
         assertThat(ast.isIgnored("".toJsonPointer(), "218")).isTrue()
         assertThat(ast.isIgnored("/info".toJsonPointer(), "218")).isTrue()
         assertThat(ast.isIgnored("/info/description".toJsonPointer(), "218")).isTrue()
+    }
+
+    @Test
+    fun `OpenAPI extension JsonPointers are parsed correctly`() {
+        @Language("yaml")
+        val content = """
+            openapi: 3.0.1
+            info:
+              title: Some API
+              x-test-extension: 4
+            paths: {}
+            """.trimIndent()
+
+        val parsed = OpenAPIParser().readContents(content, null, null).openAPI
+        val ast = ReverseAst.fromObject(parsed).withExtensionMethodNames("getExtensions").build()
+
+        assertThat(ast.getPointer(4)).isEqualTo(JsonPointer.compile("/info/x-test-extension"))
+    }
+
+    @Test
+    fun `Swagger extension JsonPointers are parsed correctly`() {
+        @Language("yaml")
+        val content = """
+            swagger: '2.0'
+            info:
+              title: Some API
+              x-test-extension:
+                multiple:
+                  nested:
+                    paths: 42
+                  and:
+                    another: 2
+            paths: {}
+            """.trimIndent()
+
+        val swagger = SwaggerParser().parse(content)
+        val ast = ReverseAst.fromObject(swagger).withExtensionMethodNames("getVendorExtensions").build()
+
+        assertThat(ast.getPointer(42)).isEqualTo(JsonPointer.compile("/info/x-test-extension/multiple/nested/paths"))
+        assertThat(ast.getPointer(2)).isEqualTo(JsonPointer.compile("/info/x-test-extension/multiple/and/another"))
     }
 
     @Test
