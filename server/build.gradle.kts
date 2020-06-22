@@ -1,4 +1,3 @@
-
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -18,7 +17,8 @@ plugins {
     id("org.jetbrains.dokka") version "0.10.0" apply false
 
     // We apply this so that ktlint can format the top level buildscript
-    id("org.jlleitschuh.gradle.ktlint") version "7.2.1"
+    id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
+    id("org.jlleitschuh.gradle.ktlint-idea") version "9.2.1"
 }
 
 allprojects {
