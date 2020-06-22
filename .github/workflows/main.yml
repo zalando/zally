@@ -1,11 +1,9 @@
-name: CI
+name: Build & Deploy latest
 
 on:
   push:
     branches:
       - master
-    tags:
-      - '*'
   pull_request:
 
 jobs:
@@ -13,23 +11,20 @@ jobs:
     name: build
     runs-on: ubuntu-latest
     steps:
-  
-    - name: Checkout
-      uses: actions/checkout@v2
-      
-#    - name: Login to GitHub Docker Repository
-#      uses: azure/docker-login@v1
-#      with:
-#        login-server: docker.pkg.github.com
-#        username: ${{ github.actor }}
-#        password: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: build and push image
-      uses: docker/build-push-action@v1
+    - name: Login to GitHub Docker Repository
+      uses: azure/docker-login@v1
       with:
+        login-server: docker.pkg.github.com
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-        registry: docker.pkg.github.com
-        repository: sigibe/zally/zally-server
-        path: ./server
-        tags: latest
+    - name: Shallow checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - name: "Build: Docker image"
+      run: |
+        docker build \
+        -t docker.pkg.github.com/schweizerischebundesbahnen/zally/zally-server:latest \
+        .
+    - name: "Push docker image as latest"
+      run: docker push docker.pkg.github.com/schweizerischebundesbahnen/zally/zally-server:latest
