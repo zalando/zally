@@ -11,7 +11,7 @@ jobs:
     name: build
     runs-on: ubuntu-latest
     steps:
-    - name: Login to GitHub Docker Repository
+    - name: Login to Docker Repository
       uses: azure/docker-login@v1
       with:
         login-server: docker.io
@@ -24,7 +24,7 @@ jobs:
     - name: "Build: Docker image"
       run: |
         docker build \
-        -t docker.pkg.github.com/schweizerischebundesbahnen/zally/zally-server:latest \
+        -t schweizerischebundesbahnen/zally-server:latest \
         ./server
     - name: "Push docker image as latest"
-      run: docker push docker.pkg.github.com/schweizerischebundesbahnen/zally/zally-server:latest
+      run: docker push schweizerischebundesbahnen/zally-server:latest
