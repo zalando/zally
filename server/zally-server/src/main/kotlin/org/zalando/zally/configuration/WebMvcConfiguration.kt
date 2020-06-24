@@ -8,6 +8,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer
+import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.util.Arrays
 
@@ -33,6 +34,13 @@ class WebMvcConfiguration : WebMvcConfigurer {
         val yamlConverter = MappingJackson2HttpMessageConverter(yamlObjectMapper)
         yamlConverter.supportedMediaTypes = Arrays.asList(MEDIA_TYPE_TEXT_XYAML, MEDIA_TYPE_APP_XYAML)
         converters.add(yamlConverter)
+    }
+
+    override fun addCorsMappings(registry: CorsRegistry) {
+        registry
+            .addMapping("/**")
+            .allowedMethods("GET", "PUT", "POST", "DELETE", "HEAD", "OPTIONS", "PATCH")
+            .allowedOrigins("*")
     }
 
     companion object {
