@@ -11,12 +11,6 @@ jobs:
     name: build
     runs-on: ubuntu-latest
     steps:
-    - name: Login to Docker Repository
-      uses: azure/docker-login@v1
-      with:
-        login-server: docker.io
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
     - name: Shallow checkout
       uses: actions/checkout@v2
       with:
@@ -26,5 +20,10 @@ jobs:
         docker build \
         -t schweizerischebundesbahnen/zally-server:latest \
         ./server
+    - name: Login to Docker Repository
+      uses: azure/docker-login@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
     - name: "Push docker image as latest"
       run: docker push schweizerischebundesbahnen/zally-server:latest
