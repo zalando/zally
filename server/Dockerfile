@@ -4,7 +4,7 @@
 FROM registry.opensource.zalan.do/stups/openjdk:latest as builder
 COPY . /src
 WORKDIR /src
-RUN ./gradlew build --info
+RUN ./gradlew build -x test --info
 
 
 FROM registry.opensource.zalan.do/stups/openjdk:latest
