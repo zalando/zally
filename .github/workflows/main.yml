@@ -27,7 +27,8 @@ jobs:
       run: |
         docker build \
         -t schweizerischebundesbahnen/zally-web-ui:latest \
-        ./server
+        .
+      working-directory: ./web-ui
     - name: Login to Docker Repository
       uses: azure/docker-login@v1
       with:
