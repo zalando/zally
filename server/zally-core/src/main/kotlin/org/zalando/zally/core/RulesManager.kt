@@ -34,7 +34,7 @@ class RulesManager(val config: Config, val rules: List<RuleDetails>) {
                         it.getConstructor().newInstance()
                     }
                     RuleDetails(ruleSet, rule, instance)
-                }
+                }.filter { ruleDetails -> ruleDetails.ruleSet.id == "SBBRuleSet" || ruleDetails.ruleSet.id == "ZallyRuleSet" } // FIXME: make rulesets configurable
 
             return RulesManager(config, details)
         }
