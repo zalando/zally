@@ -20,10 +20,6 @@ services:
     - "8080:3000"
   server:
     build: ./server
-    depends_on:
-    - postgres
-    links:
-    - postgres:postgres.local
     ports:
     - "8000:8000"
     healthcheck:
@@ -33,15 +29,5 @@ services:
       retries: 10
     environment:
     - SPRING_PROFILES_ACTIVE=dev
-    - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres.local:5432/zally
-    - SPRING_DATASOURCE_USERNAME=postgres
-    - SPRING_DATASOURCE_PASSWORD=postgres
     - MANAGEMENT_PORT=7979
     - TOKEN_INFO_URI=https://url.not.set
-  postgres:
-    image: postgres:9.6
-    environment:
-    - POSTGRES_PASSWORD=postgres
-    - POSTGRES_DB=zally
-    ports:
-    - "54321:5432"

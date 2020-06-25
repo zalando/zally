@@ -5,5 +5,5 @@ import java.net.URI
 
 class SBBRuleSet : AbstractRuleSet() {
 
-    override val url: URI = URI.create("https://zalando.github.io/restful-api-guidelines/")
+    override val url: URI = URI.create("https://schweizerischebundesbahnen.github.io/api-principles/")
 }
