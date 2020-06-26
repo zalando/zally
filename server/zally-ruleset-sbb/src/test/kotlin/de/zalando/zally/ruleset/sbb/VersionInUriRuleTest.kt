@@ -33,7 +33,7 @@ class VersionInUriRuleTest {
         val spec = """
             openapi: 3.0.1
             paths:
-              /shop/orders-v1/{order-id}: {}
+              /shop/orders-v1: {}
         """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
@@ -42,7 +42,7 @@ class VersionInUriRuleTest {
         assertThat(violations).isNotEmpty
         assertThat(violations).hasSize(1)
         assertThat(violations[0].description).contains("Version found in resource name")
-        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1shop~1orders-v1~1{order-id}")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1shop~1orders-v1")
     }
 
     @Test
