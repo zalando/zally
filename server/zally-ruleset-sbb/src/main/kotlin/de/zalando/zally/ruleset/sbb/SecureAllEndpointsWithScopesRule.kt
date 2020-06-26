@@ -13,7 +13,7 @@ import java.util.SortedSet
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "105",
+    id = "security/#must-apis-are-secured",
     severity = Severity.SHOULD,
     title = "Secure All Endpoints With Scopes"
 )

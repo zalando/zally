@@ -10,7 +10,7 @@ import de.zalando.zally.rule.api.Violation
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "171",
+    id = "restful/best-practices/#define-format-for-number-and-integer-types",
     severity = Severity.MUST,
     title = "Define Format for Type Number and Integer"
 )

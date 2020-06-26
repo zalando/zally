@@ -13,7 +13,7 @@ import io.swagger.v3.oas.models.PathItem
  */
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "150",
+    id = "restful/principles/#must-use-standard-http-status-codes",
     severity = Severity.MUST,
     title = "Use Standard HTTP Status Codes"
 )

@@ -10,7 +10,7 @@ import de.zalando.zally.rule.api.Violation
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "TBD",
+    id = "restful/best-practices/#property-names-must-be-camelcase",
     severity = Severity.MUST,
     title = "Property Names Must be ASCII camelCase"
 )

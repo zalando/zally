@@ -9,7 +9,7 @@ import de.zalando.zally.rule.api.Violation
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "145",
+    id = "restful/best-practices/#consider-using-non--nested-urls",
     severity = Severity.MAY,
     title = "Consider Using (Non-) Nested URLs"
 )

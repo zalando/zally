@@ -10,7 +10,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "104",
+    id = "security/#must-apis-are-secured",
     severity = Severity.MUST,
     title = "Secure Endpoints with OAuth 2.0"
 )

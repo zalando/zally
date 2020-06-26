@@ -8,7 +8,7 @@ import de.zalando.zally.rule.api.Violation
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "110",
+    id = "restful/best-practices/#specify-success-and-error-responses",
     severity = Severity.SHOULD,
     title = "Response As JSON Object"
 )

@@ -15,7 +15,7 @@ import de.zalando.zally.ruleset.zalando.util.WordUtil.isPlural
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "134",
+    id = "restful/best-practices/#resources",
     severity = Severity.SHOULD,
     title = "Pluralize Resource Names"
 )

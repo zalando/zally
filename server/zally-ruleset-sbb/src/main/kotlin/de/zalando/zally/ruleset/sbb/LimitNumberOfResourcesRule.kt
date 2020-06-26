@@ -10,7 +10,7 @@ import de.zalando.zally.core.util.PatternUtil.isPathVariable
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "146",
+    id = "restful/best-practices/#limit-number-of-resource-types",
     severity = Severity.SHOULD,
     title = "Limit number of resource types"
 )

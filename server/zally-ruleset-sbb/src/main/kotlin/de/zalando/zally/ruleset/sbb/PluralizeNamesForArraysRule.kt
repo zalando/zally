@@ -10,7 +10,7 @@ import de.zalando.zally.ruleset.zalando.util.WordUtil.isPlural
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "120",
+    id = "restful/best-practices/#array-names-should-be-pluralized",
     severity = Severity.SHOULD,
     title = "Array names should be pluralized"
 )

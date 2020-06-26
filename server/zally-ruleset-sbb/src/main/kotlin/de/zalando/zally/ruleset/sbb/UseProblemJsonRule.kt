@@ -17,7 +17,7 @@ import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "176",
+    id = "restful/best-practices/#use-problem-json",
     severity = Severity.SHOULD,
     title = "Use Problem JSON"
 )
