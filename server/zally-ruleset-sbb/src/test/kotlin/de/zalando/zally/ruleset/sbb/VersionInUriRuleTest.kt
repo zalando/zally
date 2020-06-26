@@ -46,6 +46,21 @@ class VersionInUriRuleTest {
     }
 
     @Test
+    fun `checkResourceNames should return no violation if resource name is a plain version only`() {
+        @Language("YAML")
+        val spec = """
+            openapi: 3.0.1
+            paths:
+              /api/v1/shop/{order-id}: {}
+        """.trimIndent()
+        val context = DefaultContextFactory().getOpenApiContext(spec)
+
+        val violations = rule.checkResourceNames(context)
+
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
     fun `checkPathUrls should return a violation if url contains no version`() {
         @Language("YAML")
         val spec = """
