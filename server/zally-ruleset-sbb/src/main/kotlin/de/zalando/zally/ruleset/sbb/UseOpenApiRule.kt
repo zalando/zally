@@ -19,7 +19,7 @@ import java.net.URL
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "101",
+    id = "restful/principles/#must-provide-api-specification-using-openapi",
     severity = Severity.MUST,
     title = "Provide API Specification using OpenAPI"
 )

@@ -9,7 +9,7 @@ import de.zalando.zally.rule.api.Violation
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "107",
+    id = "restful/best-practices/#use-open-ended-list-of-values-x-extensible-enum-instead-of-enumerations",
     severity = Severity.MAY,
     title = "Prefer Compatible Extensions"
 )

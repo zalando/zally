@@ -11,7 +11,7 @@ import io.swagger.v3.oas.models.parameters.Parameter
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "TBD",
+    id = "restful/best-practices/#common-headers",
     severity = Severity.SHOULD,
     title = "Use Only the Specified Proprietary SBB Headers"
 )

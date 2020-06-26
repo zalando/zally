@@ -10,7 +10,7 @@ import de.zalando.zally.rule.api.Violation
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "147",
+    id = "restful/best-practices/#limit-number-of-sub-resource-levels",
     severity = Severity.SHOULD,
     title = "Limit number of Sub-resources level"
 )

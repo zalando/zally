@@ -13,7 +13,7 @@ import de.zalando.zally.rule.api.Violation
  */
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "130",
+    id = "restful/best-practices/#use-snake_case-for-query-parameters",
     severity = Severity.MUST,
     title = "Use snake_case (never camelCase) for Query Parameters"
 )

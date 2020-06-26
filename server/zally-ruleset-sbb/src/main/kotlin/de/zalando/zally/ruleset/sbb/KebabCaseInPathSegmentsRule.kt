@@ -10,8 +10,8 @@ import de.zalando.zally.rule.api.Violation
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "129",
-    severity = Severity.MUST,
+    id = "restful/best-practices/#use-lowercase-separate-words-with-hyphens-for-path-segments",
+    severity = Severity.SHOULD,
     title = "Lowercase words with hyphens"
 )
 class KebabCaseInPathSegmentsRule(config: Config) {
@@ -21,7 +21,7 @@ class KebabCaseInPathSegmentsRule(config: Config) {
     private val description = "Use lowercase separate words with hyphens for path segments"
     internal val lowerCaseHyphenSeparatedRegex = "^[a-z-]+$".toRegex()
 
-    @Check(severity = Severity.MUST)
+    @Check(severity = Severity.SHOULD)
     fun checkKebabCaseInPathSegments(context: Context): List<Violation> =
         checker.checkPathSegments(context).map { Violation(description, it.pointer) }
 }

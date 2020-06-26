@@ -11,7 +11,7 @@ import io.swagger.v3.oas.models.media.Schema
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "235",
+    id = "restful/best-practices/#name-datetime-properties-using-the-at-suffix",
     severity = Severity.SHOULD,
     title = "Name date/time properties using the \"_at\" suffix"
 )

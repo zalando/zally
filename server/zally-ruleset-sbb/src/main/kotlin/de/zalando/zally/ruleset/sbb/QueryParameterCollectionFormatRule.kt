@@ -10,7 +10,7 @@ import io.swagger.v3.oas.models.parameters.Parameter
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "154",
+    id = "restful/best-practices/#define-collection-format-of-header-and-query-parameters",
     severity = Severity.SHOULD,
     title = "Use and Specify Explicitly the Form-Style Query Format for Collection Parameters"
 )

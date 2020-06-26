@@ -9,7 +9,7 @@ import de.zalando.zally.rule.api.Violation
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "218",
+    id = "publication/#must-centralized-api-documentation-in-english",
     severity = Severity.MUST,
     title = "Contain API Meta Information"
 )

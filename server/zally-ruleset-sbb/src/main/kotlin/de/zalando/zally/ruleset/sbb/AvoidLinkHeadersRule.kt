@@ -10,7 +10,7 @@ import de.zalando.zally.rule.api.Violation
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "166",
+    id = "restful/best-practices/#do-not-use-link-headers-with-json-entities",
     severity = Severity.MUST,
     title = "Avoid Link in Header Rule"
 )

@@ -9,7 +9,7 @@ import de.zalando.zally.rule.api.Violation
 
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "116",
+    id = "restful/best-practices/#follow-versioning-best-practices",
     severity = Severity.MUST,
     title = "Use Semantic Versioning"
 )
