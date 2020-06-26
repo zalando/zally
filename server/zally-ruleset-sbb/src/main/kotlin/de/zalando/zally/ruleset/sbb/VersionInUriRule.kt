@@ -17,8 +17,8 @@ import io.swagger.v3.oas.models.servers.Server
 )
 class VersionInUriRule {
     private val versionInServerRegex = "(.*)v[0-9]+[.](.*)".toRegex()
-    private val versionInPathRegex = "(.*)\\/v[0-9]+\\/(.*)".toRegex()
-    private val versionInResourceNameRegex = "(.*)\\/[^\\/]+v[0-9]+\\/(.*)".toRegex()
+    private val versionInPathRegex = "(.*)\\/v[0-9]+\\/?(.*)".toRegex()
+    private val versionInResourceNameRegex = "(.*)\\/[^\\/]+v[0-9]+\\/?(.*)".toRegex()
 
     @Check(severity = Severity.MUST)
     fun checkServerURLs(context: Context): List<Violation> =
