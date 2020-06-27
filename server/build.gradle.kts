@@ -31,7 +31,7 @@ allprojects {
 
 subprojects {
 
-    group = "de.zalando"
+    group = "org.zalando"
 
     apply(plugin = "kotlin")
     apply(plugin = "kotlin-kapt")
