@@ -18,6 +18,12 @@ services:
     - server:server.local
     ports:
     - "8080:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+
   server:
     build: ./server
     depends_on:
@@ -45,3 +51,8 @@ services:
     - POSTGRES_DB=zally
     ports:
     - "54321:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
