@@ -1,11 +1,11 @@
 package org.zalando.zally.apireview
 
-import org.zalando.zally.statistic.ReviewStatistics
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
+import org.zalando.zally.statistic.ReviewStatistics
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 
 interface ApiReviewRepository : CrudRepository<ApiReview, Long> {
 
@@ -29,6 +29,15 @@ interface ApiReviewRepository : CrudRepository<ApiReview, Long> {
         @Param("to") to: LocalDate,
         @Param("userAgent") userAgent: String = "%"
     ): ReviewStatistics
+
+    @Query(
+        """
+        SELECT r
+        FROM org.zalando.zally.apireview.ApiReview r
+        WHERE (r.name, r.created) IN (SELECT name, MAX(created) FROM org.zalando.zally.apireview.ApiReview GROUP BY name)
+    """
+    )
+    fun findLatestApiReviews(): List<ApiReview>
 
     /**
      * Find ApiReview instance by it's externalId UUID.
