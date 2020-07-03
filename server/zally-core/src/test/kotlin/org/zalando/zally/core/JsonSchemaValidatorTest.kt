@@ -40,8 +40,10 @@ class JsonSchemaValidatorTest {
         val file = "schemas/swagger-schema.json"
         val schemaUrl = Resources.getResource(file)
         val json = ObjectTreeReader().read(schemaUrl)
-        var jsonSchemaValidator = JsonSchemaValidator(json, mapOf(onlineSchema to localResource))
-
+        var jsonSchemaValidator = JsonSchemaValidator(json, mapOf(
+            onlineSchema to localResource,
+            "http://swagger.io/v2/schema.json" to schemaUrl.toString()
+        ))
         val specJson = ObjectTreeReader().read(Resources.getResource("fixtures/api_tinbox.yaml"))
 
         val valResult = jsonSchemaValidator.validate(specJson)
