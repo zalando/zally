@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
 import org.zalando.zally.statistic.ReviewStatistics
 import java.time.LocalDate
-import java.util.*
+import java.util.UUID
 
 interface ApiReviewRepository : CrudRepository<ApiReview, Long> {
 
