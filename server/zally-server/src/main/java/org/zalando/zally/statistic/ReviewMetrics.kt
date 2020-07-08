@@ -3,6 +3,7 @@ package org.zalando.zally.statistic
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.zalando.zally.apireview.ApiReviewRepository
@@ -12,6 +13,9 @@ import java.util.concurrent.atomic.AtomicLong
 class ReviewMetrics(private val apiReviewRepository: ApiReviewRepository, private val meterRegistry: MeterRegistry) {
 
     final val statisticsReferences = mutableListOf<Map<String, Map<String, AtomicLong>>>()
+
+    @Value("\${metrics.review.name-prefix:zally_}")
+    lateinit var metricsNamePrefix: String
 
     @Scheduled(fixedDelayString = "\${metrics.review.fixed-delay:300000}", initialDelay = 10000)
     fun updateMetrics() {
@@ -23,7 +27,7 @@ class ReviewMetrics(private val apiReviewRepository: ApiReviewRepository, privat
                     .filter { it.containsKey(statistic.name) }
                     .map { it[statistic.name] }
                     .map {
-                        LOG.debug("Updating metrics reference values for review statistic $statistic.name")
+                        LOG.debug("Updating metrics reference values for review statistic ${statistic.name}")
                         it?.get(NUMBER_OF_ENDPOINTS)?.set(statistic.numberOfEndpoints)
                         it?.get(MUST_VIOLATIONS)?.set(statistic.mustViolations)
                         it?.get(SHOULD_VIOLATIONS)?.set(statistic.shouldViolations)
@@ -31,7 +35,7 @@ class ReviewMetrics(private val apiReviewRepository: ApiReviewRepository, privat
                         it?.get(HINT_VIOLATIONS)?.set(statistic.hintViolations)
                     }
                     .ifEmpty {
-                        LOG.debug("Creating new metrics reference for review statistic $statistic.name")
+                        LOG.debug("Creating new metrics reference for review statistic ${statistic.name}")
                         val statisticMap = createReferenceMapForStatistic(statistic)
                         statisticsReferences.add(statisticMap)
                         registerGaugeMetric(statisticMap)
@@ -56,18 +60,22 @@ class ReviewMetrics(private val apiReviewRepository: ApiReviewRepository, privat
         statisticReference.entries.forEach { entry ->
             entry.value.forEach { metric ->
                 val snakeCasedApiName = entry.key.replace(Regex("\\p{Zs}+"), "_").toLowerCase()
-                Gauge.builder(metric.key, metric.value, { v -> v.toDouble() }).tag("api_name", snakeCasedApiName).register(meterRegistry)
-                LOG.debug("Registered micrometer gauge ${metric.key} for api $snakeCasedApiName")
+                val metricName = "${metricsNamePrefix}${metric.key}"
+                Gauge
+                    .builder(metricName, metric.value, { v -> v.toDouble() })
+                    .tag("api_name", snakeCasedApiName)
+                    .register(meterRegistry)
+                LOG.debug("Registered micrometer gauge $metricName for api $snakeCasedApiName")
             }
         }
     }
 
     companion object {
         private val LOG = LoggerFactory.getLogger(ReviewMetrics::class.java)
-        const val NUMBER_OF_ENDPOINTS = "number_of_endpoints"
-        const val MUST_VIOLATIONS = "must_violations"
-        const val SHOULD_VIOLATIONS = "should_violations"
-        const val MAY_VIOLATIONS = "may_violations"
-        const val HINT_VIOLATIONS = "hint_violations"
+        const val NUMBER_OF_ENDPOINTS = "number_of_endpoints_total"
+        const val MUST_VIOLATIONS = "must_violations_total"
+        const val SHOULD_VIOLATIONS = "should_violations_total"
+        const val MAY_VIOLATIONS = "may_violations_total"
+        const val HINT_VIOLATIONS = "hint_violations_total"
     }
 }
