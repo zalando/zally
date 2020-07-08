@@ -8,18 +8,18 @@ data class ReviewStatisticsByName(
     val mustViolations: Long = 0,
     val shouldViolations: Long = 0,
     val mayViolations: Long = 0,
-    val hintViolations: Long = 0
+    val hintViolations: Long = 0,
+    val customLabels: Map<String, String> = emptyMap()
 ) {
-    companion object {
-        fun of(apiReview: ApiReview): ReviewStatisticsByName {
-            return ReviewStatisticsByName(
-                apiReview.name!!,
-                apiReview.numberOfEndpoints.toLong(),
-                apiReview.mustViolations.toLong(),
-                apiReview.shouldViolations.toLong(),
-                apiReview.mayViolations.toLong(),
-                apiReview.hintViolations.toLong()
-            )
-        }
+    companion object Factory {
+        fun of(apiReview: ApiReview) = ReviewStatisticsByName(
+            apiReview.name!!,
+            apiReview.numberOfEndpoints.toLong(),
+            apiReview.mustViolations.toLong(),
+            apiReview.shouldViolations.toLong(),
+            apiReview.mayViolations.toLong(),
+            apiReview.hintViolations.toLong(),
+            apiReview.customLabels
+        )
     }
 }
