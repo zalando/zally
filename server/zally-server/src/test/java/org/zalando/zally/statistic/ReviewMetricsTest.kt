@@ -3,12 +3,14 @@ package org.zalando.zally.statistic
 import com.fasterxml.jackson.core.JsonPointer
 import io.micrometer.core.instrument.MeterRegistry
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
+import org.springframework.test.util.ReflectionTestUtils
 import org.zalando.zally.apireview.ApiReview
 import org.zalando.zally.apireview.ApiReviewRepository
 import org.zalando.zally.core.Result
@@ -28,6 +30,11 @@ class ReviewMetricsTest {
 
     @Mock
     private lateinit var meterRegistry: MeterRegistry
+
+    @Before
+    fun setUp() {
+        ReflectionTestUtils.setField(reviewMetrics, "metricsNamePrefix", "zally_")
+    }
 
     @Test
     fun shouldInitializeStatisticsReferenceMap() {
