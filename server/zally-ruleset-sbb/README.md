@@ -22,6 +22,9 @@ We take the approach to start from Zalando's ruleset and then tailor it to SBB's
 - Set "Propietary Headers" (183) to SHOULD and specify some SBB specific ones
 - Add "CamelCaseInPropName" rule (hint: it's configured via CaseChecker in reference.conf)
 
+- Removed "Secure Endpoints with OAuth 2.0" (105) - Managed by SBB's APIM
+- Removed "Secure All Endpoints With Scopes" (104) - Managed by SBB's APIM
+
 ## Todo
 - Adjust links to SBB ruleset (https://schweizerischebundesbahnen.github.io/api-principles/restful/)
 - Clearify tracing headers:
