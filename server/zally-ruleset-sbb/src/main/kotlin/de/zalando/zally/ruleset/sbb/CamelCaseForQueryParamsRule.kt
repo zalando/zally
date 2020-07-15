@@ -13,13 +13,13 @@ import de.zalando.zally.rule.api.Violation
  */
 @Rule(
     ruleSet = SBBRuleSet::class,
-    id = "restful/best-practices/#use-snake_case-for-query-parameters",
+    id = "restful/best-practices/#use-camelCase-for-query-parameters",
     severity = Severity.MUST,
-    title = "Use snake_case (never camelCase) for Query Parameters"
+    title = "Use camelCase for Query Parameters"
 )
-class SnakeCaseForQueryParamsRule(config: Config) {
+class CamelCaseForQueryParamsRule(config: Config) {
 
-    val description = "Query parameter has to be snake_case"
+    val description = "Query parameter has to be camelCase"
 
     private val checker = CaseChecker.load(config)
 

@@ -10,20 +10,23 @@ We take the approach to start from Zalando's ruleset and then tailor it to SBB's
 5. Rename 'ZalandoRuleSet' to 'SBBRuleSet'
 
 ## Configuration of Rules
+- Removed "Provide API Identifier" (215)
 - Removed "Provide API Audience" (219)
 - Removed "Following Naming Convention for Hostnames" (224)
 - Removed "Use 429 With Header For Rate Limits" (153)
 - Removed "Snake_case for property names" (118) 
+- Removed "Secure Endpoints with OAuth 2.0" (104) - Managed by SBB's APIM
+- Removed "Secure All Endpoints With Scopes" (105) - Managed by SBB's APIM
+
 - Set "Secure All Endpoints With Scopes" (105) to SHOULD
 - Set "Response As JSON Object" (110) to SHOULD
 - Set "Use Problem JSON" (176) to SHOULD
 - Set "Prefer Compatible Extensions" (107) to MAY
 - Set "Pluralize Resource Names" (134) to SHOULD
 - Set "Propietary Headers" (183) to SHOULD and specify some SBB specific ones
-- Add "CamelCaseInPropName" rule (hint: it's configured via CaseChecker in reference.conf)
 
-- Removed "Secure Endpoints with OAuth 2.0" (105) - Managed by SBB's APIM
-- Removed "Secure All Endpoints With Scopes" (104) - Managed by SBB's APIM
+- Added "CamelCaseInPropName" rule (hint: it's configured via CaseChecker in reference.conf)
+- Added "Do URI Versioning"
 
 ## Todo
 - Adjust links to SBB ruleset (https://schweizerischebundesbahnen.github.io/api-principles/restful/)
