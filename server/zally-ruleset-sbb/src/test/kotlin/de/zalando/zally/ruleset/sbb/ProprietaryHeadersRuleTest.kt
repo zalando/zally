@@ -42,8 +42,15 @@ class ProprietaryHeadersRuleTest {
     }
 
     @Test
-    fun `validateResponseHeaders should return no violation for a specified proprietary header`() {
+    fun `validateResponseHeaders should return no violation for a specified proprietary SBB header`() {
         val violations = rule.validateResponseHeaders(withRequestHttpHeader("Correlation-Id"))
+
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `validateResponseHeaders should return no violation for a specified proprietary zipkin header`() {
+        val violations = rule.validateResponseHeaders(withRequestHttpHeader("X-B3-SpanId"))
 
         assertThat(violations).isEmpty()
     }
