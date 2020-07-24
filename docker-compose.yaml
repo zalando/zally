@@ -18,6 +18,12 @@ services:
     - server:server.local
     ports:
     - "8080:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+
   server:
     build: ./server
     ports:

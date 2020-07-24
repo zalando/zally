@@ -98,6 +98,29 @@ MIT license with an exception. See [license file](LICENSE).
 ### Prerequisites
 
 * [Signing plugin](https://docs.gradle.org/current/userguide/signing_plugin.htm) configured
-* `OSSRH_JIRA_USERNAME` and `OSSRH_JIRA_PASSWORD` to access [Maven Central Repo](https://oss.sonatype.org/) are 
-configured in `$HOME/.gradle/gradle.properties` 
- 
+* `OSSRH_JIRA_USERNAME` and `OSSRH_JIRA_PASSWORD` environment variables to access [Maven Central Repo](https://oss.sonatype.org/) are 
+configured
+
+### Steps
+
+1. Create a separate branch with a name `release-<release-version>`.
+2. Update current version in `server/gradle.properties` from `-SNAPSHOT` to a final version.
+3. Release Zally server and API using the command
+   ```
+   cd server
+   ./gradlew clean build publishAllPublicationsToMavenRepository
+   ```
+4. Commit `server/gradle.properties` with the release version
+5. Create a tag
+    ```shell script
+    git tag v<release-version> -m "Version <release-version>"
+    ```
+6. Bump version in `server/gradle.properties` to the next `-SNAPSHOT`
+
+7. Push `release` branch and tag
+   ```shell script
+    git push origin
+    git push origin <tag-name>
+   ```
+8. Create a Pull Request with the version update
+9. Create and publish a release with a new version in GitHub

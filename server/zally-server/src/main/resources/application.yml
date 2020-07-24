@@ -28,7 +28,7 @@ management:
       exposure:
         include: health, metrics
   server:
-    port: ${MANAGEMENT_PORT}
+    port: ${MANAGEMENT_PORT:7979}
 
 twintip:
   mapping: /api
@@ -45,4 +45,3 @@ zally:
 ---
 spring.profiles: local
 TOKEN_INFO_URI: https://auth.example.com/oauth2/tokeninfo
-MANAGEMENT_PORT: 7979

@@ -1,3 +1,6 @@
+// Version set to empty to make artifact name in line with the name defined in Dockerfile
+version = ""
+
 buildscript {
     extra.apply {
         // sets the jackson version that spring uses
@@ -59,4 +62,10 @@ dependencyManagement {
 
 tasks.bootRun {
     jvmArgs = listOf("-Dspring.profiles.active=dev")
+}
+
+tasks.withType<PublishToMavenRepository>().configureEach {
+    onlyIf {
+        false
+    }
 }
