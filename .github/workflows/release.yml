@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+-*'
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Shallow checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - name: "Docker: Parse release version from git tag"
+      id: docker_release_version
+      run: echo ::set-output name=docker_release_version::${GITHUB_REF/refs\/tags\//}
+    - name: "Zally-Server: Build Docker image"
+      run: |
+        docker build \
+        -t schweizerischebundesbahnen/zally-server:${{ steps.docker_release_version.outputs.docker_release_version }} \
+        ./server
+    - name: "Zally-Web-UI: Yarn Build"
+      run: yarn && yarn build
+      working-directory: ./web-ui
+    - name: "Zally-Web-UI: Build Docker image"
+      run: |
+        docker build \
+        -t schweizerischebundesbahnen/zally-web-ui:${{ steps.docker_release_version.outputs.docker_release_version }} \
+        .
+      working-directory: ./web-ui
+    - name: Login to Docker Repository
+      uses: azure/docker-login@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+    - name: "Zally-Server: Push docker image as latest"
+      run: docker push schweizerischebundesbahnen/zally-server:${{ steps.docker_release_version.outputs.docker_release_version }}
+    - name: "Zally-Web-UI: Push docker image as latest"
+      run: docker push schweizerischebundesbahnen/zally-web-ui:${{ steps.docker_release_version.outputs.docker_release_version }}
