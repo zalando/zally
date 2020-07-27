@@ -37,8 +37,8 @@ paths:
         API Violations
       description: |
         The API Violations endpoint validates given Swagger Specification
-        against the rules defined in *Zalando* RESTful API Guidelines
-        (http://zalando.github.io/restful-api-guidelines/).
+        against the rules defined in *SBB's* RESTful API Principles
+        (https://schweizerischebundesbahnen.github.io/api-principles/).
 
         A successful response includes the list of violations grouped by
         the API Guidelines rules.

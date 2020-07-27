@@ -30,12 +30,11 @@ export function App(props) {
               className="main-navigation-bar__logo"
               src={MOUNTPATH + 'assets/logo.png'}
             />
-            API Linter
+            SBB's API Linter
           </Link>{' '}
-          - an UI instance of the{' '}
-          <Link to="https://github.com/zalando/zally" target="_blank">
-            'Zally' open source project
-          </Link>
+          <Link to="https://www.sbb.ch" className="main-navigation-bar__link">
+            <img className="sbb-logo" src={MOUNTPATH + 'assets/SBB.svg'} />
+          </Link>{' '}
         </h1>
         {OAUTH_ENABLED === true ? (
           <UserInfo
@@ -71,12 +70,28 @@ export function App(props) {
       <footer>
         <a
           className="dc-link"
-          href="https://github.com/zalando/zally"
+          href="https://github.com/schweizerischebundesbahnen/zally"
           target="_blank"
         >
           Github Project
         </a>{' '}
-        - Copyright ZALANDO SE {new Date().getFullYear()}
+        - An SBB customised fork of Zaland's awesome{' '}
+        <a
+          className="dc-link"
+          href="https://github.com/zalando/zally"
+          target="_blank"
+        >
+          Zally
+        </a>
+        {', '}
+        which is open sourced under{' '}
+        <a
+          className="dc-link"
+          href="https://github.com/zalando/zally/blob/master/LICENSE"
+          target="_blank"
+        >
+          ZALANDO's License
+        </a>{' '}
       </footer>
     </div>
   );

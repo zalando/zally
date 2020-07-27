@@ -24,7 +24,7 @@ export function Violations(props) {
         <FluidContainer>
           <div className="dc-row">
             <div className="dc-column">
-              <ul className="violations-content">
+              <ul className="dc-list">
                 {props.violations.map((violation, index) => {
                   return <Violation key={index} violation={violation} />;
                 })}

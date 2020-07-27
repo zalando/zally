@@ -12,7 +12,7 @@ describe('zally-web-ui standalone', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .then(res => {
-          expect(res.text).toMatch(/<title>Zally API Linter WEB UI/);
+          expect(res.text).toMatch(/<title>SBB's API Linter/);
           expect(res.text).toMatch(
             /<script src="\/env.js" type="text\/javascript"><\/script>/
           );

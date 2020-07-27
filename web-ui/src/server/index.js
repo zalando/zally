@@ -14,7 +14,7 @@ const DEFAULT_OPTIONS = {
     ZALLY_API_URL: 'http://localhost:8000',
   },
   env: {
-    HEAD_TITLE: 'Zally API Linter WEB UI',
+    HEAD_TITLE: "SBB's API Linter",
   },
   logger: console,
   handlers: {

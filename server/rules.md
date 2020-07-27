@@ -12,6 +12,10 @@ The rules cannot be disabled or configured.
 
 Primarily Zally exists to enforce the various guidelines of the [Zalando RESTful API and Event Scheme Guidelines](http://zalando.github.io/restful-api-guidelines/). Individual rules descriptions won't be repeated here.
 
+# SBBRuleSet
+
+We have added an SBB specific RuleSet which checks the compliance of the rules compared to [SBB's API Principles](https://schweizerischebundesbahnen.github.io/api-principles/).
+
 # ZallyRuleSet
 
 Zally also contains some additional rules enforcing aspects of the OpenAPI spec or other common sense rules that don't form part of the Zalando guidelines. Those addiitonal rules are documented here.
