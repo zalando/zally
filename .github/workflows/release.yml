@@ -45,12 +45,11 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.14
-      working-directory: ./cli/zally
     - name: Release CLI with GoReleaser
       uses: goreleaser/goreleaser-action@v2
       with:
         version: ${{ steps.docker_release_version.outputs.docker_release_version }}
         args: release --rm-dist
+        workdir: ./cli/zally
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      working-directory: ./cli/zally
