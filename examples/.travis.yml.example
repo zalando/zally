@@ -10,7 +10,7 @@ jdk:
 
 install:
   # Clone Zally
-  - git clone https://github.com/zalando/zally.git
+  - git clone https://github.com/schweizerischebundesbahnen/zally.git
 
   # Build a local Zally server
   - cd zally/server

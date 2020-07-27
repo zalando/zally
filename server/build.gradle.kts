@@ -81,7 +81,7 @@ subprojects {
                 from(components["java"])
                 pom {
                     description.set("OpenAPI linter service")
-                    url.set("https://github.com/zalando/zally")
+                    url.set("https://github.com/schweizerischebundesbahnen/zally")
                     name.set("OpenAPI linter")
                     licenses {
                         license {
@@ -118,7 +118,7 @@ subprojects {
                     scm {
                         connection.set("scm:git:git://github.com/zalando/zally.git")
                         developerConnection.set("scm:git:ssh://github.com:zalando/zally.git")
-                        url.set("https://github.com/zalando/zally/tree/master")
+                        url.set("https://github.com/schweizerischebundesbahnen/zally/tree/master")
                     }
                 }
             }

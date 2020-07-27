@@ -34,7 +34,7 @@ class RestApiTestConfiguration {
                 .contains(
                     "https://zally.example.com/TestRuleSet",
                     "https://zalando.github.io/restful-api-guidelines/",
-                    "https://github.com/zalando/zally/blob/master/server/rules.md"
+                    "https://github.com/schweizerischebundesbahnen/zally/blob/master/server/rules.md"
                 )
         }
     }

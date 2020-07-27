@@ -12,7 +12,7 @@ Zally is a quality assurance tool. It's a linter for OpenAPI specifications, whi
 - Checks compliance
 - Delivers early feedback for API designers
 - Ensures the same look-and-feel of APIs
-- Supports [API-First approach](https://opensource.zalando.com/restful-api-guidelines/#100)
+- Supports API-First approach
 - Provides best practices and advices
 
 Its standard configuration will check your APIs against the rules defined in

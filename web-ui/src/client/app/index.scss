@@ -20,6 +20,9 @@ footer {
   padding: 1.2rem;
   font-size: 1.2rem;
   text-align: center;
+  border-bottom: 1px solid $dc-gray60;
+  background: $dc-gray80;
+  box-shadow: 1px 0 4px rgba(0, 0, 0, 0.2);
 }
 
 /**
@@ -42,7 +45,7 @@ footer {
 }
 
 .main-navigation-bar__logo {
-  display: inline-block;
+  position: relative;
   float: left;
   width: 55px;
   margin-right: 8px;
@@ -58,6 +61,17 @@ footer {
     color: $dc-gray10;
     text-decoration: none;
   }
+}
+
+/*
+ * SBB Logo
+ */
+.sbb-logo {
+  position: relative;
+  float: right;
+  width: 187px;
+  margin-right: 8px;
+  margin-top: 12px;
 }
 
 /*
@@ -100,7 +114,7 @@ footer {
  * tabs
  */
 .tab-contents {
-  background: $dc-gray80;
+  background: $dc-white;
   padding: 1.8rem 1.2rem;
   height: 100%;
   position: relative;
@@ -209,4 +223,3 @@ footer {
     height: 80%;
   }
 }
-

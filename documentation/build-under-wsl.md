@@ -52,7 +52,7 @@ The following notes document my working environment for building and testing a f
 
   ```bash
   cd /mnt/c
-  git clone https://github.com/zalando/zally
+  git clone https://github.com/schweizerischebundesbahnen/zally
   cd zally
 
 ## Build and Run

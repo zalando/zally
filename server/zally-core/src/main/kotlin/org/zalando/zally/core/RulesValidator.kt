@@ -25,7 +25,7 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
                 parseResult.violations.map { violation ->
                     Result(
                         id = "InternalRuleSet",
-                        url = URI.create("https://github.com/zalando/zally/blob/master/server/rules.md"),
+                        url = URI.create("https://github.com/schweizerischebundesbahnen/zally/blob/master/server/rules.md"),
                         title = "Unable to parse API specification",
                         description = violation.description,
                         violationType = Severity.MUST,

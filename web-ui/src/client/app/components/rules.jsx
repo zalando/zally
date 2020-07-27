@@ -8,7 +8,7 @@ export function RulesTab({ rules, error }) {
     <div>
       {error ? <Msg type="error" title="ERROR" text={error} /> : null}
       <FluidContainer>
-        <ul className="violations-content">
+        <ul className="dc-list">
           {rules.map((rule, index) => {
             return <Rule key={index} rule={rule} />;
           })}
