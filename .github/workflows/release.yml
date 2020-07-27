@@ -48,7 +48,7 @@ jobs:
     - name: Release CLI with GoReleaser
       uses: goreleaser/goreleaser-action@v2
       with:
-        version: ${{ steps.docker_release_version.outputs.docker_release_version }}
+        version: latest
         args: release --rm-dist
         workdir: ./cli/zally
       env:
