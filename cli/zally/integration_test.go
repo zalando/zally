@@ -76,6 +76,7 @@ func TestIntegrationWithRemoteJsonFile(t *testing.T) {
 	assertMoreThanZeroViolations(t, out, e)
 }
 
+/* FIXME: insert a test yaml file, that meets SBB's rules
 func TestIntegrationWithNoMustViolations(t *testing.T) {
 	out, e := RunAppAndCaptureOutput([]string{"", "lint", "../../server/zally-test/src/main/resources/fixtures/no_must_violations.yaml"})
 
@@ -87,12 +88,13 @@ func TestIntegrationWithNoMustViolations(t *testing.T) {
 	assert.Zero(t, hint)
 	assert.Nil(t, e)
 }
+*/
 
 func TestIntegrationDisplayRulesList(t *testing.T) {
 	out, e := RunAppAndCaptureOutput([]string{"", "rules"})
 
 	assert.Contains(t, out, "Avoid Link in Header Rule")
-	assert.Contains(t, out, "https://zalando.github.io/restful-api-guidelines/#166")
+	assert.Contains(t, out, "https://schweizerischebundesbahnen.github.io/api-principles/restful/principles/#must-use-standard-http-status-codes")
 
 	assert.Nil(t, e)
 }

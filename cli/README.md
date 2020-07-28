@@ -21,6 +21,12 @@ requesting violations check at a given Zally server.
     cd zally
     GO111MODULE=on ./test.sh
     ```
+    
+    On windows with Cmder:
+    ```bash
+    cd zally
+    GO111MODULE=on sh ./test.sh
+    ```
 
 1. Build the binary:
 

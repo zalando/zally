@@ -1,5 +1,7 @@
 module github.com/zalando/zally/cli/zally
 
+go 1.14
+
 require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/kr/pretty v0.1.0 // indirect
