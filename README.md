@@ -1,7 +1,11 @@
 # Zally: A minimalistic, simple-to-use OpenAPI 2 and 3 linter
 
-![Test Status](https://travis-ci.com/SchweizerischeBundesbahnen/zally.svg?branch=master)](https://travis-ci.com/SchweizerischeBundesbahnen/zally)
-![Build Status](https://github.com/SchweizerischeBundesbahnen/zally/workflows/Build%20&%20Deploy%20latest/badge.svg?branch=master)
+[![Latest Release](https://img.shields.io/github/v/release/schweizerischebundesbahnen/zally.svg)](https://github.com/SchweizerischeBundesbahnen/zally/releases)
+[![Test Status](https://travis-ci.com/SchweizerischeBundesbahnen/zally.svg?branch=master)](https://travis-ci.com/SchweizerischeBundesbahnen/zally)
+[![Build Status](https://github.com/SchweizerischeBundesbahnen/zally/workflows/Build%20&%20Deploy%20latest/badge.svg?branch=master)](https://github.com/SchweizerischeBundesbahnen/zally/actions?query=workflow%3A%22Build+%26+Deploy+latest%22)
+
+![GitHub contributors](https://img.shields.io/github/contributors/schweizerischebundesbahnen/zally)
+![GitHub License](https://img.shields.io/github/license/schweizerischebundesbahnen/zally)
 
 <img src="logo.png" width="200" height="200" />
 
