@@ -4,7 +4,6 @@ import com.typesafe.config.Config
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.RuleSet
-import java.util.*
 
 class RulesManager(val config: Config, val rules: List<RuleDetails>) {
 
