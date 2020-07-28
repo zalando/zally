@@ -1,8 +1,7 @@
 # Zally: A minimalistic, simple-to-use OpenAPI 2 and 3 linter
 
-[![Build Status](https://travis-ci.org/zalando/zally.svg?branch=master)](https://travis-ci.org/zalando/zally)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/05a7515011504c06b1cb35ede27ac7d4)](https://www.codacy.com/app/zally/zally?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zalando/zally&amp;utm_campaign=Badge_Grade)
-[![Join the chat at https://gitter.im/zalando/zally](https://badges.gitter.im/zalando/zally.svg)](https://gitter.im/zalando/zally?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+![Test Status](https://travis-ci.com/SchweizerischeBundesbahnen/zally.svg?branch=master)](https://travis-ci.com/SchweizerischeBundesbahnen/zally)
+![Build Status](https://github.com/SchweizerischeBundesbahnen/zally/workflows/Build%20&%20Deploy%20latest/badge.svg?branch=master)
 
 <img src="logo.png" width="200" height="200" />
 
