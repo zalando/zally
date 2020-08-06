@@ -8,7 +8,7 @@ export class URL extends Violations {
   constructor(props) {
     super(props);
     this.state.goToEditor = false;
-    let queryParams = new URLSearchParams(props.location.search);
+    const queryParams = new URLSearchParams(props.location.search);
     this.state.inputValue =
       queryParams.get('url') || this.Storage.getItem('url-value') || '';
     this.handleOnInputValueChange = this.handleOnInputValueChange.bind(this);
