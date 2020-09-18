@@ -41,6 +41,7 @@ class WebMvcConfiguration : WebMvcConfigurer {
             .addMapping("/**")
             .allowedMethods("GET", "PUT", "POST", "DELETE", "HEAD", "OPTIONS", "PATCH")
             .allowedOrigins("*")
+            .allowedHeaders("*")
     }
 
     companion object {
