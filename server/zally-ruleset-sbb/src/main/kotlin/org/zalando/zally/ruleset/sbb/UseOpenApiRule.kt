@@ -4,11 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.google.common.io.Resources
 import com.typesafe.config.Config
-import org.zalando.zally.core.EMPTY_JSON_POINTER
 import org.zalando.zally.core.JsonSchemaValidator
 import org.zalando.zally.core.ObjectTreeReader
 import org.zalando.zally.rule.api.Check
-import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
@@ -50,19 +48,6 @@ class UseOpenApiRule(rulesConfig: Config) {
             .map {
             Violation("Does not match ${version.name.toLowerCase()} schema: ${it.description}", it.pointer)
             }
-    }
-
-    @Check(severity = Severity.MUST)
-    fun checkIfTheFormatIsYAML(context: Context): Violation? {
-        // at this point the api specification has been already parsed successfully
-        // -> the source is either a valid YAML or JSON format
-        // -> JSON must start with '{' and end with '}'
-        val cleanedUpSource = context.source.trim()
-        return if (cleanedUpSource.startsWith("{") && cleanedUpSource.endsWith("}")) {
-            context.violation("must use YAML format", EMPTY_JSON_POINTER)
-        } else {
-            null
-        }
     }
 
     private fun getSchemaValidators(config: Config): Map<OpenApiVersion, JsonSchemaValidator> {
