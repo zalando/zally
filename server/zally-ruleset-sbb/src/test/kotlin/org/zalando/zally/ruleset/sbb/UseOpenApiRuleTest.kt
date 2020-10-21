@@ -72,25 +72,6 @@ class UseOpenApiRuleTest {
     }
 
     @Test
-    fun `checkIfTheFormatIsYaml should return a violation if JSON is used`() {
-        val context = DefaultContext("\t\r\n{\"openapi\": \"3.0.1\"}\t\r\n", OpenAPI(), null)
-
-        val violation = rule.checkIfTheFormatIsYAML(context)
-
-        assertThat(violation).isNotNull
-        assertThat(violation!!.description).containsPattern(".*must use YAML format.*")
-    }
-
-    @Test
-    fun `checkIfTheFormatIsYaml should return no violation if YAML is used`() {
-        val context = DefaultContext("openapi: 3.0.1", OpenAPI(), null)
-
-        val violation = rule.checkIfTheFormatIsYAML(context)
-
-        assertThat(violation).isNull()
-    }
-
-    @Test
     fun `validateSchema should return no violation for valid OpenAPI 3 specification`() {
         val jsonNode = ObjectTreeReader().read(
             """
