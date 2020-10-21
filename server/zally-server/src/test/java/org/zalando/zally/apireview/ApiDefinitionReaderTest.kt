@@ -1,9 +1,5 @@
 package org.zalando.zally.apireview
 
-import org.zalando.zally.dto.ApiDefinitionRequest
-import org.zalando.zally.exception.InaccessibleResourceUrlException
-import org.zalando.zally.exception.MissingApiDefinitionException
-import org.zalando.zally.util.JadlerUtil
 import net.jadler.Jadler.closeJadler
 import net.jadler.Jadler.initJadlerUsing
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
@@ -15,6 +11,11 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.MediaType.TEXT_HTML_VALUE
 import org.springframework.web.client.RestTemplate
+import org.zalando.zally.configuration.RestTemplateConfiguration
+import org.zalando.zally.dto.ApiDefinitionRequest
+import org.zalando.zally.exception.InaccessibleResourceUrlException
+import org.zalando.zally.exception.MissingApiDefinitionException
+import org.zalando.zally.util.JadlerUtil
 
 class ApiDefinitionReaderTest {
 
@@ -25,7 +26,7 @@ class ApiDefinitionReaderTest {
     @Before
     fun setUp() {
         initJadlerUsing(JdkStubHttpServer())
-        reader = ApiDefinitionReader(RestTemplate())
+        reader = ApiDefinitionReader(RestTemplateConfiguration.RestTemplateRegistry(RestTemplate()))
     }
 
     @After
