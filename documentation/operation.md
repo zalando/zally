@@ -15,6 +15,14 @@ about implemented rules and statistics.
 Optionally, you can connect Zally Server to a persistence layer, e.g. a PostgreSQL
 database. Per default, a in-memory database is provided automatically.
 
+#### Remote URL linting
+Zally is able to lint API specifications resolved by a given Web URL - we call that Remote URLs.
+When you want to lint OAuth 2.0 protected resources, you need to configure the credentials in the
+remote-urls.conf file. You can find the template file for Remote URL configuration at
+```server/zally-server/src/main/resources/remote-urls.conf```. You can use the environment variable
+```REMOTE_URLS_CONFIG_FILE``` to configure the path to the configuration file on the server. In
+k8s contexts, we mount the file as a config map to the given path.
+
 ### Web UI
 
 The most intuitive and easy way to use Zally is to set up and run Zally Web UI.

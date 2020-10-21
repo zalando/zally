@@ -16,6 +16,8 @@ import org.zalando.zally.dto.ApiDefinitionRequest
 import org.zalando.zally.exception.InaccessibleResourceUrlException
 import org.zalando.zally.exception.MissingApiDefinitionException
 import org.zalando.zally.util.JadlerUtil
+import org.zalando.zally.configuration.RestTemplateConfiguration
+
 
 class ApiDefinitionReaderTest {
 
@@ -26,7 +28,7 @@ class ApiDefinitionReaderTest {
     @BeforeEach
     fun setUp() {
         initJadlerUsing(JdkStubHttpServer())
-        reader = ApiDefinitionReader(RestTemplate())
+        reader = ApiDefinitionReader(RestTemplateConfiguration.RestTemplateRegistry(RestTemplate()))
     }
 
     @AfterEach
