@@ -6,11 +6,7 @@ import org.zalando.zally.core.plus
 import org.zalando.zally.core.toEscapedJsonPointer
 import org.zalando.zally.core.toJsonPointer
 import org.zalando.zally.core.util.PatternUtil
-import org.zalando.zally.rule.api.Check
-import org.zalando.zally.rule.api.Context
-import org.zalando.zally.rule.api.Rule
-import org.zalando.zally.rule.api.Severity
-import org.zalando.zally.rule.api.Violation
+import org.zalando.zally.rule.api.*
 import org.zalando.zally.ruleset.zalando.util.WordUtil.isPlural
 
 @Rule(
@@ -24,6 +20,7 @@ class PluralizeResourceNamesRule(rulesConfig: Config) {
     private val slash = "/"
 
     private val slashes = "/+".toRegex()
+    private val semVerVersionFormat = "^[0-9]+([.][0-9]+){1,2}$".toRegex()
 
     @Suppress("SpreadOperator")
     internal val whitelist = mutableListOf(
@@ -49,12 +46,22 @@ class PluralizeResourceNamesRule(rulesConfig: Config) {
     }
 
     private fun pathSegments(path: String): List<String> {
-        return path.split(slashes).filter { !it.isEmpty() }
+        return path.split(slashes).filter { it.isNotEmpty() }
     }
 
     private fun isNonViolating(it: String) =
-        !PatternUtil.isPathVariable(it) && !isPlural(it)
+        (!PatternUtil.isPathVariable(it) && (!isPlural(it) || it.contains(".")))
 
     private fun violation(context: Context, term: String, pointer: JsonPointer) =
-        context.violation("Resource '$term' appears to be singular", pointer)
+        when {
+            semVerVersionFormat.matches(term) -> {
+                context.violation("Resource '$term' is a version, instead of a resource", pointer)
+            }
+            term.contains(".") -> {
+                context.violation("Resource '$term' has a dot as delimiter", pointer)
+            }
+            else -> {
+                context.violation("Resource '$term' appears to be singular", pointer)
+            }
+        }
 }

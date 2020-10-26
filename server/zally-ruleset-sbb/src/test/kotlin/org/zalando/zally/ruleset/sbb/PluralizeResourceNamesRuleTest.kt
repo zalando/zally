@@ -151,6 +151,33 @@ class PluralizeResourceNamesRuleTest {
     }
 
     @Test
+    fun `validate with simple version in path returns no violations`() {
+        val context = openApiContextWithPath("/v1/things")
+
+        val violations = rule.validate(context)
+
+        assertThat(violations)
+            .isEmpty()
+    }
+
+    @Test
+    fun `validate with semver version or dot in path segment returns violations`() {
+        val context = openApiContextWithPath("/api/1.2.3/some.things")
+
+        val violations = rule.validate(context)
+
+        assertThat(violations)
+            .descriptionsEqualTo(
+                "Resource '1.2.3' is a version, instead of a resource",
+                "Resource 'some.things' has a dot as delimiter"
+            )
+            .pointersEqualTo(
+                "/paths/~1api~11.2.3~1some.things",
+                "/paths/~1api~11.2.3~1some.things"
+            )
+    }
+
+    @Test
     fun `validate with whitelisted component returns other violations`() {
         val context = openApiContextWithPath("/prefix/whitelisted/suffix")
         rule.whitelist += "/whitelisted/".toRegex()

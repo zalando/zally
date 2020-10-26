@@ -33,7 +33,7 @@ class VersionInUriRule {
     @Check(severity = Severity.MUST)
     fun checkResourceNames(context: Context): List<Violation> =
         (violatingResourceNames(context.api))
-            .map { context.violation("Version found in resource name. Use versions only at the beginning of the path as an own resource, e.g. like .../v1/... .", it) }
+            .map { context.violation("Version found in resource name. Use versions only at the beginning of the path as an own resource and in format v\${major}, e.g. like .../v1/... .", it) }
 
     private fun violatingServers(api: OpenAPI): Collection<Server> =
         api.servers.orEmpty()
