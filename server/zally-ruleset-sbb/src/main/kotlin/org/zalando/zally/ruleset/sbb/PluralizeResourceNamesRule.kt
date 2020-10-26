@@ -6,7 +6,11 @@ import org.zalando.zally.core.plus
 import org.zalando.zally.core.toEscapedJsonPointer
 import org.zalando.zally.core.toJsonPointer
 import org.zalando.zally.core.util.PatternUtil
-import org.zalando.zally.rule.api.*
+import org.zalando.zally.rule.api.Check
+import org.zalando.zally.rule.api.Context
+import org.zalando.zally.rule.api.Rule
+import org.zalando.zally.rule.api.Severity
+import org.zalando.zally.rule.api.Violation
 import org.zalando.zally.ruleset.zalando.util.WordUtil.isPlural
 
 @Rule(
