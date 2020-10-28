@@ -36,7 +36,7 @@ export function App(props) {
       />
       <Route
         path="/"
-        render={props => (
+        render={() => (
           <div>
             <div className="main-navigation-bar">
               <h1 className="dc-h1 main-navigation-bar__title">

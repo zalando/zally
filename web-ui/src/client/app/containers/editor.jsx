@@ -4,7 +4,6 @@ import { Violations } from './violations.jsx';
 import { ViolationsResult } from '../components/violations.jsx';
 import { EditorInputForm } from '../components/editor.jsx';
 import { Dialog } from '../components/dialog.jsx';
-import { id } from 'brace/worker/json';
 
 export const editorErrorToAnnotations = error => {
   if (!error || !error.mark) {

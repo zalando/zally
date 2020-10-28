@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import React from 'react';
 import { Violations } from './violations.jsx';
 
 export function ShieldsBadge(props) {
@@ -70,7 +69,7 @@ export class Badge extends Violations {
   }
 
   calculateScore(violationsCount) {
-    var score = 1.0;
+    let score = 1.0;
     score = score - Math.min(0.8, violationsCount.must * 0.2);
     score = score - Math.min(0.15, violationsCount.should * 0.05);
     score = score - Math.min(0.05, violationsCount.may * 0.01);
