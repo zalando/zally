@@ -85,6 +85,7 @@ class ApiViolationsController(
     private fun buildApiDefinitionResponse(review: ApiReview): ApiDefinitionResponse = ApiDefinitionResponse(
         externalId = review.externalId,
         message = serverMessageService.serverMessage(review.userAgent),
+        score = Score.forLinterResult(review),
         violations = review.ruleViolations
             .sortedBy(RuleViolation::type)
             .map {
