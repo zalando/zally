@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import { StaticRouter } from 'react-router-dom';
+import { StaticRouter, MemoryRouter } from 'react-router-dom';
 import { App } from '../app.jsx';
 
 jest.mock('../violations-tab.jsx', () => ({
@@ -11,12 +11,31 @@ jest.mock('../login.jsx', () => ({
 }));
 
 describe('App component', () => {
+  test('should not show UserInfo child component on badges page', () => {
+    const props = {
+      user: {},
+      env: { OAUTH_ENABLED: true },
+    };
+
+    const component = shallow(
+      <StaticRouter initialEntries={['/badges/']}>
+        <App {...props} />
+      </StaticRouter>
+    );
+
+    expect(component.find('UserInfo')).toHaveLength(0);
+  });
+
   test('should show UserInfo child component', () => {
     const props = {
       user: {},
       env: { OAUTH_ENABLED: true },
     };
-    const component = shallow(<App {...props} />);
+    const component = mount(
+      <MemoryRouter initialEntries={['/']}>
+        <App {...props} />
+      </MemoryRouter>
+    );
     expect(component.find('UserInfo')).toHaveLength(1);
   });
 
@@ -25,7 +44,11 @@ describe('App component', () => {
       user: {},
       env: {},
     };
-    const component = shallow(<App {...props} />);
+    const component = mount(
+      <MemoryRouter initialEntries={['/']}>
+        <App {...props} />
+      </MemoryRouter>
+    );
     expect(component.find('UserInfo')).toHaveLength(0);
   });
 
