@@ -3,7 +3,7 @@ package org.zalando.zally.apireview
 import org.zalando.zally.rule.api.Severity
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.util.*
+import java.util.EnumMap
 import kotlin.math.min
 
 class Score {
