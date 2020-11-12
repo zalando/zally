@@ -20,19 +20,10 @@ class Score {
             val distinctViolationsPerSeverity = calculateDistinctViolationsPerSeverity(violationsPerSeverity)
 
             var score = 1.0f
-            score -= calculateHandicap(distinctViolationsPerSeverity, Severity.MUST, 0.2f, 0.8f)
-            score -= calculateHandicap(distinctViolationsPerSeverity, Severity.SHOULD, 0.05f, 0.15f)
-            score -= calculateHandicap(distinctViolationsPerSeverity, Severity.MAY, 0.01f, 0.05f)
+            score -= calculateHandicap(distinctViolationsPerSeverity[Severity.MUST], 0.2f, 0.8f)
+            score -= calculateHandicap(distinctViolationsPerSeverity[Severity.SHOULD], 0.05f, 0.15f)
+            score -= calculateHandicap(distinctViolationsPerSeverity[Severity.MAY], 0.01f, 0.05f)
             return round(score)
-        }
-
-        private fun calculateHandicap(distinctViolationsPerSeverity: Map<Severity, Long>, severity: Severity, weight: Float, maxHandicap: Float): Float {
-            var handicap = 0.0f
-            val distinctViolations = distinctViolationsPerSeverity[severity]
-            if (distinctViolations != null && distinctViolations > 0) {
-                handicap += weight * distinctViolations
-            }
-            return min(maxHandicap, handicap)
         }
 
         private fun calculateDistinctViolationsPerSeverity(violationsPerSeverity: Map<Severity, List<RuleViolation>>): Map<Severity, Long> {
@@ -45,6 +36,14 @@ class Score {
                 distinctViolationsPerSeverity[it] = distinctViolationsCount
             }
             return distinctViolationsPerSeverity
+        }
+
+        private fun calculateHandicap(distinctViolations: Long?, weight: Float, maxHandicap: Float): Float {
+            var handicap = 0.0f
+            if (distinctViolations != null && distinctViolations > 0) {
+                handicap += weight * distinctViolations
+            }
+            return min(maxHandicap, handicap)
         }
 
         private fun round(value: Float): Float {
