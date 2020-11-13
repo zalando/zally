@@ -68,7 +68,7 @@ class ApiReviewRepositoryTest {
         )
         apiReviewRepository.save(givenApiReview2)
 
-        val actual = apiReviewRepository.findLatestApiReviews()
+        val actual = apiReviewRepository.findLatestApiReviews(listOf("label"))
 
         assertThat(actual.size).isEqualTo(1)
     }
@@ -117,7 +117,7 @@ class ApiReviewRepositoryTest {
         )
         apiReviewRepository.save(givenApiReview)
 
-        val actual = apiReviewRepository.findLatestApiReviews()
+        val actual = apiReviewRepository.findLatestApiReviews(listOf("label"))
 
         assertThat(actual.size).isEqualTo(1)
         assertThat(actual[0].customLabels).containsAllEntriesOf(givenLabels)

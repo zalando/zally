@@ -8,19 +8,24 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.zalando.zally.apireview.ApiReviewRepository
+import org.zalando.zally.configuration.ReviewMetricsProperties
 
 @Component
-class ReviewMetrics(private val apiReviewRepository: ApiReviewRepository, private val meterRegistry: MeterRegistry) {
+class ReviewMetrics(private val apiReviewRepository: ApiReviewRepository, private val meterRegistry: MeterRegistry, private val properties: ReviewMetricsProperties) {
 
     final val statisticsReferences = mutableListOf<StatisticReference>()
-
-    @Value("\${metrics.review.name-prefix:zally_}")
-    lateinit var metricsNamePrefix: String
 
     @Scheduled(fixedDelayString = "\${metrics.review.fixed-delay:300000}", initialDelay = 10000)
     fun updateMetrics() {
         LOG.debug("Updating metrics for review statistics")
-        apiReviewRepository.findLatestApiReviews()
+        when {
+            properties.filterLabels.isEmpty() -> {
+                apiReviewRepository.findLatestApiReviews()
+            }
+            else -> {
+                apiReviewRepository.findLatestApiReviews(properties.filterLabels)
+            }
+        }
             .map(ReviewStatisticsByName.Factory::of)
             .forEach { statistic ->
                 statisticsReferences
@@ -51,7 +56,7 @@ class ReviewMetrics(private val apiReviewRepository: ApiReviewRepository, privat
         val tags = reference.customLabels.entries.map { Tag.of(it.key, it.value) }.toMutableList()
         tags.add(Tag.of("api_name", snakeCasedApiName))
         reference.metricPair.forEach { metricPair ->
-            val metricName = "${metricsNamePrefix}${metricPair.metricName.value}"
+            val metricName = "${properties.namePrefix}${metricPair.metricName.value}"
             Gauge
                 .builder(metricName, metricPair.metricValue, { it.toDouble() })
                 .tags(tags)

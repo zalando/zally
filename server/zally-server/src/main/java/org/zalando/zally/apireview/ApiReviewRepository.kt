@@ -38,7 +38,22 @@ interface ApiReviewRepository : CrudRepository<ApiReview, Long> {
             SELECT a.name, MAX(a.created) 
             FROM org.zalando.zally.apireview.ApiReview a
             LEFT OUTER JOIN a.customLabels l
-            GROUP BY a.name, INDEX(l), l
+            WHERE l IN (:labelFilter)
+            GROUP BY a.name, l
+        )
+    """
+    )
+    fun findLatestApiReviews(@Param("labelFilter") labelFilter: List<String>): List<ApiReview>
+
+    @Query(
+        """
+        SELECT r
+        FROM org.zalando.zally.apireview.ApiReview r
+        WHERE (r.name, r.created) IN (
+            SELECT a.name, MAX(a.created) 
+            FROM org.zalando.zally.apireview.ApiReview a
+            LEFT OUTER JOIN a.customLabels l
+            GROUP BY a.name, l
         )
     """
     )

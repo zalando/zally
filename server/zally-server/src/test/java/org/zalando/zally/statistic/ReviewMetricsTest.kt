@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.any
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
@@ -13,6 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.test.util.ReflectionTestUtils
 import org.zalando.zally.apireview.ApiReview
 import org.zalando.zally.apireview.ApiReviewRepository
+import org.zalando.zally.configuration.ReviewMetricsProperties
 import org.zalando.zally.core.Result
 import org.zalando.zally.dto.ApiDefinitionRequest
 import org.zalando.zally.rule.api.Severity
@@ -27,6 +29,9 @@ class ReviewMetricsTest {
     private lateinit var reviewMetrics: ReviewMetrics
 
     @Mock
+    private lateinit var reviewMetricsProperties: ReviewMetricsProperties
+
+    @Mock
     private lateinit var apiReviewRepository: ApiReviewRepository
 
     @Mock
@@ -34,7 +39,8 @@ class ReviewMetricsTest {
 
     @Before
     fun setUp() {
-        ReflectionTestUtils.setField(reviewMetrics, "metricsNamePrefix", "zally_")
+        Mockito.`when`(reviewMetricsProperties.namePrefix).thenReturn("zally_")
+        Mockito.`when`(reviewMetricsProperties.filterLabels).thenReturn(listOf())
     }
 
     @Test
