@@ -6,12 +6,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.any
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
-import org.springframework.test.util.ReflectionTestUtils
 import org.zalando.zally.apireview.ApiReview
 import org.zalando.zally.apireview.ApiReviewRepository
 import org.zalando.zally.configuration.ReviewMetricsProperties
