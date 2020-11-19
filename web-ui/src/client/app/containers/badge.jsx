@@ -28,11 +28,18 @@ export class Badge extends Violations {
     if (this.state.externalId) {
       this.getApiViolationsByExternalId(this.state.externalId)
         .then(response => {
-          const score = this.calculateScore(response.violations_count);
-          const color = score < 80 ? (score < 50 ? 'red' : 'orange') : 'green';
-          const shieldsBaseUrl =
-            'https://img.shields.io/badge/API%20Linter%20Score-';
-          const shieldsUrl = shieldsBaseUrl.concat(score, '%25-', color);
+          const score = response.score * 100; // 0.XX -> XX%
+          const color = this.colorForScore(score);
+          const shieldsBaseUrl = 'https://img.shields.io/badge/';
+          const shieldsUrl = shieldsBaseUrl.concat(
+            'API%20Linter%20Score',
+            '-',
+            score.toString(),
+            '%25',
+            '-',
+            color,
+            '.svg'
+          );
           const urlToResult = window.location.protocol.concat(
             '//',
             window.location.host,
@@ -68,12 +75,8 @@ export class Badge extends Violations {
     }
   }
 
-  calculateScore(violationsCount) {
-    let score = 1.0;
-    score = score - Math.min(0.8, violationsCount.must * 0.2);
-    score = score - Math.min(0.15, violationsCount.should * 0.05);
-    score = score - Math.min(0.05, violationsCount.may * 0.01);
-    return Math.round(score * 100);
+  colorForScore(score) {
+    return score < 90 ? (score < 80 ? 'red' : 'orange') : 'green';
   }
 
   render() {

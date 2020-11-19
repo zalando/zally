@@ -16,6 +16,10 @@ export function Violations(props) {
               <Link to={'/editor/' + props.externalId} className="dc-link">
                 <i className="dc-icon dc-icon--interactive dc-icon--link" />
               </Link>
+              &nbsp;
+              <Link to={'/badges/' + props.externalId} className="dc-link">
+                <img src="https://img.shields.io/badge/<>-35B0FE" />
+              </Link>
             </span>
           </h3>
         </div>
