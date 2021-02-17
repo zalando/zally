@@ -47,5 +47,6 @@ class WordUtilTest {
     fun specialCasePluralized() {
         assertTrue(isPlural("vat")) // whitelisted
         assertTrue(isPlural("apis")) // whitelisted
+        assertTrue(isPlural("self")) // whitelisted
     }
 }
