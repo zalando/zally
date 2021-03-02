@@ -1,8 +1,6 @@
 package org.zalando.zally.core.ast
 
 import com.fasterxml.jackson.core.JsonPointer
-import org.zalando.zally.core.ObjectTreeReader
-import org.zalando.zally.core.toJsonPointer
 import io.swagger.parser.OpenAPIParser
 import io.swagger.parser.SwaggerParser
 import io.swagger.util.Json
@@ -12,6 +10,9 @@ import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
+import org.zalando.zally.core.ObjectTreeReader
+import org.zalando.zally.core.toJsonPointer
+import org.zalando.zally.core.util.OpenApiSections.Companion.PATHS
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "StringLiteralDuplication")
 class ReverseAstTest {
@@ -77,7 +78,7 @@ class ReverseAstTest {
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
         assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
 
-        pointer = "/paths".toJsonPointer()
+        pointer = PATHS.toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
         assertThat(ast.getIgnoreValues(pointer)).isEmpty()
 
@@ -141,7 +142,7 @@ class ReverseAstTest {
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
         assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
 
-        pointer = "/paths".toJsonPointer()
+        pointer = PATHS.toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
         assertThat(ast.getIgnoreValues(pointer)).isEmpty()
 
