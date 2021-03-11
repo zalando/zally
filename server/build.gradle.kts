@@ -2,7 +2,8 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    val kotlinVersion = "1.3.21"
+    val kotlinVersion = "1.4.32"
+    val klintVersion = "9.2.1"
 
     // The buildscript is also kotlin, so we apply at the root level
     kotlin("jvm") version kotlinVersion
@@ -14,11 +15,11 @@ plugins {
     `maven-publish`
     signing
     id("com.github.ben-manes.versions") version "0.20.0"
-    id("org.jetbrains.dokka") version "0.10.0" apply false
+    id("org.jetbrains.dokka") version "1.4.32" apply false
 
     // We apply this so that ktlint can format the top level buildscript
-    id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
-    id("org.jlleitschuh.gradle.ktlint-idea") version "9.2.1"
+    id("org.jlleitschuh.gradle.ktlint") version klintVersion
+    id("org.jlleitschuh.gradle.ktlint-idea") version klintVersion
 }
 
 allprojects {
@@ -46,22 +47,18 @@ subprojects {
         includeCompileClasspath = false
     }
 
-    tasks.withType(KotlinCompile::class.java).all {
-        kotlinOptions.jvmTarget = "1.8"
+    tasks.withType<KotlinCompile>().configureEach() {
+        kotlinOptions.jvmTarget = "11"
     }
 
-    tasks.withType(DokkaTask::class.java).all {
-        outputFormat = "javadoc"
-        outputDirectory = "$buildDir/dokka"
-        configuration {
-            reportUndocumented = false
-        }
+    tasks.withType<DokkaTask>().configureEach {
+        outputDirectory.set(buildDir.resolve("dokka"))
     }
 
     tasks.register("javadocJar", Jar::class) {
-        dependsOn(tasks["dokka"])
+        dependsOn(tasks["dokkaJavadoc"])
         archiveClassifier.set("javadoc")
-        from(tasks["dokka"])
+        from(tasks["dokkaJavadoc"])
     }
 
     tasks.register("sourcesJar", Jar::class) {
@@ -150,17 +147,17 @@ subprojects {
     }
 
     dependencies {
-        compile("org.jetbrains.kotlin:kotlin-stdlib")
+        implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
         // We define this here so all subprojects use the same version of jackson
-        compile("com.fasterxml.jackson.module:jackson-module-parameter-names:2.10.2")
-        compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2")
-        compile("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.2")
-        compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2")
-        compile("org.yaml:snakeyaml:1.24")
+        implementation("com.fasterxml.jackson.module:jackson-module-parameter-names:2.12.2")
+        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.2")
+        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.2")
+        implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.2")
+        implementation("org.yaml:snakeyaml:1.24")
 
-        testCompile("com.jayway.jsonpath:json-path-assert:2.4.0")
-        testCompile("org.mockito:mockito-core:2.23.4")
+        testImplementation("com.jayway.jsonpath:json-path-assert:2.4.0")
+        testImplementation("org.mockito:mockito-core:2.23.4")
     }
 
     jacoco {
@@ -180,11 +177,5 @@ subprojects {
 
     tasks.jar {
         archiveBaseName.set(project.name)
-        archiveVersion.set(version)
     }
-}
-
-tasks.wrapper {
-    distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = "5.3.1"
 }

@@ -24,33 +24,33 @@ dependencies {
     val springBootVersion = "2.0.4.RELEASE"
     val jadlerVersion = "1.3.0"
 
-    compile(project(":zally-core"))
-    compile(project(":zally-ruleset-zalando"))
-    compile(project(":zally-ruleset-zally"))
-    compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
-    compile("org.springframework.boot:spring-boot-starter-undertow:$springBootVersion")
-    compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion") {
+    implementation(project(":zally-core"))
+    implementation(project(":zally-ruleset-zalando"))
+    implementation(project(":zally-ruleset-zally"))
+    implementation("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
+    implementation("org.springframework.boot:spring-boot-starter-undertow:$springBootVersion")
+    implementation("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion") {
         exclude("org.hibernate", "hibernate-entitymanager")
     }
-    compile("org.flywaydb:flyway-core:5.1.4")
-    compile("org.hsqldb:hsqldb:2.4.1")
-    compile("org.postgresql:postgresql:42.2.4")
-    compile("org.hibernate:hibernate-core:5.3.5.Final")
-    compile("org.jadira.usertype:usertype.core:7.0.0.CR1") {
+    implementation("org.flywaydb:flyway-core:5.1.4")
+    implementation("org.hsqldb:hsqldb:2.4.1")
+    implementation("org.postgresql:postgresql:42.2.4")
+    implementation("org.hibernate:hibernate-core:5.3.5.Final")
+    implementation("org.jadira.usertype:usertype.core:7.0.0.CR1") {
         exclude("org.hibernate", "hibernate-entitymanager")
     }
-    compile("org.zalando.stups:stups-spring-oauth2-server:1.0.22")
-    compile("org.zalando:problem-spring-web:0.23.0")
-    compile("org.zalando:twintip-spring-web:1.1.0")
+    implementation("org.zalando.stups:stups-spring-oauth2-server:1.0.22")
+    implementation("org.zalando:problem-spring-web:0.23.0")
+    implementation("org.zalando:twintip-spring-web:1.1.0")
 
-    testCompile(project(":zally-test"))
-    testCompile("net.jadler:jadler-core:$jadlerVersion")
-    testCompile("net.jadler:jadler-jdk:$jadlerVersion")
-    testCompile("net.jadler:jadler-junit:$jadlerVersion")
-    testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
-    testCompile("com.jayway.jsonpath:json-path-assert:2.4.0")
-    testCompile("org.mockito:mockito-core:2.23.4")
+    testImplementation(project(":zally-test"))
+    testImplementation("net.jadler:jadler-core:$jadlerVersion")
+    testImplementation("net.jadler:jadler-jdk:$jadlerVersion")
+    testImplementation("net.jadler:jadler-junit:$jadlerVersion")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
+    testImplementation("com.jayway.jsonpath:json-path-assert:2.4.0")
+    testImplementation("org.mockito:mockito-core:2.23.4")
 }
 
 dependencyManagement {

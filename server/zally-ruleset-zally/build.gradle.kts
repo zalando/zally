@@ -1,7 +1,7 @@
 dependencies {
     kapt(project(":zally-core"))
 
-    compile(project(":zally-core"))
+    implementation(project(":zally-core"))
 
-    testCompile(project(":zally-test"))
+    testImplementation(project(":zally-test"))
 }
