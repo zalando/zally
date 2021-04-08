@@ -5,6 +5,7 @@ import com.typesafe.config.Config
 import org.zalando.zally.core.plus
 import org.zalando.zally.core.toEscapedJsonPointer
 import org.zalando.zally.core.toJsonPointer
+import org.zalando.zally.core.util.OpenApiSections.Companion.PATHS
 import org.zalando.zally.core.util.PatternUtil
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
@@ -38,7 +39,7 @@ class PluralizeResourceNamesRule(rulesConfig: Config) {
         return context.validatePaths { (path, _) ->
             pathSegments(sanitizedPath(path, whitelist))
                 .filter { isNonViolating(it) }
-                .map { violation(context, it, "/paths".toJsonPointer() + path.toEscapedJsonPointer()) }
+                .map { violation(context, it, PATHS.toJsonPointer() + path.toEscapedJsonPointer()) }
         }
     }
 

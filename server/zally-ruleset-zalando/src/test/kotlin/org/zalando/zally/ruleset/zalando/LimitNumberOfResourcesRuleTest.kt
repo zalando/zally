@@ -1,10 +1,11 @@
 package org.zalando.zally.ruleset.zalando
 
 import com.typesafe.config.ConfigFactory
-import org.zalando.zally.core.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
+import org.zalando.zally.core.DefaultContextFactory
+import org.zalando.zally.core.util.OpenApiSections.Companion.PATHS
 
 class LimitNumberOfResourcesRuleTest {
 
@@ -43,7 +44,7 @@ class LimitNumberOfResourcesRuleTest {
 
         assertThat(violation).isNotNull
         assertThat(violation!!.description).containsPattern(".*greater than recommended limit of.*")
-        assertThat(violation.pointer.toString()).isEqualTo("/paths")
+        assertThat(violation.pointer.toString()).isEqualTo(PATHS)
     }
 
     @Test

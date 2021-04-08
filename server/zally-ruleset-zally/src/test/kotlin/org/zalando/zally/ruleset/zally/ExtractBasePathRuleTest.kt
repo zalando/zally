@@ -1,9 +1,10 @@
 package org.zalando.zally.ruleset.zally
 
-import org.zalando.zally.core.DefaultContextFactory
-import org.zalando.zally.test.ZallyAssertions
 import org.intellij.lang.annotations.Language
 import org.junit.Test
+import org.zalando.zally.core.DefaultContextFactory
+import org.zalando.zally.core.util.OpenApiSections.Companion.PATHS
+import org.zalando.zally.test.ZallyAssertions
 
 class ExtractBasePathRuleTest {
 
@@ -73,7 +74,7 @@ class ExtractBasePathRuleTest {
         ZallyAssertions
             .assertThat(rule.validate(context))
             .descriptionsEqualTo("All paths start with prefix '/shipment' which could be part of basePath.")
-            .pointersEqualTo("/paths")
+            .pointersEqualTo(PATHS)
     }
 
     @Test
@@ -93,7 +94,7 @@ class ExtractBasePathRuleTest {
         ZallyAssertions
             .assertThat(rule.validate(context))
             .descriptionsEqualTo("All paths start with prefix '/queue/models' which could be part of basePath.")
-            .pointersEqualTo("/paths")
+            .pointersEqualTo(PATHS)
     }
 
     @Test
@@ -131,6 +132,6 @@ class ExtractBasePathRuleTest {
         ZallyAssertions
             .assertThat(rule.validate(context))
             .descriptionsEqualTo("All paths start with prefix '/shipment' which could be part of servers' urls.")
-            .pointersEqualTo("/paths")
+            .pointersEqualTo(PATHS)
     }
 }

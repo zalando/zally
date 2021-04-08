@@ -1,6 +1,7 @@
 package org.zalando.zally.ruleset.zally
 
 import org.zalando.zally.core.toJsonPointer
+import org.zalando.zally.core.util.OpenApiSections.Companion.PATHS
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
@@ -32,7 +33,7 @@ class ExtractBasePathRule {
     private fun violations(prefix: String, target: String) = listOf(
         Violation(
             "All paths start with prefix '$prefix' which could be part of $target.",
-            "/paths".toJsonPointer()
+            PATHS.toJsonPointer()
         )
     )
 
