@@ -129,3 +129,13 @@ private fun Schema<Any>.customHash(): Int = Objects.hash(
     required, type, not, properties, additionalProperties, description, format, `$ref`, nullable, readOnly, writeOnly,
     example, externalDocs, deprecated, xml, extensions, discriminator
 )
+
+fun Schema<Any>.isEnum(): Boolean = this.enum != null && this.enum.isNotEmpty()
+
+fun Schema<Any>.isExtensibleEnum(): Boolean =
+    this.extensions?.containsKey("x-extensible-enum") ?: false
+
+fun Schema<Any>.extensibleEnum(): List<String> =
+    if (this.isExtensibleEnum()) {
+        (this.extensions["x-extensible-enum"] as List<*>).map { it.toString() }
+    } else emptyList()
