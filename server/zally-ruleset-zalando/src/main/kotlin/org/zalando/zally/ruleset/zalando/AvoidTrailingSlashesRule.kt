@@ -26,7 +26,7 @@ class AvoidTrailingSlashesRule {
                 path.trim().let { trimmed ->
                     when {
                         trimmed == "/" -> false
-                        trimmed.endsWith("/") -> true
+                        trimmed.endsWith("/") || trimmed.contains("//") -> true
                         else -> false
                     }
                 }

@@ -49,6 +49,7 @@ class AvoidTrailingSlashesRuleTest {
             openapi: '3.0.0'
             paths:
               /api/test-api/: {}
+              /api//test-api: {}
               /api/test: {}
               /some/other/path: {}
               /long/bad/path/with/slash/: {}
@@ -59,7 +60,7 @@ class AvoidTrailingSlashesRuleTest {
 
         assertThat(violations)
             .descriptionsAllEqualTo("Rule avoid trailing slashes is not followed")
-            .pointersEqualTo("/paths/~1api~1test-api~1", "/paths/~1long~1bad~1path~1with~1slash~1")
-            .hasSize(2)
+            .pointersEqualTo("/paths/~1api~1test-api~1", "/paths/~1api~1~1test-api", "/paths/~1long~1bad~1path~1with~1slash~1")
+            .hasSize(3)
     }
 }
