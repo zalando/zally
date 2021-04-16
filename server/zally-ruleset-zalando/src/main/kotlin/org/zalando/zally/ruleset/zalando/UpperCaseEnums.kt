@@ -22,7 +22,7 @@ class UpperCaseEnums {
 
     private val pattern = "[A-Z_0-9]*".toRegex()
 
-    private val description = "Enum value should use UPPER_SNAKE_CASE format"
+    private val description = "Enum value(s) should use UPPER_SNAKE_CASE format"
 
     @Check(severity = Severity.SHOULD)
     fun validate(context: Context): List<Violation> =
@@ -34,7 +34,7 @@ class UpperCaseEnums {
                     validateExtensibleEnum(it)
                 } else {
                     validateEnum(it)
-                }.map { enumValue -> context.violation("$description: $enumValue", it) }
+                }.map { enumValue -> context.violation("$description. Incorrect value: $enumValue", it) }
             } +
             context.api.getAllProperties()
                 .filter { it.value.type == "string" }
@@ -45,7 +45,7 @@ class UpperCaseEnums {
                     } else {
                         validateEnum(property)
                     }.map {
-                        context.violation("$description: $propName", it)
+                        context.violation("$propName: $description. Incorrect value: $it", it)
                     }
                 }
 

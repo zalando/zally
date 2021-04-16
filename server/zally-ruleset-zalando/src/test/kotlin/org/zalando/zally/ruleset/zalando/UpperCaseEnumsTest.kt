@@ -107,7 +107,21 @@ class UpperCaseEnumsTest {
                           - GERMANY
                           - SWEDEN
                           - PUT_YOUR_COUNTRY_HERE
-                          - COUNTRY_1 
+                          - COUNTRY_1
+                  responses: 
+                    200:
+                      description: The identifiers associated with the source id.
+                      content: 
+                        application/json:
+                          schema:
+                            type: object
+                            properties:
+                              prop-1:
+                                type: string
+                                x-extensible-enum:
+                                  - GERMANY
+                                  - SWEDEN
+                                  - SPAIN
         """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(spec)

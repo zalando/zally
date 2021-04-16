@@ -130,7 +130,7 @@ private fun Schema<Any>.customHash(): Int = Objects.hash(
     example, externalDocs, deprecated, xml, extensions, discriminator
 )
 
-fun Schema<Any>.isEnum(): Boolean = this.enum != null && this.enum.isNotEmpty()
+fun Schema<Any>.isEnum(): Boolean = this.enum?.isNotEmpty() ?: false
 
 fun Schema<Any>.isExtensibleEnum(): Boolean =
     this.extensions?.containsKey("x-extensible-enum") ?: false
