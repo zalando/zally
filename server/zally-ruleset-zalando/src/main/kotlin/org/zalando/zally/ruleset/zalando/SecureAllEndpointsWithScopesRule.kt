@@ -61,29 +61,20 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
                 val definedOpSecurityRequirements = definedSecurityRequirements(op, context.api)
 
                 if (definedOpSecurityRequirements.isEmpty()) {
-                    context.violations(
-                        "Endpoint is not secured by scope(s)", op.security ?: op
-                    )
+                    context.violations("Endpoint is not secured by scope(s)", op.security ?: op)
                 } else {
                     definedOpSecurityRequirements.flatMap {
                         it.map { (opSchemeName, opScopes) ->
                             val matchingScheme = securitySchemes[opSchemeName]
-                            if (matchingScheme == null) {
-                                context.violation("Security scheme $opSchemeName not found", op)
-                            } else {
-                                if (matchingScheme.isOAuth2()) {
-                                    validateOAuth2Schema(
-                                        context,
-                                        op,
-                                        opScopes,
-                                        matchingScheme,
-                                        opSchemeName
-                                    )
-                                } else {
-                                    // Scopes are only used with OAuth 2 and OpenID Connect
-                                    null
+                            when {
+                                matchingScheme == null -> {
+                                    context.violation("Security scheme $opSchemeName not found", op)
                                 }
-                            }
+                                matchingScheme.isOAuth2() -> {
+                                    validateOAuth2Schema(context, op, opScopes, matchingScheme, opSchemeName)
+                                }
+                                else -> null
+                            } // Scopes are only used with OAuth 2 and OpenID Connect
                         }
                     }
                 }
