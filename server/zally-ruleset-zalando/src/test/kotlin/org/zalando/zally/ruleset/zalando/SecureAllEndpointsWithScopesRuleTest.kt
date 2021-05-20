@@ -362,4 +362,68 @@ class SecureAllEndpointsWithScopesRuleTest {
         val violations = rule.checkOperationsAreScoped(context)
         assertThat(violations).hasSize(1)
     }
+
+    @Test
+    fun `Rule supports Bearer global security scheme`() {
+        @Language("YAML")
+        val yaml = """
+            openapi: 3.0.1
+            security:
+              - BearerAuth: ['scope.execute']
+            paths:
+              '/things':
+                get:
+                  responses:
+                    200:
+                      description: OK
+              '/other-things':
+                get:
+                  responses:
+                    200:
+                      description: OK
+            components:      
+              securitySchemes:
+                BearerAuth:
+                  type: http
+                  scheme: bearer
+            """.trimIndent()
+
+        val context = DefaultContextFactory().getOpenApiContext(yaml)
+
+        val violations = rule.checkOperationsAreScoped(context)
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `Security scheme names match`() {
+        @Language("YAML")
+        val yaml = """
+            openapi: 3.0.1
+            security:
+              - AnotherBearerAuth: ['scope.execute']
+            paths:
+              '/things':
+                get:
+                  responses:
+                    200:
+                      description: OK
+              '/other-things':
+                get:
+                  responses:
+                    200:
+                      description: OK
+                  security:
+                    - BearerAuth: []                      
+            components:      
+              securitySchemes:
+                BearerAuth:
+                  type: http
+                  scheme: bearer
+            """.trimIndent()
+
+        val context = DefaultContextFactory().getOpenApiContext(yaml)
+
+        val violations = rule.checkOperationsAreScoped(context)
+        assertThat(violations).hasSize(1)
+    }
 }

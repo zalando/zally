@@ -9,7 +9,6 @@ import io.swagger.v3.oas.models.security.SecurityScheme
 import org.zalando.zally.core.util.allFlows
 import org.zalando.zally.core.util.allScopes
 import org.zalando.zally.core.util.getAllSecuritySchemes
-import org.zalando.zally.core.util.isBearer
 import org.zalando.zally.core.util.isOAuth2
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
@@ -59,28 +58,30 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
         return context.validateOperations(pathFilter = this::pathFilter) { (_, op) ->
             op?.let {
 
-                val requirements = definedSecurityRequirements(op, context.api)
+                val definedOpSecurityRequirements = definedSecurityRequirements(op, context.api)
 
-                if (requirements.isEmpty()) {
+                if (definedOpSecurityRequirements.isEmpty()) {
                     context.violations(
                         "Endpoint is not secured by scope(s)", op.security ?: op
                     )
                 } else {
-                    requirements.flatMap {
-                        it.map { (schemaName, operationScopes) ->
-                            securitySchemes[schemaName]?.let { schema ->
-                                when {
-                                    schema.isOAuth2() -> {
-                                        validateOAuth2Schema(
-                                            context,
-                                            op,
-                                            operationScopes,
-                                            schema,
-                                            schemaName
-                                        )
-                                    }
-                                    schema.isBearer() -> validateBearerSchema(context, op, schemaName)
-                                    else -> null
+                    definedOpSecurityRequirements.flatMap {
+                        it.map { (opSchemeName, opScopes) ->
+                            val matchingScheme = securitySchemes[opSchemeName]
+                            if (matchingScheme == null) {
+                                context.violation("Security scheme $opSchemeName not found", op)
+                            } else {
+                                if (matchingScheme.isOAuth2()) {
+                                    validateOAuth2Schema(
+                                        context,
+                                        op,
+                                        opScopes,
+                                        matchingScheme,
+                                        opSchemeName
+                                    )
+                                } else {
+                                    // Scopes are only used with OAuth 2 and OpenID Connect
+                                    null
                                 }
                             }
                         }
@@ -90,14 +91,19 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
         }
     }
 
-    private fun definedSecurityRequirements(operation: Operation, api: OpenAPI): List<SecurityRequirement> =
-        api.security.orEmpty() + operation.security.orEmpty()
+    private fun definedSecurityRequirements(operation: Operation, api: OpenAPI): List<SecurityRequirement> {
+        val operationSecurity = operation.security.orEmpty()
+        if (operationSecurity.isEmpty()) {
+            return api.security.orEmpty()
+        }
+        return operationSecurity
+    }
 
     private fun validateOAuth2Schema(
         context: Context,
         op: Operation,
         requestedScopes: List<String?>,
-        scheme: SecurityScheme,
+        definedScheme: SecurityScheme,
         schemeName: String
     ): Violation? {
         if (requestedScopes.isEmpty()) {
@@ -105,7 +111,7 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
                 "Endpoint is not secured by OAuth2 scope(s)", op.security ?: op
             )
         }
-        val definedScopes = scheme.allScopes()
+        val definedScopes = definedScheme.allScopes()
         val undefined =
             requestedScopes.filterNotNull().filterNot { sc -> definedScopes.contains(sc) }
         return if (undefined.isNotEmpty()) {
@@ -113,13 +119,6 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
                 "Endpoint is secured by undefined OAuth2 scope(s): $schemeName:${undefined.joinToString()}",
                 op.security ?: op
             )
-        } else null
-    }
-
-    private fun validateBearerSchema(context: Context, op: Operation, schemeName: String): Violation? {
-        val requirement = op.security?.find { it[schemeName] != null }
-        return if (requirement == null) {
-            context.violation("Endpoint is not secured by scope(s)", op.security)
         } else null
     }
 
