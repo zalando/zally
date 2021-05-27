@@ -12,7 +12,7 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "132",
     severity = Severity.SHOULD,
-    title = "Prefer Hyphenated-Pascal-Case for HTTP header fields"
+    title = "Use uppercase separate words with hyphens for HTTP headers"
 )
 class PascalCaseHttpHeadersRule(config: Config) {
 
