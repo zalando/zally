@@ -4,6 +4,7 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.media.Schema
 import io.swagger.v3.oas.models.parameters.Parameter
 import io.swagger.v3.oas.models.responses.ApiResponse
+import io.swagger.v3.oas.models.security.SecurityScheme
 import java.util.Objects
 
 data class HeaderElement(
@@ -117,6 +118,28 @@ fun OpenAPI.getAllParameters(): Map<String, Parameter> = this.components?.parame
     this.paths.orEmpty().values.flatMap {
         it?.readOperations().orEmpty().flatMap { it?.parameters.orEmpty().mapNotNull { it.name to it } }
     }
+
+fun OpenAPI.getAllSecuritySchemes(): Map<String, SecurityScheme> = this.components?.securitySchemes.orEmpty()
+
+/**
+ * Checks if the SecurityScheme is a Bearer security scheme
+ */
+fun SecurityScheme.isBearer(): Boolean = this.scheme == "bearer" && this.type == SecurityScheme.Type.HTTP
+
+/**
+ * Checks if the SecurityScheme is an OAuth2 security scheme
+ */
+fun SecurityScheme.isOAuth2(): Boolean = this.type == SecurityScheme.Type.OAUTH2
+
+fun SecurityScheme.allFlows() = listOfNotNull(
+    this.flows?.implicit,
+    this.flows?.password,
+    this.flows?.clientCredentials,
+    this.flows?.authorizationCode
+)
+
+fun SecurityScheme.allScopes(): List<String> =
+    this.allFlows().flatMap { flow -> flow.scopes?.keys.orEmpty() }.toSet().filterNotNull()
 
 /**
  * Calculates custom hash to avoid calling the hash of the parent schema.

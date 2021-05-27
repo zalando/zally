@@ -5,6 +5,7 @@ import org.zalando.zally.ruleset.zalando.util.getConfigFromContent
 import org.zalando.zally.test.ZallyAssertions
 import org.intellij.lang.annotations.Language
 import org.junit.Test
+import org.zalando.zally.test.ZallyAssertions.assertThat
 
 /**
  * Tests for SecureAllEndpointsWithScopesRule
@@ -140,8 +141,8 @@ class SecureAllEndpointsWithScopesRuleTest {
 
         val violations = rule.checkOperationsAreScoped(context)
 
-        ZallyAssertions.assertThat(violations)
-            .descriptionsEqualTo("Endpoint not secured by OAuth2 scope(s)")
+        assertThat(violations)
+            .descriptionsEqualTo("Endpoint is not secured by scope(s)")
             .pointersEqualTo("/paths/~1things/get")
     }
 
@@ -200,8 +201,8 @@ class SecureAllEndpointsWithScopesRuleTest {
 
         val violations = rule.checkOperationsAreScoped(context)
 
-        ZallyAssertions.assertThat(violations)
-            .descriptionsEqualTo("Endpoint secured by undefined OAuth2 scope(s): oauth2:undefined-scope")
+        assertThat(violations)
+            .descriptionsEqualTo("Endpoint is secured by undefined OAuth2 scope(s): oauth2:undefined-scope")
             .pointersEqualTo("/paths/~1things/get/security")
     }
 
@@ -231,7 +232,7 @@ class SecureAllEndpointsWithScopesRuleTest {
 
         val violations = rule.checkOperationsAreScoped(context)
 
-        ZallyAssertions.assertThat(violations).isEmpty()
+        assertThat(violations).isEmpty()
     }
 
     @Test
@@ -291,8 +292,138 @@ class SecureAllEndpointsWithScopesRuleTest {
 
         val violations = rule.checkOperationsAreScoped(context)
 
-        ZallyAssertions.assertThat(violations)
-            .descriptionsEqualTo("Endpoint not secured by OAuth2 scope(s)")
+        assertThat(violations)
+            .descriptionsEqualTo("Endpoint is not secured by scope(s)")
             .pointersEqualTo("/paths/~1things/get")
+    }
+
+    @Test
+    fun `Rule supports Bearer security scheme`() {
+        @Language("YAML")
+        val yaml = """
+            openapi: 3.0.1
+            
+            paths:
+              '/things':
+                get:
+                  responses:
+                    200:
+                      description: OK
+                  security:
+                    - BearerAuth: ['scope.execute']
+              '/other-things':
+                get:
+                  responses:
+                    200:
+                      description: OK
+                  security:
+                    - BearerAuth: []
+            components:      
+              securitySchemes:
+                BearerAuth:
+                  type: http
+                  scheme: bearer
+            """.trimIndent()
+
+        val context = DefaultContextFactory().getOpenApiContext(yaml)
+
+        val violations = rule.checkOperationsAreScoped(context)
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `Unsecured path is detected using Bearer security scheme`() {
+        @Language("YAML")
+        val yaml = """
+            openapi: 3.0.1
+            
+            paths:
+              '/unsecured-path':
+                get:
+                  responses:
+                    200:
+                      description: OK
+              '/other-things':
+                get:
+                  responses:
+                    200:
+                      description: OK
+                  security:
+                    - BearerAuth: []
+            components:      
+              securitySchemes:
+                BearerAuth:
+                  type: http
+                  scheme: bearer
+            """.trimIndent()
+
+        val context = DefaultContextFactory().getOpenApiContext(yaml)
+
+        val violations = rule.checkOperationsAreScoped(context)
+        assertThat(violations).hasSize(1)
+    }
+
+    @Test
+    fun `Rule supports Bearer global security scheme`() {
+        @Language("YAML")
+        val yaml = """
+            openapi: 3.0.1
+            security:
+              - BearerAuth: ['scope.execute']
+            paths:
+              '/things':
+                get:
+                  responses:
+                    200:
+                      description: OK
+              '/other-things':
+                get:
+                  responses:
+                    200:
+                      description: OK
+            components:      
+              securitySchemes:
+                BearerAuth:
+                  type: http
+                  scheme: bearer
+            """.trimIndent()
+
+        val context = DefaultContextFactory().getOpenApiContext(yaml)
+
+        val violations = rule.checkOperationsAreScoped(context)
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `Security scheme names match`() {
+        @Language("YAML")
+        val yaml = """
+            openapi: 3.0.1
+            security:
+              - AnotherBearerAuth: ['scope.execute']
+            paths:
+              '/things':
+                get:
+                  responses:
+                    200:
+                      description: OK
+              '/other-things':
+                get:
+                  responses:
+                    200:
+                      description: OK
+                  security:
+                    - BearerAuth: []                      
+            components:      
+              securitySchemes:
+                BearerAuth:
+                  type: http
+                  scheme: bearer
+            """.trimIndent()
+
+        val context = DefaultContextFactory().getOpenApiContext(yaml)
+
+        val violations = rule.checkOperationsAreScoped(context)
+        assertThat(violations).hasSize(1)
     }
 }
