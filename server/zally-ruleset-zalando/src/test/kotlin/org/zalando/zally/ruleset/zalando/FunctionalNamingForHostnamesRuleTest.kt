@@ -1,33 +1,39 @@
 package org.zalando.zally.ruleset.zalando
 
+import org.zalando.zally.core.rulesConfig
 import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.rule.api.Context
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.Test
+import org.zalando.zally.ruleset.zalando.model.ApiAudience
 
 class FunctionalNamingForHostnamesRuleTest {
 
-    private val rule = FunctionalNamingForHostnamesRule()
+    private val rule = FunctionalNamingForHostnamesRule(rulesConfig)
 
     @Test
     fun `isUrlValid should return true if url follows the functional naming schema`() {
-        assertThat(rule.isUrlValid("infrastructure-service.zalandoapis.com")).isTrue()
-        assertThat(rule.isUrlValid("infrastructure-api-linter.zalandoapis.com")).isTrue()
-        assertThat(rule.isUrlValid("https://infrastructure-api-linter.zalandoapis.com")).isTrue()
-        assertThat(rule.isUrlValid("https://infrastructure-api-linter.zalandoapis.com/")).isTrue()
-        assertThat(rule.isUrlValid("https://infrastructure-api-linter.zalandoapis.com/api/")).isTrue()
+        assertThat(rule.isUrlValid("infrastructure-service.zalandoapis.com", ApiAudience.EXTERNAL_PUBLIC)).isTrue()
+        assertThat(rule.isUrlValid("infrastructure-api-linter.zalandoapis.com", ApiAudience.EXTERNAL_PUBLIC)).isTrue()
+        assertThat(rule.isUrlValid("https://infrastructure-api-linter.zalandoapis.com", ApiAudience.EXTERNAL_PUBLIC)).isTrue()
+        assertThat(rule.isUrlValid("https://infrastructure-api-linter.zalandoapis.com/", ApiAudience.EXTERNAL_PUBLIC)).isTrue()
+        assertThat(rule.isUrlValid("https://infrastructure-api-linter.zalandoapis.com/api/", ApiAudience.EXTERNAL_PUBLIC)).isTrue()
+        assertThat(rule.isUrlValid("https://some.api.zalan.do", ApiAudience.COMPONENT_INTERNAL)).isTrue()
     }
 
     @Test
     fun `isUrlValid should return false if url doesn't follow the functional naming schema`() {
-        assertThat(rule.isUrlValid("")).isFalse()
-        assertThat(rule.isUrlValid("random text")).isFalse()
-        assertThat(rule.isUrlValid("maxim@some.host")).isFalse()
-        assertThat(rule.isUrlValid("infrastructure.zalandoapis.com")).isFalse()
-        assertThat(rule.isUrlValid("special+characters.zalandoapis.com")).isFalse()
-        assertThat(rule.isUrlValid("http://infrastructure-api-linter.zalandoapis.com")).isFalse()
-        assertThat(rule.isUrlValid("https://infrastructure-api-linter.othercompanysapis.com")).isFalse()
+        assertThat(rule.isUrlValid("", ApiAudience.EXTERNAL_PUBLIC)).isFalse()
+        assertThat(rule.isUrlValid("random text", ApiAudience.EXTERNAL_PUBLIC)).isFalse()
+        assertThat(rule.isUrlValid("maxim@some.host", ApiAudience.EXTERNAL_PUBLIC)).isFalse()
+        assertThat(rule.isUrlValid("infrastructure.zalandoapis.com", ApiAudience.EXTERNAL_PUBLIC)).isFalse()
+        assertThat(rule.isUrlValid("special+characters.zalandoapis.com", ApiAudience.EXTERNAL_PUBLIC)).isFalse()
+        assertThat(rule.isUrlValid("http://infrastructure-api-linter.zalandoapis.com", ApiAudience.EXTERNAL_PUBLIC)).isFalse()
+        assertThat(rule.isUrlValid("https://infrastructure-api-linter.othercompanysapis.com", ApiAudience.EXTERNAL_PUBLIC)).isFalse()
+        assertThat(rule.isUrlValid("https://some-api.zalan.do", ApiAudience.EXTERNAL_PUBLIC)).isFalse()
+        assertThat(rule.isUrlValid("https://some-api.zalan.do", ApiAudience.EXTERNAL_PARTNER)).isFalse()
+        assertThat(rule.isUrlValid("https://some-api.zalan.do", ApiAudience.BUSINESS_UNIT_INTERNAL)).isFalse()
     }
 
     @Test
@@ -86,6 +92,15 @@ class FunctionalNamingForHostnamesRuleTest {
         assertThat(rule.mayFollowFunctionalNaming(context)).isEmpty()
     }
 
+    @Test
+    fun `(must|should|may)FollowFunctionalNaming should return no violations for "external-partner" audience and url from a exception list`() {
+        val context = getOpenApiContextWithAudienceAndHostname("external-partner", "api-sandbox.merchants.zalando.com")
+
+        assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
+        assertThat(rule.shouldFollowFunctionalNaming(context)).isEmpty()
+        assertThat(rule.mayFollowFunctionalNaming(context)).isEmpty()
+    }
+
     private fun getOpenApiContextWithAudienceAndHostname(audience: String, url: String): Context {
         @Language("YAML")
         val content = """
@@ -131,6 +146,15 @@ class FunctionalNamingForHostnamesRuleTest {
     @Test
     fun `(must|should|may)FollowFunctionalNaming should return no violations for Swagger APIs with no audience`() {
         val context = getSwaggerContextWith(audience = null, url = "infrastructure-api-linter.zalandoapis.com")
+
+        assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
+        assertThat(rule.shouldFollowFunctionalNaming(context)).isEmpty()
+        assertThat(rule.mayFollowFunctionalNaming(context)).isEmpty()
+    }
+
+    @Test
+    fun `(must|should|may)FollowFunctionalNaming should return no violations for OpenAPIs with hosts from the exception list for "external-partner"`() {
+        val context = getSwaggerContextWith(audience = "external-partner", url = "api.merchants.zalando.com")
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
         assertThat(rule.shouldFollowFunctionalNaming(context)).isEmpty()
