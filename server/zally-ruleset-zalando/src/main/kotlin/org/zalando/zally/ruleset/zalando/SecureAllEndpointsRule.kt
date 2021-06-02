@@ -1,6 +1,8 @@
 package org.zalando.zally.ruleset.zalando
 
 import org.zalando.zally.core.toJsonPointer
+import org.zalando.zally.core.util.isBearer
+import org.zalando.zally.core.util.isOAuth2
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
@@ -12,28 +14,29 @@ import io.swagger.v3.oas.models.security.SecurityScheme
     ruleSet = ZalandoRuleSet::class,
     id = "104",
     severity = Severity.MUST,
-    title = "Secure Endpoints with OAuth 2.0"
+    title = "Secure Endpoints"
 )
-class SecureWithOAuth2Rule {
+class SecureAllEndpointsRule {
 
     @Check(severity = Severity.MUST)
-    fun checkSecuritySchemesOAuth2IsUsed(context: Context): Violation? {
-        val oauth2IsUsed = context.api.components?.securitySchemes?.values
-            .orEmpty()
-            .any { SecurityScheme.Type.OAUTH2 == it.type }
+    fun checkHasValidSecuritySchemes(context: Context): Violation? {
+        val valid = context.api.components?.securitySchemes?.values?.filter {
+            it.isOAuth2() || it.isBearer()
+        }.orEmpty()
 
-        return if (!oauth2IsUsed) context.violation("API has to be secured by OAuth2", "/components/securitySchemes".toJsonPointer())
-        else null
+        return if (valid.isEmpty()) context.violation(
+            "API must be secured by OAuth2 or Bearer Authentication",
+            "/components/securitySchemes".toJsonPointer()
+        ) else null
     }
 
     @Check(severity = Severity.MUST)
-    fun checkSecuritySchemesOnlyOAuth2IsUsed(context: Context): List<Violation> =
-        context.api.components?.securitySchemes?.values
-            ?.filter { it.type != SecurityScheme.Type.OAUTH2 }
-            ?.map {
-                context.violation("Only OAuth2 is allowed to secure the API", it)
-            }
-            .orEmpty()
+    fun checkHasNoInvalidSecuritySchemes(context: Context): List<Violation> =
+        context.api.components?.securitySchemes?.values?.filterNot {
+            it.isOAuth2() || it.isBearer()
+        }?.map {
+            context.violation("API must be secured by OAuth2 or Bearer Authentication", it)
+        }.orEmpty()
 
     @Check(severity = Severity.MUST)
     fun checkUsedScopesAreSpecified(context: Context): List<Violation> {
@@ -61,7 +64,8 @@ class SecureWithOAuth2Rule {
             .map { (group, scope) ->
                 context.violation(
                     "The scope '$group/$scope' is not specified in the clientCredentials flow of the " +
-                        "OAuth2 security definition", scope
+                            "OAuth2 security definition",
+                    scope
                 )
             }
     }
