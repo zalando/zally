@@ -26,32 +26,33 @@ class UpperCaseEnums {
 
     @Check(severity = Severity.SHOULD)
     fun validate(context: Context): List<Violation> =
-        context.api.getAllSchemas()
-            .filter { it.type == "string" }
-            .filter { it.isExtensibleEnum() || it.isEnum() }
-            .flatMap {
-                if (it.isExtensibleEnum()) {
-                    validateExtensibleEnum(it)
-                } else {
-                    validateEnum(it)
-                }.map { enumValue -> context.violation("$description. Incorrect value: $enumValue", it) }
-            } +
-            context.api.getAllProperties()
-                .filter { it.value.type == "string" }
-                .filter { it.value.isExtensibleEnum() || it.value.isEnum() }
-                .flatMap { (propName, property) ->
-                    if (property.isExtensibleEnum()) {
-                        validateExtensibleEnum(property)
-                    } else {
-                        validateEnum(property)
-                    }.map {
-                        context.violation("$propName: $description. Incorrect value: $it", it)
-                    }
-                }
+        validatePrimitiveSchemas(context) + validateAllProperties(context)
 
-    private fun validateExtensibleEnum(property: Schema<Any>): List<String> =
-        property.extensibleEnum().filter { !pattern.matches(it) }
+    private fun validateAllProperties(context: Context): List<Violation> = context.api.getAllProperties()
+        .filter { it.value.type == "string" }
+        .filter { it.value.isExtensibleEnum() || it.value.isEnum() }
+        .flatMap { (_, property) ->
+            validateEnum(property, context)
+        }
 
-    private fun validateEnum(property: Schema<Any>): List<String> =
-        property.enum.map { it.toString() }.filter { !pattern.matches(it) }
+    private fun validatePrimitiveSchemas(context: Context): List<Violation> = context.api.getAllSchemas()
+        .filter { it.type == "string" }
+        .filter { it.isExtensibleEnum() || it.isEnum() }
+        .flatMap { validateEnum(it, context) }
+
+    private fun validateEnum(scheme: Schema<Any>, context: Context): List<Violation> {
+        val enumValues = if (scheme.isExtensibleEnum()) {
+            scheme.extensibleEnum()
+        } else scheme.enum
+
+        return enumValues.filterNotNull().filterNot { it is String }.map {
+            context.violation(
+                "${scheme.name}: Enum value type ${it.javaClass.simpleName} is not valid. The expected type is string",
+                scheme
+            )
+        } +
+            enumValues.filter { it is String }.map { it.toString() }.filterNot { pattern.matches(it) }.map {
+                context.violation("${scheme.name}: $description. Incorrect value: $it", scheme)
+            }
+    }
 }

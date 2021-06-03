@@ -96,19 +96,12 @@ class UpperCaseEnumsTest {
         val spec = """
             openapi: 3.0.1
             paths:
-              /article:
+              '/job-statistics/latest':
                 get:
-                  parameters:
-                    - name: country
-                      in: query
-                      schema:
-                        type: string
-                        enum:
-                          - GERMANY
-                          - SWEDEN
-                          - PUT_YOUR_COUNTRY_HERE
-                          - COUNTRY_1
-                  responses: 
+                  summary: get API monitoring statistics
+                  description: Returns all statistics about monitored API endpoints.
+                  operationId: 'getMonitoringStatistics'
+                  responses:
                     200:
                       description: The identifiers associated with the source id.
                       content: 
@@ -128,5 +121,41 @@ class UpperCaseEnumsTest {
 
         val violations = rule.validate(context)
         assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `should return violations if the type of the property doesn't match with enum type values`() {
+        val spec = """
+            openapi: 3.0.1
+            paths:
+              '/job-statistics/latest':
+                get:
+                  summary: get API monitoring statistics
+                  description: Returns all statistics about monitored API endpoints.
+                  operationId: 'getMonitoringStatistics'
+                  responses:
+                    200:
+                      description: The identifiers associated with the source id.
+                      content: 
+                        application/json:
+                          schema:
+                            type: object
+                            properties:
+                              invalid-string-prop-1:
+                                type: string
+                                x-extensible-enum:
+                                  - ON
+                                  - OFF                                 
+                              invalid-string-prop-2:
+                                type: string
+                                x-extensible-enum:
+                                  - 1
+                                  - 2                                 
+        """.trimIndent()
+
+        val context = DefaultContextFactory().getOpenApiContext(spec)
+
+        val violations = rule.validate(context)
+        assertThat(violations).hasSize(4)
     }
 }

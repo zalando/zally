@@ -47,19 +47,21 @@ fun OpenAPI.getAllHeaders(): Set<HeaderElement> {
  */
 fun OpenAPI.getAllSchemas(): Collection<Schema<Any>> = this.components?.schemas.orEmpty().values +
     this.components?.parameters.orEmpty().mapNotNull { it.value.schema } +
-    this.components?.responses.orEmpty().values.flatMap { it.content.orEmpty().values.mapNotNull { it.schema } } +
-    this.components?.requestBodies.orEmpty().values.flatMap { it.content.orEmpty().values.mapNotNull { it.schema } } +
+    this.components?.responses.orEmpty().values.flatMap { it.content.orEmpty().values.mapNotNull { v -> v.schema } } +
+    this.components?.requestBodies.orEmpty().values.flatMap { it.content.orEmpty().values.mapNotNull { v -> v.schema } } +
     this.paths.orEmpty().flatMap {
-        it.value?.readOperations().orEmpty().flatMap { it.parameters.orEmpty().mapNotNull { it.schema } }
+        it.value?.readOperations().orEmpty()
+            .flatMap { operation -> operation.parameters.orEmpty().mapNotNull { parameter -> parameter.schema } }
     } +
     this.paths.orEmpty().flatMap {
-        it.value?.readOperations().orEmpty().flatMap {
-            it.responses.orEmpty().flatMap { it.value.content.orEmpty().values.mapNotNull { it.schema } }
+        it.value?.readOperations().orEmpty().flatMap { operation ->
+            operation.responses.orEmpty()
+                .flatMap { response -> response.value.content.orEmpty().values.mapNotNull { v -> v.schema } }
         }
     } +
     this.paths.orEmpty().flatMap {
         it.value?.readOperations().orEmpty()
-            .flatMap { it.requestBody?.content.orEmpty().values.mapNotNull { it.schema } }
+            .flatMap { readOps -> readOps.requestBody?.content.orEmpty().values.mapNotNull { v -> v.schema } }
     }
 
 /**
@@ -158,7 +160,7 @@ fun Schema<Any>.isEnum(): Boolean = this.enum?.isNotEmpty() ?: false
 fun Schema<Any>.isExtensibleEnum(): Boolean =
     this.extensions?.containsKey("x-extensible-enum") ?: false
 
-fun Schema<Any>.extensibleEnum(): List<String> =
+fun Schema<Any>.extensibleEnum(): List<Any?> =
     if (this.isExtensibleEnum()) {
-        (this.extensions["x-extensible-enum"] as List<*>).map { it.toString() }
-    } else emptyList()
+        (this.extensions["x-extensible-enum"] as List<Any?>)
+    } else emptyList<Any?>()
