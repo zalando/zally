@@ -17,14 +17,14 @@ import org.zalando.zally.rule.api.Violation
 class PathParameterRule {
 
     companion object {
-        const val ERROR_MESSAGE = "Parameter with location \"path\" must have an attribure \"required=true\" set"
+        const val ERROR_MESSAGE = "Parameter with location \"path\" must have an attribute \"required=true\" set"
     }
 
     @Check(severity = Severity.MUST)
     fun validate(context: Context): List<Violation> =
         context.api.getAllParameters().map { entry -> entry.value }
             .filter { parameter ->
-                parameter.isInPath() || !parameter.required
+                parameter.isInPath() && !parameter.required
             }
             .map {
                 context.violation(ERROR_MESSAGE, it)
