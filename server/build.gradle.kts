@@ -141,8 +141,7 @@ subprojects {
 
     configurations.all {
         resolutionStrategy {
-            // 1.2.10 disallows jar:file: resources, hopefully fixed in 1.2.14+
-            force("com.github.java-json-tools:json-schema-core:bf09fe87139ac1fde0755194b59130f3b2d63e3a")
+            force("com.github.java-json-tools:json-schema-core:1.2.14")
         }
     }
 
