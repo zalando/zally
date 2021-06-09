@@ -1,6 +1,7 @@
 package org.zalando.zally.ruleset.zalando
 
 import org.zalando.zally.core.toJsonPointer
+import org.zalando.zally.core.util.allFlows
 import org.zalando.zally.core.util.isBearer
 import org.zalando.zally.core.util.isOAuth2
 import org.zalando.zally.rule.api.Check
@@ -8,7 +9,6 @@ import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import io.swagger.v3.oas.models.security.SecurityScheme
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -42,17 +42,21 @@ class SecureAllEndpointsRule {
     fun checkUsedScopesAreSpecified(context: Context): List<Violation> {
         if (!context.isOpenAPI3()) return emptyList()
 
-        val specifiedScopes = context.api.components?.securitySchemes?.entries
-            .orEmpty()
-            .filter { (_, scheme) -> SecurityScheme.Type.OAUTH2 == scheme.type }
-            .flatMap { (group, scheme) ->
-                scheme.flows?.clientCredentials?.scopes.orEmpty().keys.map { scope -> group to scope }
-            }
-            .toSet()
+        val specifiedSchemes = context.api.components?.securitySchemes?.entries.orEmpty()
+            .map { (group, scheme) -> group to scheme }.toMap()
 
-        val usedScopes = context.api.paths?.values
-            .orEmpty()
-            .flatMap { it?.readOperations().orEmpty().flatMap { it.security.orEmpty() } }
+        val specifiedScopes = context.api.components?.securitySchemes?.entries.orEmpty()
+            .filter { (_, scheme) -> scheme.isOAuth2() }
+            .flatMap { (group, scheme) ->
+                scheme.allFlows().flatMap { flow ->
+                    flow.scopes?.keys.orEmpty().map { scope -> group to scope }
+                }
+            }.toSet()
+
+        val usedScopes = context.api.paths?.values.orEmpty()
+            .flatMap {
+                it?.readOperations().orEmpty().flatMap { it.security.orEmpty() }
+            }
             .flatMap { secReq ->
                 secReq.keys.flatMap { group ->
                     secReq[group].orEmpty().map { scope -> group to scope }
@@ -60,12 +64,10 @@ class SecureAllEndpointsRule {
             }
 
         return usedScopes
-            .filterNot { it in specifiedScopes }
-            .map { (group, scope) ->
+            .filter { (group, _) -> specifiedSchemes.get(group)?.isOAuth2() ?: false }
+            .filterNot { it in specifiedScopes }.map { (group, scope) ->
                 context.violation(
-                    "The scope '$group/$scope' is not specified in the clientCredentials flow of the " +
-                            "OAuth2 security definition",
-                    scope
+                    "The scope '$group/$scope' is not specified in security definition", scope
                 )
             }
     }
