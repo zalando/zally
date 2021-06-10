@@ -166,3 +166,5 @@ fun Schema<Any>.extensibleEnum(): List<Any?> =
     } else emptyList<Any?>()
 
 fun Parameter.isInPath() = this.`in` == "path"
+
+fun Schema<Any>.isObjectSchema(): Boolean = this.type == "object"

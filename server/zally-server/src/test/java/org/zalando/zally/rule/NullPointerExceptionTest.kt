@@ -234,7 +234,7 @@ class NullPointerExceptionTest(
                       content:
                         schema:
                           type: object
-                        example: example
+                        example: 
                         encoding:
                           propName:
                             contentType: binary
@@ -254,7 +254,7 @@ class NullPointerExceptionTest(
                       content:
                         schema:
                           type: object
-                        example: example
+                        example: 
                         encoding:
                           propName:
                             contentType: binary

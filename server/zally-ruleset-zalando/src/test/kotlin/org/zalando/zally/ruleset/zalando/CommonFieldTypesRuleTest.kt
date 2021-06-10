@@ -235,9 +235,44 @@ class CommonFieldTypesRuleTest {
 
         val violations = rule.checkTypesOfCommonFields(context)
 
+        print(violations)
         assertThat(violations).isNotEmpty
         assertThat(violations).hasSize(1)
         assertThat(violations[0].description).containsPattern(".*expected type 'string'.*")
         assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1pets/get/responses/200/content/application~1json/schema/properties/id")
+    }
+
+    @Test
+    fun `checkTypesOfCommonFields should also test object references`() {
+        @Language("YAML")
+        val context = DefaultContextFactory().getOpenApiContext(
+            """
+            openapi: 3.0.1
+            paths:
+              /pets:
+                get:
+                  responses:
+                    200:
+                      content:
+                        application/json:
+                          schema:
+                            $\ref: "#/components/schemas/CustomId"
+            components:
+              schemas:
+                CustomId:
+                  type: object
+                  properties:
+                    id: 
+                      type: integer
+                      format: int64
+        """.trimIndent()
+        )
+
+        val violations = rule.checkTypesOfCommonFields(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations).hasSize(1)
+        assertThat(violations[0].description).containsPattern(".*expected type 'string'.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/components/schemas/CustomId/properties/id")
     }
 }
