@@ -178,6 +178,7 @@ class CaseChecker(
         .paths
         ?.values
         .orEmpty()
+        .filterNotNull()
         .flatMap { path -> path.readOperations() }
         .flatMap { op ->
             op?.tags.orEmpty().flatMap { name ->

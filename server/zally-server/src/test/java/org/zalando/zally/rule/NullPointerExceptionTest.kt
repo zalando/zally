@@ -234,7 +234,7 @@ class NullPointerExceptionTest(
                       content:
                         schema:
                           type: object
-                        example: 
+                        example: {}
                         encoding:
                           propName:
                             contentType: binary
@@ -254,7 +254,7 @@ class NullPointerExceptionTest(
                       content:
                         schema:
                           type: object
-                        example: 
+                        example: {}
                         encoding:
                           propName:
                             contentType: binary
@@ -366,9 +366,6 @@ class NullPointerExceptionTest(
                     trace: {}
                     delete: {}
                     options: {}
-                    servers:
-                    - url: 'https://example.com/'
-                      description: Example Server
                     parameters:
                     - name: Parameter name
 
@@ -428,7 +425,7 @@ class NullPointerExceptionTest(
                         }
                     }
                 }
-                else -> emptyList<JsonPointer>()
+                else -> emptyList()
             }
     }
 
@@ -444,8 +441,13 @@ class NullPointerExceptionTest(
 
     @Test
     fun `validate with spec does not throw NullPointerException`() {
-        assertRuleManagerUsingAllAnnotatedRules(rules)
+        try {
+            assertRuleManagerUsingAllAnnotatedRules(rules)
 
-        validator.validate(spec, RulesPolicy(emptyList()))
+            validator.validate(spec, RulesPolicy(emptyList()))
+        } catch (e: NullPointerException) {
+            println("Test $name failed with NPE")
+            throw e
+        }
     }
 }
