@@ -1,9 +1,9 @@
 package org.zalando.zally.test
 
-import org.zalando.zally.rule.api.Violation
 import org.assertj.core.api.AbstractListAssert
 import org.assertj.core.api.ListAssert
 import org.assertj.core.api.ObjectAssert
+import org.zalando.zally.rule.api.Violation
 
 @Suppress("UndocumentedPublicClass", "SpreadOperator")
 class ViolationsAssert(violations: List<Violation>?) :
@@ -30,6 +30,14 @@ class ViolationsAssert(violations: List<Violation>?) :
 
     fun descriptionsEqualTo(vararg descriptions: String): ViolationsAssert {
         descriptions().containsExactly(*descriptions)
+        return this
+    }
+
+    /**
+     * Verifies that violations list contains violations with provides descriptions in any order
+     */
+    fun containsDescriptionsInAnyOrder(vararg descriptions: String): ViolationsAssert {
+        descriptions().containsExactlyInAnyOrder(*descriptions)
         return this
     }
 
