@@ -18,7 +18,7 @@ requesting violations check at a given Zally server.
 1. Run tests:
 
     ```bash
-    cd zally
+    cd zally/cli/zally
     GO111MODULE=on ./test.sh
     ```
 

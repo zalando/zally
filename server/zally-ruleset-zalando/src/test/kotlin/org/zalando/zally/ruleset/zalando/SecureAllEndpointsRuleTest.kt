@@ -56,7 +56,7 @@ class SecureAllEndpointsRuleTest {
             openapi: 3.0.1
             components:
               securitySchemes:
-                company-oauth2:
+                bearer:
                   type: http
                   scheme: bearer
                   bearerFormat: JWT
@@ -204,7 +204,8 @@ class SecureAllEndpointsRuleTest {
                 post:
                   security:
                     - oauth2:
-                        - read # is defined in the security schemes
+                        - read-1 # is defined in the security schemes
+                        - read-2 # is defined in the security schemes
             components:
               securitySchemes:
                 oauth2:
@@ -215,10 +216,39 @@ class SecureAllEndpointsRuleTest {
                       refreshUrl: https://identity.company.com/oauth2/refresh
                       tokenUrl: https://identity.company.com/oauth2/token
                       scopes:
-                        read: read access to the resources of this API
+                        read-1: read access to the resources of this API
+                    implicit:
+                      authorizationUrl: https://identity.company.com/oauth2/auth
+                      refreshUrl: https://identity.company.com/oauth2/refresh
+                      scopes:
+                        read-2: read access to the resources of this API
         """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
+        val violations = rule.checkUsedScopesAreSpecified(context)
+
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `checkUsedScopesAreDefined should return no violation for Bearer Authentication`() {
+        @Language("YAML")
+        val content = """
+            openapi: 3.0.1
+            paths:
+              /article:
+                post:
+                  security:
+                    - bearer:
+                        - write # is not defined in the security schemes
+            components:
+              securitySchemes:
+                bearer:
+                  type: http
+                  scheme: bearer
+                  bearerFormat: JWT
+        """.trimIndent()
+        val context = DefaultContextFactory().getOpenApiContext(content)
         val violations = rule.checkUsedScopesAreSpecified(context)
 
         assertThat(violations).isEmpty()
