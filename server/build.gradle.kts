@@ -167,13 +167,14 @@ subprojects {
         toolVersion = "0.8.2"
     }
 
-    tasks.check {
-        dependsOn(tasks.jacocoTestReport)
+    tasks.test {
+        finalizedBy(tasks.jacocoTestReport)
     }
 
     tasks.jacocoTestReport {
+        dependsOn(tasks.test)
         reports {
-            xml.isEnabled = true
+            xml.required.set(true)
         }
     }
 

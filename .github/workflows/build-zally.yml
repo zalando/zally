@@ -1,0 +1,126 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Zally Pull Request Builds
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-zally:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Build Zally Server
+        run: |
+          cd server/
+          chmod +x gradlew
+          ./gradlew --console=plain build
+      - uses: codecov/codecov-action@v1
+        with:
+          files: ./server/zally-server/build/reports/jacoco/test/jacocoTestReport.xml,./server/zally-ruleset-zally/build//reports/jacoco/test/jacocoTestReport.xml,./server/zally-ruleset-zalando/build/reports/jacoco/test/jacocoTestReport.xml,./server/zally-core/build/reports/jacoco/test/jacocoTestReport.xml,./server/zally-rule-api/build/reports/jacoco/test/jacocoTestReport.xml
+      - name: Cleanup Gradle Cache
+        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+  build-github-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Build Github Integration
+        run: |
+          cd github-integration/
+          chmod +x gradlew
+          ./gradlew --console=plain build
+      - uses: codecov/codecov-action@v1
+        with:
+          files: ./github-integration/build/reports/jacoco/test/jacocoTestReport.xml
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+  build-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.12'
+      - run: go version
+      - name: Run Zally server
+        run: |
+          cd server/
+          chmod +x gradlew
+          ./gradlew --console=plain bootRun > /dev/null &
+          echo $! > /tmp/zally_server.pid
+          cd ..
+          while ! echo "GET / HTTP/1.0\n" | nc localhost 8000; do sleep 1; done
+      - name: Build & Run CLI tests
+        run: |
+          cd cli/zally
+          ./test.sh
+          ./test.sh integration
+          go build
+          cd ../..
+      - uses: codecov/codecov-action@v1
+        with:
+          files: ./cli/zally/coverage.txt
+
+  test-web-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '10'
+      - name: Configure yarn
+        run: yarn install -q
+      - name: Build & Test CLI
+        run: |
+          cd web-ui
+          yarn add zally-web-ui
+          yarn test
+          yarn build
+      - uses: codecov/codecov-action@v1
+        with:
+          files: ./web-ui/target/coverage/lcov.info
+
