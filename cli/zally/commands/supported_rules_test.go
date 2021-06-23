@@ -2,6 +2,7 @@ package commands
 
 import (
 	"bytes"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -49,11 +50,11 @@ func TestListRules(t *testing.T) {
 
 		err := listRules(getSupportedRulesContext(testServer.URL, "must", "pretty"))
 		expectedError := fmt.Sprintf(
-			"Get %s/supported-rules?is_active=true&type=must: net/http: request canceled"+
+			"Get \"%s/supported-rules?is_active=true&type=must\": context deadline exceeded"+
 				" (Client.Timeout exceeded while awaiting headers)",
 			testServer.URL,
 		)
-		tests.AssertEquals(t, expectedError, err.Error())
+		assert.Error(t, err, expectedError)
 	})
 
 }

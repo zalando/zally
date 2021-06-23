@@ -2,6 +2,7 @@ package commands
 
 import (
 	"flag"
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"testing"
 	"time"
@@ -101,12 +102,12 @@ func TestDoRequest(t *testing.T) {
 		violations, err := doRequest(requestBuilder, data)
 
 		expectedError := fmt.Sprintf(
-			"Post %s/api-violations: net/http: request canceled"+
+			"Post \"%s/api-violations\": context deadline exceeded"+
 				" (Client.Timeout exceeded while awaiting headers)",
 			testServer.URL,
 		)
-		tests.AssertEquals(t, expectedError, err.Error())
-		tests.AssertEquals(t, (*domain.Violations)(nil), violations)
+		assert.Error(t, err, expectedError)
+		assert.Nil(t, violations)
 	})
 }
 
