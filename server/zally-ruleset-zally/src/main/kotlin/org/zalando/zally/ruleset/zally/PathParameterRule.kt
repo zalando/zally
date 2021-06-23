@@ -39,29 +39,29 @@ class PathParameterRule {
 
     @Check(severity = Severity.MUST)
     fun checkSchemaOrContentProperty(context: Context): List<Violation> {
-        if (!context.isOpenAPI3()) {
-            emptyList<Violation>()
+        if (context.isOpenAPI3()) {
+            return context.api
+                .getAllParameters()
+                .filterValues { it.schema == null && it.content == null }
+                .map { (_, parameter) ->
+                    context.violation(requiredSchemaOrContentErrorMessage(parameter.name), parameter)
+                }
         }
-        return context.api
-            .getAllParameters()
-            .filterValues { it.schema == null && it.content == null }
-            .map { (_, parameter) ->
-                context.violation(requiredSchemaOrContentErrorMessage(parameter.name), parameter)
-            }
+        return emptyList()
     }
 
     @Check(severity = Severity.MUST)
     fun validateParameterContentMapStructure(context: Context): List<Violation> {
-        if (!context.isOpenAPI3()) {
-            emptyList<Violation>()
+        if (context.isOpenAPI3()) {
+            return context.api.getAllParameters()
+                .filterValues {
+                    val contentMap = it.content.orEmpty()
+                    contentMap.isEmpty() || contentMap.size > 1
+                }
+                .map { (_, parameter) ->
+                    context.violation(contentMapStructureErrorMessage(parameter.name), parameter)
+                }
         }
-        return context.api.getAllParameters()
-            .filterValues {
-                val contentMap = it.content.orEmpty()
-                contentMap.isEmpty() || contentMap.size > 1
-            }
-            .map { (_, parameter) ->
-                context.violation(contentMapStructureErrorMessage(parameter.name), parameter)
-            }
+        return emptyList()
     }
 }
