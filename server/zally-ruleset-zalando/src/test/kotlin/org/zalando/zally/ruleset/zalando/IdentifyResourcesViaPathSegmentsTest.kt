@@ -35,27 +35,6 @@ class IdentifyResourcesViaPathSegmentsTest {
     }
 
     @Test
-    fun `should return a violation if path contains successive parameters`() {
-        val violations = rule
-            .pathDoesNotContainSuccessiveParameters(withPath("/merchants/{merchant-id}/{address-id}"))
-
-        assertThat(violations).isNotEmpty
-        assertThat(violations[0].description).containsPattern(".*must not contain successive parameters*")
-        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1merchants~1{merchant-id}~1{address-id}")
-    }
-
-    @Test
-    fun `should not return any violations if path doesn't contain successive parameters`() {
-        assertThat(rule.pathDoesNotContainSuccessiveParameters(withPath("/customers"))).isEmpty()
-        assertThat(rule.pathDoesNotContainSuccessiveParameters(withPath("/customers/{customer-id}"))).isEmpty()
-        assertThat(
-            rule.pathDoesNotContainSuccessiveParameters(
-                withPath("/customers/{customer-id}/addresses/primary")
-            )
-        ).isEmpty()
-    }
-
-    @Test
     fun `should return a violation if path parameter contains prefix`() {
         val violations = rule.pathParameterDoesNotContainPrefixAndSuffix(
             withPath("/orders/de-{order-id}")
