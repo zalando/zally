@@ -55,8 +55,9 @@ class PathParameterRule {
         if (context.isOpenAPI3()) {
             return context.api.getAllParameters()
                 .filterValues {
-                    val contentMap = it.content.orEmpty()
-                    contentMap.isEmpty() || contentMap.size > 1
+                    if (it.content != null) {
+                        it.content.isEmpty() || it.content.size > 1
+                    } else false
                 }
                 .map { (_, parameter) ->
                     context.violation(contentMapStructureErrorMessage(parameter.name), parameter)

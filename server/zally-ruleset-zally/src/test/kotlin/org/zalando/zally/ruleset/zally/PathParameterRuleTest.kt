@@ -266,10 +266,50 @@ class PathParameterRuleTest {
 
         val violations = rule.validateParameterContentMapStructure(context)
 
-        assertThat(violations).hasSize(2)
-        assertThat(violations).containsDescriptionsInAnyOrder(
-            PathParameterRule.contentMapStructureErrorMessage("X-HEADER-ID"),
-            PathParameterRule.contentMapStructureErrorMessage("item-id")
+        assertThat(violations).hasSize(1)
+        assertThat(violations).descriptionsAllEqualTo(
+            PathParameterRule.contentMapStructureErrorMessage("X-HEADER-ID")
         )
+    }
+
+    @Test
+    fun `return no violations if 'content' is not defined`() {
+        @Language("YAML")
+        val context = DefaultContextFactory().getOpenApiContext(
+            """
+            openapi: '3.0.0'
+            info:
+              title: Schema and content Parameter properties validation
+              contact: 
+                info: "Team One"               
+            paths:
+              /endpoint:
+                post:
+                  summary: |
+                    Some summary.
+                  security:
+                    - oauth2: ["uid"]
+                  parameters:
+                    - name: X-HEADER-ID
+                      description: Header description
+                      in: header
+                      required: false
+                      schema:
+                        type: string
+                    - $\ref: "#/components/parameters/QueryParameter"
+            components: 
+              parameters:
+                QueryParameter:
+                  name: item-id
+                  in: path                  
+                  description: The id of the pet to retrieve
+                  schema:
+                    type: string
+                      """.trimIndent()
+        )
+
+        val violations = rule.validateParameterContentMapStructure(context)
+
+        assertThat(violations).isEmpty()
     }
 }
