@@ -34,6 +34,10 @@ func CreateApp() *cli.App {
 			Usage: "Output format `[pretty|markdown|text]`",
 			Value: "pretty",
 		},
+		cli.BoolFlag{
+			Name:  "skip-ssl-verification",
+			Usage: "Skip SSL certificate verification when sending a request to linter service",
+		},
 	}
 
 	return app

@@ -22,7 +22,7 @@ func TestListRules(t *testing.T) {
 		defer testServer.Close()
 
 		request, err := http.NewRequest("GET", testServer.URL, nil)
-		response, err := DoHTTPRequest(request)
+		response, err := DoHTTPRequest(request, false)
 		assert.Nil(t, err)
 
 		responseBody, _ := ioutil.ReadAll(response.Body)
@@ -40,7 +40,7 @@ func TestListRules(t *testing.T) {
 		defer testServer.Close()
 
 		request, err := http.NewRequest("GET", testServer.URL, nil)
-		response, err := DoHTTPRequest(request)
+		response, err := DoHTTPRequest(request, false)
 
 		expectedError := fmt.Sprintf(
 			"Get \"%s\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)",

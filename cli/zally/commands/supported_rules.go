@@ -43,7 +43,7 @@ func listRules(c *cli.Context) error {
 
 	requestBuilder := utils.NewRequestBuilder(
 		c.GlobalString("linter-service"), c.GlobalString("token"), c.App)
-	rules, err := fetchRules(requestBuilder, ruleType)
+	rules, err := fetchRules(requestBuilder, ruleType, c.Bool("skip-ssl-verification"))
 	if err != nil {
 		return domain.NewAppError(err, domain.ServerError)
 	}
@@ -66,7 +66,7 @@ func validateType(ruleType string) error {
 	return fmt.Errorf("%s is not supported", ruleType)
 }
 
-func fetchRules(requestBuilder *utils.RequestBuilder, rulesType string) (*domain.Rules, error) {
+func fetchRules(requestBuilder *utils.RequestBuilder, rulesType string, skipSslVerification bool) (*domain.Rules, error) {
 	uri := "/supported-rules?is_active=true"
 	if rulesType != "" {
 		uri += "&type=" + rulesType
@@ -76,7 +76,7 @@ func fetchRules(requestBuilder *utils.RequestBuilder, rulesType string) (*domain
 		return nil, err
 	}
 
-	response, err := utils.DoHTTPRequest(request)
+	response, err := utils.DoHTTPRequest(request, skipSslVerification)
 	if err != nil {
 		return nil, err
 	}

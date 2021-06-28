@@ -70,7 +70,7 @@ func TestFetchRules(t *testing.T) {
 		defer testServer.Close()
 
 		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
-		rules, err := fetchRules(requestBuilder, "")
+		rules, err := fetchRules(requestBuilder, "", false)
 
 		tests.AssertEquals(t, nil, err)
 		tests.AssertEquals(t, len(rules.Rules), 15)
@@ -90,7 +90,7 @@ func TestFetchRules(t *testing.T) {
 		defer testServer.Close()
 
 		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
-		rules, err := fetchRules(requestBuilder, "")
+		rules, err := fetchRules(requestBuilder, "", false)
 
 		tests.AssertEquals(t, "Cannot submit file for linting. HTTP Status: 400, Response: Something went wrong", err.Error())
 		tests.AssertEquals(t, (*domain.Rules)(nil), rules)
@@ -107,7 +107,7 @@ func TestFetchRules(t *testing.T) {
 		defer testServer.Close()
 
 		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
-		fetchRules(requestBuilder, "must")
+		fetchRules(requestBuilder, "must", false)
 	})
 }
 
