@@ -64,7 +64,7 @@ func TestDoRequest(t *testing.T) {
 		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
 		data, _ := readFile("testdata/minimal_swagger.json")
 
-		violations, err := doRequest(requestBuilder, data)
+		violations, err := doRequest(requestBuilder, data, false)
 
 		tests.AssertEquals(t, nil, err)
 		tests.AssertEquals(t, "First Violation", violations.Violations[0].Title)
@@ -81,7 +81,7 @@ func TestDoRequest(t *testing.T) {
 		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
 		data, _ := readFile("testdata/minimal_swagger.json")
 
-		violations, err := doRequest(requestBuilder, data)
+		violations, err := doRequest(requestBuilder, data, false)
 
 		tests.AssertEquals(t, "Cannot submit file for linting. HTTP Status: 404, Response: Not Found\n", err.Error())
 		tests.AssertEquals(t, (*domain.Violations)(nil), violations)
@@ -99,7 +99,7 @@ func TestDoRequest(t *testing.T) {
 		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
 		data, _ := readFile("testdata/minimal_swagger.json")
 
-		violations, err := doRequest(requestBuilder, data)
+		violations, err := doRequest(requestBuilder, data, false)
 
 		expectedError := fmt.Sprintf(
 			"Post \"%s/api-violations\": context deadline exceeded"+
