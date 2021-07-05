@@ -101,6 +101,7 @@ tags:
   - name: Versions
     description: Description of Versions
 
+x-zally-ignore: [ 151 ]
 paths:
   '/apis':
     get:

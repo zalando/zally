@@ -98,13 +98,18 @@ paths:
         404:
           description: Partner not found
 
-  /reports/jobs:
+  /reports/{report-id}/jobs:
     get:
       summary: List job reports
       tags:
         - report
       parameters:
         - $ref: "#/parameters/Authorization"
+        - name: report-id
+          in: path
+          description: uniquely identifies report within this API
+          type: string
+          required: true
         - name: from
           in: query
           description: only list jobs started after this date-time (RFC-3339)
@@ -129,13 +134,18 @@ paths:
             items:
               $ref: "#/definitions/JobSummary"
 
-  /reports/jobs/{job-id}:
+  /reports/{report-id}/jobs/{job-id}:
     get:
       summary: Job details
       tags:
         - report
       parameters:
         - $ref: "#/parameters/Authorization"
+        - name: report-id
+          in: path
+          description: uniquely identifies report within this API
+          type: string
+          required: true
         - name: job-id
           in: path
           description: uniquely identifies job within this API
