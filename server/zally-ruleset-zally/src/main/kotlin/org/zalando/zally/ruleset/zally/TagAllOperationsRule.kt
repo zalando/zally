@@ -42,6 +42,7 @@ class TagAllOperationsRule {
     fun checkDefinedTagsAreUsed(context: Context): List<Violation> {
         val used = context.api.paths?.values
             .orEmpty()
+            .filterNotNull()
             .flatMap { it.readOperations() }
             .flatMap { it?.tags.orEmpty() }
             .toSet()

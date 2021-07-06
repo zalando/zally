@@ -3,6 +3,7 @@ package org.zalando.zally.core.ast
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.core.JsonPointer
+import org.slf4j.LoggerFactory
 import org.zalando.zally.core.EMPTY_JSON_POINTER
 import org.zalando.zally.core.plus
 import org.zalando.zally.core.toEscapedJsonPointer
@@ -16,9 +17,10 @@ import kotlin.collections.component2
 import kotlin.collections.set
 
 class ReverseAstBuilder<T : Any> internal constructor(root: T) {
+    private val log = LoggerFactory.getLogger(ReverseAstBuilder::class.java)
     private val extensionMethodNames = HashSet<String>()
 
-    private val nodes = ArrayDeque<Node>(listOf(Node(root, EMPTY_JSON_POINTER, null)))
+    private val nodes = ArrayDeque(listOf(Node(root, EMPTY_JSON_POINTER, null)))
     private val objectsToNodes = IdentityHashMap<Any, Node>()
     private val pointersToNodes = HashMap<String, Node>()
 
@@ -40,6 +42,7 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
         while (!nodes.isEmpty()) {
             val node = nodes.pop()
             if (node.obj in objectsToNodes.keys) {
+                log.debug("Skip node ${node.obj.javaClass.simpleName} with a pointer ${node.pointer}. Node instance has been processed already")
                 continue
             }
             if (node.obj.javaClass !in Util.PRIMITIVES) {

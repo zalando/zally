@@ -1,7 +1,5 @@
 package org.zalando.zally.core
 
-import org.zalando.zally.rule.api.Context
-import org.zalando.zally.rule.api.Violation
 import io.swagger.parser.SwaggerParser
 import io.swagger.parser.util.SwaggerDeserializationResult
 import io.swagger.v3.parser.OpenAPIV3Parser
@@ -11,6 +9,8 @@ import io.swagger.v3.parser.core.models.ParseOptions
 import io.swagger.v3.parser.core.models.SwaggerParseResult
 import io.swagger.v3.parser.util.ResolverFully
 import org.slf4j.LoggerFactory
+import org.zalando.zally.rule.api.Context
+import org.zalando.zally.rule.api.Violation
 import java.util.regex.Pattern
 
 class DefaultContextFactory(
@@ -52,13 +52,18 @@ class DefaultContextFactory(
     }
 
     fun parseOpenApiContext(content: String, authorization: String? = null): ContentParseResult<Context> {
-        val parseResult = parseOpenApi(content, authorization)
-        if (parseResult !is ContentParseResult.ParsedSuccessfully) return parseResult.of()
+        try {
+            val parseResult = parseOpenApi(content, authorization)
+            if (parseResult !is ContentParseResult.ParsedSuccessfully) return parseResult.of()
 
-        val resolveResult = resolveOpenApi(parseResult.result)
-        if (resolveResult !is ContentParseResult.ParsedSuccessfully) return resolveResult.of()
+            val resolveResult = resolveOpenApi(parseResult.result)
+            if (resolveResult !is ContentParseResult.ParsedSuccessfully) return resolveResult.of()
 
-        return ContentParseResult.ParsedSuccessfully(DefaultContext(content, parseResult.result.openAPI))
+            return ContentParseResult.ParsedSuccessfully(DefaultContext(content, parseResult.result.openAPI))
+        } catch (e: Exception) {
+            log.error("Failed to parse OpenApi schema", e)
+            return ContentParseResult.ParsedWithErrors(listOf(errorToViolation(e.localizedMessage)))
+        }
     }
 
     fun parseSwaggerContext(content: String): ContentParseResult<Context> {
@@ -71,7 +76,13 @@ class DefaultContextFactory(
         val resolveResult = resolveOpenApi(convertResult.result)
         if (resolveResult !is ContentParseResult.ParsedSuccessfully) return resolveResult.of()
 
-        return ContentParseResult.ParsedSuccessfully(DefaultContext(content, convertResult.result.openAPI, parseResult.result.swagger))
+        return ContentParseResult.ParsedSuccessfully(
+            DefaultContext(
+                content,
+                convertResult.result.openAPI,
+                parseResult.result.swagger
+            )
+        )
     }
 
     private fun parseOpenApi(content: String, authorization: String?): ContentParseResult<SwaggerParseResult> {
@@ -103,7 +114,10 @@ class DefaultContextFactory(
         try {
             ResolverFully(true).resolveFully(parseResult.openAPI)
         } catch (e: NullPointerException) {
-            log.warn("Failed to fully resolve OpenAPI schema. Error not covered by pre-resolve checks.\n${parseResult.openAPI}", e)
+            log.warn(
+                "Failed to fully resolve OpenAPI schema. Error not covered by pre-resolve checks.\n${parseResult.openAPI}",
+                e
+            )
         }
         return ContentParseResult.ParsedSuccessfully(parseResult)
     }

@@ -1,13 +1,16 @@
 package org.zalando.zally.ruleset.zalando
 
 import com.typesafe.config.Config
+import io.swagger.v3.oas.models.media.Schema
+import org.zalando.zally.core.plus
+import org.zalando.zally.core.toJsonPointer
 import org.zalando.zally.core.util.getAllSchemas
+import org.zalando.zally.core.util.isObjectSchema
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import io.swagger.v3.oas.models.media.Schema
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -19,15 +22,22 @@ class CommonFieldTypesRule(rulesConfig: Config) {
 
     @Suppress("UNCHECKED_CAST")
     private val commonFields = rulesConfig.getConfig("${javaClass.simpleName}.common_types").entrySet()
-        .map { (key, config) -> key to config.unwrapped() as List<String?> }.toMap()
+        .associate { (key, config) -> key to config.unwrapped() as List<String?> }
 
     @Check(severity = Severity.MUST)
     fun checkTypesOfCommonFields(context: Context): List<Violation> =
         context.api.getAllSchemas().flatMap {
-            checkAllPropertiesOf(it, check = { name, schema ->
+            checkAllPropertiesOf(it, check = { parentObjectSchema, name, schema ->
                 val violationDesc = checkField(name, schema)
                 if (violationDesc != null) {
-                    context.violations(violationDesc, schema)
+                    if (schema.isObjectSchema()) {
+                        context.violations(violationDesc, schema)
+                    } else {
+                        context.violations(
+                            violationDesc,
+                            context.getJsonPointer(parentObjectSchema) + "/properties/$name".toJsonPointer()
+                        )
+                    }
                 } else {
                     emptyList()
                 }
@@ -36,12 +46,12 @@ class CommonFieldTypesRule(rulesConfig: Config) {
 
     private fun checkAllPropertiesOf(
         objectSchema: Schema<Any>,
-        check: (name: String, schema: Schema<Any>) -> Collection<Violation>
+        check: (parentObject: Schema<Any>, name: String, schema: Schema<Any>) -> Collection<Violation>
     ): Collection<Violation> {
 
         fun traverse(oSchema: Schema<Any>): List<Violation?> = oSchema.properties.orEmpty().flatMap { (name, schema) ->
-            if (schema.properties == null || schema.properties.isEmpty()) {
-                check(name, schema)
+            if (schema.properties.isNullOrEmpty()) {
+                check(oSchema, name, schema)
             } else {
                 traverse(schema)
             }
