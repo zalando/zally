@@ -1,10 +1,10 @@
 package org.zalando.zally.apireview
 
-import org.zalando.zally.dto.ApiDefinitionRequest
-import org.zalando.zally.core.Result
-import org.zalando.zally.rule.api.Severity
 import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
+import org.zalando.zally.core.Result
+import org.zalando.zally.dto.ApiDefinitionRequest
+import org.zalando.zally.rule.api.Severity
 import java.io.Serializable
 import java.time.Instant
 import java.time.LocalDate
@@ -43,9 +43,6 @@ class ApiReview(
     val id: Long = 0
 
     val externalId: UUID = UUID.randomUUID()
-
-    @Column(nullable = false)
-    val jsonPayload: String = request.toString()
 
     @Column(nullable = false, name = "successfulProcessed")
     val isSuccessfulProcessed: Boolean = apiDefinition.isNotBlank()
