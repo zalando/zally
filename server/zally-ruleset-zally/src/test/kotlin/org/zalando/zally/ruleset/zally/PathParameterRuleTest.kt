@@ -312,4 +312,31 @@ class PathParameterRuleTest {
 
         assertThat(violations).isEmpty()
     }
+
+    @Test
+    fun `return no violations if parameter ref is not correct`() {
+        @Language("YAML")
+        val context = DefaultContextFactory().getOpenApiContext(
+            """
+            openapi: '3.0.0'
+            info:
+              title: Schema and content Parameter properties validation
+              contact: 
+                info: "Team One"               
+            paths:
+              /endpoint:
+                post:
+                  summary: |
+                    Some summary.
+                  security:
+                    - oauth2: ["uid"]
+                  parameters:
+                    - $\ref: "https://invalid-url/X-Flow-ID"
+                      """.trimIndent()
+        )
+
+        val violations = rule.checkSchemaOrContentProperty(context)
+
+        assertThat(violations).isEmpty()
+    }
 }
