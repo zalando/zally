@@ -41,10 +41,10 @@ func lint(c *cli.Context) error {
 	if err != nil {
 		return domain.NewAppError(err, domain.ClientError)
 	}
-
+	skipSslVerification := c.Bool("skip-ssl-verification")
 	requestBuilder := utils.NewRequestBuilder(
 		c.GlobalString("linter-service"), c.GlobalString("token"), c.App)
-	violations, err := doRequest(requestBuilder, data)
+	violations, err := doRequest(requestBuilder, data, skipSslVerification)
 	if err != nil {
 		return domain.NewAppError(err, domain.ServerError)
 	}
@@ -100,7 +100,7 @@ func readRemoteFile(url string) ([]byte, error) {
 	return ioutil.ReadAll(response.Body)
 }
 
-func doRequest(requestBuilder *utils.RequestBuilder, data string) (*domain.Violations, error) {
+func doRequest(requestBuilder *utils.RequestBuilder, data string, skipSslVerification bool) (*domain.Violations, error) {
 	var apiViolationsRequest domain.APIViolationsRequest
 	apiViolationsRequest.APIDefinitionString = data
 	requestBody, err := json.MarshalIndent(apiViolationsRequest, "", "  ")
@@ -113,7 +113,7 @@ func doRequest(requestBuilder *utils.RequestBuilder, data string) (*domain.Viola
 		return nil, err
 	}
 
-	response, err := utils.DoHTTPRequest(request)
+	response, err := utils.DoHTTPRequest(request, skipSslVerification)
 	if err != nil {
 		return nil, err
 	}

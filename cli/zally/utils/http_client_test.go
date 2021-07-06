@@ -2,14 +2,13 @@ package utils
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
-
-	"github.com/zalando/zally/cli/zally/tests"
 )
 
 func TestListRules(t *testing.T) {
@@ -23,12 +22,12 @@ func TestListRules(t *testing.T) {
 		defer testServer.Close()
 
 		request, err := http.NewRequest("GET", testServer.URL, nil)
-		response, err := DoHTTPRequest(request)
-		tests.AssertEquals(t, nil, err)
+		response, err := DoHTTPRequest(request, false)
+		assert.Nil(t, err)
 
 		responseBody, _ := ioutil.ReadAll(response.Body)
-		tests.AssertEquals(t, "200 OK", response.Status)
-		tests.AssertEquals(t, "Hello", string(responseBody))
+		assert.Equal(t, "200 OK", response.Status)
+		assert.Equal(t, "Hello", string(responseBody))
 	})
 
 	t.Run("fails_when_timeout_is_reached", func(t *testing.T) {
@@ -41,12 +40,13 @@ func TestListRules(t *testing.T) {
 		defer testServer.Close()
 
 		request, err := http.NewRequest("GET", testServer.URL, nil)
-		response, err := DoHTTPRequest(request)
+		response, err := DoHTTPRequest(request, false)
+
 		expectedError := fmt.Sprintf(
-			"Get %s: net/http: request canceled (Client.Timeout exceeded while awaiting headers)",
+			"Get \"%s\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)",
 			testServer.URL,
 		)
-		tests.AssertEquals(t, expectedError, err.Error())
-		tests.AssertEquals(t, (*http.Response)(nil), response)
+		assert.EqualErrorf(t, err, expectedError, "Unexpected error returned")
+		assert.Nil(t, response)
 	})
 }

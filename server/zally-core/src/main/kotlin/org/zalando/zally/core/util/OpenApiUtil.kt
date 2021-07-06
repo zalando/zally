@@ -164,3 +164,7 @@ fun Schema<Any>.extensibleEnum(): List<Any?> =
     if (this.isExtensibleEnum()) {
         (this.extensions["x-extensible-enum"] as List<Any?>)
     } else emptyList<Any?>()
+
+fun Parameter.isInPath() = this.`in` == "path"
+
+fun Schema<Any>.isObjectSchema(): Boolean = this.type == "object"

@@ -108,11 +108,11 @@ func TestIntegrationNotReceiveDeprecationMessage(t *testing.T) {
 func assertMoreThanZeroViolations(t *testing.T, out string, e error) {
 	must, should, may, hint := countViolations(out)
 
-	assert.True(t, must > 0)
-	assert.True(t, should > 0)
-	assert.True(t, may > 0)
-	assert.Equal(t, 0, hint)
-	assert.NotNil(t, e)
+	assert.True(t, must > 0, "Number of MUST violations should be > 0")
+	assert.True(t, should > 0, "Number of SHOULD violations should be > 0")
+	assert.True(t, may > 0, "Number of MAY violations should be > 0")
+	assert.Equal(t, 0, hint, "No HINTS ar expected")
+	assert.NotNil(t, e, "Error should be not nil")
 }
 
 func countViolations(out string) (int, int, int, int) {
