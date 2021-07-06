@@ -118,7 +118,7 @@ tasks.jacocoTestReport {
 }
 
 tasks.jar {
-    archiveVersion.set("1.0.0")
+    archiveBaseName.set(project.name)
 }
 
 tasks.wrapper {
