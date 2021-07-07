@@ -16,7 +16,7 @@ class JsonProblemAsDefaultResponseRuleTest {
             """
             openapi: 3.0.1
             paths:
-              '/pets':
+              '/resources':
                 get:
                   responses:
         """.trimIndent()
@@ -25,18 +25,89 @@ class JsonProblemAsDefaultResponseRuleTest {
         val violations = rule.checkContainsDefaultResponse(context)
 
         assertThat(violations).isNotEmpty
-        assertThat(violations[0].description).containsPattern(".*has to contain the default response.*")
-        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1pets/get")
+        assertThat(violations[0].description).containsPattern(".*should contain the default response.*")
+        assertThat(violations[0].pointer.toString()).isEqualTo("/paths/~1resources/get")
     }
 
     @Test
-    fun `checkDefaultResponseIsProblemJson should return violation if not problem json is set as default response`() {
+    fun `checkContainsDefaultResponse should not return violation for empty specification`() {
+        @Language("YAML")
+        val context = DefaultContextFactory().getOpenApiContext(
+            """
+            openapi: 3.0.1
+        """
+        )
+
+        assertThat(rule.checkContainsDefaultResponse(context)).isEmpty()
+    }
+
+    @Test
+    fun `checkDefaultResponseIsProblemJsonMediaType should not return violation for application-problem+json`() {
         @Language("YAML")
         val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             paths:
-              '/pets':
+              '/resources':
+                get:
+                  responses:
+                    default:
+                      content:
+                        application/problem+json:
+                          schema:
+                            ${'$'}ref: 'http://example.com'
+        """
+        )
+
+        assertThat(rule.checkDefaultResponseIsProblemJsonMediaType(context)).isEmpty()
+    }
+
+    @Test
+    fun `checkDefaultResponseIsProblemJsonMediaType should return violation if not application-problem+json is set as default response`() {
+        @Language("YAML")
+        val context = DefaultContextFactory().getOpenApiContext(
+            """
+            openapi: 3.0.1
+            paths:
+              '/resources':
+                get:
+                  responses:
+                    default:
+                      content:
+                        application/gzip:
+                          schema:
+                            ${'$'}ref: 'http://example.com'
+        """.trimIndent()
+        )
+
+        val violations = rule.checkDefaultResponseIsProblemJsonMediaType(context)
+
+        assertThat(violations).isNotEmpty
+        assertThat(violations[0].description).isEqualTo("media-type application/problem+json should be used as default response")
+        assertThat(violations[0].pointer.toString())
+            .isEqualTo("/paths/~1resources/get/responses/default/content/application~1gzip")
+    }
+
+    @Test
+    fun `checkDefaultResponseIsProblemJsonMediaType should not return violation for empty specification`() {
+        @Language("YAML")
+        val context = DefaultContextFactory().getOpenApiContext(
+            """
+            openapi: 3.0.1
+        """
+        )
+
+        assertThat(rule.checkDefaultResponseIsProblemJsonMediaType(context)).isEmpty()
+    }
+
+    @Test
+    fun `checkDefaultResponseIsProblemJsonSchema should return violation if incorrect problem+json schema reference is set as default response`() {
+        @Language("YAML")
+        val context = DefaultContextFactory().getOpenApiContext(
+            """
+            openapi: 3.0.1
+            paths:
+              '/resources':
                 get:
                   responses:
                     default:
@@ -47,22 +118,22 @@ class JsonProblemAsDefaultResponseRuleTest {
         """.trimIndent()
         )
 
-        val violations = rule.checkDefaultResponseIsProblemJson(context)
+        val violations = rule.checkDefaultResponseIsProblemJsonSchema(context)
 
         assertThat(violations).isNotEmpty
-        assertThat(violations[0].description).containsPattern(".*problem json has to be used as default response.*")
+        assertThat(violations[0].description).isEqualTo("problem+json should be used as default response")
         assertThat(violations[0].pointer.toString())
-            .isEqualTo("/paths/~1pets/get/responses/default/content/application~1problem+json")
+            .isEqualTo("/paths/~1resources/get/responses/default/content/application~1problem+json")
     }
 
     @Test
-    fun `checkDefaultResponseIsProblemJson should not return violation if problem json is set as default response`() {
+    fun `checkDefaultResponseIsProblemJsonSchema should return no violation if last problem+json schema reference is set as default response`() {
         @Language("YAML")
         val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
             paths:
-              '/pets':
+              '/resources':
                 get:
                   responses:
                     default:
@@ -73,13 +144,36 @@ class JsonProblemAsDefaultResponseRuleTest {
         """.trimIndent()
         )
 
-        val violations = rule.checkDefaultResponseIsProblemJson(context)
+        val violations = rule.checkDefaultResponseIsProblemJsonSchema(context)
 
         assertThat(violations).isEmpty()
     }
 
     @Test
-    fun `(checkDefaultResponseIsProblemJson|checkContainsDefaultResponse) should not return violation for empty specification`() {
+    fun `checkDefaultResponseIsProblemJsonSchema should return no violation if first problem+json schema reference is set as default response`() {
+        @Language("YAML")
+        val context = DefaultContextFactory().getOpenApiContext(
+            """
+            openapi: 3.0.1
+            paths:
+              '/resources':
+                get:
+                  responses:
+                    default:
+                      content:
+                        application/problem+json:
+                          schema:
+                            ${'$'}ref: 'https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.1.yaml#/Problem'
+        """.trimIndent()
+        )
+
+        val violations = rule.checkDefaultResponseIsProblemJsonSchema(context)
+
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `checkDefaultResponseIsProblemJsonSchema should not return violation for empty specification`() {
         @Language("YAML")
         val context = DefaultContextFactory().getOpenApiContext(
             """
@@ -87,7 +181,6 @@ class JsonProblemAsDefaultResponseRuleTest {
         """
         )
 
-        assertThat(rule.checkContainsDefaultResponse(context)).isEmpty()
-        assertThat(rule.checkDefaultResponseIsProblemJson(context)).isEmpty()
+        assertThat(rule.checkDefaultResponseIsProblemJsonSchema(context)).isEmpty()
     }
 }
