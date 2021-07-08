@@ -59,10 +59,6 @@ class UseProblemJsonRuleTest {
                           schema:
                             type: object
                             properties:
-                              created:
-                                type: string
-                                format: date-time
-                                example: '2020-05-14T14:22:01Z'
                               status:
                                 type: string
         """.trimIndent()
