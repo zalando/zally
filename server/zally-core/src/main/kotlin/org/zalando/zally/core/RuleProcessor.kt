@@ -11,7 +11,7 @@ import javax.lang.model.element.TypeElement
 import javax.tools.StandardLocation
 
 @AutoService(Processor::class)
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 class RuleProcessor : AbstractProcessor() {
 
     val annotation = Rule::class.java
