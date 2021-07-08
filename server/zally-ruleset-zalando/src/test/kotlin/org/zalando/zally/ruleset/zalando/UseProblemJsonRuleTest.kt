@@ -59,6 +59,10 @@ class UseProblemJsonRuleTest {
                           schema:
                             type: object
                             properties:
+                              created:
+                                type: string
+                                format: date-time
+                                example: '2020-05-14T14:22:01Z'
                               status:
                                 type: string
         """.trimIndent()
@@ -262,5 +266,38 @@ class UseProblemJsonRuleTest {
                 "/components/schemas/Problem/properties/instance",
                 "/components/schemas/Problem/properties/instance/type"
             )
+    }
+
+    @Test
+    fun `should return no violation if date and time properties are used in the Problem object schema`() {
+        @Language("YAML")
+        val content = """
+            openapi: 3.0.1
+            info:
+              version: 1.0.0
+              title: Pets API
+            paths:
+              /bad:
+                get:
+                  responses:
+                    default:
+                      description: Lorem Ipsum
+                      content:
+                        application/problem+json:
+                          schema:
+                            type: object
+                            allOf: 
+                            - "$\ref": https://zalando.github.io/problem/schema.yaml#/Problem
+                            - type: object
+                              properties:
+                                created:
+                                  type: string
+                                  format: date-time
+                                  example: "2020-05-14T14:22:01Z" 
+        """.trimIndent()
+
+        val context = DefaultContextFactory().getOpenApiContext(content)
+        val violations = rule.validate(context)
+        ZallyAssertions.assertThat(violations).isEmpty()
     }
 }
