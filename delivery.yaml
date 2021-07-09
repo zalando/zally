@@ -1,44 +1,36 @@
 allow_concurrent_steps: true
 version: "2017-09-20"
 pipeline:
-  - id: install-dependencies
-    type: script
-    commands:
-      - desc: "Install Build Dependencies"
-        cmd: |
-          apt-get update -qq --allow-unauthenticated
-          apt-get install --no-install-recommends -y jq
-          curl -fLOsS https://delivery.cloud.zalando.com/utils/ensure-docker && sh ensure-docker
-          docker pull registry.opensource.zalan.do/library/openjdk-11-jdk-slim:latest
   - id: build-server
     type: script
     overlay: ci/java11
-    depends_on: [ install-dependencies ]
     commands:
       - desc: Build server
         cmd: |
           cd $PWD/server
           ./gradlew build --info
     cache:
-      paths: [ ~/.gradle/cache ]
+      paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
 
   - id: github-integration
     type: script
-    depends_on: [ install-dependencies ]
+    overlay: ci/java11
     commands:
       - desc: Build Github Integration
         cmd: |
-          docker run --rm -w /build -v $PWD/github-integration:/build:rw registry.opensource.zalan.do/library/openjdk-11-jdk-slim:latest ./gradlew build -x test --info
+          cd $PWD/github-integration
+          ./gradlew build -x test --info
     cache:
-      paths: [ ~/.gradle/cache ]
+      paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
 
   - id: web-ui
     type: script
-    depends_on: [ install-dependencies ]
+    overlay: ci/nodejs-10
     commands:
       - desc: Build Web UI
         cmd: |
-          docker run --rm -w /build -v $PWD/web-ui:/build:rw node:10 bash -c 'npm install -q ; npm test ; npm run build'
+          cd $PWD/web-ui
+          npm install -q ; npm test ; npm run build
     cache:
       paths: [ ~/.npm ]
 
@@ -51,6 +43,10 @@ pipeline:
       branch: master
     depends_on: [ all_of_the_above ]
     commands:
+      - desc: Check dependencies
+        cmd: |
+          curl -fLOsS https://delivery.cloud.zalando.com/utils/ensure-docker && sh ensure-docker
+
       - desc: Building and pushing Zally Server
         cmd: |
           DOCKER_VERSION="${CDP_TARGET_BRANCH}-${CDP_TARGET_COMMIT_ID:0:8}-${CDP_TARGET_REPOSITORY_COUNTER}"
