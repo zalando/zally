@@ -146,13 +146,14 @@ subprojects {
     }
 
     dependencies {
+        implementation(platform("com.fasterxml.jackson:jackson-bom:2.12.2"))
         implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
         // We define this here so all subprojects use the same version of jackson
-        implementation("com.fasterxml.jackson.module:jackson-module-parameter-names:2.12.2")
-        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.2")
-        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.2")
-        implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.2")
+        implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
+        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8")
+        implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
         implementation("org.yaml:snakeyaml:1.24")
 
         testImplementation("com.jayway.jsonpath:json-path-assert:2.4.0")

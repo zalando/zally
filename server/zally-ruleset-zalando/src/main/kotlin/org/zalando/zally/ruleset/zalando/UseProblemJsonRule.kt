@@ -3,7 +3,9 @@ package org.zalando.zally.ruleset.zalando
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.google.common.io.Resources
+import io.swagger.v3.oas.models.responses.ApiResponse
 import org.zalando.zally.core.EMPTY_JSON_POINTER
 import org.zalando.zally.core.JsonSchemaValidator
 import org.zalando.zally.core.ObjectTreeReader
@@ -13,7 +15,6 @@ import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -26,7 +27,11 @@ class UseProblemJsonRule {
     private val description = "Operations should return problem JSON when any problem occurs during processing " +
         "whether caused by client or server."
 
-    private val objectMapper by lazy { ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL) }
+    private val objectMapper by lazy {
+        ObjectMapper()
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .registerModule(JavaTimeModule())
+    }
 
     private val problemSchemaValidator by lazy {
         val schemaUrl = Resources.getResource("schemas/problem-meta-schema.json")
