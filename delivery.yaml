@@ -9,6 +9,9 @@ pipeline:
         cmd: |
           cd $PWD/server
           ./gradlew build --info
+          mkdir ./test-reports
+          for f in */build/test-results/test/TEST-*.xml; do mv "$f" ./test-reports; done
+          cdp-upload-test-results --type junit $(pwd)/test-reports
     cache:
       paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
 
@@ -19,7 +22,7 @@ pipeline:
       - desc: Build Github Integration
         cmd: |
           cd $PWD/github-integration
-          cdp-wrap-cmd "./gradlew build -x test --info" "rm -rf $(pwd)/build/test-results/test/binary; cdp-upload-test-results -t junit $(pwd)/build/test-results/test"
+          ./gradlew build -x test --info
     cache:
       paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
 
