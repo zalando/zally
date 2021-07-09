@@ -8,7 +8,7 @@ pipeline:
       - desc: Build server
         cmd: |
           cd $PWD/server
-          ./gradlew build
+          ./gradlew zally-server:build
 
           # Collect test reports from all modules
           mkdir ./test-reports
