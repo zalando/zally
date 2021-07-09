@@ -12,6 +12,7 @@ pipeline:
           docker pull registry.opensource.zalan.do/library/openjdk-11-jdk-slim:latest
   - id: build-server
     type: script
+    overlay: ci/java11
     depends_on: [ install-dependencies ]
     commands:
       - desc: Build server
