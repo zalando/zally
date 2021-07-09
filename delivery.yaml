@@ -16,7 +16,8 @@ pipeline:
     commands:
       - desc: Build server
         cmd: |
-          docker run --rm -w /build -v $PWD/server:/build:rw registry.opensource.zalan.do/library/openjdk-11-jdk-slim:latest ./gradlew build --info
+          cd $PWD/server
+          ./gradlew build --info
     cache:
       paths: [ ~/.gradle/cache ]
 
