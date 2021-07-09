@@ -19,7 +19,7 @@ pipeline:
       - desc: Build Github Integration
         cmd: |
           cd $PWD/github-integration
-          ./gradlew build -x test --info
+          cdp-wrap-cmd "./gradlew build -x test --info" "rm -rf $(pwd)/build/test-results/binary; cdp-upload-test-results -t junit $(pwd)/build/test-results/"
     cache:
       paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
 
