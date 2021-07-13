@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
         gradlePluginPortal()
         maven("https://repo.spring.io/libs-release")
@@ -32,7 +31,6 @@ allprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     repositories {
-        jcenter()
         mavenCentral()
     }
 
