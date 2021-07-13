@@ -2,8 +2,8 @@ package org.zalando.zally.ruleset.zalando
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.google.common.io.Resources
 import com.typesafe.config.Config
+import org.slf4j.LoggerFactory
 import org.zalando.zally.core.EMPTY_JSON_POINTER
 import org.zalando.zally.core.JsonSchemaValidator
 import org.zalando.zally.core.ObjectTreeReader
@@ -14,7 +14,6 @@ import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
 import org.zalando.zally.ruleset.zalando.UseOpenApiRule.OpenApiVersion.OPENAPI3
 import org.zalando.zally.ruleset.zalando.UseOpenApiRule.OpenApiVersion.SWAGGER
-import org.slf4j.LoggerFactory
 import java.net.URL
 
 @Rule(
@@ -29,7 +28,7 @@ class UseOpenApiRule(rulesConfig: Config) {
         SWAGGER, OPENAPI3;
 
         val resource: URL by lazy {
-            Resources.getResource("schemas/${name.toLowerCase()}-schema.json")
+            javaClass.classLoader.getResource("schemas/${name.toLowerCase()}-schema.json")
         }
     }
 
@@ -67,7 +66,7 @@ class UseOpenApiRule(rulesConfig: Config) {
 
     private fun getSchemaValidators(config: Config): Map<OpenApiVersion, JsonSchemaValidator> {
         val defaultSchemaRedirects = mapOf(
-            "http://json-schema.org/draft-04/schema" to Resources.getResource("schemas/json-schema.json"),
+            "http://json-schema.org/draft-04/schema" to javaClass.classLoader.getResource("schemas/json-schema.json"),
             "http://swagger.io/v2/schema.json" to SWAGGER.resource,
             "http://openapis.org/v3/schema.json" to OPENAPI3.resource,
             "https://spec.openapis.org/oas/3.0/schema/2019-04-02" to OPENAPI3.resource)
