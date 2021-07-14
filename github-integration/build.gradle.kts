@@ -44,7 +44,7 @@ dependencies {
     val hibernateVersion = "5.2.18.Final"
     val jacksonVersion = "2.9.8"
 
-    implementation("org.kohsuke:github-api:1.86")
+    implementation("org.kohsuke:github-api:1.131")
     implementation("io.swagger:swagger-parser:1.0.28")
     implementation("com.github.java-json-tools:json-schema-validator:2.2.8")
     implementation("org.springframework.boot:spring-boot-starter-web")
