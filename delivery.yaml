@@ -9,12 +9,6 @@ pipeline:
         cmd: |
           cd $PWD/server
           ./gradlew zally-server:build
-
-          # Collect test reports from all modules
-          mkdir ./test-reports
-          for f in */build/test-results/test/TEST-*.xml; do mv "$f" ./test-reports; done
-          ls -l ./test-reports
-          cdp-upload-test-results --type junit ./test-reports
     cache:
       paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
 
