@@ -9,6 +9,11 @@ pipeline:
         cmd: |
           cd $PWD/server
           ./gradlew zally-server:build
+
+          # Upload test results to CDP
+          mkdir ./test-reports
+          for f in */build/test-results/test/TEST-*.xml; do mv "$f" ./test-reports; done
+          cdp-upload-test-results --type junit ./test-reports
     cache:
       paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
 
