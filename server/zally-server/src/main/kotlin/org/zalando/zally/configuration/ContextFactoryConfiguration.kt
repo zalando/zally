@@ -14,6 +14,6 @@ class ContextFactoryConfiguration {
 
     @Bean
     fun contextFactory(): DefaultContextFactory {
-        return DefaultContextFactory()
+        return DefaultContextFactory(propagateAuthorizationUrls)
     }
 }
