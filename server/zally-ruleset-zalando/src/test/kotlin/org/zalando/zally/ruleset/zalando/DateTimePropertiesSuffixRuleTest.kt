@@ -14,7 +14,7 @@ class DateTimePropertiesSuffixRuleTest {
     private val rule = DateTimePropertiesSuffixRule(rulesConfig)
 
     @Test
-    fun `rule should pass with correct "date-time" fields`() {
+    fun `rule should pass with correct 'date-time' fields`() {
         @Language("YAML")
         val content = """
             openapi: '3.0.1'
@@ -43,7 +43,7 @@ class DateTimePropertiesSuffixRuleTest {
     }
 
     @Test
-    fun `rule should pass with correct "date" fields`() {
+    fun `rule should pass with correct 'date' fields`() {
         @Language("YAML")
         val content = """
             openapi: '3.0.1'
