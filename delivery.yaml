@@ -39,7 +39,7 @@ pipeline:
       - desc: Building and pushing Zally Server
         cmd: |
           DOCKER_VERSION="${CDP_TARGET_BRANCH}-${CDP_TARGET_COMMIT_ID:0:8}-${CDP_TARGET_REPOSITORY_COUNTER}"
-          docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/zally:${DOCKER_VERSION}" $(PWD)/server/Dockerfile
+          docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/zally:${DOCKER_VERSION}" server/Dockerfile
           docker push "${DOCKER_HOST}/${DOCKER_TEAM}/zally:${DOCKER_VERSION}"
 
       - desc: Building and pushing Zally Web UI Dummy
