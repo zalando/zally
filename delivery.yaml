@@ -28,8 +28,8 @@ pipeline:
     env:
       DOCKER_HOST: "pierone.stups.zalan.do"
       DOCKER_TEAM: "pitchfork"
-    when:
-      branch: master
+#    when:
+#      branch: master
     depends_on: [ all_of_the_above ]
     commands:
       - desc: Check dependencies
@@ -39,8 +39,7 @@ pipeline:
       - desc: Building and pushing Zally Server
         cmd: |
           DOCKER_VERSION="${CDP_TARGET_BRANCH}-${CDP_TARGET_COMMIT_ID:0:8}-${CDP_TARGET_REPOSITORY_COUNTER}"
-          cd server
-          docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/zally:${DOCKER_VERSION}" .
+          docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/zally:${DOCKER_VERSION}" $(PWD)/server/Dockerfile
           docker push "${DOCKER_HOST}/${DOCKER_TEAM}/zally:${DOCKER_VERSION}"
 
       - desc: Building and pushing Zally Web UI Dummy
