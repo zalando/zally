@@ -10,7 +10,7 @@ class EnumValueTypeTest {
     private val rule = EnumValueTypeRule()
 
     @Test
-    fun `fail validation if "x-extensible-enum" has a "string" type`() {
+    fun `fail validation if 'x-extensible-enum' has a "string" type`() {
         @Language("YAML")
         val spec = """
             openapi: 3.0.1
