@@ -12,17 +12,6 @@ pipeline:
     cache:
       paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
 
-  - id: github-integration
-    type: script
-    overlay: ci/java11
-    commands:
-      - desc: Build Github Integration
-        cmd: |
-          cd $PWD/github-integration
-          ./gradlew build -x test --info
-    cache:
-      paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
-
   - id: web-ui
     type: script
     overlay: ci/nodejs-10
@@ -60,11 +49,3 @@ pipeline:
           cd web-ui
           docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/zally-web-ui-dummy:${DOCKER_VERSION}" .
           docker push "${DOCKER_HOST}/${DOCKER_TEAM}/zally-web-ui-dummy:${DOCKER_VERSION}"
-
-      - desc: Building and pushing Zally Github Integration
-        cmd: |
-          DOCKER_VERSION="${CDP_TARGET_BRANCH}-${CDP_TARGET_COMMIT_ID:0:8}-${CDP_TARGET_REPOSITORY_COUNTER}"
-          cd github-integration
-          docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/zally-github-integration:${DOCKER_VERSION}" .
-          docker push "${DOCKER_HOST}/${DOCKER_TEAM}/zally-github-integration:${DOCKER_VERSION}"
-
