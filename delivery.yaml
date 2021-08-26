@@ -26,26 +26,21 @@ pipeline:
   - id: build-and-push-images
     type: script
     env:
-      DOCKER_HOST: "pierone.stups.zalan.do"
-      DOCKER_TEAM: "pitchfork"
+      DOCKER_IMAGE_PREFIX: "pierone.stups.zalan.do/pitchfork"
     when:
       branch: master
     depends_on: [ all_of_the_above ]
     commands:
-      - desc: Check dependencies
-        cmd: |
-          curl -fLOsS https://delivery.cloud.zalando.com/utils/ensure-docker && sh ensure-docker
-
       - desc: Building and pushing Zally Server
         cmd: |
           DOCKER_VERSION="${CDP_TARGET_BRANCH}-${CDP_TARGET_COMMIT_ID:0:8}-${CDP_TARGET_REPOSITORY_COUNTER}"
           cd server
-          docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/zally:${DOCKER_VERSION}" .
-          docker push "${DOCKER_HOST}/${DOCKER_TEAM}/zally:${DOCKER_VERSION}"
+          docker build -t "${DOCKER_IMAGE_PREFIX}/zally:${DOCKER_VERSION}" .
+          docker push "${DOCKER_IMAGE_PREFIX}/zally:${DOCKER_VERSION}"
 
       - desc: Building and pushing Zally Web UI Dummy
         cmd: |
           DOCKER_VERSION="${CDP_TARGET_BRANCH}-${CDP_TARGET_COMMIT_ID:0:8}-${CDP_TARGET_REPOSITORY_COUNTER}"
           cd web-ui
-          docker build -t "${DOCKER_HOST}/${DOCKER_TEAM}/zally-web-ui-dummy:${DOCKER_VERSION}" .
-          docker push "${DOCKER_HOST}/${DOCKER_TEAM}/zally-web-ui-dummy:${DOCKER_VERSION}"
+          docker build -t "${DOCKER_IMAGE_PREFIX}/zally-web-ui-dummy:${DOCKER_VERSION}" .
+          docker push "${DOCKER_IMAGE_PREFIX}/zally-web-ui-dummy:${DOCKER_VERSION}"
