@@ -28,14 +28,11 @@ pipeline:
     env:
       DOCKER_HOST: "pierone.stups.zalan.do"
       DOCKER_TEAM: "pitchfork"
-    when:
-      branch: master
-    depends_on: [ all_of_the_above ]
+#    when:
+#      branch: master
+#    depends_on: [ all_of_the_above ]
+    depends_on: [ ]
     commands:
-      - desc: Check dependencies
-        cmd: |
-          curl -fLOsS https://delivery.cloud.zalando.com/utils/ensure-docker && sh ensure-docker
-
       - desc: Building and pushing Zally Server
         cmd: |
           DOCKER_VERSION="${CDP_TARGET_BRANCH}-${CDP_TARGET_COMMIT_ID:0:8}-${CDP_TARGET_REPOSITORY_COUNTER}"
