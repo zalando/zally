@@ -32,10 +32,9 @@ pipeline:
 #      branch: master
     depends_on: [ all_of_the_above ]
     commands:
-      - desc: Check dependencies
+      - desc: Check Docker is running
         cmd: |
-          curl -fLOsS https://delivery.cloud.zalando.com/utils/ensure-docker && sh ensure-docker
-
+          docker info
       - desc: Building and pushing Zally Server
         cmd: |
           DOCKER_VERSION="${CDP_TARGET_BRANCH}-${CDP_TARGET_COMMIT_ID:0:8}-${CDP_TARGET_REPOSITORY_COUNTER}"
