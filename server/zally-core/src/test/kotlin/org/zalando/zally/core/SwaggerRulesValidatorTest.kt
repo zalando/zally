@@ -121,5 +121,5 @@ class SwaggerRulesValidatorTest {
         }
 
     private fun resourceToString(resourceName: String): String =
-        IOUtils.toString(ClassLoader.getSystemResourceAsStream(resourceName))
+        IOUtils.toString(ClassLoader.getSystemResourceAsStream(resourceName), Charsets.UTF_8)
 }

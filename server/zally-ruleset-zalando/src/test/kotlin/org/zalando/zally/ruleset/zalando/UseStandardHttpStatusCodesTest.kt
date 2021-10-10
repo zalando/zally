@@ -103,7 +103,7 @@ class UseStandardHttpStatusCodesTest {
     }
 
     @Test
-    fun `(checkIfOnlyWellUnderstoodResponseCodesAreUsed|checkIfOnlyStandardizedResponseCodesAreUsed) should return no violation for default response`() {
+    fun `(checkIfOnlyWellUnderstoodResponseCodesAreUsed, checkIfOnlyStandardizedResponseCodesAreUsed) should return no violation for default response`() {
         val context = withResponseCode("default")
 
         assertThat(rule.checkIfOnlyWellUnderstoodResponseCodesAreUsed(context)).isEmpty()
