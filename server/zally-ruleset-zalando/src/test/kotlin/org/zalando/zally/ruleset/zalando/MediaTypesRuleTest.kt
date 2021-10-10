@@ -8,7 +8,7 @@ import io.swagger.parser.util.ClasspathHelper.loadFileFromClasspath
 import io.swagger.v3.oas.models.OpenAPI
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class MediaTypesRuleTest {
 

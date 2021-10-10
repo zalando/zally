@@ -9,20 +9,17 @@ import org.zalando.zally.dto.RuleDTO
 import org.zalando.zally.dto.RulesListDTO
 import org.zalando.zally.statistic.ReviewStatistics
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.web.util.UriComponentsBuilder.fromPath
 import java.time.LocalDate
 
-@RunWith(SpringRunner::class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = [Application::class, RestApiTestConfiguration::class]
@@ -48,7 +45,7 @@ abstract class RestApiBaseTest {
     protected val supportedRules: List<RuleDTO>
         get() = getSupportedRules(null, null)
 
-    @Before
+    @BeforeEach
     fun cleanDatabase() {
         apiReviewRepository.deleteAll()
     }

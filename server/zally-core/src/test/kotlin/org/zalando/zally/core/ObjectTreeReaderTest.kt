@@ -1,7 +1,7 @@
 package org.zalando.zally.core
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 /** Tests for ObjectTreeReader utility */
 class ObjectTreeReaderTest {

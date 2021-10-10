@@ -9,7 +9,7 @@ import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class OpenApiRulesValidatorTest {
     class RulesValidatorTestRuleSet : AbstractRuleSet()

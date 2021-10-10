@@ -3,7 +3,7 @@ package org.zalando.zally.ruleset.zalando
 import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.test.ZallyAssertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ApiIdentifierRuleTest {
 

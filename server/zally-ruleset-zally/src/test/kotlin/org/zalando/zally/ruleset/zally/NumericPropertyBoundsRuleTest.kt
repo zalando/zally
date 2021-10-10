@@ -3,7 +3,7 @@ package org.zalando.zally.ruleset.zally
 import org.zalando.zally.test.ZallyAssertions
 import org.zalando.zally.core.DefaultContextFactory
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class NumericPropertyBoundsRuleTest {
 

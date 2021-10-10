@@ -2,7 +2,7 @@ package org.zalando.zally.apireview
 
 import org.zalando.zally.util.readApiDefinition
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.springframework.test.context.TestPropertySource
 import java.io.IOException
 

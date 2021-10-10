@@ -3,11 +3,9 @@ package org.zalando.zally.rule
 import org.zalando.zally.core.rulesConfig
 import org.zalando.zally.core.CaseChecker
 import org.assertj.core.api.Assertions
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 
-@RunWith(Parameterized::class)
 class CaseCheckerParameterizedTest(private val param: TestParam) {
 
     class TestParam(val case: String, val term: String, val expectation: Boolean) {
@@ -21,7 +19,6 @@ class CaseCheckerParameterizedTest(private val param: TestParam) {
     companion object {
         val checker = CaseChecker.load(rulesConfig)
 
-        @Parameterized.Parameters(name = "{0}")
         @JvmStatic
         fun parameters(): List<TestParam> {
             val parameters = parameters(
@@ -96,8 +93,9 @@ class CaseCheckerParameterizedTest(private val param: TestParam) {
         }
     }
 
-    @Test
-    fun test() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    fun test(param: TestParam) {
         val regex = checker.cases[param.case]
         val result = regex?.matches(param.term)
 
