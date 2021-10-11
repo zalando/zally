@@ -34,7 +34,7 @@ class ApiDefinitionReaderTest {
         closeJadler()
     }
 
-    @Test()
+    @Test
     fun shouldThrowMissingApiDefinitionExceptionWhenDefinitionIsNotFound() {
         assertThrows(MissingApiDefinitionException::class.java, { reader.read(ApiDefinitionRequest()) })
     }
@@ -77,14 +77,14 @@ class ApiDefinitionReaderTest {
         assertEquals(contentInJson, result)
     }
 
-    @Test()
+    @Test
     fun shouldErrorBadRequestWhenDefinitionFromUrlUnsuccessful() {
         val url = JadlerUtil.stubResource("test.json", "", HttpStatus.UNAUTHORIZED.value(), APPLICATION_JSON_VALUE)
 
         assertThrows(InaccessibleResourceUrlException::class.java, { reader.read(ApiDefinitionRequest.fromUrl(url)) })
     }
 
-    @Test()
+    @Test
     fun shouldErrorBadRequestWhenDefinitionFromUrlWrongContentType() {
         val url = JadlerUtil.stubResource("test.json", "", HttpStatus.OK.value(), TEXT_HTML_VALUE)
 

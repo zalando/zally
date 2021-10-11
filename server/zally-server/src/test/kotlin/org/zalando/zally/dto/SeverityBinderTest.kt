@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class SeverityBinderTest {
-    @Test()
+    @Test
     fun shouldRaiseIllegalArgumentExceptionWhenTypeIsNotFound() {
         val typeBinder = SeverityBinder()
         assertThrows(IllegalArgumentException::class.java, { typeBinder.asText = "SOLUTION" })
