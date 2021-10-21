@@ -30,15 +30,8 @@ The following notes document my working environment for building and testing a f
 
   (I was quite surprised to see that `make` and `g++` were necessary to build some dependency of the web-ui)
 
-- Install NodeJS
-
-  - https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
-
-  ```bash
-  curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-  sudo apt-get install -y nodejs
-  ```
-
+- Install NodeJS 14 by using [installation instructions](https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions)
+  
 - Make Windows docker binaries available on linux path:
 
   ```bash

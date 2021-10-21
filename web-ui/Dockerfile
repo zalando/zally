@@ -1,11 +1,10 @@
-FROM registry.opensource.zalan.do/stups/node:10.15.3-45
+FROM registry.opensource.zalan.do/library/node-14-alpine:latest
 
 MAINTAINER "http://zalando.github.io/"
 
 COPY package.json ./
 COPY yarn.lock ./
 
-RUN npm install -g yarn
 RUN yarn --production
 
 COPY src ./src
