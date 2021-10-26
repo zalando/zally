@@ -29,7 +29,7 @@ class PathParameterRule {
 
     @Check(severity = Severity.MUST)
     fun checkRequiredPathAttribute(context: Context): List<Violation> =
-        context.api.getAllParameters().map { entry -> entry.value }
+        context.api.getAllParameters()
             .filter { parameter ->
                 parameter.isInPath() && !parameter.required
             }
@@ -42,8 +42,8 @@ class PathParameterRule {
         if (context.isOpenAPI3()) {
             return context.api
                 .getAllParameters()
-                .filterValues { it.schema == null && it.content == null }
-                .map { (_, parameter) ->
+                .filter { it.schema == null && it.content == null }
+                .map { parameter ->
                     context.violation(requiredSchemaOrContentErrorMessage(parameter.name), parameter)
                 }
         }
@@ -54,12 +54,12 @@ class PathParameterRule {
     fun validateParameterContentMapStructure(context: Context): List<Violation> {
         if (context.isOpenAPI3()) {
             return context.api.getAllParameters()
-                .filterValues {
+                .filter {
                     if (it.content != null) {
                         it.content.isEmpty() || it.content.size > 1
                     } else false
                 }
-                .map { (_, parameter) ->
+                .map { parameter ->
                     context.violation(contentMapStructureErrorMessage(parameter.name), parameter)
                 }
         }
