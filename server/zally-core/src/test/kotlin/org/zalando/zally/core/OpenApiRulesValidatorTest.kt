@@ -2,14 +2,14 @@ package org.zalando.zally.core
 
 import com.fasterxml.jackson.core.JsonPointer
 import com.typesafe.config.ConfigFactory
+import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
+import org.junit.Test
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import org.assertj.core.api.Assertions.assertThat
-import org.intellij.lang.annotations.Language
-import org.junit.Test
 
 class OpenApiRulesValidatorTest {
     class RulesValidatorTestRuleSet : AbstractRuleSet()
@@ -24,8 +24,8 @@ class OpenApiRulesValidatorTest {
         @Check(severity = Severity.MUST)
         fun validate(context: Context): List<Violation> {
             val testExtension = context
-                ?.api
-                ?.info
+                .api
+                .info
                 ?.extensions?.get("x-test-extension")
                 ?.let { it as? Map<*, *>? }
 

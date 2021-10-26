@@ -65,7 +65,7 @@ class ProprietaryHeadersRuleTest {
     }
 
     @Test
-    fun `validate(Request|Response)Headers should return no violation for empty API`() {
+    fun `validate(Request, Response)Headers should return no violation for empty API`() {
         @Language("YAML")
         val violations = rule.validateRequestHeaders(
             DefaultContextFactory().getOpenApiContext(
