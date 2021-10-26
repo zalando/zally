@@ -4,7 +4,7 @@
 FROM registry.opensource.zalan.do/library/openjdk-11-jdk-slim:latest as builder
 COPY . /src
 WORKDIR /src
-RUN ./gradlew build --info
+RUN ./gradlew build
 
 
 FROM registry.opensource.zalan.do/library/openjdk-11-jdk-slim:latest
