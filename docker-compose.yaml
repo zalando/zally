@@ -45,7 +45,7 @@ services:
     - MANAGEMENT_PORT=7979
     - TOKEN_INFO_URI=https://url.not.set
   postgres:
-    image: postgres:9.6
+    image: postgres:13
     environment:
     - POSTGRES_PASSWORD=postgres
     - POSTGRES_DB=zally
