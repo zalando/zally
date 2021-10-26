@@ -19,7 +19,7 @@ pipeline:
       - desc: Build Web UI
         cmd: |
           cd $PWD/web-ui
-          npm install -q ; npm test ; npm run build
+          yarn install -q ; yarn test ; yarn build
     cache:
       paths: [ ~/.npm ]
 
