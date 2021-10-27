@@ -6,7 +6,6 @@ COPY . /src
 WORKDIR /src
 RUN ./gradlew build
 
-
 FROM registry.opensource.zalan.do/library/openjdk-11-jdk-slim:latest
 
 MAINTAINER "http://zalando.github.io/"

@@ -14,12 +14,12 @@ pipeline:
 
   - id: web-ui
     type: script
-    overlay: ci/nodejs-10
+    overlay: ci/nodejs-14
     commands:
       - desc: Build Web UI
         cmd: |
           cd $PWD/web-ui
-          npm install -q ; npm test ; npm run build
+          yarn install -q ; yarn test ; yarn build
     cache:
       paths: [ ~/.npm ]
 

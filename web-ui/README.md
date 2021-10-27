@@ -43,7 +43,7 @@ It's implemented as an [express](https://expressjs.com/) app/middleware and a Si
 
 ## Requirements
 
-* NodeJS >= 7.6
+* NodeJS >= 14
 
 ## Install
 
