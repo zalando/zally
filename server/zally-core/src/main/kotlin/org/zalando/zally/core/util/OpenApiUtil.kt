@@ -122,7 +122,6 @@ fun OpenAPI.getAllParameters(): Collection<Parameter> =
             it?.readOperations().orEmpty().flatMap { it?.parameters.orEmpty().filterNotNull() }
         }
 
-
 fun OpenAPI.getAllSecuritySchemes(): Map<String, SecurityScheme> = this.components?.securitySchemes.orEmpty()
 
 /**

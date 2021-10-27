@@ -8,7 +8,7 @@ pipeline:
       - desc: Build server
         cmd: |
           cd $PWD/server
-          ./gradlew zally-server:build
+          ./gradlew --console=plain build
     cache:
       paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
 
