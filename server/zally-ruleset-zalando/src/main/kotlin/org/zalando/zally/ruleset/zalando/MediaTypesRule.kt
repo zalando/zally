@@ -1,5 +1,6 @@
 package org.zalando.zally.ruleset.zalando
 
+import com.typesafe.config.Config
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
@@ -20,18 +21,13 @@ import io.swagger.v3.oas.models.responses.ApiResponse
     severity = Severity.SHOULD,
     title = "Prefer standard media type names"
 )
-class MediaTypesRule {
+class MediaTypesRule(config: Config) {
 
     private val versionedMediaType = "^\\w+/[-+.\\w]+;(v|version)=\\d+$".toRegex()
 
     private val description = "Custom media types should only be used for versioning"
 
-    private val standardMediaTypes = listOf(
-        "application/json",
-        "application/problem+json",
-        "application/json-patch+json",
-        "application/merge-patch+json"
-    )
+    private val standardMediaTypes = config.getStringList("${javaClass.simpleName}.standard_media_types")
 
     @Check(severity = Severity.SHOULD)
     fun validate(context: Context): List<Violation> =
