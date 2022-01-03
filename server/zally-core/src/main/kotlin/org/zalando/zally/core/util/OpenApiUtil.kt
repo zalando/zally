@@ -115,11 +115,12 @@ fun OpenAPI.getAllProperties(): Map<String, Schema<Any>> {
  * Returns all defined parameters of an API specification
  * @return a collection of parameters
  */
-fun OpenAPI.getAllParameters(): Map<String, Parameter> = this.components?.parameters.orEmpty() +
-    this.paths.orEmpty().values.flatMap { it?.parameters.orEmpty().mapNotNull { it.name to it } } +
-    this.paths.orEmpty().values.flatMap {
-        it?.readOperations().orEmpty().flatMap { it?.parameters.orEmpty().mapNotNull { it.name to it } }
-    }
+fun OpenAPI.getAllParameters(): Collection<Parameter> =
+    this.components?.parameters?.values.orEmpty().filterNotNull().toList() +
+        this.paths.orEmpty().values.flatMap { it?.parameters.orEmpty().filterNotNull() } +
+        this.paths.orEmpty().values.flatMap {
+            it?.readOperations().orEmpty().flatMap { it?.parameters.orEmpty().filterNotNull() }
+        }
 
 fun OpenAPI.getAllSecuritySchemes(): Map<String, SecurityScheme> = this.components?.securitySchemes.orEmpty()
 

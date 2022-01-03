@@ -79,7 +79,7 @@ class FunctionalNamingForHostnamesRuleTest {
     }
 
     @Test
-    fun `(must|should|may)FollowFunctionalNaming should return no violations if audience is not set`() {
+    fun `(must, should, may)FollowFunctionalNaming should return no violations if audience is not set`() {
         @Language("YAML")
         val context = DefaultContextFactory().getOpenApiContext(
             """
@@ -93,7 +93,7 @@ class FunctionalNamingForHostnamesRuleTest {
     }
 
     @Test
-    fun `(must|should|may)FollowFunctionalNaming should return no violations for "external-partner" audience and url from a exception list`() {
+    fun `(must, should, may)FollowFunctionalNaming should return no violations for 'external-partner' audience and url from a exception list`() {
         val context = getOpenApiContextWithAudienceAndHostname("external-partner", "api-sandbox.merchants.zalando.com")
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
@@ -126,7 +126,7 @@ class FunctionalNamingForHostnamesRuleTest {
     }
 
     @Test
-    fun `(must|should|may)FollowFunctionalNaming should return no violations for external-public Swagger APIs with valid hostname`() {
+    fun `(must, should, may)FollowFunctionalNaming should return no violations for external-public Swagger APIs with valid hostname`() {
         val context = getSwaggerContextWith(audience = "external-public", url = "infrastructure-api-linter.zalandoapis.com")
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
@@ -135,7 +135,7 @@ class FunctionalNamingForHostnamesRuleTest {
     }
 
     @Test
-    fun `(must|should|may)FollowFunctionalNaming should return no violations for Swagger APIs with missing hostname`() {
+    fun `(must, should, may)FollowFunctionalNaming should return no violations for Swagger APIs with missing hostname`() {
         val context = getSwaggerContextWith(audience = "external-public", url = null)
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
@@ -144,7 +144,7 @@ class FunctionalNamingForHostnamesRuleTest {
     }
 
     @Test
-    fun `(must|should|may)FollowFunctionalNaming should return no violations for Swagger APIs with no audience`() {
+    fun `(must, should, may)FollowFunctionalNaming should return no violations for Swagger APIs with no audience`() {
         val context = getSwaggerContextWith(audience = null, url = "infrastructure-api-linter.zalandoapis.com")
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
@@ -153,7 +153,7 @@ class FunctionalNamingForHostnamesRuleTest {
     }
 
     @Test
-    fun `(must|should|may)FollowFunctionalNaming should return no violations for OpenAPIs with hosts from the exception list for "external-partner"`() {
+    fun `(must, should, may)FollowFunctionalNaming should return no violations for OpenAPIs with hosts from the exception list for 'external-partner'`() {
         val context = getSwaggerContextWith(audience = "external-partner", url = "api.merchants.zalando.com")
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()

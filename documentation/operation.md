@@ -29,9 +29,9 @@ like local developer's machine, continuous delivery platforms, etc.
 
 ## Technical Dependencies
 
-- JDK 1.8+ for Server
+- JDK 11+ for Server
 - Golang 1.7+ for CLI
-- Node.js 7.6+ for Web UI
+- Node.js 14+ for Web UI
 - (Optional) PostgreSQL database for Server
 - (Optional) Docker if you want to containerize
 

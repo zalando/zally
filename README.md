@@ -53,27 +53,16 @@ Please consult the following documents for more information:
 - [How to develop new Rules](documentation/rule-development.md)
 - [Building Under Windows Subsystem for Linux](documentation/build-under-wsl.md)
 
+## Integrations
+
+- [Zally Maven Plugin](https://github.com/ethlo/zally-maven-plugin) (unofficial)
+
 ## Contributing
 
 Zally welcomes contributions from the open source community. To get started, take a
 look at our [contributing guidelines](CONTRIBUTING). Then check our
 [Project Board](https://github.com/zalando/zally/projects/1) and
 [Issues Tracker](https://github.com/zalando/zally/issues) for ideas.
-
-## Roadmap
-
-For Zally [version 1.5](https://github.com/zalando/zally/milestone/3), we're focusing on:
-
-- Improve extensibility of Zally
-  - Plugin mechanism for Rules (Sets)
-  - Utilities and helper functions for Check development
-- Improve quality by introducing a better testing approach for integration tests
-- Make the usage of Zally easier by providing high-quality documentation for
-  - End users
-  - Check developers
-  - Operators and administrators
-
-If you have ideas for these items, please let us know.
 
 ## Contact
 
@@ -105,22 +94,27 @@ configured
 
 1. Create a separate branch with a name `release-<release-version>`.
 2. Update current version in `server/gradle.properties` from `-SNAPSHOT` to a final version.
-3. Release Zally server and API using the command
+3. Update mime types configuration:
+   ```shell
+      ./gradlew -q generate-media-types-config --info
+   ```
+4. Commit the updated file to the repository.
+5. Release Zally server and API using the command
    ```
    cd server
    ./gradlew clean build publishAllPublicationsToMavenRepository
    ```
-4. Commit `server/gradle.properties` with the release version
-5. Create a tag
+6. Commit `server/gradle.properties` with the release version
+7. Create a tag
     ```shell script
     git tag v<release-version> -m "Version <release-version>"
     ```
-6. Bump version in `server/gradle.properties` to the next `-SNAPSHOT`
+8. Bump version in `server/gradle.properties` to the next `-SNAPSHOT`
 
-7. Push `release` branch and tag
+9. Push `release` branch and tag
    ```shell script
     git push origin
     git push origin <tag-name>
    ```
-8. Create a Pull Request with the version update
-9. Create and publish a release with a new version in GitHub
+10. Create a Pull Request with the version update
+11. Create and publish a release with a new version in GitHub

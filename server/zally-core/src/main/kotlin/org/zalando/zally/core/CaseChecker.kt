@@ -209,7 +209,7 @@ class CaseChecker(
         type: String,
         check: CaseCheck?
     ): List<Violation> = context.api
-        .getAllParameters().values
+        .getAllParameters()
         .filter { type.toLowerCase() == it.`in` }
         .flatMap { param ->
             check("$type parameter", "$type parameters", check, param.name)

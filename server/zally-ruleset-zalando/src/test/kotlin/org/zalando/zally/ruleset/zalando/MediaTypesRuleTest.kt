@@ -2,6 +2,7 @@ package org.zalando.zally.ruleset.zalando
 
 import org.zalando.zally.core.DefaultContext
 import org.zalando.zally.core.DefaultContextFactory
+import org.zalando.zally.core.rulesConfig
 import org.zalando.zally.core.toJsonPointer
 import org.zalando.zally.rule.api.Violation
 import io.swagger.parser.util.ClasspathHelper.loadFileFromClasspath
@@ -12,36 +13,38 @@ import org.junit.jupiter.api.Test
 
 class MediaTypesRuleTest {
 
+    private val rule = MediaTypesRule(rulesConfig)
+
     @Test
     fun `isStandardJsonMediaType for valid input`() {
-        assertThat(rule.isStandardJsonMediaType("application/json")).isTrue()
-        assertThat(rule.isStandardJsonMediaType("application/problem+json")).isTrue()
-        assertThat(rule.isStandardJsonMediaType("application/json-patch+json")).isTrue()
-        assertThat(rule.isStandardJsonMediaType("application/merge-patch+json")).isTrue()
+        assertThat(rule.isStandardJsonMediaType("application/json")).isTrue
+        assertThat(rule.isStandardJsonMediaType("application/problem+json")).isTrue
+        assertThat(rule.isStandardJsonMediaType("application/json-patch+json")).isTrue
+        assertThat(rule.isStandardJsonMediaType("application/merge-patch+json")).isTrue
     }
 
     @Test
     fun `isStandardJsonMediaType for invalid input`() {
-        assertThat(rule.isStandardJsonMediaType("application/vnd.api+json")).isFalse()
-        assertThat(rule.isStandardJsonMediaType("application/x.zalando.contract+json")).isFalse()
+        assertThat(rule.isStandardJsonMediaType("application/vnd.unknown-api+json")).isFalse
+        assertThat(rule.isStandardJsonMediaType("application/x.zalando.contract+json")).isFalse
     }
 
     @Test
     fun `isVersionedMediaType for valid input`() {
-        assertThat(rule.isVersionedMediaType("application/vnd.api+json;v=12")).isTrue()
-        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json;v=34")).isTrue()
-        assertThat(rule.isVersionedMediaType("application/vnd.api+json;version=123")).isTrue()
-        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json;version=345")).isTrue()
+        assertThat(rule.isVersionedMediaType("application/vnd.api+json;v=12")).isTrue
+        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json;v=34")).isTrue
+        assertThat(rule.isVersionedMediaType("application/vnd.api+json;version=123")).isTrue
+        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json;version=345")).isTrue
     }
 
     @Test
     fun `isVersionedMediaType for invalid input`() {
-        assertThat(rule.isVersionedMediaType("application/vnd.api+json")).isFalse()
-        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json")).isFalse()
-        assertThat(rule.isVersionedMediaType("application/vnd.api+json;ver=1")).isFalse()
-        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json;v:1")).isFalse()
-        assertThat(rule.isVersionedMediaType("application/vnd.api+json;version=")).isFalse()
-        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json;")).isFalse()
+        assertThat(rule.isVersionedMediaType("application/vnd.api+json")).isFalse
+        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json")).isFalse
+        assertThat(rule.isVersionedMediaType("application/vnd.api+json;ver=1")).isFalse
+        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json;v:1")).isFalse
+        assertThat(rule.isVersionedMediaType("application/vnd.api+json;version=")).isFalse
+        assertThat(rule.isVersionedMediaType("application/x.zalando.contract+json;")).isFalse
     }
 
     @Test
@@ -82,12 +85,12 @@ class MediaTypesRuleTest {
                     200:
                       content:
                         "application/json": {}
-                        "application/vnd.api+json": {}
+                        "application/vnd.unknown-api+json": {}
         """.trimIndent()
         )
         assertThat(rule.validate(context)).hasSameElementsAs(
             listOf(
-                v("/paths/~1shipment-order~1{shipment_order_id}/get/responses/200/content/application~1vnd.api+json")
+                v("/paths/~1shipment-order~1{shipment_order_id}/get/responses/200/content/application~1vnd.unknown-api+json")
             )
         )
     }
@@ -105,7 +108,7 @@ class MediaTypesRuleTest {
                     200:
                       content:
                         "application/json": {}
-                        "application/vnd.api+json": {}
+                        "application/vnd.unknown-api+json": {}
               "/path2":
                 get:
                   responses:
@@ -123,7 +126,7 @@ class MediaTypesRuleTest {
         val result = rule.validate(context)
         assertThat(result).hasSameElementsAs(
             listOf(
-                v("/paths/~1path1/get/responses/200/content/application~1vnd.api+json"),
+                v("/paths/~1path1/get/responses/200/content/application~1vnd.unknown-api+json"),
                 v("/paths/~1path2/get/responses/200/content/application~1x.zalando.contract+json")
             )
         )
@@ -180,8 +183,6 @@ class MediaTypesRuleTest {
         val context = DefaultContextFactory().getSwaggerContext(loadFileFromClasspath("fixtures/api_spa.yaml"))
         assertThat(rule.validate(context)).isEmpty()
     }
-
-    private val rule = MediaTypesRule()
 
     private fun v(pointer: String) = Violation(
         description = "Custom media types should only be used for versioning",

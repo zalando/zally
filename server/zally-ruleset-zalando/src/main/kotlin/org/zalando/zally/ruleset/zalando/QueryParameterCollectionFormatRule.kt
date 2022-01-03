@@ -21,7 +21,7 @@ class QueryParameterCollectionFormatRule {
     @Check(severity = Severity.SHOULD)
     fun checkParametersCollectionFormat(context: Context): List<Violation> =
         if (context.isOpenAPI3())
-            context.api.getAllParameters().values
+            context.api.getAllParameters()
                 .filter { "query" == it.`in` && "array" == it.schema?.type }
                 .filter { it.style == null || allowedStyle != it.style }
                 .map { context.violation(description, it) }
