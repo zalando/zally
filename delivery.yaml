@@ -28,7 +28,7 @@ pipeline:
     env:
       DOCKER_IMAGE_PREFIX: "pierone.stups.zalan.do/pitchfork"
     when:
-      branch: master
+      branch: main
     depends_on: [ all_of_the_above ]
     commands:
       - desc: Building and pushing Zally Server
