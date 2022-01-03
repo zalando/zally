@@ -5,13 +5,13 @@
 In the following snippet you find a basic check implementation:
 
 ```Kotlin
-package de.zalando.zally.rule.nicecompany
+package org.zalando.zally.rule.nicecompany
 
-import de.zalando.zally.rule.api.Check
-import de.zalando.zally.rule.api.Context
-import de.zalando.zally.rule.api.Rule
-import de.zalando.zally.rule.api.Severity
-import de.zalando.zally.rule.api.Violation
+import org.zalando.zally.rule.api.Check
+import org.zalando.zally.rule.api.Context
+import org.zalando.zally.rule.api.Rule
+import org.zalando.zally.rule.api.Severity
+import org.zalando.zally.rule.api.Violation
 
 @Rule(
     ruleSet = NiceCompanyRuleSet::class,
@@ -38,10 +38,10 @@ or a `List` of `Violations`.
 The check references to `NiceCompanyRuleSet`:
 
 ```Kotlin
-package de.zalando.zally.rule.zalando
+package org.zalando.zally.rule.zalando
 
-import de.zalando.zally.core.AbstractRuleSet
-import de.zalando.zally.rule.api.Rule
+import org.zalando.zally.core.AbstractRuleSet
+import org.zalando.zally.rule.api.Rule
 import org.springframework.stereotype.Component
 import java.net.URI
 
@@ -79,7 +79,7 @@ Here are some examples:
 - `Context#validatePaths(pathFilter, action): List<Violation>`
 - `Context#validateOperations(pathFilter, operationFilter, action): List<Violation>`
 
-See [`DefaultContext`](../server/src/main/java/de/zalando/zally/rule/DefaultContext.kt)
+See [`DefaultContext`](../server/src/main/java/org/zalando/zally/rule/DefaultContext.kt)
 for more information.
 
 ## Create a violation
