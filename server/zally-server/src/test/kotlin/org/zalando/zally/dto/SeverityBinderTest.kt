@@ -2,13 +2,14 @@ package org.zalando.zally.dto
 
 import org.zalando.zally.rule.api.Severity
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
 
 class SeverityBinderTest {
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun shouldRaiseIllegalArgumentExceptionWhenTypeIsNotFound() {
         val typeBinder = SeverityBinder()
-        typeBinder.asText = "SOLUTION"
+        assertThrows(IllegalArgumentException::class.java, { typeBinder.asText = "SOLUTION" })
     }
 
     @Test

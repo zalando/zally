@@ -12,9 +12,9 @@ import net.jadler.Jadler.closeJadler
 import net.jadler.Jadler.initJadlerUsing
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.NOT_FOUND
@@ -29,12 +29,12 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Autowired
     private lateinit var wac: WebApplicationContext
 
-    @Before
+    @BeforeEach
     fun setUp() {
         initJadlerUsing(JdkStubHttpServer())
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         closeJadler()
     }

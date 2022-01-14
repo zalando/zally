@@ -2,7 +2,7 @@ package org.zalando.zally.configuration
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Ignore
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher

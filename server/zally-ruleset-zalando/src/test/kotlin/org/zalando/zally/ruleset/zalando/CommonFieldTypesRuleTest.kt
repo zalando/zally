@@ -9,7 +9,7 @@ import io.swagger.v3.parser.util.SchemaTypeUtil.UUID_FORMAT
 import io.swagger.v3.parser.util.SchemaTypeUtil.createSchema
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class CommonFieldTypesRuleTest {
     private val rule = CommonFieldTypesRule(rulesConfig)

@@ -7,7 +7,7 @@ import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.parameters.QueryParameter
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "StringLiteralDuplication")
 class ReverseAstBuilderTest {

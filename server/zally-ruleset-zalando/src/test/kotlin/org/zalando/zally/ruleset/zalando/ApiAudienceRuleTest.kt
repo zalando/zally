@@ -4,7 +4,7 @@ import org.zalando.zally.core.rulesConfig
 import org.zalando.zally.test.ZallyAssertions.assertThat
 import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.rule.api.Context
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ApiAudienceRuleTest {
 

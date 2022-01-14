@@ -1,9 +1,9 @@
 package org.zalando.zally.core.util
 
 import org.zalando.zally.core.util.PatternUtil.isPathVariable
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 /**
  * Unit tests for patterns utility
