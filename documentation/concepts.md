@@ -9,7 +9,7 @@ compliance requirements).
 *Example*: "Zalando Rule Set" which verifies API's compliance to
 [Zalando's API Guidelines](https://opensource.zalando.com/restful-api-guidelines/).
 
-*Implementation*: [`package de.zalando.zally.rule.zalando`](../server/src/main/java/de/zalando/zally/rule/zalando)
+*Implementation*: [`package org.zalando.zally.rule.zalando`](../server/src/main/java/org/zalando/zally/rule/zalando)
 
 ## Rule
 
@@ -18,7 +18,7 @@ automatically checked.
 
 *Example*: "Use standardized HTTP response codes"
 
-*Implementation*: [`UseStandardHttpStatusCodesRule.kt`](../server/src/main/java/de/zalando/zally/rule/zalando/UseStandardHttpStatusCodesRule.kt)
+*Implementation*: [`UseStandardHttpStatusCodesRule.kt`](../server/src/main/java/org/zalando/zally/rule/zalando/UseStandardHttpStatusCodesRule.kt)
 
 ```Kotlin
 @Rule(
