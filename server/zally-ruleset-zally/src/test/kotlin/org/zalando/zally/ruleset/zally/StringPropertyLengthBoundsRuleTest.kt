@@ -4,8 +4,8 @@ import org.zalando.zally.test.ZallyAssertions
 import org.zalando.zally.core.rulesConfig
 import org.zalando.zally.core.DefaultContextFactory
 import org.intellij.lang.annotations.Language
-import org.junit.Assume.assumeTrue
-import org.junit.Test
+import org.junit.jupiter.api.Assumptions.assumeTrue
+import org.junit.jupiter.api.Test
 
 class StringPropertyLengthBoundsRuleTest {
 
@@ -185,8 +185,8 @@ class StringPropertyLengthBoundsRuleTest {
         val format = "password"
 
         assumeTrue(
-            "test assumes config StringPropertyLengthBoundsRule.formatWhitelist excludes '$format'",
-            format !in cut.formatWhitelist
+            format !in cut.formatWhitelist,
+            "test assumes config StringPropertyLengthBoundsRule.formatWhitelist excludes '$format'"
         )
 
         @Language("YAML")
@@ -220,8 +220,8 @@ class StringPropertyLengthBoundsRuleTest {
         val format = "date-time"
 
         assumeTrue(
-            "test assumes config StringPropertyLengthBoundsRule.formatWhitelist includes '$format'",
-            format in cut.formatWhitelist
+            format in cut.formatWhitelist,
+            "test assumes config StringPropertyLengthBoundsRule.formatWhitelist includes '$format'"
         )
 
         @Language("YAML")
@@ -252,8 +252,8 @@ class StringPropertyLengthBoundsRuleTest {
     @Test
     fun `checkStringLengthBounds with pattern returns no violations`() {
         assumeTrue(
-            "Test assumes config StringPropertyLengthBoundsRule.patternImpliesLimits is 'true'",
-            cut.patternImpliesLimits
+            cut.patternImpliesLimits,
+            "Test assumes config StringPropertyLengthBoundsRule.patternImpliesLimits is 'true'"
         )
 
         @Language("YAML")

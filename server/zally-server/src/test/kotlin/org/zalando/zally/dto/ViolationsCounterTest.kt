@@ -7,8 +7,8 @@ import org.zalando.zally.rule.api.Severity.HINT
 import org.zalando.zally.rule.api.Severity.MAY
 import org.zalando.zally.rule.api.Severity.MUST
 import org.zalando.zally.rule.api.Severity.SHOULD
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import java.net.URI
 
 class ViolationsCounterTest {

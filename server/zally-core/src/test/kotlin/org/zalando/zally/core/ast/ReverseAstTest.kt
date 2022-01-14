@@ -9,7 +9,7 @@ import io.swagger.v3.parser.core.models.ParseOptions
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.zalando.zally.core.ObjectTreeReader
 import org.zalando.zally.core.toJsonPointer
 import org.zalando.zally.core.util.OpenApiSections.Companion.PATHS

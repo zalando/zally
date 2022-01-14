@@ -16,28 +16,22 @@ import io.swagger.util.Yaml
 import org.intellij.lang.annotations.Language
 import org.junit.ClassRule
 import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.rules.SpringClassRule
 import org.springframework.test.context.junit4.rules.SpringMethodRule
 
-@RunWith(Parameterized::class)
 @SpringBootTest
 @ActiveProfiles("test", "all-annotated-rules")
-class NullPointerExceptionTest(
-    private val name: String,
-    private val spec: String
-) {
+class NullPointerExceptionTest() {
     companion object {
         @ClassRule
         @JvmField
         val springClassRule = SpringClassRule()
 
-        @Parameterized.Parameters(name = "{0}")
         @JvmStatic
         fun parameters(): Iterable<Array<String>> = (
             parametersFromFullFeaturedSpec() +
@@ -439,8 +433,9 @@ class NullPointerExceptionTest(
     @Autowired
     private lateinit var rules: RulesManager
 
-    @Test
-    fun `validate with spec does not throw NullPointerException`() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    fun `validate with spec does not throw NullPointerException`(name: String, spec: String) {
         try {
             assertRuleManagerUsingAllAnnotatedRules(rules)
 

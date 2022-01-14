@@ -152,7 +152,7 @@ subprojects {
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-        implementation("org.yaml:snakeyaml:1.24")
+        implementation("org.yaml:snakeyaml:1.29")
 
         testImplementation("com.jayway.jsonpath:json-path-assert:2.4.0")
         testImplementation("org.mockito:mockito-core:2.23.4")

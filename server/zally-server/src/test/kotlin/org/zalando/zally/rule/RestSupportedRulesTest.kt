@@ -4,8 +4,8 @@ import org.zalando.zally.apireview.RestApiBaseTest
 import org.zalando.zally.core.RulesManager
 import org.zalando.zally.util.ErrorResponse
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.test.context.TestPropertySource
@@ -31,9 +31,9 @@ class RestSupportedRulesTest : RestApiBaseTest() {
             val prev = rules[i - 1].type
             val next = rules[i].type
             assertTrue(
+                prev!! <= next!!,
                 "Item #" + i + " is out of order:\n" +
-                    rules.joinToString(separator = "\n") { it.toString() },
-                prev!! <= next!!
+                    rules.joinToString(separator = "\n") { it.toString() }
             )
         }
     }

@@ -7,7 +7,7 @@ import org.zalando.zally.core.Result
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.util.resourceToString
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.net.URI
 import java.util.Arrays.asList

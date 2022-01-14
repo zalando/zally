@@ -7,10 +7,11 @@ import org.zalando.zally.util.JadlerUtil
 import net.jadler.Jadler.closeJadler
 import net.jadler.Jadler.initJadlerUsing
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.MediaType.TEXT_HTML_VALUE
@@ -22,20 +23,20 @@ class ApiDefinitionReaderTest {
 
     private lateinit var reader: ApiDefinitionReader
 
-    @Before
+    @BeforeEach
     fun setUp() {
         initJadlerUsing(JdkStubHttpServer())
         reader = ApiDefinitionReader(RestTemplate())
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         closeJadler()
     }
 
-    @Test(expected = MissingApiDefinitionException::class)
+    @Test
     fun shouldThrowMissingApiDefinitionExceptionWhenDefinitionIsNotFound() {
-        reader.read(ApiDefinitionRequest())
+        assertThrows(MissingApiDefinitionException::class.java, { reader.read(ApiDefinitionRequest()) })
     }
 
     @Test
@@ -76,18 +77,18 @@ class ApiDefinitionReaderTest {
         assertEquals(contentInJson, result)
     }
 
-    @Test(expected = InaccessibleResourceUrlException::class)
+    @Test
     fun shouldErrorBadRequestWhenDefinitionFromUrlUnsuccessful() {
         val url = JadlerUtil.stubResource("test.json", "", HttpStatus.UNAUTHORIZED.value(), APPLICATION_JSON_VALUE)
 
-        reader.read(ApiDefinitionRequest.fromUrl(url))
+        assertThrows(InaccessibleResourceUrlException::class.java, { reader.read(ApiDefinitionRequest.fromUrl(url)) })
     }
 
-    @Test(expected = InaccessibleResourceUrlException::class)
+    @Test
     fun shouldErrorBadRequestWhenDefinitionFromUrlWrongContentType() {
         val url = JadlerUtil.stubResource("test.json", "", HttpStatus.OK.value(), TEXT_HTML_VALUE)
 
-        reader.read(ApiDefinitionRequest.fromUrl(url))
+        assertThrows(InaccessibleResourceUrlException::class.java, { reader.read(ApiDefinitionRequest.fromUrl(url)) })
     }
 
     companion object {

@@ -7,7 +7,7 @@ import org.zalando.zally.rule.api.Context
 import org.zalando.zally.test.ZallyAssertions.assertThat
 import io.swagger.parser.util.ClasspathHelper.loadFileFromClasspath
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class PluralizeResourceNamesRuleTest {
 

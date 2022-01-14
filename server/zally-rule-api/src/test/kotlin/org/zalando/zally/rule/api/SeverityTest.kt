@@ -2,8 +2,8 @@ package org.zalando.zally.rule.api
 
 import org.zalando.zally.rule.api.Severity.HINT
 import org.zalando.zally.rule.api.Severity.MUST
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class SeverityTest {
 
