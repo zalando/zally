@@ -35,7 +35,7 @@ dependencies {
     }
     implementation("org.flywaydb:flyway-core")
     implementation("org.hsqldb:hsqldb:2.4.1")
-    implementation("org.postgresql:postgresql:42.2.4")
+    implementation("org.postgresql:postgresql:42.3.2")
     implementation("org.hibernate:hibernate-core")
     implementation("org.jadira.usertype:usertype.core:7.0.0.CR1") {
         exclude("org.hibernate", "hibernate-entitymanager")
