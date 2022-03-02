@@ -12,7 +12,7 @@ import io.swagger.v3.oas.models.parameters.Parameter
 @Rule(
     ruleSet = ZalandoRuleSet::class,
     id = "183",
-    severity = Severity.MUST,
+    severity = Severity.SHOULD,
     title = "Use Only the Specified Proprietary Zalando Headers"
 )
 class ProprietaryHeadersRule(rulesConfig: Config) {
