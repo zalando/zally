@@ -1,3 +1,2 @@
 api_definitions: 
  - server/src/main/resources/api/zally-api.yaml
- - github-integration/src/main/resources/api/bark-api.yaml
