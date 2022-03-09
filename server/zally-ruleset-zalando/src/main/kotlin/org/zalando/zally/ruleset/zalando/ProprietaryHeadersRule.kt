@@ -28,12 +28,12 @@ class ProprietaryHeadersRule(rulesConfig: Config) {
     private val requestDescription = "use only standardized or specified request headers"
     private val responseDescription = "use only standardized or specified response headers"
 
-    @Check(severity = Severity.MUST)
+    @Check(severity = Severity.SHOULD)
     fun validateRequestHeaders(context: Context): List<Violation> = requestHeaders(context)
         .filterNot { it.name.toLowerCase() in requestHeaders }
         .map { context.violation(requestDescription, it) }
 
-    @Check(severity = Severity.MUST)
+    @Check(severity = Severity.SHOULD)
     fun validateResponseHeaders(context: Context): List<Violation> = responseHeaders(context)
         .filterNot { it.key.toLowerCase() in responseHeaders }
         .map { context.violation(responseDescription, it.value) }
