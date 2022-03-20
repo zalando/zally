@@ -17,11 +17,5 @@ WEB_UI_DIR=${SCRIPT_DIR}/web-ui
 # Build web ui
 cd ${WEB_UI_DIR} && yarn && yarn build
 
-if [[ "$@" == "--bark" ]]; then
-
-    # Docker-compose
-    cd ${SCRIPT_DIR} && docker-compose -f docker-compose.yaml -f docker-compose-bark.yaml up --build
-else
-    # Docker-compose
-    cd ${SCRIPT_DIR} && docker-compose up --build
-fi
+# Docker-compose
+cd ${SCRIPT_DIR} && docker-compose up --build
