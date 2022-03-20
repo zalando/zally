@@ -80,7 +80,7 @@
     "nodemon": "1.12.7",
     "prettier": "1.9.2",
     "raf": "3.4.0",
-    "sass-loader": "10.2.0",
+    "sass-loader": "12.6.0",
     "style-loader": "0.19.0",
     "supertest": "3.0.0",
     "uglifyjs-webpack-plugin": "2.1.3",
