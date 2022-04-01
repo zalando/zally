@@ -18,7 +18,7 @@ class SeverityBinderTest {
         val allowedTypes = arrayOf("Must", "MUST", "must", "SHOULD", "MAY", "HINT")
 
         for (allowedType in allowedTypes) {
-            val expectedType = Severity.valueOf(allowedType.toUpperCase())
+            val expectedType = Severity.valueOf(allowedType.uppercase())
             typeBinder.asText = allowedType
 
             assertThat(typeBinder.value).isEqualTo(expectedType)

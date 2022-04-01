@@ -17,7 +17,7 @@ class LimitNumberOfSubResourcesRuleTest {
               openapi: "3.0.0"
               paths:
                 /worlds/{world-id}/countries/{country-id}/states/{state-id}/cities/{city-id}/streets/{street-id}: {}
-              """.trimIndent()
+        """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkNumberOfSubResources(context)

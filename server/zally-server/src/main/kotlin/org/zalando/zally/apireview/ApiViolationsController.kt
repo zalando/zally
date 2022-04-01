@@ -45,7 +45,7 @@ class ApiViolationsController(
         val requestPolicy = retrieveRulesPolicy(request)
 
         val violations = rulesValidator.validate(apiDefinition, requestPolicy, authorization)
-        val review = ApiReview(request, userAgent.orEmpty(), apiDefinition, violations)
+        val review = ApiReview(userAgent.orEmpty(), apiDefinition, violations)
         apiReviewRepository.save(review)
 
         val location = uriBuilder
@@ -75,10 +75,10 @@ class ApiViolationsController(
     private fun retrieveApiDefinition(request: ApiDefinitionRequest): String = try {
         apiDefinitionReader.read(request)
     } catch (e: MissingApiDefinitionException) {
-        apiReviewRepository.save(ApiReview(request, "", ""))
+        apiReviewRepository.save(ApiReview("", ""))
         throw e
     } catch (e: InaccessibleResourceUrlException) {
-        apiReviewRepository.save(ApiReview(request, "", ""))
+        apiReviewRepository.save(ApiReview("", ""))
         throw e
     }
 
@@ -104,7 +104,7 @@ class ApiViolationsController(
             Severity.SHOULD to review.shouldViolations,
             Severity.MAY to review.mayViolations,
             Severity.HINT to review.hintViolations
-        ).map { it.first.name.toLowerCase() to it.second }.toMap(),
+        ).map { it.first.name.lowercase() to it.second }.toMap(),
         apiDefinition = review.apiDefinition
     )
 }

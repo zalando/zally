@@ -83,9 +83,11 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
         handleArray(set.toTypedArray(), pointer, marker)
 
     private fun handleArray(objects: Array<*>, pointer: JsonPointer, marker: Marker?): Deque<Node> =
-        ArrayDeque(objects.filterNotNull().mapIndexed { i, value ->
-            Node(value, pointer + i.toString().toEscapedJsonPointer(), marker)
-        })
+        ArrayDeque(
+            objects.filterNotNull().mapIndexed { i, value ->
+                Node(value, pointer + i.toString().toEscapedJsonPointer(), marker)
+            }
+        )
 
     private fun handleObject(obj: Any, pointer: JsonPointer, defaultMarker: Marker?): Deque<Node> {
         val nodes = ArrayDeque<Node>()
@@ -164,8 +166,10 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
                     Modifier.isPublic(it.modifiers) &&
                     !it.isAnnotationPresent(JsonIgnore::class.java)
             }
-            .sortedWith(Comparator
-                .comparing { method: Method -> method.name == "getPaths" }
-                .thenComparing { method: Method -> method.name })
+            .sortedWith(
+                Comparator
+                    .comparing { method: Method -> method.name == "getPaths" }
+                    .thenComparing { method: Method -> method.name }
+            )
     }
 }

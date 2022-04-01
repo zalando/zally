@@ -147,5 +147,5 @@ class ApiViolationsControllerTest {
                     type: array
                     items:
                       ${'$'}ref: "#/components/schemas/ProductResource"
-        """.trimIndent()
+    """.trimIndent()
 }

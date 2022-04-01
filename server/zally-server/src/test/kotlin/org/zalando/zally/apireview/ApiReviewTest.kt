@@ -2,7 +2,6 @@ package org.zalando.zally.apireview
 
 import com.fasterxml.jackson.core.JsonPointer
 import org.zalando.zally.core.toJsonPointer
-import org.zalando.zally.dto.ApiDefinitionRequest
 import org.zalando.zally.core.Result
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.util.resourceToString
@@ -21,7 +20,7 @@ class ApiReviewTest {
         val shouldViolation = result(Severity.SHOULD, "/pointer3".toJsonPointer())
 
         val apiReview =
-            ApiReview(ApiDefinitionRequest(), "", "", listOf(mustViolation1, mustViolation2, shouldViolation))
+            ApiReview("", "", listOf(mustViolation1, mustViolation2, shouldViolation))
 
         assertThat(apiReview.mustViolations).isEqualTo(2)
         assertThat(apiReview.shouldViolations).isEqualTo(1)
@@ -37,7 +36,7 @@ class ApiReviewTest {
 
         val apiDefinition = resourceToString("fixtures/limitNumberOfResourcesValid.json")
 
-        val apiReview = ApiReview(ApiDefinitionRequest(), "", apiDefinition, asList(violation1, violation2))
+        val apiReview = ApiReview("", apiDefinition, asList(violation1, violation2))
 
         assertThat(apiReview.numberOfEndpoints).isEqualTo(2)
     }
@@ -46,7 +45,7 @@ class ApiReviewTest {
     @Throws(IOException::class)
     fun shouldParseApiNameFromApiDefinition() {
         val apiDefinition = resourceToString("fixtures/limitNumberOfResourcesValid.json")
-        val apiReview = ApiReview(ApiDefinitionRequest(), "", apiDefinition)
+        val apiReview = ApiReview("", apiDefinition)
         assertThat(apiReview.name).isEqualTo("Test Service")
     }
 

@@ -10,7 +10,7 @@ class ZallyRuleSet : AbstractRuleSet() {
     override fun url(rule: Rule): URI {
         val heading = "${rule.id}: ${rule.title}"
         val ref = heading
-            .toLowerCase()
+            .lowercase()
             .replace(Regex("[^a-z0-9]+"), "-")
         return url.resolve("#$ref")
     }

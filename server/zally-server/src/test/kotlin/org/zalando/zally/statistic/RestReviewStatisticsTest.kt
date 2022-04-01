@@ -3,7 +3,6 @@ package org.zalando.zally.statistic
 import org.zalando.zally.apireview.ApiReview
 import org.zalando.zally.apireview.RestApiBaseTest
 import org.zalando.zally.core.toJsonPointer
-import org.zalando.zally.dto.ApiDefinitionRequest
 import org.zalando.zally.core.Result
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.util.ErrorResponse
@@ -121,7 +120,6 @@ class RestReviewStatisticsTest : RestApiBaseTest() {
 
     private fun apiReview(date: LocalDate, apiName: String?, userAgent: String): ApiReview {
         return ApiReview(
-            request = ApiDefinitionRequest(),
             userAgent = userAgent,
             apiDefinition = "dummyApiDefinition",
             violations = createRandomViolations(),

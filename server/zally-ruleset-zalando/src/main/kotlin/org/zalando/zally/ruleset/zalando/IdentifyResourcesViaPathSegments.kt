@@ -25,7 +25,8 @@ class IdentifyResourcesViaPathSegments {
     @Check(severity = Severity.MUST)
     fun pathStartsWithResource(context: Context): List<Violation> = context.validatePaths(
         pathFilter = { pathStartingWithAParameter.matches(it.key) },
-        action = { context.violations(pathStartsWithParameter, PATHS.toJsonPointer() + it.key.toEscapedJsonPointer()) })
+        action = { context.violations(pathStartsWithParameter, PATHS.toJsonPointer() + it.key.toEscapedJsonPointer()) }
+    )
 
     private val pathContainingPrefixedOrSuffixedParameter = """.*/([^/]+\{[^/]+\}|\{[^/]+\}[^/]+).*""".toRegex()
 
@@ -37,5 +38,6 @@ class IdentifyResourcesViaPathSegments {
                 pathParameterContainsPrefixOrSuffix,
                 PATHS.toJsonPointer() + it.key.toEscapedJsonPointer()
             )
-        })
+        }
+    )
 }

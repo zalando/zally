@@ -81,7 +81,7 @@ class DefaultContextFactoryTest {
                   version: 1.0.0
                   title: Pets API
                 paths: {}
-            """.trimIndent()
+        """.trimIndent()
         val result = defaultContextFactory.parseOpenApiContext(content)
         assertThat(result).resultsInNotApplicable()
     }
@@ -123,7 +123,7 @@ class DefaultContextFactoryTest {
                   oa: {}
                     # type: oauth2
                 paths: {}
-            """.trimIndent()
+        """.trimIndent()
         val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
     }
@@ -145,7 +145,7 @@ class DefaultContextFactoryTest {
                     # scopes:
                     #   foo: Description of 'foo'
                 paths: {}
-            """.trimIndent()
+        """.trimIndent()
         val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
     }
@@ -159,7 +159,7 @@ class DefaultContextFactoryTest {
                   title: Bleh
                   version: 1.0.0
                 paths: {}
-            """.trimIndent()
+        """.trimIndent()
         val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
         val success = result as ContentParseResult.ParsedSuccessfully
@@ -203,7 +203,7 @@ class DefaultContextFactoryTest {
                         type: array
                         items:
                           ${'$'}ref: '#/definitions/ReadNode'
-            """.trimIndent()
+        """.trimIndent()
         val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
         val success = result as ContentParseResult.ParsedSuccessfully

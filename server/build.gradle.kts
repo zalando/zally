@@ -2,8 +2,8 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    val kotlinVersion = "1.4.32"
-    val klintVersion = "9.2.1"
+    val kotlinVersion = "1.6.20"
+    val klintVersion = "10.2.1"
 
     // The buildscript is also kotlin, so we apply at the root level
     kotlin("jvm") version kotlinVersion
@@ -15,7 +15,7 @@ plugins {
     `maven-publish`
     signing
     id("com.github.ben-manes.versions") version "0.20.0"
-    id("org.jetbrains.dokka") version "1.4.32" apply false
+    id("org.jetbrains.dokka") version "1.6.10" apply false
 
     // We apply this so that ktlint can format the top level buildscript
     id("org.jlleitschuh.gradle.ktlint") version klintVersion
@@ -144,14 +144,15 @@ subprojects {
     }
 
     dependencies {
-        implementation(platform("com.fasterxml.jackson:jackson-bom:2.12.2"))
         implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
         // We define this here so all subprojects use the same version of jackson
+        implementation(platform("com.fasterxml.jackson:jackson-bom:2.13.2.20220328"))
         implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+        implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
         implementation("org.yaml:snakeyaml:1.29")
 
         testImplementation("com.jayway.jsonpath:json-path-assert:2.4.0")

@@ -3,7 +3,6 @@ package org.zalando.zally.apireview
 import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
 import org.zalando.zally.core.Result
-import org.zalando.zally.dto.ApiDefinitionRequest
 import org.zalando.zally.rule.api.Severity
 import java.io.Serializable
 import java.time.Instant
@@ -23,7 +22,6 @@ import javax.persistence.OneToMany
 @Suppress("unused")
 @Entity
 class ApiReview(
-    request: ApiDefinitionRequest,
     val userAgent: String = "",
     @Suppress("CanBeParameter") val apiDefinition: String,
     violations: List<Result> = emptyList(),

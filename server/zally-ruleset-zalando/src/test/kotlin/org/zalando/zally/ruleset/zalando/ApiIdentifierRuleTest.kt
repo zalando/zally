@@ -45,7 +45,7 @@ class ApiIdentifierRuleTest {
             info:
               x-api-id: $apiId
             paths: {}
-            """.trimIndent()
+        """.trimIndent()
 
         return DefaultContextFactory().getOpenApiContext(content)
     }

@@ -28,7 +28,7 @@ class UseOpenApiRule(rulesConfig: Config) {
         SWAGGER, OPENAPI3;
 
         val resource: URL by lazy {
-            javaClass.classLoader.getResource("schemas/${name.toLowerCase()}-schema.json")
+            javaClass.classLoader.getResource("schemas/${name.lowercase()}-schema.json")
         }
     }
 
@@ -47,7 +47,7 @@ class UseOpenApiRule(rulesConfig: Config) {
             ?.validate(spec)
             .orEmpty()
             .map {
-                Violation("Does not match ${version.name.toLowerCase()} schema: ${it.description}", it.pointer)
+                Violation("Does not match ${version.name.lowercase()} schema: ${it.description}", it.pointer)
             }
     }
 
@@ -69,14 +69,15 @@ class UseOpenApiRule(rulesConfig: Config) {
             "http://json-schema.org/draft-04/schema" to javaClass.classLoader.getResource("schemas/json-schema.json"),
             "http://swagger.io/v2/schema.json" to SWAGGER.resource,
             "http://openapis.org/v3/schema.json" to OPENAPI3.resource,
-            "https://spec.openapis.org/oas/3.0/schema/2019-04-02" to OPENAPI3.resource)
+            "https://spec.openapis.org/oas/3.0/schema/2019-04-02" to OPENAPI3.resource
+        )
             .mapValues { (_, url) -> url.toString() }
 
         val reader = ObjectTreeReader()
         return OpenApiVersion
             .values()
             .map { version ->
-                val configPath = "schema_urls.${version.name.toLowerCase()}"
+                val configPath = "schema_urls.${version.name.lowercase()}"
 
                 val (url, schemaRedirects) = when {
                     config.hasPath(configPath) -> URL(config.getString(configPath)) to emptyMap()
