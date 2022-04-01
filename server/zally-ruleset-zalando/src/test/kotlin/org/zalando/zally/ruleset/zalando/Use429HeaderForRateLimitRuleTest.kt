@@ -58,7 +58,7 @@ class Use429HeaderForRateLimitRuleTest {
               /articles:
                 get:
                   description: asd
-            """.trimIndent()
+        """.trimIndent()
         val context = DefaultContextFactory().getSwaggerContext(content)
 
         val violations = rule.checkHeadersForRateLimiting(context)

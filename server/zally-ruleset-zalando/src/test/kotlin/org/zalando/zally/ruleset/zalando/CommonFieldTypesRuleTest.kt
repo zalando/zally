@@ -66,7 +66,7 @@ class CommonFieldTypesRuleTest {
         val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: 3.0.1
-        """.trimIndent()
+            """.trimIndent()
         )
 
         assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
@@ -84,7 +84,7 @@ class CommonFieldTypesRuleTest {
                   properties:
                     name:
                       type: string
-        """.trimIndent()
+            """.trimIndent()
         )
 
         assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
@@ -102,7 +102,7 @@ class CommonFieldTypesRuleTest {
                   properties:
                     id:
                       type: string
-        """.trimIndent()
+            """.trimIndent()
         )
 
         assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
@@ -120,7 +120,7 @@ class CommonFieldTypesRuleTest {
                   properties:
                     id:
                       type: integer
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkTypesOfCommonFields(context)
@@ -144,7 +144,7 @@ class CommonFieldTypesRuleTest {
                     modified:
                       type: string
                       format: uuid
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkTypesOfCommonFields(context)
@@ -172,7 +172,7 @@ class CommonFieldTypesRuleTest {
                             properties:
                               id:
                                 type: integer
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkTypesOfCommonFields(context)
@@ -197,7 +197,7 @@ class CommonFieldTypesRuleTest {
                       properties:
                         modified:
                           type: number
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkTypesOfCommonFields(context)
@@ -230,7 +230,7 @@ class CommonFieldTypesRuleTest {
                 CustomId:
                   type: integer
                   format: int64
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkTypesOfCommonFields(context)
@@ -265,7 +265,7 @@ class CommonFieldTypesRuleTest {
                     id: 
                       type: integer
                       format: int64
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkTypesOfCommonFields(context)

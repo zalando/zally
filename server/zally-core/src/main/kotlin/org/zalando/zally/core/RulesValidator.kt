@@ -62,7 +62,8 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
         } catch (e: InvocationTargetException) {
             throw RuntimeException(
                 "check invocation failed: id=${details.rule.id} " +
-                    "title=${details.rule.title} checkName=${details.method.name} reason=${e.targetException}", e
+                    "title=${details.rule.title} checkName=${details.method.name} reason=${e.targetException}",
+                e
             )
         }
 

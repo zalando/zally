@@ -17,7 +17,7 @@ class AtMostOneBodyParameterRuleTest {
             info:
               title: API Title
               version: 1.0.0
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -46,7 +46,7 @@ class AtMostOneBodyParameterRuleTest {
                   responses:
                     200:
                       description: Done
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -80,7 +80,7 @@ class AtMostOneBodyParameterRuleTest {
                   responses:
                     200:
                       description: Done
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 

@@ -23,7 +23,7 @@ class NumericPropertyBoundsRule {
             .filterValues { schema -> schema.type in arrayOf("integer", "number") }
             .flatMap { (_, schema) ->
                 context.violationsIfNull(schema.minimum, "No minimum defined", schema) +
-                context.violationsIfNull(schema.maximum, "No maximum defined", schema)
+                    context.violationsIfNull(schema.maximum, "No maximum defined", schema)
             }
 
     private fun Context.violationsIfNull(value: BigDecimal?, description: String, location: Any): List<Violation> = when {

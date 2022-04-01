@@ -32,7 +32,8 @@ class PluralizeResourceNamesRule(rulesConfig: Config) {
             .getConfig(javaClass.simpleName)
             .getStringList("whitelist")
             .map { it.toRegex() }
-            .toTypedArray())
+            .toTypedArray()
+    )
 
     @Check(severity = Severity.MUST)
     fun validate(context: Context): List<Violation> {

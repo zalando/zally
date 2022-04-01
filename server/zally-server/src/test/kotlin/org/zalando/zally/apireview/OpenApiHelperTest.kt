@@ -11,7 +11,7 @@ class OpenApiHelperTest {
             openapi: 3.0.1
             info:
               title: Awesome API
-            """.trimIndent()
+        """.trimIndent()
 
         val title = OpenApiHelper.extractApiName(content)
 
@@ -33,7 +33,7 @@ class OpenApiHelperTest {
             openapi: 3.0.1
             info:
               x-api-id: 48aa0090-25ef-11e8-b467-0ed5f89f718b
-            """.trimIndent()
+        """.trimIndent()
 
         val apiId = OpenApiHelper.extractApiId(content)
 

@@ -20,7 +20,7 @@ class ObjectTreeReaderTest {
                 "version": "1.0.0"
               }
             }
-            """.trimIndent()
+        """.trimIndent()
 
         val node = cut.read(contents)
 
@@ -55,7 +55,7 @@ class ObjectTreeReaderTest {
               title: Things API
               description: Description of things
               version: 1.0.0
-            """.trimIndent()
+        """.trimIndent()
 
         val node = cut.read(contents)
 
@@ -104,7 +104,7 @@ class ObjectTreeReaderTest {
               properties:
                 id: *standard-id-property
                 <<: *thing-editable-properties
-            """.trimIndent()
+        """.trimIndent()
 
         val node = cut.read(contents)
 
