@@ -19,7 +19,7 @@ class JsonProblemAsDefaultResponseRuleTest {
               '/resources':
                 get:
                   responses:
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkContainsDefaultResponse(context)
@@ -77,7 +77,7 @@ class JsonProblemAsDefaultResponseRuleTest {
                         application/gzip:
                           schema:
                             ${'$'}ref: 'http://example.com'
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkDefaultResponseIsProblemJsonMediaType(context)
@@ -115,7 +115,7 @@ class JsonProblemAsDefaultResponseRuleTest {
                         application/problem+json:
                           schema:
                             ${'$'}ref: 'http://example.com'
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkDefaultResponseIsProblemJsonSchema(context)
@@ -141,7 +141,7 @@ class JsonProblemAsDefaultResponseRuleTest {
                         application/problem+json:
                           schema:
                             ${'$'}ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkDefaultResponseIsProblemJsonSchema(context)
@@ -164,7 +164,7 @@ class JsonProblemAsDefaultResponseRuleTest {
                         application/problem+json:
                           schema:
                             ${'$'}ref: 'https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.1.yaml#/Problem'
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkDefaultResponseIsProblemJsonSchema(context)

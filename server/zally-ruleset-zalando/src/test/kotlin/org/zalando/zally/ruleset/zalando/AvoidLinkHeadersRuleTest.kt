@@ -42,7 +42,7 @@ class AvoidLinkHeadersRuleTest {
                 name: product_id
                 in: path
                 type: string
-        """.trimIndent()
+            """.trimIndent()
         )
         val violations = rule.validate(context)
         assertThat(violations).isEmpty()
@@ -89,7 +89,7 @@ class AvoidLinkHeadersRuleTest {
                   required: true
                   schema:
                     type: string
-        """.trimIndent()
+            """.trimIndent()
         )
         val violations = rule.validate(context)
         assertThat(violations).isEmpty()
@@ -128,7 +128,7 @@ class AvoidLinkHeadersRuleTest {
                         Link:
                           type: string
                           format: url
-        """.trimIndent()
+            """.trimIndent()
         )
         val violations = rule.validate(context)
         assertThat(violations)

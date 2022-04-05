@@ -148,7 +148,7 @@ class PathParameterRuleTest {
                   name: item-id
                   in: path                  
                   description: The id of the pet to retrieve
-                      """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkSchemaOrContentProperty(context)
@@ -198,7 +198,7 @@ class PathParameterRuleTest {
                   description: The id of the pet to retrieve
                   schema:
                     type: string
-                      """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkSchemaOrContentProperty(context)
@@ -261,7 +261,7 @@ class PathParameterRuleTest {
                   description: The id of the pet to retrieve
                   content: 
                   
-                      """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.validateParameterContentMapStructure(context)
@@ -305,7 +305,7 @@ class PathParameterRuleTest {
                   description: The id of the pet to retrieve
                   schema:
                     type: string
-                      """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.validateParameterContentMapStructure(context)
@@ -332,7 +332,7 @@ class PathParameterRuleTest {
                     - oauth2: ["uid"]
                   parameters:
                     - $\ref: "https://invalid-url/X-Flow-ID"
-                      """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkSchemaOrContentProperty(context)

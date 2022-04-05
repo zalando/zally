@@ -64,7 +64,8 @@ class AvoidXZallyIgnoreRule {
                     )
                     node.isValueNode -> "Invalid ignores, expected list but found single value $node"
                     else -> "Invalid ignores, expected list but found $node"
-                }, pointer
+                },
+                pointer
             )
         )
 }

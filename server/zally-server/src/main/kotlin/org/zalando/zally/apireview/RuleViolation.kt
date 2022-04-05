@@ -43,10 +43,10 @@ class RuleViolation(
     @Column(nullable = false)
     val locationPointer: String = result.pointer.toString()
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     val locationLineStart: Int? = result.lines?.start
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     val locationLineEnd: Int? = result.lines?.endInclusive
 
     @Deprecated("")

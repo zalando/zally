@@ -21,7 +21,7 @@ class SnakeCaseInPropNameRuleTest {
                   properties:
                     superMegaLaserTurboArticle:
                       type: boolean
-            """.trimIndent()
+        """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkPropertyNames(context)
@@ -42,7 +42,7 @@ class SnakeCaseInPropNameRuleTest {
                   properties:
                     article_title:
                       type: string
-            """.trimIndent()
+        """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkPropertyNames(context)
@@ -61,7 +61,7 @@ class SnakeCaseInPropNameRuleTest {
                   properties:
                     _links:
                       type: string
-            """.trimIndent()
+        """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkPropertyNames(context)

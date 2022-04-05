@@ -69,7 +69,8 @@ class UseOpenApiRule(rulesConfig: Config) {
             "http://json-schema.org/draft-04/schema" to javaClass.classLoader.getResource("schemas/json-schema.json"),
             "http://swagger.io/v2/schema.json" to SWAGGER.resource,
             "http://openapis.org/v3/schema.json" to OPENAPI3.resource,
-            "https://spec.openapis.org/oas/3.0/schema/2019-04-02" to OPENAPI3.resource)
+            "https://spec.openapis.org/oas/3.0/schema/2019-04-02" to OPENAPI3.resource
+        )
             .mapValues { (_, url) -> url.toString() }
 
         val reader = ObjectTreeReader()

@@ -9,14 +9,16 @@ import org.zalando.zally.core.util.OpenApiSections.Companion.PATHS
 
 class LimitNumberOfResourcesRuleTest {
 
-    private val config = ConfigFactory.parseString("""
+    private val config = ConfigFactory.parseString(
+        """
         LimitNumberOfResourcesRule {
           resource_types_limit: 8
           path_whitelist: [
             "/whitelisted.*"
           ]
         }
-        """.trimIndent())
+        """.trimIndent()
+    )
 
     private val rule = LimitNumberOfResourcesRule(config)
 

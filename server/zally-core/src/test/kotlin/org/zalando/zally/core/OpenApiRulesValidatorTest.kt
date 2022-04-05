@@ -51,7 +51,7 @@ class OpenApiRulesValidatorTest {
                     more: 12
               title: Lorem Ipsum
             paths: {}
-            """.trimIndent()
+        """.trimIndent()
 
         val validator = openApiRulesValidator(listOf(TestExtensionRule()), DefaultContextFactory())
         val results = validator.validate(openApiContent, RulesPolicy(emptyList()))

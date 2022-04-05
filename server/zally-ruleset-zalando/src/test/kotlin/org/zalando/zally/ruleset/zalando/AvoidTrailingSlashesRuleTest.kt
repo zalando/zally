@@ -16,7 +16,7 @@ class AvoidTrailingSlashesRuleTest {
         val context = DefaultContextFactory().getOpenApiContext(
             """
             openapi: '3.0.0'
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.validate(context)
@@ -33,7 +33,7 @@ class AvoidTrailingSlashesRuleTest {
             paths:
               /: {}
               /api/test-api: {}
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.validate(context)
@@ -53,7 +53,7 @@ class AvoidTrailingSlashesRuleTest {
               /api/test: {}
               /some/other/path: {}
               /long/bad/path/with/slash/: {}
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.validate(context)

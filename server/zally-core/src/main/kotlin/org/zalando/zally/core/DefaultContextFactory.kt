@@ -92,9 +92,11 @@ class DefaultContextFactory(
 
         val authorizationValue = when {
             authorization is String && propagateAuthorizationUrls.isNotEmpty() ->
-                mutableListOf(AuthorizationValue("Authorization", authorization, "header") { url ->
-                    propagateAuthorizationUrls.any { it.matcher(url.toString()).matches() }
-                })
+                mutableListOf(
+                    AuthorizationValue("Authorization", authorization, "header") { url ->
+                        propagateAuthorizationUrls.any { it.matcher(url.toString()).matches() }
+                    }
+                )
             else -> mutableListOf()
         }
 

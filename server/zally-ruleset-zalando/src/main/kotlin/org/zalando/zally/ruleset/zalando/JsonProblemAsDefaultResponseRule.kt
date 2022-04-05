@@ -58,12 +58,12 @@ class JsonProblemAsDefaultResponseRule {
     private fun isProblemJsonSchema(schema: Schema<*>?): Boolean {
         val props = schema?.properties.orEmpty()
         return props["type"]?.type == "string" &&
-                (props["type"]?.format == "uri" || props["type"]?.format == "uri-reference") &&
-                props["title"]?.type == "string" &&
-                props["status"]?.type == "integer" &&
-                props["status"]?.format == "int32" &&
-                props["detail"]?.type == "string" &&
-                props["instance"]?.type == "string" &&
-                (props["instance"]?.format == "uri" || props["instance"]?.format == "uri-reference")
+            (props["type"]?.format == "uri" || props["type"]?.format == "uri-reference") &&
+            props["title"]?.type == "string" &&
+            props["status"]?.type == "integer" &&
+            props["status"]?.format == "int32" &&
+            props["detail"]?.type == "string" &&
+            props["instance"]?.type == "string" &&
+            (props["instance"]?.format == "uri" || props["instance"]?.format == "uri-reference")
     }
 }
