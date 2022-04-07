@@ -6,7 +6,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
-class CaseCheckerParameterizedTest(private val param: TestParam) {
+class CaseCheckerParameterizedTest() {
 
     class TestParam(val case: String, val term: String, val expectation: Boolean) {
         operator fun not(): TestParam = TestParam(case, term, !expectation)

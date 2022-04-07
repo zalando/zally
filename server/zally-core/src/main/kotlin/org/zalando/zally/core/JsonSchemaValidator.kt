@@ -39,7 +39,7 @@ class JsonSchemaValidator(val schema: JsonNode, schemaRedirects: Map<String, Str
     private fun toValidationMessage(processingMessage: ProcessingMessage): Violation {
         val node = processingMessage.asJson()
         val keyword = node.path("keyword").textValue()
-        val message = node.path("message").textValue().capitalize()
+        val message = node.path("message").textValue().replaceFirstChar({ it.uppercase() })
         val pointer = node.at("/instance/pointer")?.textValue()?.toJsonPointer()
             ?: JsonPointer.empty()
 

@@ -121,7 +121,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
         )
 
         assertThat(response.violations).hasSize(5)
-        assertThat(response.violations[0].title).isEqualTo("Unable to parse API specification")
+        assertThat(response.violations[0].title).isEqualTo("provide API specification using OpenAPI")
         assertThat(response.violations[0].description).isEqualTo("attribute openapi is not of type `object`")
         assertThat(response.violations[1].title).isEqualTo("TestCheckIsOpenApi3")
         assertThat(response.externalId).isNotNull()
@@ -175,7 +175,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
         )
 
         assertThat(responseEntity.statusCode).isEqualTo(NOT_FOUND)
-        assertThat(responseEntity.body!!.detail).isEqualTo("404 Not Found while retrieving api definition url")
+        assertThat(responseEntity.body!!.detail).isEqualTo("404 Not Found: \"NotFound\" while retrieving api definition url")
     }
 
     @Test
@@ -209,7 +209,7 @@ class RestApiViolationsTest : RestApiBaseTest() {
         val result = mockMvc.perform(requestBuilder).andReturn()
 
         assertThat(result.response.status).isEqualTo(200)
-        assertThat(result.response.contentType).isEqualTo(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        assertThat(result.response.contentType).isEqualTo(MediaType.APPLICATION_JSON_VALUE)
     }
 
     @Test

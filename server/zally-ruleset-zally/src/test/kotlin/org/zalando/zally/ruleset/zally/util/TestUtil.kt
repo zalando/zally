@@ -32,7 +32,7 @@ fun openApiWithOperations(operations: Map<String, Iterable<String>>): OpenAPI =
                     responses.addApiResponse(it, ApiResponse())
                 }
             }
-            pathItem.operation(io.swagger.v3.oas.models.PathItem.HttpMethod.valueOf(method.toUpperCase()), operation)
+            pathItem.operation(io.swagger.v3.oas.models.PathItem.HttpMethod.valueOf(method.uppercase()), operation)
         }
         paths = Paths()
         paths.addPathItem("/test", pathItem)

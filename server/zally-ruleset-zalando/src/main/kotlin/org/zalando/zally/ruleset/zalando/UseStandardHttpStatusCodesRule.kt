@@ -78,7 +78,7 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
         }
 
     private fun isAllowed(method: PathItem.HttpMethod, statusCode: String): Boolean {
-        val allowedMethods = wellUnderstoodResponseCodesAndVerbs[statusCode.toLowerCase()].orEmpty()
+        val allowedMethods = wellUnderstoodResponseCodesAndVerbs[statusCode.lowercase()].orEmpty()
         return allowedMethods.contains(method.name) || allowedMethods.contains("ALL")
     }
 }

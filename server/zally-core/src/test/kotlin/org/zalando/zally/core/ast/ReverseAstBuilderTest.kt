@@ -30,6 +30,7 @@ class ReverseAstBuilderTest {
             "getDescription",
             "getExtensions",
             "getLicense",
+            "getSummary",
             "getTermsOfService",
             "getTitle",
             "getVersion"
@@ -95,10 +96,12 @@ class ReverseAstBuilderTest {
             "getExtensions",
             "getExternalDocs",
             "getInfo",
+            "getJsonSchemaDialect",
             "getOpenapi",
             "getSecurity",
             "getServers",
             "getTags",
+            "getWebhooks",
             "getPaths"
         )
     }

@@ -106,7 +106,7 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
                         val nextPath = m.name
                             .takeIf { it !in this.extensionMethodNames }
                             ?.removePrefix("get")
-                            ?.decapitalize()
+                            ?.replaceFirstChar({ it.lowercase() })
                             ?: ""
 
                         nodes.push(Node(value, pointer + nextPath.toEscapedJsonPointer(), marker))

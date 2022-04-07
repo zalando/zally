@@ -1,7 +1,7 @@
 package org.zalando.zally.configuration
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher
@@ -68,7 +68,7 @@ class PathMatchersTest {
     }
 
     @Test
-    @Ignore("The outcome of this test does not match the behaviour explained in the documentation. Probably cause: unable to correctly mock the `HttpServletRequest`.")
+    @Disabled("The outcome of this test does not match the behaviour explained in the documentation. Probably cause: unable to correctly mock the `HttpServletRequest`.")
     fun `mvcMatcher matches requests with and without trailing slash but also unwanted deeper paths`() {
         val matcher = MvcRequestMatcher(null, "/metrics/")
         assertThat(matcher.matches(request("/metrics"))).isTrue()
