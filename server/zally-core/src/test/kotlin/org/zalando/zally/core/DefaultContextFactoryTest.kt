@@ -4,6 +4,7 @@ import org.zalando.zally.core.ContentParseResultAssert.Companion.assertThat
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Disabled
 
 class DefaultContextFactoryTest {
 
@@ -26,7 +27,74 @@ class DefaultContextFactoryTest {
     }
 
     @Test
-    fun `OPEN API -- openapi specification without info and paths succeeds with messages`() {
+    fun `OPEN API -- OpenAPI 3-1 is not applicable`() {
+        // The parsing results in no OpenAPI 3.1 object model until the latest
+        // parser is providing support. Than we can remove this test case and
+        // and enable the subsequent tests.
+        @Language("YAML")
+        val content = """
+                openapi: 3.1.0
+            """
+        val result = defaultContextFactory.parseOpenApiContext(content)
+        assertThat(result).resultsInNotApplicable()
+    }
+
+    @Test
+    @Disabled("OpenAPI 3.1 is not supported by latest swagger parser yet")
+    fun `OPEN API -- OpenAPI 3-1 without info and paths succeeds with messages`() {
+        // The parsing results in a valid OpenAPI 3.1 object model, but
+        // with messages that `info` and `paths` are missing. Let the
+        // rules check that out.
+        @Language("YAML")
+        val content = """
+                openapi: 3.1.0
+            """
+        val result = defaultContextFactory.parseOpenApiContext(content)
+        assertThat(result).resultsInSuccess()
+        val success = result as ContentParseResult.ParsedSuccessfully
+        assertThat(success.result.isOpenAPI3()).isTrue()
+    }
+
+    @Test
+    @Disabled("OpenAPI 3.1 is not supported by latest swagger parser yet")
+    fun `OPEN API -- OpenAPI 3-1 with oauth but without scopes succeeds`() {
+        @Language("YAML")
+        val content = """
+                openapi: 3.1.0
+                info:
+                  title: Foo
+                  version: 1.0.0
+                security:
+                  - type: oauth2
+                    flow: implicit
+                    authorizationUrl: https://identity.some-server/auth
+                paths: {}
+            """
+        val result = defaultContextFactory.parseOpenApiContext(content)
+        assertThat(result).resultsInSuccess()
+        val success = result as ContentParseResult.ParsedSuccessfully
+        assertThat(success.result.isOpenAPI3()).isTrue()
+    }
+
+    @Test
+    @Disabled("OpenAPI 3.1 is not supported by latest swagger parser yet")
+    fun `OPEN API -- OpenAPI 3-1 is recognised as an OpenAPI3 spec`() {
+        @Language("YAML")
+        val content = """
+                openapi: 3.1.0
+                info:
+                  title: Foo
+                  version: 1.0.0
+                paths: {}
+            """
+        val result = defaultContextFactory.parseOpenApiContext(content)
+        assertThat(result).resultsInSuccess()
+        val success = result as ContentParseResult.ParsedSuccessfully
+        assertThat(success.result.isOpenAPI3()).isTrue()
+    }
+
+    @Test
+    fun `OPEN API -- OpenAPI 3-0-0 without info and paths succeeds`() {
         // The parsing results in a valid OpenAPI 3 object model, but
         // with messages that `info` and `paths` are missing. Let the
         // rules check that out.
@@ -36,10 +104,57 @@ class DefaultContextFactoryTest {
             """
         val result = defaultContextFactory.parseOpenApiContext(content)
         assertThat(result).resultsInSuccess()
+        val success = result as ContentParseResult.ParsedSuccessfully
+        assertThat(success.result.isOpenAPI3()).isTrue()
     }
 
     @Test
-    fun `OPEN API -- oauth without scopes succeeds`() {
+    fun `OPEN API -- OpenAPI 3-0-1 without info and paths succeeds`() {
+        // The parsing results in a valid OpenAPI 3 object model, but
+        // with messages that `info` and `paths` are missing. Let the
+        // rules check that out.
+        @Language("YAML")
+        val content = """
+                openapi: 3.0.1
+            """
+        val result = defaultContextFactory.parseOpenApiContext(content)
+        assertThat(result).resultsInSuccess()
+        val success = result as ContentParseResult.ParsedSuccessfully
+        assertThat(success.result.isOpenAPI3()).isTrue()
+    }
+
+    @Test
+    fun `OPEN API -- OpenAPI 3-0-2 without info and paths succeeds`() {
+        // The parsing results in a valid OpenAPI 3 object model, but
+        // with messages that `info` and `paths` are missing. Let the
+        // rules check that out.
+        @Language("YAML")
+        val content = """
+                openapi: 3.0.2
+            """
+        val result = defaultContextFactory.parseOpenApiContext(content)
+        assertThat(result).resultsInSuccess()
+        val success = result as ContentParseResult.ParsedSuccessfully
+        assertThat(success.result.isOpenAPI3()).isTrue()
+    }
+
+    @Test
+    fun `OPEN API -- OpenAPI 3-0-3 without info and paths succeeds`() {
+        // The parsing results in a valid OpenAPI 3 object model, but
+        // with messages that `info` and `paths` are missing. Let the
+        // rules check that out.
+        @Language("YAML")
+        val content = """
+                openapi: 3.0.3
+            """
+        val result = defaultContextFactory.parseOpenApiContext(content)
+        assertThat(result).resultsInSuccess()
+        val success = result as ContentParseResult.ParsedSuccessfully
+        assertThat(success.result.isOpenAPI3()).isTrue()
+    }
+
+    @Test
+    fun `OPEN API -- OpenAPI 3-0-x with oauth but without scopes succeeds`() {
         @Language("YAML")
         val content = """
                 openapi: 3.0.0
@@ -54,10 +169,12 @@ class DefaultContextFactoryTest {
             """
         val result = defaultContextFactory.parseOpenApiContext(content)
         assertThat(result).resultsInSuccess()
+        val success = result as ContentParseResult.ParsedSuccessfully
+        assertThat(success.result.isOpenAPI3()).isTrue()
     }
 
     @Test
-    fun `OPEN API -- OpenAPI is recognised as an OpenAPI3 spec`() {
+    fun `OPEN API -- OpenAPI 3-0-x is recognised as an OpenAPI3 spec`() {
         @Language("YAML")
         val content = """
                 openapi: 3.0.0
@@ -73,7 +190,7 @@ class DefaultContextFactoryTest {
     }
 
     @Test
-    fun `OPEN API -- does not recognize a Swagger file`() {
+    fun `OPEN API -- OpenAPI 2-0 is not recognize as OpenAPI3 spec`() {
         @Language("YAML")
         val content = """
                 swagger: '2.0'
@@ -103,7 +220,17 @@ class DefaultContextFactoryTest {
     }
 
     @Test
-    fun `SWAGGER -- error when info and path objects are missing`() {
+    fun `SWAGGER -- OpenAPI 1-0 without info and path objects succeeds`() {
+        @Language("YAML")
+        val content = """
+              swagger: 1.0
+            """
+        val result = defaultContextFactory.parseSwaggerContext(content)
+        assertThat(result).resultsInSuccess()
+    }
+
+    @Test
+    fun `SWAGGER -- OpenAPI 2-0 without info and path objects succeeds`() {
         @Language("YAML")
         val content = """
               swagger: 2.0
@@ -113,7 +240,7 @@ class DefaultContextFactoryTest {
     }
 
     @Test
-    fun `SWAGGER -- error when securityDefinition type is missing`() {
+    fun `SWAGGER -- OpenAPI 2-0 without security definition type succeeds`() {
         @Language("YAML")
         val content = """
                 swagger: 2.0
@@ -129,7 +256,7 @@ class DefaultContextFactoryTest {
     }
 
     @Test
-    fun `SWAGGER -- error when oauth elements are missing`() {
+    fun `SWAGGER -- OpenAPI 2-0 without oauth elements succeeds`() {
         // Specific case where converting from Swagger to OpenAPI 3 (using the `Context`
         // object) would throw an exception. New behaviour tested here: the returned `Context`
         // is null because the file was not parsed (convertible, here).
@@ -151,7 +278,7 @@ class DefaultContextFactoryTest {
     }
 
     @Test
-    fun `SWAGGER -- minimal Swagger API is not recognized as an OpenAPI3 spec`() {
+    fun `SWAGGER -- OpenAPI 2-0 is not recognized as an OpenAPI3 spec`() {
         @Language("YAML")
         val content = """
                 swagger: 2.0
@@ -167,7 +294,7 @@ class DefaultContextFactoryTest {
     }
 
     @Test
-    fun `SWAGGER -- recursive-model-extension`() {
+    fun `SWAGGER -- OpenAPI 2-0 with recursive-model-extension succeeds`() {
         @Language("YAML")
         val content = """
             swagger: '2.0'
@@ -215,6 +342,7 @@ class DefaultContextFactoryTest {
         // This Swagger, after being converted, causes the `components` property to exist (not
         // null), but having a null `schemas`, which causes the NPE.
         val ref = "\$ref"
+
         @Language("YAML")
         val content = """
           swagger: '2.0'

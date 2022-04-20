@@ -37,7 +37,7 @@ class ReverseAstTest {
         val ast = ReverseAst.fromObject(spec).build()
 
         val description = spec.paths?.get("/tests")?.get?.responses?.get("200")?.description
-        assertThat(ast.getPointer(description!!)).hasToString("/paths/~1tests/get/responses/200/description")
+        assertThat(ast.getPointer(description!!)).hasToString("/paths/~1tests/get/responsesObject/200/description")
     }
 
     @Test
@@ -68,15 +68,15 @@ class ReverseAstTest {
 
         var pointer = "/paths/~1tests/get/responses/200/description".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(0)
 
         pointer = "/paths/~1tests/get".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).isEqualTo(setOf("*"))
 
         pointer = "/paths/~1tests".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).isEqualTo(setOf("*"))
 
         pointer = PATHS.toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
@@ -132,15 +132,15 @@ class ReverseAstTest {
 
         var pointer = "/paths/~1tests/get/responses/200/description".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).isEqualTo(setOf("*"))
 
         pointer = "/paths/~1tests/get".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).isEqualTo(setOf("*"))
 
         pointer = "/paths/~1tests".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).isEqualTo(setOf("*"))
 
         pointer = PATHS.toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isFalse()

@@ -388,9 +388,7 @@ class NullPointerExceptionTest() {
                                 sequenceOf(param1, param2)
                             }
                             is ArrayNode -> {
-                                // TODO compile time failure, no idea how to fix, but it
-                                // actually seams not to do anything or harm the tests.
-                                // parent.set(last.matchingIndex, null)
+                                parent.setNull(last.matchingIndex)
                                 val param1 = arrayOf("$name with null $pointer", root.pretty())
 
                                 parent.remove(last.matchingIndex)

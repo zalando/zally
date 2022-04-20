@@ -34,7 +34,8 @@ dependencies {
         exclude("org.hibernate", "hibernate-entitymanager")
     }
     implementation("org.zalando.stups:stups-spring-oauth2-server:1.0.24")
-    implementation("org.zalando:problem-spring-web:0.26.2")
+    implementation("org.zalando:problem:0.27.1")
+    implementation("org.zalando:problem-spring-web:0.27.0")
     implementation("org.zalando:twintip-spring-web:1.2.0")
 
     testImplementation(project(":zally-test"))
@@ -43,7 +44,7 @@ dependencies {
     testImplementation("net.jadler:jadler-junit:$jadlerVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.jayway.jsonpath:json-path-assert:2.7.0")
-    testImplementation("org.mockito:mockito-core:2.28.2")
+    testImplementation("org.mockito:mockito-core:4.4.0")
 }
 
 tasks.bootRun {

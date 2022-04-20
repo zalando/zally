@@ -1,6 +1,11 @@
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 plugins {
     val kotlinVersion = "1.6.20"
     val klintVersion = "10.2.1"
@@ -14,7 +19,8 @@ plugins {
     jacoco
     `maven-publish`
     signing
-    id("com.github.ben-manes.versions") version "0.20.0"
+    eclipse
+    id("com.github.ben-manes.versions") version "0.42.0"
     id("org.jetbrains.dokka") version "1.6.10" apply false
 
     // We apply this so that ktlint can format the top level buildscript
@@ -40,6 +46,7 @@ subprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "jacoco")
     apply(plugin = "signing")
+    apply(plugin = "eclipse")
 
     kapt {
         includeCompileClasspath = false
@@ -155,15 +162,17 @@ subprojects {
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
         implementation("org.yaml:snakeyaml:1.30")
 
+        testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2")
         testImplementation("com.jayway.jsonpath:json-path-assert:2.7.0")
-        testImplementation("org.mockito:mockito-core:2.28.2")
+        testImplementation("org.mockito:mockito-core:4.4.0")
     }
 
     jacoco {
-        toolVersion = "0.8.2"
+        toolVersion = "0.8.8"
     }
 
     tasks.test {
+        useJUnitPlatform()
         finalizedBy(tasks.jacocoTestReport)
     }
 
@@ -176,5 +185,11 @@ subprojects {
 
     tasks.jar {
         archiveBaseName.set(project.name)
+    }
+
+    eclipse {
+        project {
+            natures.add("org.jetbrains.kotlin.core.kotlinNature")
+        }
     }
 }
