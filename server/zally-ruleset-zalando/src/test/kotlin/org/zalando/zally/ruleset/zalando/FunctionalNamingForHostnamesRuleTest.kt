@@ -93,6 +93,40 @@ class FunctionalNamingForHostnamesRuleTest {
     }
 
     @Test
+    fun `(must, should, may)FollowFunctionalNaming should return no violations if audience is null`() {
+        @Language("YAML")
+        val content = """
+            openapi: 3.0.1
+            info:
+              x-audience:
+            servers:
+              - url: "infrastructure-service.zalandoapis.com"
+        """.trimIndent()
+        val context = DefaultContextFactory().getOpenApiContext(content)
+
+        assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
+        assertThat(rule.shouldFollowFunctionalNaming(context)).isEmpty()
+        assertThat(rule.mayFollowFunctionalNaming(context)).isEmpty()
+    }
+
+    @Test
+    fun `(must, should, may)FollowFunctionalNaming should return no violations if audience is invalid`() {
+        @Language("YAML")
+        val content = """
+            openapi: 3.0.1
+            info:
+              x-audience: invalid-audience
+            servers:
+              - url: "infrastructure-service.zalandoapis.com"
+        """.trimIndent()
+        val context = DefaultContextFactory().getOpenApiContext(content)
+
+        assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
+        assertThat(rule.shouldFollowFunctionalNaming(context)).isEmpty()
+        assertThat(rule.mayFollowFunctionalNaming(context)).isEmpty()
+    }
+
+    @Test
     fun `(must, should, may)FollowFunctionalNaming should return no violations for 'external-partner' audience and url from a exception list`() {
         val context = getOpenApiContextWithAudienceAndHostname("external-partner", "api-sandbox.merchants.zalando.com")
 
