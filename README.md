@@ -1,4 +1,4 @@
-# Zally: A minimalistic, simple-to-use OpenAPI 2 and 3 linter
+# Lilly - (Zally Fork): A LINZ specific minimalistic, simple-to-use OpenAPI 2 and 3 linter
 
 [![Build Status](https://travis-ci.org/zalando/zally.svg?branch=master)](https://travis-ci.org/zalando/zally)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/05a7515011504c06b1cb35ede27ac7d4)](https://www.codacy.com/app/zally/zally?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zalando/zally&amp;utm_campaign=Badge_Grade)
@@ -6,7 +6,7 @@
 
 <img src="logo.png" width="200" height="200" />
 
-Zally is a quality assurance tool. It's a linter for OpenAPI specifications, which:
+Lilly is a quality assurance tool. It's a linter for OpenAPI specifications, which:
 
 - Increases the quality of APIs
 - Checks compliance
@@ -19,7 +19,7 @@ Its standard configuration will check your APIs against the rules defined in
 [Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/),
 but anyone can use it **out-of-the-box**.
 
-Zally's easy-to-use [CLI](cli/README.md) uses the server in the background so that
+Lilly's easy-to-use [CLI](cli/README.md) uses the server in the background so that
 you can check your API *on the spot*. It also features an intuitive
 [Web UI](web-ui/README.md) that shows implemented rules and lints external files
 and (with its online editor) API definitions.
@@ -34,32 +34,32 @@ and (with its online editor) API definitions.
 
 ## Quick start guide
 
-Trying out Zally is easy. You can build and run the whole Zally stack (web-ui, server
+Trying out Lilly is easy. You can build and run the whole Lilly stack (web-ui, server
 and database) by executing:
 
 ```bash
 ./build-and-run.sh
 ```
 
-Web UI is accessible on `http://localhost:8080`; Zally server on `http://localhost:8000`
+Web UI is accessible on `http://localhost:8080`; Lilly server on `http://localhost:8000`
 
 ## Documentation and Manuals
 
 Please consult the following documents for more information:
 
-- [Zally Concepts](documentation/concepts.md)
-- [How to operate](documentation/operation.md) Zally tools
-- [How to use Zally](documentation/usage.md)
+- [Lilly Concepts](documentation/concepts.md)
+- [How to operate](documentation/operation.md) Lilly tools
+- [How to use Lilly](documentation/usage.md)
 - [How to develop new Rules](documentation/rule-development.md)
 - [Building Under Windows Subsystem for Linux](documentation/build-under-wsl.md)
 
 ## Integrations
 
-- [Zally Maven Plugin](https://github.com/ethlo/zally-maven-plugin) (unofficial)
+- [Lilly Maven Plugin](https://github.com/ethlo/zally-maven-plugin) (unofficial)
 
 ## Contributing
 
-Zally welcomes contributions from the open source community. To get started, take a
+Lilly welcomes contributions from the open source community. To get started, take a
 look at our [contributing guidelines](CONTRIBUTING). Then check our
 [Project Board](https://github.com/zalando/zally/projects/1) and
 [Issues Tracker](https://github.com/zalando/zally/issues) for ideas.
@@ -71,9 +71,9 @@ of the [maintainers](MAINTAINERS) directly.
 
 ## Alternatives 
 
-Zally is not the only linter for OpenAPI v2 and v3. There is [an article](https://nordicapis.com/8-openapi-linters/) comparing different OpenAPI linters.
+ZalLillyly is not the only linter for OpenAPI v2 and v3. There is [an article](https://nordicapis.com/8-openapi-linters/) comparing different OpenAPI linters.
 
-So why should you choose Zally?
+So why should you choose Lilly?
 - It supports [Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/)
 - It can be used in multiple ways: RESTful API, CLI and Web interface
 - Highly customizable (with Kotlin)  
@@ -99,7 +99,7 @@ configured
       ./gradlew -q generate-media-types-config --info
    ```
 4. Commit the updated file to the repository.
-5. Release Zally server and API using the command
+5. Release Lilly server and API using the command
    ```
    cd server
    ./gradlew clean build publishAllPublicationsToMavenRepository
