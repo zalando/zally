@@ -8,7 +8,7 @@ endpoints:
 
 spring:
   datasource:
-    url: jdbc:hsqldb:mem:storage;sql.syntax_pgs=true
+    url: jdbc:hsqldb:file:storage/testdb;sql.syntax_pgs=true
     username: sa
     password:
   jpa:
