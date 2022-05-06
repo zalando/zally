@@ -15,4 +15,4 @@ COPY --from=builder /src/zally-server/build/libs/zally-server.jar /
 
 EXPOSE 8080
 
-CMD java $(java-dynamic-memory-opts) $(appdynamics-agent) -jar /zally-server.jar
+CMD java -jar /zally-server.jar
