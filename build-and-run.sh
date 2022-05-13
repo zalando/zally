@@ -18,4 +18,6 @@ WEB_UI_DIR=${SCRIPT_DIR}/web-ui
 cd ${WEB_UI_DIR} && yarn && yarn build
 
 # Docker-compose
-cd ${SCRIPT_DIR} && docker-compose up --build
+
+cd ${SCRIPT_DIR} && docker compose build
+ZALLY_API_URL=http://34.235.128.99 docker compose up -d
