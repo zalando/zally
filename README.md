@@ -6,11 +6,12 @@
 
 <img src="logo.png" width="200" height="200" />
 
-Zally is a quality assurance tool. It's a linter for OpenAPI specifications, which:
+Zally is a quality assurance tool. It's a linter for OpenAPI specifications,
+it performs the following tasks : 
 
 - Increases the quality of APIs
 - Checks compliance
-- Delivers early feedback for API designers
+- Deliver early feedback for API designers
 - Ensures the same look-and-feel of APIs
 - Supports [API-First approach](https://opensource.zalando.com/restful-api-guidelines/#100)
 - Provides best practices and advices
@@ -19,7 +20,7 @@ Its standard configuration will check your APIs against the rules defined in
 [Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/),
 but anyone can use it **out-of-the-box**.
 
-Zally's easy-to-use [CLI](cli/README.md) uses the server in the background so that
+Zally have a easy-to-use [CLI](cli/README.md) which uses the server in the background so that
 you can check your API *on the spot*. It also features an intuitive
 [Web UI](web-ui/README.md) that shows implemented rules and lints external files
 and (with its online editor) API definitions.
@@ -27,7 +28,7 @@ and (with its online editor) API definitions.
 ## Features
 
 - Support for OpenAPI 3 and (Swagger) OpenAPI 2 specifications
-- RESTful API, CLI and Web interface
+- REST API, CLI and Web interface
 - Rich Check configuration
 - Ignore functionality (`x-zally-ignore` extension)
 - Java/Kotlin API for new Checks + helper functions
@@ -45,7 +46,7 @@ Web UI is accessible on `http://localhost:8080`; Zally server on `http://localho
 
 ## Documentation and Manuals
 
-Please consult the following documents for more information:
+Please consult the following documents for further information:
 
 - [Zally Concepts](documentation/concepts.md)
 - [How to operate](documentation/operation.md) Zally tools
@@ -57,7 +58,7 @@ Please consult the following documents for more information:
 
 - [Zally Maven Plugin](https://github.com/ethlo/zally-maven-plugin) (unofficial)
 
-## Contributing
+## Contributing to Zally
 
 Zally welcomes contributions from the open source community. To get started, take a
 look at our [contributing guidelines](CONTRIBUTING). Then check our
