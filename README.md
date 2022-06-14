@@ -11,7 +11,7 @@ it performs the following tasks :
 
 - Increases the quality of APIs
 - Checks compliance
-- Deliver early feedback for API designers
+- Delivers early feedback for API designers
 - Ensures the same look-and-feel of APIs
 - Supports [API-First approach](https://opensource.zalando.com/restful-api-guidelines/#100)
 - Provides best practices and advices
