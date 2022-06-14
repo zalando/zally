@@ -20,7 +20,7 @@ Its standard configuration will check your APIs against the rules defined in
 [Zalando's RESTful Guidelines](http://zalando.github.io/restful-api-guidelines/),
 but anyone can use it **out-of-the-box**.
 
-Zally have a easy-to-use [CLI](cli/README.md) which uses the server in the background so that
+Zally has an easy-to-use [CLI](cli/README.md) which uses the server in the background so that
 you can check your API *on the spot*. It also features an intuitive
 [Web UI](web-ui/README.md) that shows implemented rules and lints external files
 and (with its online editor) API definitions.
