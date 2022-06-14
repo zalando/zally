@@ -28,7 +28,7 @@ and (with its online editor) API definitions.
 ## Features
 
 - Support for OpenAPI 3 and (Swagger) OpenAPI 2 specifications
-- REST API, CLI and Web interface
+- RESTful API, CLI and Web interface
 - Rich Check configuration
 - Ignore functionality (`x-zally-ignore` extension)
 - Java/Kotlin API for new Checks + helper functions
