@@ -99,7 +99,7 @@ class UseOpenApiRuleTest {
               title: "Minimal API"
               version: "1.0.0"
             paths: {}
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.validateSchema(jsonNode)

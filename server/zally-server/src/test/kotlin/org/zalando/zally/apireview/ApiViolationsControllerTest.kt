@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType.APPLICATION_JSON_UTF8
+import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -47,7 +47,7 @@ class ApiViolationsControllerTest {
         )
             .andExpect(status().isOk)
             .andExpect(header().exists("Location"))
-            .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+            .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(content().string(containsString("https://zalando.github.io/restful-api-guidelines")))
             .andExpect(jsonPath("$.violations[*].rule_link", hasItem("https://zalando.github.io/restful-api-guidelines/#101")))
             .andExpect(jsonPath("$.external_id", notNullValue()))
@@ -80,7 +80,7 @@ class ApiViolationsControllerTest {
                 .accept("application/json")
         )
             .andExpect(status().isOk)
-            .andExpect(content().contentType(APPLICATION_JSON_UTF8))
+            .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath("$.external_id", notNullValue()))
             .andExpect(jsonPath("$.violations", notNullValue()))
             .andExpect(jsonPath("$.api_definition", notNullValue()))
@@ -147,5 +147,5 @@ class ApiViolationsControllerTest {
                     type: array
                     items:
                       ${'$'}ref: "#/components/schemas/ProductResource"
-        """.trimIndent()
+    """.trimIndent()
 }

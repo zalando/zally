@@ -9,7 +9,7 @@ class SeverityBinder : PropertyEditorSupport() {
 
     @Throws(IllegalArgumentException::class)
     override fun setAsText(text: String) {
-        val value = if (StringUtils.hasText(text)) Severity.valueOf(text.toUpperCase()) else null
+        val value = if (StringUtils.hasText(text)) Severity.valueOf(text.uppercase()) else null
         setValue(value)
     }
 }

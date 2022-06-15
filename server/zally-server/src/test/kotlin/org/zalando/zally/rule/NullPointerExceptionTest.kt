@@ -35,9 +35,9 @@ class NullPointerExceptionTest() {
         @JvmStatic
         fun parameters(): Iterable<Array<String>> = (
             parametersFromFullFeaturedSpec() +
-            parametersFromPetstore()
-        )
-        .asIterable()
+                parametersFromPetstore()
+            )
+            .asIterable()
 
         private fun JsonNode.pretty(): String = Yaml.pretty().writeValueAsString(this)
 
@@ -363,7 +363,7 @@ class NullPointerExceptionTest() {
                     parameters:
                     - name: Parameter name
 
-                """.trimIndent()
+            """.trimIndent()
             return parameters("full", spec)
         }
 
@@ -373,54 +373,54 @@ class NullPointerExceptionTest() {
         private fun parameters(name: String, spec: String): Sequence<Array<String>> {
             val root = ObjectTreeReader().read(spec)
             return sequenceOf(arrayOf("$name unmodified", spec)) +
-            root.allJsonPointers().reversed().asSequence().flatMap { pointer ->
-                pointer.head()?.let { head ->
-                    val last = pointer.last()
-                    val parent = root.at(head)
-                    when (parent) {
-                        is ObjectNode -> {
-                            parent.set<ObjectNode>(last.matchingProperty, null)
-                            val param1 = arrayOf("$name with null $pointer", root.pretty())
+                root.allJsonPointers().reversed().asSequence().flatMap { pointer ->
+                    pointer.head()?.let { head ->
+                        val last = pointer.last()
+                        val parent = root.at(head)
+                        when (parent) {
+                            is ObjectNode -> {
+                                parent.set<ObjectNode>(last.matchingProperty, null)
+                                val param1 = arrayOf("$name with null $pointer", root.pretty())
 
-                            parent.remove(last.matchingProperty)
-                            val param2 = arrayOf("$name with removed $pointer", root.pretty())
+                                parent.remove(last.matchingProperty)
+                                val param2 = arrayOf("$name with removed $pointer", root.pretty())
 
-                            sequenceOf(param1, param2)
+                                sequenceOf(param1, param2)
+                            }
+                            is ArrayNode -> {
+                                parent.setNull(last.matchingIndex)
+                                val param1 = arrayOf("$name with null $pointer", root.pretty())
+
+                                parent.remove(last.matchingIndex)
+                                val param2 = arrayOf("$name with removed $pointer", root.pretty())
+
+                                sequenceOf(param1, param2)
+                            }
+                            else -> emptySequence()
                         }
-                        is ArrayNode -> {
-                            parent.set(last.matchingIndex, null)
-                            val param1 = arrayOf("$name with null $pointer", root.pretty())
-
-                            parent.remove(last.matchingIndex)
-                            val param2 = arrayOf("$name with removed $pointer", root.pretty())
-
-                            sequenceOf(param1, param2)
-                        }
-                        else -> emptySequence()
-                    }
-                }.orEmpty()
-            }
+                    }.orEmpty()
+                }
         }
 
         private fun JsonNode?.allJsonPointers(): List<JsonPointer> =
             listOf(EMPTY_JSON_POINTER) +
-            when (this) {
-                is ObjectNode -> {
-                    fields().asSequence().toList().flatMap { (name, node) ->
-                        node.allJsonPointers().map {
-                            EMPTY_JSON_POINTER + name.toEscapedJsonPointer() + it
+                when (this) {
+                    is ObjectNode -> {
+                        fields().asSequence().toList().flatMap { (name, node) ->
+                            node.allJsonPointers().map {
+                                EMPTY_JSON_POINTER + name.toEscapedJsonPointer() + it
+                            }
                         }
                     }
-                }
-                is ArrayNode -> {
-                    (0 until size()).flatMap { index ->
-                        get(index).allJsonPointers().map {
-                            EMPTY_JSON_POINTER + index.toString().toEscapedJsonPointer() + it
+                    is ArrayNode -> {
+                        (0 until size()).flatMap { index ->
+                            get(index).allJsonPointers().map {
+                                EMPTY_JSON_POINTER + index.toString().toEscapedJsonPointer() + it
+                            }
                         }
                     }
+                    else -> emptyList()
                 }
-                else -> emptyList()
-            }
     }
 
     @Rule

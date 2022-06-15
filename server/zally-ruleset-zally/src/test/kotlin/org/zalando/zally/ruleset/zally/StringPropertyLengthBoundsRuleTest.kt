@@ -270,7 +270,8 @@ class StringPropertyLengthBoundsRuleTest {
                   properties:
                     theString:
                       type: string
-                      pattern: #([a-f0-9]{6}|[a-f0-9]{3})
+                      minLength: 0
+                      maxLength: 5
             """.trimIndent()
         )
 

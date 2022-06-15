@@ -31,13 +31,13 @@ class ReverseAstTest {
                   responses:
                     '200':
                       description: OK
-            """.trimIndent()
+        """.trimIndent()
 
         val spec = SwaggerParser().parse(content)
         val ast = ReverseAst.fromObject(spec).build()
 
         val description = spec.paths?.get("/tests")?.get?.responses?.get("200")?.description
-        assertThat(ast.getPointer(description!!)).hasToString("/paths/~1tests/get/responses/200/description")
+        assertThat(ast.getPointer(description!!)).hasToString("/paths/~1tests/get/responsesObject/200/description")
     }
 
     @Test
@@ -61,22 +61,22 @@ class ReverseAstTest {
                   responses:
                     '200':
                       description: OK
-            """.trimIndent()
+        """.trimIndent()
 
         val spec = SwaggerParser().parse(content)
         val ast = ReverseAst.fromObject(spec).withExtensionMethodNames("getVendorExtensions").build()
 
         var pointer = "/paths/~1tests/get/responses/200/description".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(0)
 
         pointer = "/paths/~1tests/get".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).isEqualTo(setOf("*"))
 
         pointer = "/paths/~1tests".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).isEqualTo(setOf("*"))
 
         pointer = PATHS.toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
@@ -124,7 +124,7 @@ class ReverseAstTest {
                   responses:
                     '200':
                       description: OK
-            """.trimIndent()
+        """.trimIndent()
 
         val json = ObjectTreeReader().read(content)
         val map = Json.mapper().convertValue(json, Map::class.java)
@@ -132,15 +132,15 @@ class ReverseAstTest {
 
         var pointer = "/paths/~1tests/get/responses/200/description".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).isEqualTo(setOf("*"))
 
         pointer = "/paths/~1tests/get".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).isEqualTo(setOf("*"))
 
         pointer = "/paths/~1tests".toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isTrue()
-        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).contains("*")
+        assertThat(ast.getIgnoreValues(pointer)).hasSize(1).isEqualTo(setOf("*"))
 
         pointer = PATHS.toJsonPointer()
         assertThat(ast.isIgnored(pointer, "*")).isFalse()
@@ -182,7 +182,7 @@ class ReverseAstTest {
                     default: "SchemaDefault!!"
                     example: "SchemaExample!!"
                   example: "ParameterExample!!"
-            """.trimIndent()
+        """.trimIndent()
 
         val parsed = OpenAPIParser().readContents(content, null, null).openAPI
         val resolved = OpenAPIResolver(parsed).resolve()
@@ -213,7 +213,7 @@ class ReverseAstTest {
                 email: team@x.com
                 url: https://team.x.com
             paths: {}
-            """.trimIndent()
+        """.trimIndent()
 
         val swagger = SwaggerParser().parse(content)
         val ast = ReverseAst.fromObject(swagger).withExtensionMethodNames("getVendorExtensions").build()
@@ -232,7 +232,7 @@ class ReverseAstTest {
               title: Some API
               x-test-extension: 4
             paths: {}
-            """.trimIndent()
+        """.trimIndent()
 
         val parsed = OpenAPIParser().readContents(content, null, null).openAPI
         val ast = ReverseAst.fromObject(parsed).withExtensionMethodNames("getExtensions").build()
@@ -254,7 +254,7 @@ class ReverseAstTest {
                   and:
                     another: 2
             paths: {}
-            """.trimIndent()
+        """.trimIndent()
 
         val swagger = SwaggerParser().parse(content)
         val ast = ReverseAst.fromObject(swagger).withExtensionMethodNames("getVendorExtensions").build()
@@ -278,7 +278,7 @@ class ReverseAstTest {
               x-zally-ignore: [IGNORED_AT_INFO]
             paths: {}
             x-zally-ignore: [IGNORED_AT_ROOT]
-            """.trimIndent()
+        """.trimIndent()
 
         val swagger = SwaggerParser().parse(content)
         val ast = ReverseAst.fromObject(swagger)

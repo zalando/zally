@@ -137,14 +137,16 @@ class DefaultContext(
      * @throws IllegalStateException if value is not an OpenAPI or Swagger model element.
      */
     override fun getJsonPointer(value: Any): JsonPointer = when (swaggerAst) {
-        null -> openApiAst
-            .getPointer(value)
-            ?: error("Expected OpenAPI model element, not: $value")
-        else -> when (val swaggerPointer = swaggerAst.getPointer(value)) {
-            null -> openApiAst
+        null ->
+            openApiAst
                 .getPointer(value)
-                ?.let { it.toSwaggerJsonPointer() ?: it }
-                ?: error("Expected OpenAPI or Swagger model element, not: $value")
+                ?: error("Expected OpenAPI model element, not: $value")
+        else -> when (val swaggerPointer = swaggerAst.getPointer(value)) {
+            null ->
+                openApiAst
+                    .getPointer(value)
+                    ?.let { it.toSwaggerJsonPointer() ?: it }
+                    ?: error("Expected OpenAPI or Swagger model element, not: $value")
             else -> swaggerPointer
         }
     }

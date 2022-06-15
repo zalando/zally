@@ -1,4 +1,4 @@
-openapi: '3.0.1'
+openapi: '3.0.3'
 
 info:
   title: Zally - Zalando's API Linter
@@ -14,7 +14,7 @@ info:
     the number of linting requests and the number of checked endpoints. Additionally, all
     linting results and the linted API specifications can be retrieved.
 
-  version: "2.2.0"
+  version: "2.3.0"
   x-api-id: 48aa0090-25ef-11e8-b467-0ed5f89f718b
   x-audience: company-internal
   contact:
@@ -78,8 +78,7 @@ paths:
               schema:
                 $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
       security:
-      - oauth2:
-        - uid
+      - BearerAuth: [ uid ]
 
   '/api-violations/{externalId}':
     get:
@@ -113,8 +112,7 @@ paths:
               schema:
                 $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
       security:
-      - oauth2:
-        - uid
+      - BearerAuth: [ uid ]
 
   '/supported-rules':
     get:
@@ -146,8 +144,7 @@ paths:
               schema:
                 $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
       security:
-      - oauth2:
-        - uid
+      - BearerAuth: [ uid ]
 
   '/review-statistics':
     get:
@@ -181,20 +178,16 @@ paths:
               schema:
                 $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
       security:
-      - oauth2:
-        - uid
+      - BearerAuth: [ uid ]
 
 
 components:
 
   securitySchemes:
-    oauth2:
-      type: oauth2
-      flows:
-        clientCredentials:
-          tokenUrl: https://identity.zalando.com/oauth2/token
-          scopes:
-            uid: Default scope to access Zally API
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
   parameters:
     RulesType:

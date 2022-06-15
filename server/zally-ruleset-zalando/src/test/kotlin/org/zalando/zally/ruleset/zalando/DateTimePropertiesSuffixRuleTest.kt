@@ -37,7 +37,7 @@ class DateTimePropertiesSuffixRuleTest {
                     returned_at:
                       type: string
                       format: date-time
-            """.trimIndent()
+        """.trimIndent()
         val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations).isEmpty()
     }
@@ -66,7 +66,7 @@ class DateTimePropertiesSuffixRuleTest {
                     returned_at:
                       type: string
                       format: date                  
-            """.trimIndent()
+        """.trimIndent()
         val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations).isEmpty()
     }
@@ -91,7 +91,7 @@ class DateTimePropertiesSuffixRuleTest {
                       type: string                      
                     modified:
                       type: int                                          
-            """.trimIndent()
+        """.trimIndent()
         val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations).isEmpty()
     }
@@ -120,7 +120,7 @@ class DateTimePropertiesSuffixRuleTest {
                     modified:
                       type: string
                       format: date
-            """.trimIndent()
+        """.trimIndent()
         val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations.map { it.description }).containsExactly(
             rule.generateMessage("created", "string", "date-time"),
@@ -148,7 +148,7 @@ class DateTimePropertiesSuffixRuleTest {
                     modified:
                       type: string
                       format: date
-            """.trimIndent()
+        """.trimIndent()
         val newConfig = rulesConfig.withValue("DateTimePropertiesSuffixRule/patterns", ConfigValueFactory.fromIterable(listOf("was_.*")))
         val customRule = DateTimePropertiesSuffixRule(newConfig)
         val violations = customRule.validate(DefaultContextFactory().getOpenApiContext(content))

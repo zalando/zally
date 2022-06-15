@@ -48,7 +48,7 @@ class ApiAudienceRuleTest {
               title: Lorem Ipsum
               version: 1.0.0
             paths: {}
-            """.trimIndent()
+        """.trimIndent()
 
         return DefaultContextFactory().getOpenApiContext(content)
     }

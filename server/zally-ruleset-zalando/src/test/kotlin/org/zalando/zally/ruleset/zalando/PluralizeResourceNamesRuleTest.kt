@@ -174,7 +174,7 @@ class PluralizeResourceNamesRuleTest {
                 openapi: 3.0.0
                 paths:
                   $path: {}
-                """.trimIndent()
+        """.trimIndent()
         val result = DefaultContextFactory().parseOpenApiContext(content)
         assertThat(result).isInstanceOf(ParsedSuccessfully::class.java)
         return (result as ParsedSuccessfully).result

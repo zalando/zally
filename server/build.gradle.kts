@@ -1,9 +1,14 @@
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 plugins {
-    val kotlinVersion = "1.4.32"
-    val klintVersion = "9.2.1"
+    val kotlinVersion = "1.6.20"
+    val klintVersion = "10.2.1"
 
     // The buildscript is also kotlin, so we apply at the root level
     kotlin("jvm") version kotlinVersion
@@ -14,8 +19,9 @@ plugins {
     jacoco
     `maven-publish`
     signing
-    id("com.github.ben-manes.versions") version "0.20.0"
-    id("org.jetbrains.dokka") version "1.4.32" apply false
+    eclipse
+    id("com.github.ben-manes.versions") version "0.42.0"
+    id("org.jetbrains.dokka") version "1.6.10" apply false
 
     // We apply this so that ktlint can format the top level buildscript
     id("org.jlleitschuh.gradle.ktlint") version klintVersion
@@ -40,6 +46,7 @@ subprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "jacoco")
     apply(plugin = "signing")
+    apply(plugin = "eclipse")
 
     kapt {
         includeCompileClasspath = false
@@ -144,25 +151,28 @@ subprojects {
     }
 
     dependencies {
-        implementation(platform("com.fasterxml.jackson:jackson-bom:2.12.2"))
         implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
         // We define this here so all subprojects use the same version of jackson
+        implementation(platform("com.fasterxml.jackson:jackson-bom:2.13.2.20220328"))
+        implementation("com.fasterxml.jackson.core:jackson-databind")
         implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-        implementation("org.yaml:snakeyaml:1.29")
+        implementation("org.yaml:snakeyaml:1.30")
 
-        testImplementation("com.jayway.jsonpath:json-path-assert:2.4.0")
-        testImplementation("org.mockito:mockito-core:2.23.4")
+        testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2")
+        testImplementation("com.jayway.jsonpath:json-path-assert:2.7.0")
+        testImplementation("org.mockito:mockito-core:4.4.0")
     }
 
     jacoco {
-        toolVersion = "0.8.2"
+        toolVersion = "0.8.8"
     }
 
     tasks.test {
+        useJUnitPlatform()
         finalizedBy(tasks.jacocoTestReport)
     }
 
@@ -175,5 +185,11 @@ subprojects {
 
     tasks.jar {
         archiveBaseName.set(project.name)
+    }
+
+    eclipse {
+        project {
+            natures.add("org.jetbrains.kotlin.core.kotlinNature")
+        }
     }
 }

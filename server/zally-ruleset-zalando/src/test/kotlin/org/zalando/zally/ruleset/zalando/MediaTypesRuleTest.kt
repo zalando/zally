@@ -67,7 +67,7 @@ class MediaTypesRuleTest {
                       content:
                         "application/x.zalando.contract+json;v=123": {}
                         "application/vnd.api+json;version=3": {}
-        """.trimIndent()
+            """.trimIndent()
         )
         assertThat(rule.validate(context)).isEmpty()
     }
@@ -86,7 +86,7 @@ class MediaTypesRuleTest {
                       content:
                         "application/json": {}
                         "application/vnd.unknown-api+json": {}
-        """.trimIndent()
+            """.trimIndent()
         )
         assertThat(rule.validate(context)).hasSameElementsAs(
             listOf(
@@ -121,7 +121,7 @@ class MediaTypesRuleTest {
                     200:
                       content:
                         "application/x.zalando.contract+json;v=123": {}
-        """.trimIndent()
+            """.trimIndent()
         )
         val result = rule.validate(context)
         assertThat(result).hasSameElementsAs(
@@ -148,7 +148,8 @@ class MediaTypesRuleTest {
                   description: description
                   content:
                     "application/invalid": {}
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         val result = rule.validate(context)
         assertThat(result).hasSameElementsAs(

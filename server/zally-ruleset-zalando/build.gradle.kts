@@ -7,6 +7,7 @@ dependencies {
     implementation("de.mpg.mpi-inf:javatools:1.1")
 
     testImplementation(project(":zally-test"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
 tasks.register<MediaTypesConfigurationTask>("generate-media-types-config") {

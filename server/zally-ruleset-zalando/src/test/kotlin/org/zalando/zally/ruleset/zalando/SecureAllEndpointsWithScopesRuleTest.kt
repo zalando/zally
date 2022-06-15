@@ -22,7 +22,7 @@ class SecureAllEndpointsWithScopesRuleTest {
             /obscure/
           ]
         }
-    """.trimIndent()
+        """.trimIndent()
     )
 
     private val rule = SecureAllEndpointsWithScopesRule(config)
@@ -32,7 +32,7 @@ class SecureAllEndpointsWithScopesRuleTest {
         @Language("YAML")
         val yaml = """
             swagger: 2.0
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -53,7 +53,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   uid: Any logged in user
                   fulfillment-order.read: Can read fulfillment-order app
                   sales-order.shipment-order.write: Can create shipment-orders in the sales-order app
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -73,7 +73,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                 scopes:
                   indexer: Can perform nightly indexing operations
                   expiry: Can perform automated expiry operations
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -93,7 +93,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                 flow: implicit
                 scopes:
                   max: Any user called Max
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -109,7 +109,7 @@ class SecureAllEndpointsWithScopesRuleTest {
         @Language("YAML")
         val yaml = """
             swagger: 2.0
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -135,7 +135,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   responses:
                     200:
                       description: Success
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -166,7 +166,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   security:
                   - oauth2:
                     - defined-scope
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -195,7 +195,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   security:
                   - oauth2:
                     - undefined-scope
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -226,7 +226,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   responses:
                     200:
                       description: Success
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -257,7 +257,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   responses:
                     200:
                       description: Success
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -286,7 +286,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   flows:
                     clientCredentials:
                       tokenUrl: 'https://example.com'
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(yaml)
 
@@ -323,7 +323,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                 BearerAuth:
                   type: http
                   scheme: bearer
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(yaml)
 
@@ -355,7 +355,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                 BearerAuth:
                   type: http
                   scheme: bearer
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(yaml)
 
@@ -386,7 +386,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                 BearerAuth:
                   type: http
                   scheme: bearer
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(yaml)
 
@@ -419,7 +419,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                 BearerAuth:
                   type: http
                   scheme: bearer
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(yaml)
 

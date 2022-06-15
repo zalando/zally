@@ -29,8 +29,10 @@ class Use429HeaderForRateLimitRule {
                         violatingResponse(it)
                     }
                     .flatMap { (status, _) ->
-                        context.violations(description,
-                                context.getJsonPointer(responses) + status.toEscapedJsonPointer())
+                        context.violations(
+                            description,
+                            context.getJsonPointer(responses) + status.toEscapedJsonPointer()
+                        )
                     }
             }.orEmpty()
         }
