@@ -26,7 +26,7 @@ pipeline:
   - id: build-and-push-images
     type: script
     env:
-      DOCKER_IMAGE_PREFIX: "pierone.stups.zalan.do/pitchfork"
+      DOCKER_IMAGE_PREFIX: "pierone.stups.zalan.do/builder-knowledge"
     when:
       branch: main
     depends_on: [ all_of_the_above ]
