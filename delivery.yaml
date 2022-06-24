@@ -3,7 +3,9 @@ version: "2017-09-20"
 pipeline:
   - id: build-server
     type: script
-    overlay: ci/java11
+    vm_config:
+      type: linux
+      image: cdp-runtime/jdk11
     commands:
       - desc: Build server
         cmd: |
