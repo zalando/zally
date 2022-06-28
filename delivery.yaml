@@ -16,7 +16,7 @@ pipeline:
 
   - id: web-ui
     type: script
-    overlay: ci/nodejs-14
+    overlay: ci/nodejs-18
     commands:
       - desc: Build Web UI
         cmd: |
