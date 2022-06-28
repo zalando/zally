@@ -16,7 +16,9 @@ pipeline:
 
   - id: web-ui
     type: script
-    overlay: ci/nodejs-18
+    vm_config:
+      type: linux
+      image: cdp-runtime/nodejs-18
     commands:
       - desc: Build Web UI
         cmd: |
