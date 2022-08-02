@@ -43,7 +43,7 @@ class ProprietaryHeadersRuleTest {
 
     @Test
     fun `validateResponseHeaders should return no violation for a specified proprietary header`() {
-        val violations = rule.validateResponseHeaders(withRequestHttpHeader("X-Flow-ID"))
+        val violations = rule.validateResponseHeaders(withResponseHttpHeader("X-Flow-ID"))
 
         assertThat(violations).isEmpty()
     }
