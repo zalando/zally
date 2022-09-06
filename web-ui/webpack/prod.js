@@ -2,20 +2,25 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const common = require('./common.js');
 
 module.exports = merge(common, {
   devtool: 'source-map',
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          sourceMap: {
+            filename: 'zally.js',
+            url: 'zally.js.map',
+          },
+        },
+      }),
+    ],
+  },
   plugins: [
-    new UglifyJSPlugin({
-      uglifyOptions: {
-        ie8: false,
-        ecma: 8,
-        warnings: false,
-      },
-      sourceMap: true,
-    }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production'),
     }),

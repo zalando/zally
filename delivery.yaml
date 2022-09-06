@@ -3,7 +3,9 @@ version: "2017-09-20"
 pipeline:
   - id: build-server
     type: script
-    overlay: ci/java11
+    vm_config:
+      type: linux
+      image: cdp-runtime/jdk11
     commands:
       - desc: Build server
         cmd: |
@@ -14,7 +16,9 @@ pipeline:
 
   - id: web-ui
     type: script
-    overlay: ci/nodejs-14
+    vm_config:
+      type: linux
+      image: cdp-runtime/nodejs-18
     commands:
       - desc: Build Web UI
         cmd: |
