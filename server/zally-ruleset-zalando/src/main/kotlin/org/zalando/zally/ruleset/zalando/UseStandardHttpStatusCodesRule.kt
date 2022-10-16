@@ -1,12 +1,12 @@
 package org.zalando.zally.ruleset.zalando
 
 import com.typesafe.config.Config
+import io.swagger.v3.oas.models.PathItem
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import io.swagger.v3.oas.models.PathItem
 
 /**
  * Validate that HTTP methods and statuses align as expected
@@ -32,6 +32,11 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
 
     private val standardResponseCodes = rulesConfig.getStringList("${javaClass.simpleName}.standard")
 
+    companion object {
+        fun buildWellUnderstoodViolationMessage(path: String, status: String, method: String) =
+            "Path $path should not use $status status code for $method operation"
+    }
+
     /**
      * Validate that well-understood HTTP response codes are used properly
      * @param context the context to validate
@@ -39,11 +44,13 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
      */
     @Check(severity = Severity.SHOULD)
     fun checkWellUnderstoodResponseCodesUsage(context: Context): List<Violation> =
-        context.validateOperations { (method, operation) ->
-            operation?.responses.orEmpty().filterNot { (status, _) ->
-                isAllowed(method, status)
-            }.map { (_, response) ->
-                context.violation("Operations should use well-understood HTTP status codes", response)
+        context.validatePaths { (pathName, pathItem) ->
+            pathItem?.readOperationsMap().orEmpty().flatMap { (method, operation) ->
+                operation?.responses.orEmpty()
+                    .filterKeys { status -> !isAllowed(method, status) }
+                    .map { (status, response) ->
+                        context.violation(buildWellUnderstoodViolationMessage(pathName, status, method.name), response)
+                    }
             }
         }
 
@@ -55,8 +62,8 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
     @Check(severity = Severity.MUST)
     fun checkIfOnlyStandardizedResponseCodesAreUsed(context: Context): List<Violation> =
         context.validateOperations { (_, operation) ->
-            operation?.responses.orEmpty().filterNot { (status, _) ->
-                status in standardResponseCodes
+            operation?.responses.orEmpty().filterKeys { status ->
+                status !in standardResponseCodes
             }.map { (status, response) ->
                 context.violation("$status is not a standardized response code", response)
             }
@@ -70,8 +77,8 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
     @Check(severity = Severity.SHOULD)
     fun checkIfOnlyWellUnderstoodResponseCodesAreUsed(context: Context): List<Violation> =
         context.validateOperations { (_, operation) ->
-            operation?.responses.orEmpty().filterNot { (status, _) ->
-                status in wellUnderstoodResponseCode
+            operation?.responses.orEmpty().filterKeys { status ->
+                status !in wellUnderstoodResponseCode
             }.map { (status, response) ->
                 context.violation("$status is not a well-understood response code", response)
             }
