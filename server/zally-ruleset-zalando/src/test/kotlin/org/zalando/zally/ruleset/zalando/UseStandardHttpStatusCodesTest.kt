@@ -34,7 +34,7 @@ class UseStandardHttpStatusCodesTest {
     }
 
     @Test
-    fun `checkWellUnderstoodResponseCodesUsage should return violation if the well-understood HTTP headeres are used incorrectly`() {
+    fun `checkWellUnderstoodResponseCodesUsage should return violation if the well-understood HTTP status codes are used incorrectly`() {
         val notAllowedAll = listOf(
             "203", "205", "206", "208", "226", "302", "305", "306", "307", "308", "402", "407", "411",
             "413", "414", "416", "417", "418", "421", "422", "424", "426", "431", "451", "502", "504",
@@ -64,7 +64,7 @@ class UseStandardHttpStatusCodesTest {
 
     @Test
     fun `checkIfOnlyStandardizedResponseCodesAreUsed should return no violation if standardized response code are used`() {
-        val context = withResponseCode("200")
+        val context = apiWithGetResponseCode("200")
 
         val violations = rule.checkIfOnlyStandardizedResponseCodesAreUsed(context)
 
@@ -73,7 +73,7 @@ class UseStandardHttpStatusCodesTest {
 
     @Test
     fun `checkIfOnlyStandardizedResponseCodesAreUsed should return violation if non-standardized response code is used`() {
-        val context = withResponseCode("666")
+        val context = apiWithGetResponseCode("666")
 
         val violations = rule.checkIfOnlyStandardizedResponseCodesAreUsed(context)
 
@@ -84,7 +84,7 @@ class UseStandardHttpStatusCodesTest {
 
     @Test
     fun `checkIfOnlyWellUnderstoodResponseCodesAreUsed should return no violation if well-understood response code is used`() {
-        val context = withResponseCode("201")
+        val context = apiWithGetResponseCode("201")
 
         val violations = rule.checkIfOnlyWellUnderstoodResponseCodesAreUsed(context)
 
@@ -93,7 +93,7 @@ class UseStandardHttpStatusCodesTest {
 
     @Test
     fun `checkIfOnlyWellUnderstoodResponseCodesAreUsed should return a violation if not well-understood response code is used`() {
-        val context = withResponseCode("417")
+        val context = apiWithGetResponseCode("417")
 
         val violations = rule.checkIfOnlyWellUnderstoodResponseCodesAreUsed(context)
 
@@ -104,13 +104,22 @@ class UseStandardHttpStatusCodesTest {
 
     @Test
     fun `(checkIfOnlyWellUnderstoodResponseCodesAreUsed, checkIfOnlyStandardizedResponseCodesAreUsed) should return no violation for default response`() {
-        val context = withResponseCode("default")
+        val context = apiWithGetResponseCode("default")
 
         assertThat(rule.checkIfOnlyWellUnderstoodResponseCodesAreUsed(context)).isEmpty()
         assertThat(rule.checkIfOnlyStandardizedResponseCodesAreUsed(context)).isEmpty()
     }
 
-    private fun withResponseCode(responseCode: String): Context {
+    @Test
+    fun `checkIfOnlyStandardizedResponseCodesAreUsed should return operation detail in violation message`() {
+        val api = apiWithGetResponseCode("202")
+        val violations = rule.checkWellUnderstoodResponseCodesUsage(api)
+        assertThat(violations).isNotEmpty
+        val violation = violations[0]
+        assertThat(violation.description).isEqualTo(UseStandardHttpStatusCodesRule.buildWellUnderstoodViolationMessage("/pets", "202", "GET"))
+    }
+
+    private fun apiWithGetResponseCode(responseCode: String): Context {
         @Language("YAML")
         val content = """
             openapi: '3.0.1'
