@@ -129,7 +129,7 @@ class UseStandardHttpStatusCodesTest {
                             properties: 
                               prop-1:
                                 type: string                              
-        """.trimIndent()
+            """.trimIndent()
         )
         val violations = rule.checkThatNoContentResponseHasNoContentDefined(context)
         assertThat(violations).hasSize(1)
@@ -149,7 +149,7 @@ class UseStandardHttpStatusCodesTest {
                   responses:
                     204:
                       description: Successful response
-        """.trimIndent()
+            """.trimIndent()
         )
         val violations = rule.checkThatNoContentResponseHasNoContentDefined(context)
         assertThat(violations).isEmpty()

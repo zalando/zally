@@ -100,7 +100,7 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
                 )
             },
             responseFilter = { (code, response) ->
-                code.toInt() == HttpStatus.NoContent.code && response?.content.orEmpty().isNotEmpty()
+                code == HttpStatus.NoContent.code.toString() && response?.content.orEmpty().isNotEmpty()
             },
             action = { (key, response) ->
                 if (response == null) {
