@@ -1,3 +1,4 @@
+//go:build integration
 // +build integration
 
 package main
@@ -108,11 +109,12 @@ func TestIntegrationNotReceiveDeprecationMessage(t *testing.T) {
 func assertMoreThanZeroViolations(t *testing.T, out string, e error) {
 	must, should, may, hint := countViolations(out)
 
+	assert.NotNil(t, e, "Error should be not nil")
 	assert.True(t, must > 0, "Number of MUST violations should be > 0")
 	assert.True(t, should > 0, "Number of SHOULD violations should be > 0")
 	assert.True(t, may > 0, "Number of MAY violations should be > 0")
-	assert.Equal(t, 0, hint, "No HINTS ar expected")
-	assert.NotNil(t, e, "Error should be not nil")
+	assert.Equal(t, 0, hint, "No HINTS expected")
+
 }
 
 func countViolations(out string) (int, int, int, int) {

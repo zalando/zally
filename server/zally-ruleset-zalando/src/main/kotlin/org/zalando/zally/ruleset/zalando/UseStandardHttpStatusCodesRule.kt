@@ -7,6 +7,7 @@ import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
+import org.zalando.zally.core.util.HttpStatus
 
 /**
  * Validate that HTTP methods and statuses align as expected
@@ -32,9 +33,12 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
 
     private val standardResponseCodes = rulesConfig.getStringList("${javaClass.simpleName}.standard")
 
-    companion object {
-        fun buildWellUnderstoodViolationMessage(path: String, status: String, method: String) =
+    companion object Messages {
+        fun wellUnderstoodViolationMessage(path: String, status: String, method: String) =
             "Path $path should not use $status status code for $method operation"
+
+        fun noContentViolationMessage(statusCode: String) =
+            "$statusCode response should have no payload defined"
     }
 
     /**
@@ -49,7 +53,7 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
                 operation?.responses.orEmpty()
                     .filterKeys { status -> !isAllowed(method, status) }
                     .map { (status, response) ->
-                        context.violation(buildWellUnderstoodViolationMessage(pathName, status, method.name), response)
+                        context.violation(wellUnderstoodViolationMessage(pathName, status, method.name), response)
                     }
             }
         }
@@ -83,6 +87,28 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
                 context.violation("$status is not a well-understood response code", response)
             }
         }
+
+    @Check(severity = Severity.SHOULD)
+    fun checkThatNoContentResponseHasNoContentDefined(context: Context): List<Violation> =
+        context.validateResponses(
+            operationFilter = { (method, _) ->
+                method in listOf(
+                    PathItem.HttpMethod.PUT,
+                    PathItem.HttpMethod.PATCH,
+                    PathItem.HttpMethod.DELETE
+                )
+            },
+            responseFilter = { (code, response) ->
+                code == HttpStatus.NoContent.code.toString() && response?.content.orEmpty().isNotEmpty()
+            },
+            action = { (key, response) ->
+                if (response == null) {
+                    emptyList<Violation>()
+                } else {
+                    listOf(context.violation(noContentViolationMessage(key), response))
+                }
+            }
+        )
 
     private fun isAllowed(method: PathItem.HttpMethod, statusCode: String): Boolean {
         val allowedMethods = wellUnderstoodResponseCodesAndVerbs[statusCode.lowercase()].orEmpty()

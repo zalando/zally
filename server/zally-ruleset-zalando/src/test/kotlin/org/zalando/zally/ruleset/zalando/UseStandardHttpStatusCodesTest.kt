@@ -8,6 +8,7 @@ import org.zalando.zally.ruleset.zalando.util.openApiWithOperations
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.zalando.zally.core.util.HttpStatus
 
 @Suppress("UndocumentedPublicClass")
 class UseStandardHttpStatusCodesTest {
@@ -103,6 +104,58 @@ class UseStandardHttpStatusCodesTest {
     }
 
     @Test
+    fun `checkThatNoContentStatusCodesHaveNoContent should return violation in case if 204 response has content`() {
+        @Language("YAML")
+        val context = DefaultContextFactory().getOpenApiContext(
+            """
+            openapi: 3.0.0
+            paths:
+              "/shipment-order/{shipment_order_id}":
+                put:
+                  responses:
+                    204:
+                      content:
+                        "application/json": 
+                          schema:
+                            type: object
+                            properties: 
+                              prop-1:
+                                type: string
+                    200:
+                      content:
+                        "application/json": 
+                          schema:
+                            type: object
+                            properties: 
+                              prop-1:
+                                type: string                              
+            """.trimIndent()
+        )
+        val violations = rule.checkThatNoContentResponseHasNoContentDefined(context)
+        assertThat(violations).hasSize(1)
+        val violation = violations[0]
+        assertThat(violation.description).isEqualTo(UseStandardHttpStatusCodesRule.noContentViolationMessage(HttpStatus.NoContent.code.toString()))
+    }
+
+    @Test
+    fun `checkThatNoContentStatusCodesHaveNoContent return no violation in case if 204 response has no content`() {
+        @Language("YAML")
+        val context = DefaultContextFactory().getOpenApiContext(
+            """
+            openapi: 3.0.0
+            paths:
+              "/orders/{order_id}":
+                put:
+                  responses:
+                    204:
+                      description: Successful response
+            """.trimIndent()
+        )
+        val violations = rule.checkThatNoContentResponseHasNoContentDefined(context)
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
     fun `(checkIfOnlyWellUnderstoodResponseCodesAreUsed, checkIfOnlyStandardizedResponseCodesAreUsed) should return no violation for default response`() {
         val context = apiWithGetResponseCode("default")
 
@@ -116,7 +169,7 @@ class UseStandardHttpStatusCodesTest {
         val violations = rule.checkWellUnderstoodResponseCodesUsage(api)
         assertThat(violations).isNotEmpty
         val violation = violations[0]
-        assertThat(violation.description).isEqualTo(UseStandardHttpStatusCodesRule.buildWellUnderstoodViolationMessage("/pets", "202", "GET"))
+        assertThat(violation.description).isEqualTo(UseStandardHttpStatusCodesRule.wellUnderstoodViolationMessage("/pets", "202", "GET"))
     }
 
     private fun apiWithGetResponseCode(responseCode: String): Context {
