@@ -33,13 +33,12 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
 
     private val standardResponseCodes = rulesConfig.getStringList("${javaClass.simpleName}.standard")
 
-    companion object {
-        fun buildWellUnderstoodViolationMessage(path: String, status: String, method: String) =
+    companion object Messages {
+        fun wellUnderstoodViolationMessage(path: String, status: String, method: String) =
             "Path $path should not use $status status code for $method operation"
 
         fun noContentViolationMessage(statusCode: String) =
             "$statusCode response should have no payload defined"
-
     }
 
     /**
@@ -54,7 +53,7 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
                 operation?.responses.orEmpty()
                     .filterKeys { status -> !isAllowed(method, status) }
                     .map { (status, response) ->
-                        context.violation(buildWellUnderstoodViolationMessage(pathName, status, method.name), response)
+                        context.violation(wellUnderstoodViolationMessage(pathName, status, method.name), response)
                     }
             }
         }

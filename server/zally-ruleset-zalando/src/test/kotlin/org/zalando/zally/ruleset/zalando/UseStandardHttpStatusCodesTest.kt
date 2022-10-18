@@ -169,7 +169,7 @@ class UseStandardHttpStatusCodesTest {
         val violations = rule.checkWellUnderstoodResponseCodesUsage(api)
         assertThat(violations).isNotEmpty
         val violation = violations[0]
-        assertThat(violation.description).isEqualTo(UseStandardHttpStatusCodesRule.buildWellUnderstoodViolationMessage("/pets", "202", "GET"))
+        assertThat(violation.description).isEqualTo(UseStandardHttpStatusCodesRule.wellUnderstoodViolationMessage("/pets", "202", "GET"))
     }
 
     private fun apiWithGetResponseCode(responseCode: String): Context {
