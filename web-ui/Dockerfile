@@ -1,4 +1,4 @@
-FROM registry.opensource.zalan.do/library/node-14-alpine:latest
+FROM registry.opensource.zalan.do/library/node-18-alpine:latest
 
 MAINTAINER "http://zalando.github.io/"
 

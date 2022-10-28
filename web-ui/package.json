@@ -4,7 +4,7 @@
   "description": "Zally API Linter Web UI",
   "main": "src/server/index.js",
   "engines": {
-    "node": ">=17"
+    "node": ">=18"
   },
   "scripts": {
     "start": "NODE_ENV=production node server.js",
