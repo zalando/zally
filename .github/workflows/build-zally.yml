@@ -75,10 +75,10 @@ jobs:
   test-web-ui:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '17'
+          node-version: 18
       - name: Configure yarn
         run: yarn install -q
       - name: Build & Test CLI
@@ -90,4 +90,3 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           files: ./web-ui/target/coverage/lcov.info
-
