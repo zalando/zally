@@ -2,20 +2,20 @@
 version = ""
 
 plugins {
-    val kotlinVersion = "1.6.20"
+    val kotlinVersion = "1.6.21"
 
     kotlin("plugin.jpa") version kotlinVersion
     kotlin("plugin.noarg") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.allopen") version kotlinVersion
 
-    id("org.springframework.boot") version "2.6.6"
+    id("org.springframework.boot") version "2.7.7"
 }
 
 apply(plugin = "io.spring.dependency-management")
 
 dependencies {
-    val jadlerVersion = "1.3.0"
+    val jadlerVersion = "1.3.1"
 
     implementation(project(":zally-core"))
     implementation(project(":zally-ruleset-zalando"))
@@ -26,9 +26,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa") {
         exclude("org.hibernate", "hibernate-entitymanager")
     }
-    implementation("org.flywaydb:flyway-core")
-    implementation("org.hsqldb:hsqldb:2.6.1")
-    implementation("org.postgresql:postgresql:42.3.3")
+    implementation("org.flywaydb:flyway-core:9.10.2")
+    implementation("org.hsqldb:hsqldb:2.7.1")
+    implementation("org.postgresql:postgresql:42.5.1")
     implementation("org.hibernate:hibernate-core")
     implementation("org.jadira.usertype:usertype.core:7.0.0.CR1") {
         exclude("org.hibernate", "hibernate-entitymanager")
@@ -44,7 +44,7 @@ dependencies {
     testImplementation("net.jadler:jadler-junit:$jadlerVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.jayway.jsonpath:json-path-assert:2.7.0")
-    testImplementation("org.mockito:mockito-core:4.4.0")
+    testImplementation("org.mockito:mockito-core:4.11.0")
 }
 
 tasks.bootRun {

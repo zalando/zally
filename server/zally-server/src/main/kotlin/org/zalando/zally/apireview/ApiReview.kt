@@ -29,10 +29,12 @@ class ApiReview(
     violations: List<Result> = emptyList(),
     val name: String? = OpenApiHelper.extractApiName(apiDefinition),
     val apiId: String? = OpenApiHelper.extractApiId(apiDefinition),
-    @Column(nullable = false) @Type(
+    @Type(
         type = "org.jadira.usertype.dateandtime.threeten.PersistentOffsetDateTime",
         parameters = [Parameter(name = "javaZone", value = "UTC")]
-    ) val created: OffsetDateTime = Instant.now().atOffset(ZoneOffset.UTC),
+    )
+    @Column(nullable = false)
+    val created: OffsetDateTime = Instant.now().atOffset(ZoneOffset.UTC),
     @Column(nullable = false)
     val day: LocalDate? = created.toLocalDate(),
     val numberOfEndpoints: Int = EndpointCounter.count(apiDefinition)

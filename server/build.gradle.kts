@@ -7,7 +7,7 @@ java {
 }
 
 plugins {
-    val kotlinVersion = "1.6.20"
+    val kotlinVersion = "1.6.21"
     val klintVersion = "10.2.1"
 
     // The buildscript is also kotlin, so we apply at the root level
@@ -20,8 +20,8 @@ plugins {
     `maven-publish`
     signing
     eclipse
-    id("com.github.ben-manes.versions") version "0.42.0"
-    id("org.jetbrains.dokka") version "1.6.10" apply false
+    id("com.github.ben-manes.versions") version "0.44.0"
+    id("org.jetbrains.dokka") version "1.6.20" apply false
 
     // We apply this so that ktlint can format the top level buildscript
     id("org.jlleitschuh.gradle.ktlint") version klintVersion
@@ -154,17 +154,16 @@ subprojects {
         implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
         // We define this here so all subprojects use the same version of jackson
-        implementation(platform("com.fasterxml.jackson:jackson-bom:2.13.2.20220328"))
-        implementation("com.fasterxml.jackson.core:jackson-databind")
-        implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
-        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8")
-        implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-        implementation("org.yaml:snakeyaml:1.30")
+        implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
+        implementation("com.fasterxml.jackson.module:jackson-module-parameter-names:2.14.1")
+        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.1")
+        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.14.1")
+        implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.1")
+        implementation("org.yaml:snakeyaml:1.33")
 
-        testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2")
+        testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.9.1")
         testImplementation("com.jayway.jsonpath:json-path-assert:2.7.0")
-        testImplementation("org.mockito:mockito-core:4.4.0")
+        testImplementation("org.mockito:mockito-core:4.11.0")
     }
 
     jacoco {
