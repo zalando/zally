@@ -27,6 +27,7 @@ class DefaultContextFactoryTest {
     }
 
     @Test
+    @Disabled("OpenAPI 3.1 seems now to be supported by latest swagger parser")
     fun `OPEN API -- OpenAPI 3-1 is not applicable`() {
         // The parsing results in no OpenAPI 3.1 object model until the latest
         // parser is providing support. Than we can remove this test case and
@@ -40,7 +41,6 @@ class DefaultContextFactoryTest {
     }
 
     @Test
-    @Disabled("OpenAPI 3.1 is not supported by latest swagger parser yet")
     fun `OPEN API -- OpenAPI 3-1 without info and paths succeeds with messages`() {
         // The parsing results in a valid OpenAPI 3.1 object model, but
         // with messages that `info` and `paths` are missing. Let the
