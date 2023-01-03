@@ -42,7 +42,7 @@ And here is a response example:
 ```
 
 Please consult
-[Zally API specification](../server/src/main/resources/api/zally-api.yaml).
+[Zally API specification](../server/zally-server/src/main/resources/api/zally-api.yaml).
 for further information. The well-defined API explains various linting variants
 and usage of other features like permalinks to results, statistics, etc.
 

@@ -8,7 +8,7 @@
 
 Zally Server is the core of Zally tools and also the only component of the minimal
 setup. It provides a
-[well-defined RESTful API](../server/src/main/resources/api/zally-api.yaml) to
+[well-defined RESTful API](../server/zally-server/src/main/resources/api/zally-api.yaml) to
 lint APIs, get information about past lintings, as well as provide information
 about implemented rules and statistics.
 
