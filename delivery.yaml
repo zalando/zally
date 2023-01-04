@@ -5,7 +5,7 @@ pipeline:
     type: script
     vm_config:
       type: linux
-      image: cdp-runtime/jdk11
+      image: cdp-runtime/jdk17
     commands:
       - desc: Build server
         cmd: |

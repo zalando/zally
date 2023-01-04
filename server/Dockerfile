@@ -1,14 +1,14 @@
 #
 # Build the java application in a separate container.
 #
-FROM registry.opensource.zalan.do/library/openjdk-11-jdk-slim:latest as builder
+FROM eclipse-temurin:17  as builder
 COPY . /src
 WORKDIR /src
 RUN ./gradlew build
 
-FROM registry.opensource.zalan.do/library/openjdk-11-jdk-slim:latest
+FROM eclipse-temurin:17
 
-MAINTAINER "http://zalando.github.io/"
+LABEL org.opencontainers.image.authors="https://opensource.zalando.com/"
 
 COPY zally-server/src/main/resources/api/zally-api.yaml /zalando-apis/zally-api.yaml
 COPY --from=builder /src/zally-server/build/libs/zally-server.jar /
