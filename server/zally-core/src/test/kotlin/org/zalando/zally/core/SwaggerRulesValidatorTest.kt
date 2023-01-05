@@ -3,15 +3,15 @@ package org.zalando.zally.core
 import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.ConfigFactory
-import org.zalando.zally.rule.api.Check
-import org.zalando.zally.rule.api.Rule
-import org.zalando.zally.rule.api.Severity
-import org.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
 import org.apache.commons.io.IOUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import org.zalando.zally.rule.api.Check
+import org.zalando.zally.rule.api.Rule
+import org.zalando.zally.rule.api.Severity
+import org.zalando.zally.rule.api.Violation
 
 @Suppress("UndocumentedPublicClass", "StringLiteralDuplication")
 class SwaggerRulesValidatorTest {

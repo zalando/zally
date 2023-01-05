@@ -1,6 +1,5 @@
 package org.zalando.zally.core.ast
 
-import org.zalando.zally.core.ast.ReverseAstBuilder.Companion.traversalMethods
 import io.swagger.models.Swagger
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.PathItem
@@ -8,13 +7,13 @@ import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.parameters.QueryParameter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.zalando.zally.core.ast.ReverseAstBuilder.Companion.traversalMethods
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "StringLiteralDuplication")
 class ReverseAstBuilderTest {
 
     @Test
     fun `traversalMethods with Enum skips getClass and getDeclaringClass`() {
-
         val methods = traversalMethods(PathItem.HttpMethod::class.java).map { it.name }
 
         assertThat(methods).isEmpty()
@@ -22,7 +21,6 @@ class ReverseAstBuilderTest {
 
     @Test
     fun `traversalMethods with Info returns declared getters only`() {
-
         val methods = traversalMethods(Info::class.java).map { it.name }
 
         assertThat(methods).containsExactly(
@@ -39,7 +37,6 @@ class ReverseAstBuilderTest {
 
     @Test
     fun `traversalMethods with QueryParameter returns inherited getters too`() {
-
         val methods = traversalMethods(QueryParameter::class.java).map { it.name }
 
         assertThat(methods).containsExactly(
@@ -63,7 +60,6 @@ class ReverseAstBuilderTest {
 
     @Test
     fun `traversalMethods with Swagger returns getPaths last`() {
-
         val methods = traversalMethods(Swagger::class.java).map { it.name }
 
         assertThat(methods).containsExactly(
@@ -88,7 +84,6 @@ class ReverseAstBuilderTest {
 
     @Test
     fun `traversalMethods with OpenAPI returns leaves returns getPaths last`() {
-
         val methods = traversalMethods(OpenAPI::class.java).map { it.name }
 
         assertThat(methods).containsExactly(

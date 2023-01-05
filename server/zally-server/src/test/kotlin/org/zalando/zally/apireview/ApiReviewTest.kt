@@ -1,13 +1,13 @@
 package org.zalando.zally.apireview
 
 import com.fasterxml.jackson.core.JsonPointer
-import org.zalando.zally.core.toJsonPointer
-import org.zalando.zally.dto.ApiDefinitionRequest
-import org.zalando.zally.core.Result
-import org.zalando.zally.rule.api.Severity
-import org.zalando.zally.util.resourceToString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.zalando.zally.core.Result
+import org.zalando.zally.core.toJsonPointer
+import org.zalando.zally.dto.ApiDefinitionRequest
+import org.zalando.zally.rule.api.Severity
+import org.zalando.zally.util.resourceToString
 import java.io.IOException
 import java.net.URI
 import java.util.Arrays.asList

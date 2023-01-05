@@ -1,12 +1,12 @@
 package org.zalando.zally.ruleset.zalando
 
 import com.typesafe.config.Config
+import org.zalando.zally.core.util.PatternUtil.isPathVariable
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import org.zalando.zally.core.util.PatternUtil.isPathVariable
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -32,7 +32,9 @@ class LimitNumberOfResourcesRule(rulesConfig: Config) {
                     "greater than recommended limit of $resourceTypesLimit",
                 context.api.paths
             )
-        } else null
+        } else {
+            null
+        }
     }
 
     internal fun resourceTypes(paths: Collection<String>): List<String> {

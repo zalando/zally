@@ -48,7 +48,6 @@ class CommonFieldTypesRule(rulesConfig: Config) {
         objectSchema: Schema<Any>,
         check: (parentObject: Schema<Any>, name: String, schema: Schema<Any>) -> Collection<Violation>
     ): Collection<Violation> {
-
         fun traverse(oSchema: Schema<Any>): List<Violation?> = oSchema.properties.orEmpty().flatMap { (name, schema) ->
             if (schema.properties.isNullOrEmpty()) {
                 check(oSchema, name, schema)
@@ -62,10 +61,12 @@ class CommonFieldTypesRule(rulesConfig: Config) {
 
     internal fun checkField(name: String, property: Schema<Any>): String? =
         commonFields[name]?.let { (type, format) ->
-            if (property.type != type)
+            if (property.type != type) {
                 "field '$name' has type '${property.type}' (expected type '$type')"
-            else if (property.format != format && format != null)
+            } else if (property.format != format && format != null) {
                 "field '$name' has type '${property.type}' with format '${property.format}' (expected format '$format')"
-            else null
+            } else {
+                null
+            }
         }
 }

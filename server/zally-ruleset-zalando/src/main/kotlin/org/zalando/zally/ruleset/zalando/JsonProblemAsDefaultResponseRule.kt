@@ -1,13 +1,13 @@
 package org.zalando.zally.ruleset.zalando
 
+import io.swagger.v3.oas.models.Operation
+import io.swagger.v3.oas.models.media.Schema
+import io.swagger.v3.oas.models.responses.ApiResponse
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import io.swagger.v3.oas.models.Operation
-import io.swagger.v3.oas.models.media.Schema
-import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,

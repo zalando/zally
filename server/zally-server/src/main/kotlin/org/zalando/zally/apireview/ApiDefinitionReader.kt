@@ -1,8 +1,5 @@
 package org.zalando.zally.apireview
 
-import org.zalando.zally.dto.ApiDefinitionRequest
-import org.zalando.zally.exception.InaccessibleResourceUrlException
-import org.zalando.zally.exception.MissingApiDefinitionException
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -13,6 +10,9 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestTemplate
+import org.zalando.zally.dto.ApiDefinitionRequest
+import org.zalando.zally.exception.InaccessibleResourceUrlException
+import org.zalando.zally.exception.MissingApiDefinitionException
 
 @Component
 class ApiDefinitionReader(private val client: RestTemplate) {

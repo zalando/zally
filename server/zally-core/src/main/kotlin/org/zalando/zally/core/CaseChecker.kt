@@ -1,15 +1,15 @@
 package org.zalando.zally.core
 
 import com.typesafe.config.Config
-import org.zalando.zally.rule.api.Context
-import org.zalando.zally.rule.api.Violation
+import io.github.config4k.extract
+import io.swagger.v3.oas.models.media.Schema
 import org.zalando.zally.core.util.PatternUtil
 import org.zalando.zally.core.util.getAllHeaders
 import org.zalando.zally.core.util.getAllParameters
 import org.zalando.zally.core.util.getAllProperties
 import org.zalando.zally.core.util.getAllSchemas
-import io.github.config4k.extract
-import io.swagger.v3.oas.models.media.Schema
+import org.zalando.zally.rule.api.Context
+import org.zalando.zally.rule.api.Violation
 
 /**
  * Utility class for checking cases of strings against configured requirements.

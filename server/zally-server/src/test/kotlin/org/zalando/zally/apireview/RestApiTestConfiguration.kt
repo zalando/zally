@@ -2,6 +2,13 @@ package org.zalando.zally.apireview
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
+import org.assertj.core.api.Assertions.assertThat
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationContext
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
+import org.springframework.context.annotation.Profile
 import org.zalando.zally.core.AbstractRuleSet
 import org.zalando.zally.core.EMPTY_JSON_POINTER
 import org.zalando.zally.core.RulesManager
@@ -10,13 +17,6 @@ import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import org.assertj.core.api.Assertions.assertThat
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.ApplicationContext
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Primary
-import org.springframework.context.annotation.Profile
 
 @Configuration
 class RestApiTestConfiguration {
@@ -78,7 +78,9 @@ class RestApiTestConfiguration {
         fun validate(json: JsonNode): Violation? {
             return if ("3.0.0" != json.path("openapi").textValue()) {
                 Violation("TestCheckIsOpenApi3", "/openapi".toJsonPointer())
-            } else null
+            } else {
+                null
+            }
         }
     }
 

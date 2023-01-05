@@ -1,12 +1,12 @@
 package org.zalando.zally.core
 
 import com.fasterxml.jackson.core.JsonPointer
+import org.slf4j.LoggerFactory
 import org.zalando.zally.core.ContentParseResult.NotApplicable
 import org.zalando.zally.core.ContentParseResult.ParsedSuccessfully
 import org.zalando.zally.core.ContentParseResult.ParsedWithErrors
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationTargetException
 import java.net.URI
 

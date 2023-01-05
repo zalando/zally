@@ -36,7 +36,9 @@ class JsonPointerLocator(contents: String) {
             val keyNode = tuple.keyNode
             if (keyNode is ScalarNode && pointer.matchesProperty(keyNode.value)) {
                 locate(pointer.tail(), tuple.valueNode, keyNode)
-            } else null
+            } else {
+                null
+            }
         }
         .firstOrNull()
 
@@ -44,7 +46,9 @@ class JsonPointerLocator(contents: String) {
         .mapIndexedNotNull { index, any ->
             if (any is Node && pointer.matchesElement(index)) {
                 locate(pointer.tail(), any)
-            } else null
+            } else {
+                null
+            }
         }
         .firstOrNull()
 }

@@ -1,14 +1,14 @@
 package org.zalando.zally.dto
 
-import org.zalando.zally.core.toJsonPointer
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import org.zalando.zally.core.Result
+import org.zalando.zally.core.toJsonPointer
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Severity.HINT
 import org.zalando.zally.rule.api.Severity.MAY
 import org.zalando.zally.rule.api.Severity.MUST
 import org.zalando.zally.rule.api.Severity.SHOULD
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
 import java.net.URI
 
 class ViolationsCounterTest {

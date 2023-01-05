@@ -1,12 +1,12 @@
 package org.zalando.zally.ruleset.zalando
 
+import io.swagger.v3.oas.models.parameters.Parameter
 import org.zalando.zally.core.util.getAllParameters
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import io.swagger.v3.oas.models.parameters.Parameter
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -20,10 +20,12 @@ class QueryParameterCollectionFormatRule {
 
     @Check(severity = Severity.SHOULD)
     fun checkParametersCollectionFormat(context: Context): List<Violation> =
-        if (context.isOpenAPI3())
+        if (context.isOpenAPI3()) {
             context.api.getAllParameters()
                 .filter { "query" == it.`in` && "array" == it.schema?.type }
                 .filter { it.style == null || allowedStyle != it.style }
                 .map { context.violation(description, it) }
-        else emptyList()
+        } else {
+            emptyList()
+        }
 }

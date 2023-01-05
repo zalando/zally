@@ -13,7 +13,6 @@ data class HeaderElement(
 )
 
 fun OpenAPI.getAllHeaders(): Set<HeaderElement> {
-
     fun Collection<Parameter>?.extractHeaders() = orEmpty()
         .filter { it.`in` == "header" }
         .map { HeaderElement(it.name, it) }
@@ -164,7 +163,9 @@ fun Schema<Any>.isExtensibleEnum(): Boolean =
 fun Schema<Any>.extensibleEnum(): List<Any?> =
     if (this.isExtensibleEnum()) {
         (this.extensions["x-extensible-enum"] as List<Any?>)
-    } else emptyList<Any?>()
+    } else {
+        emptyList<Any?>()
+    }
 
 fun Parameter.isInPath() = this.`in` == "path"
 

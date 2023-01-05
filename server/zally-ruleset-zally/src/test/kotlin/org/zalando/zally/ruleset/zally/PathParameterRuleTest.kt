@@ -1,10 +1,10 @@
 package org.zalando.zally.ruleset.zally
 
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.test.ZallyAssertions.assertThat
-import org.junit.jupiter.api.Disabled
 
 class PathParameterRuleTest {
 

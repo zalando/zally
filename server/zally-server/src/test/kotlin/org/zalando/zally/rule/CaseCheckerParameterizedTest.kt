@@ -1,10 +1,10 @@
 package org.zalando.zally.rule
 
-import org.zalando.zally.core.rulesConfig
-import org.zalando.zally.core.CaseChecker
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import org.zalando.zally.core.CaseChecker
+import org.zalando.zally.core.rulesConfig
 
 class CaseCheckerParameterizedTest() {
 

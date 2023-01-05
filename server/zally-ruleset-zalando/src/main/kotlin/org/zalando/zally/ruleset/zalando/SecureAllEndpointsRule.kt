@@ -24,10 +24,14 @@ class SecureAllEndpointsRule {
             it.isOAuth2() || it.isBearer()
         }.orEmpty()
 
-        return if (valid.isEmpty()) context.violation(
-            "API must be secured by OAuth2 or Bearer Authentication",
-            "/components/securitySchemes".toJsonPointer()
-        ) else null
+        return if (valid.isEmpty()) {
+            context.violation(
+                "API must be secured by OAuth2 or Bearer Authentication",
+                "/components/securitySchemes".toJsonPointer()
+            )
+        } else {
+            null
+        }
     }
 
     @Check(severity = Severity.MUST)
@@ -67,7 +71,8 @@ class SecureAllEndpointsRule {
             .filter { (group, _) -> specifiedSchemes.get(group)?.isOAuth2() ?: false }
             .filterNot { it in specifiedScopes }.map { (group, scope) ->
                 context.violation(
-                    "The scope '$group/$scope' is not specified in security definition", scope
+                    "The scope '$group/$scope' is not specified in security definition",
+                    scope
                 )
             }
     }

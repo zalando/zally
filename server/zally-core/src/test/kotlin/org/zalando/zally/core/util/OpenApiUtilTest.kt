@@ -1,6 +1,5 @@
 package org.zalando.zally.core.util
 
-import org.zalando.zally.core.DefaultContextFactory
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
@@ -17,6 +16,7 @@ import io.swagger.v3.oas.models.responses.ApiResponses
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.zalando.zally.core.DefaultContextFactory
 
 class OpenApiUtilTest {
 

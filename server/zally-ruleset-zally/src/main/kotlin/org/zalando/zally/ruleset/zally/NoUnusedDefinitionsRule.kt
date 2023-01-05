@@ -20,7 +20,6 @@ class NoUnusedDefinitionsRule {
 
     @Check(severity = Severity.SHOULD)
     fun checkSwagger(root: JsonNode): List<Violation> {
-
         val used = used(root) { node ->
             node["discriminator"]
                 ?.asText()
@@ -45,7 +44,6 @@ class NoUnusedDefinitionsRule {
 
     @Check(severity = Severity.SHOULD)
     fun checkOpenAPI(root: JsonNode): List<Violation> {
-
         val used = used(root) { node ->
             node["discriminator"]
                 ?.get("mapping")

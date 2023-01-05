@@ -15,7 +15,10 @@ import javax.persistence.ManyToOne
 
 @Entity
 class RuleViolation(
-    @Suppress("unused") @JsonIgnore @ManyToOne(optional = false) val apiReview: ApiReview,
+    @Suppress("unused")
+    @JsonIgnore
+    @ManyToOne(optional = false)
+    val apiReview: ApiReview,
     result: Result
 ) : Serializable {
 

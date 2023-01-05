@@ -1,12 +1,5 @@
 package org.zalando.zally.rule
 
-import org.zalando.zally.core.RuleDetails
-import org.zalando.zally.core.RulesManager
-import org.zalando.zally.core.RulesPolicy
-import org.zalando.zally.dto.RuleDTO
-import org.zalando.zally.dto.RulesListDTO
-import org.zalando.zally.dto.SeverityBinder
-import org.zalando.zally.rule.api.Severity
 import org.springframework.web.bind.WebDataBinder
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +7,13 @@ import org.springframework.web.bind.annotation.InitBinder
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
+import org.zalando.zally.core.RuleDetails
+import org.zalando.zally.core.RulesManager
+import org.zalando.zally.core.RulesPolicy
+import org.zalando.zally.dto.RuleDTO
+import org.zalando.zally.dto.RulesListDTO
+import org.zalando.zally.dto.SeverityBinder
+import org.zalando.zally.rule.api.Severity
 
 /**
  * REST API for listing the rules supported by this server.
@@ -43,7 +43,6 @@ class SupportedRulesController(private val rules: RulesManager, private val rule
         @RequestParam(value = "type", required = false) typeFilter: Severity?,
         @RequestParam(value = "is_active", required = false) isActiveFilter: Boolean?
     ): RulesListDTO {
-
         val filteredRules = rules
             .rules
             .filter { filterByIsActive(it, isActiveFilter) }

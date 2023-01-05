@@ -57,7 +57,6 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
         // val definedScopes = definedScopes(context.api)
         return context.validateOperations(pathFilter = this::pathFilter) { (_, op) ->
             op?.let {
-
                 val definedOpSecurityRequirements = definedSecurityRequirements(op, context.api)
 
                 if (definedOpSecurityRequirements.isEmpty()) {
@@ -99,7 +98,8 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
     ): Violation? {
         if (requestedScopes.isEmpty()) {
             return context.violation(
-                "Endpoint is not secured by OAuth2 scope(s)", op.security ?: op
+                "Endpoint is not secured by OAuth2 scope(s)",
+                op.security ?: op
             )
         }
         val definedScopes = definedScheme.allScopes()
@@ -110,7 +110,9 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
                 "Endpoint is secured by undefined OAuth2 scope(s): $schemeName:${undefined.joinToString()}",
                 op.security ?: op
             )
-        } else null
+        } else {
+            null
+        }
     }
 
     private fun pathFilter(entry: Map.Entry<String, PathItem?>): Boolean =
