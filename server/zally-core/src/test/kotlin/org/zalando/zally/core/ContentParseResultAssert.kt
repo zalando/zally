@@ -31,7 +31,7 @@ class ContentParseResultAssert<T : Any>(actual: ContentParseResult<T>?) :
                     is ContentParseResult.NotApplicable -> "Expected result to be '$type'. Was 'NotApplicable' instead."
                     is ContentParseResult.ParsedWithErrors -> {
                         val sep = "\n  - "
-                        val violations = actual.violations.joinToString(sep, sep, "\n")
+                        val violations = (actual as ContentParseResult.ParsedWithErrors).violations.joinToString(sep, sep, "\n")
                         "Expected result to be '$type'. Was 'ParsedWithErrors' instead with those violations: $violations"
                     }
                     is ContentParseResult.ParsedSuccessfully -> "Expected result to be '$type'. Was 'ParsedSuccessfully' instead."

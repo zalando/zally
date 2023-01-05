@@ -6,6 +6,7 @@ pipeline:
     vm_config:
       type: linux
       image: cdp-runtime/jdk17
+      size: large
     commands:
       - desc: Build server
         cmd: |
