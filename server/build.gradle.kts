@@ -2,13 +2,13 @@ import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 plugins {
     val kotlinVersion = "1.6.21"
-    val klintVersion = "10.2.1"
+    val klintVersion = "11.0.0"
 
     // The buildscript is also kotlin, so we apply at the root level
     kotlin("jvm") version kotlinVersion
@@ -21,7 +21,7 @@ plugins {
     signing
     eclipse
     id("com.github.ben-manes.versions") version "0.44.0"
-    id("org.jetbrains.dokka") version "1.6.20" apply false
+    id("org.jetbrains.dokka") version "1.7.20" apply false
 
     // We apply this so that ktlint can format the top level buildscript
     id("org.jlleitschuh.gradle.ktlint") version klintVersion
@@ -53,7 +53,7 @@ subprojects {
     }
 
     tasks.withType<KotlinCompile>().configureEach() {
-        kotlinOptions.jvmTarget = "11"
+        kotlinOptions.jvmTarget = "17"
     }
 
     tasks.withType<DokkaTask>().configureEach {
@@ -115,6 +115,10 @@ subprojects {
                         developer {
                             name.set("Gregor Zeitlinger")
                             email.set("gregor.zeitlinger@zalando.de")
+                        }
+                        developer {
+                            name.set("Vadim Shaigorodskiy")
+                            email.set("vadim.shaigorodskiy@zalando.de")
                         }
                     }
                     scm {

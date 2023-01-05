@@ -5,7 +5,6 @@ import org.zalando.zally.rule.api.Violation
 /**
  * Possible results of the `parse` operation.
  */
-@Suppress("unused") // type parameter RootT used at sealed class level to simplify `when` blocks
 sealed class ContentParseResult<out RootT : Any> {
 
     /**
