@@ -6,12 +6,16 @@ pipeline:
     vm_config:
       type: linux
       image: cdp-runtime/jdk17
-      size: large
     commands:
       - desc: Build server
         cmd: |
           cd $PWD/server
           ./gradlew --console=plain build
+          if [ -n "${CDP_PULL_REQUEST_NUMBER}" ]; then
+            echo "We're in a pull request, aborting."; exit 0;
+          fi;
+          IMAGE="${DOCKER_IMAGE_PREFIX}/zally:${CDP_BUILD_VERSION}"
+          docker build -t "${IMAGE}" . && docker push "${IMAGE}"
     cache:
       paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
 
@@ -25,27 +29,10 @@ pipeline:
         cmd: |
           cd $PWD/web-ui
           yarn install -q ; yarn test ; yarn build
+          if [ -n "${CDP_PULL_REQUEST_NUMBER}" ]; then
+            echo "We're in a pull request, aborting."; exit 0;
+          fi;
+          IMAGE="${DOCKER_IMAGE_PREFIX}/zally-web-ui-dummy:${CDP_BUILD_VERSION}"
+          docker build -t "${IMAGE}" . && docker push "${IMAGE}"
     cache:
       paths: [ ~/.npm ]
-
-  - id: build-and-push-images
-    type: script
-    env:
-      DOCKER_IMAGE_PREFIX: "pierone.stups.zalan.do/builder-knowledge"
-    when:
-      branch: main
-    depends_on: [ all_of_the_above ]
-    commands:
-      - desc: Building and pushing Zally Server
-        cmd: |
-          DOCKER_VERSION="${CDP_TARGET_BRANCH}-${CDP_TARGET_COMMIT_ID:0:8}-${CDP_TARGET_REPOSITORY_COUNTER}"
-          cd server
-          docker build -t "${DOCKER_IMAGE_PREFIX}/zally:${DOCKER_VERSION}" .
-          docker push "${DOCKER_IMAGE_PREFIX}/zally:${DOCKER_VERSION}"
-
-      - desc: Building and pushing Zally Web UI Dummy
-        cmd: |
-          DOCKER_VERSION="${CDP_TARGET_BRANCH}-${CDP_TARGET_COMMIT_ID:0:8}-${CDP_TARGET_REPOSITORY_COUNTER}"
-          cd web-ui
-          docker build -t "${DOCKER_IMAGE_PREFIX}/zally-web-ui-dummy:${DOCKER_VERSION}" .
-          docker push "${DOCKER_IMAGE_PREFIX}/zally-web-ui-dummy:${DOCKER_VERSION}"
