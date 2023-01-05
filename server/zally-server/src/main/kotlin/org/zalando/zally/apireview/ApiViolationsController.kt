@@ -1,14 +1,5 @@
 package org.zalando.zally.apireview
 
-import org.zalando.zally.dto.ApiDefinitionRequest
-import org.zalando.zally.dto.ApiDefinitionResponse
-import org.zalando.zally.dto.ViolationDTO
-import org.zalando.zally.exception.ApiReviewNotFoundException
-import org.zalando.zally.exception.InaccessibleResourceUrlException
-import org.zalando.zally.exception.MissingApiDefinitionException
-import org.zalando.zally.core.ApiValidator
-import org.zalando.zally.core.RulesPolicy
-import org.zalando.zally.rule.api.Severity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -20,6 +11,15 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.util.UriComponentsBuilder
+import org.zalando.zally.core.ApiValidator
+import org.zalando.zally.core.RulesPolicy
+import org.zalando.zally.dto.ApiDefinitionRequest
+import org.zalando.zally.dto.ApiDefinitionResponse
+import org.zalando.zally.dto.ViolationDTO
+import org.zalando.zally.exception.ApiReviewNotFoundException
+import org.zalando.zally.exception.InaccessibleResourceUrlException
+import org.zalando.zally.exception.MissingApiDefinitionException
+import org.zalando.zally.rule.api.Severity
 import java.util.UUID
 
 @CrossOrigin

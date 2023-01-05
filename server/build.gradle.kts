@@ -172,16 +172,16 @@ subprojects {
         toolVersion = "0.8.8"
     }
 
-    // spotless {
-    //     kotlin {
-    //         target("**/*.kt")
-    //         ktlint("0.47.1")
-    //     }
-    //     kotlinGradle {
-    //         target("**/*.gradle.kts", "*.gradle.kts")
-    //         ktlint("0.47.1")
-    //     }
-    // }
+    spotless {
+        kotlin {
+            target("**/*.kt")
+            ktlint("0.47.1")
+        }
+        kotlinGradle {
+            target("**/*.gradle.kts", "*.gradle.kts")
+            ktlint("0.47.1")
+        }
+    }
 
     tasks.test {
         useJUnitPlatform()

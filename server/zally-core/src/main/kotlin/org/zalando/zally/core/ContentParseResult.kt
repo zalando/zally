@@ -30,8 +30,11 @@ sealed class ContentParseResult<out RootT : Any> {
         is ParsedWithErrors -> ParsedWithErrors(violations)
         is ParsedSuccessfully -> {
             val resultT = result as? T
-            if (resultT == null) throw IllegalStateException("Cannot change the type of a ParsedSuccessfully")
-            else ParsedSuccessfully(resultT)
+            if (resultT == null) {
+                throw IllegalStateException("Cannot change the type of a ParsedSuccessfully")
+            } else {
+                ParsedSuccessfully(resultT)
+            }
         }
     }
 }

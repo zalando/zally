@@ -1,9 +1,9 @@
 package org.zalando.zally.ruleset.zalando
 
-import org.zalando.zally.core.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.zalando.zally.core.DefaultContextFactory
 
 class QueryParameterCollectionFormatRuleTest {
 

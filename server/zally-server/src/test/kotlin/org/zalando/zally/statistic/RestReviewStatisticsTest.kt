@@ -1,16 +1,16 @@
 package org.zalando.zally.statistic
 
-import org.zalando.zally.apireview.ApiReview
-import org.zalando.zally.apireview.RestApiBaseTest
-import org.zalando.zally.core.toJsonPointer
-import org.zalando.zally.dto.ApiDefinitionRequest
-import org.zalando.zally.core.Result
-import org.zalando.zally.rule.api.Severity
-import org.zalando.zally.util.ErrorResponse
-import org.zalando.zally.util.TestDateUtil
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus.BAD_REQUEST
+import org.zalando.zally.apireview.ApiReview
+import org.zalando.zally.apireview.RestApiBaseTest
+import org.zalando.zally.core.Result
+import org.zalando.zally.core.toJsonPointer
+import org.zalando.zally.dto.ApiDefinitionRequest
+import org.zalando.zally.rule.api.Severity
+import org.zalando.zally.util.ErrorResponse
+import org.zalando.zally.util.TestDateUtil
 import java.net.URI
 import java.time.LocalDate
 

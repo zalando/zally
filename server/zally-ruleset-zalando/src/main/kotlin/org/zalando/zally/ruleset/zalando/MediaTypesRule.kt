@@ -1,16 +1,16 @@
 package org.zalando.zally.ruleset.zalando
 
 import com.typesafe.config.Config
-import org.zalando.zally.rule.api.Check
-import org.zalando.zally.rule.api.Context
-import org.zalando.zally.rule.api.Rule
-import org.zalando.zally.rule.api.Severity
-import org.zalando.zally.rule.api.Violation
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.media.Content
 import io.swagger.v3.oas.models.media.MediaType
 import io.swagger.v3.oas.models.parameters.RequestBody
 import io.swagger.v3.oas.models.responses.ApiResponse
+import org.zalando.zally.rule.api.Check
+import org.zalando.zally.rule.api.Context
+import org.zalando.zally.rule.api.Rule
+import org.zalando.zally.rule.api.Severity
+import org.zalando.zally.rule.api.Violation
 
 /**
  * @see "https://opensource.zalando.com/restful-api-guidelines/#172"

@@ -1,11 +1,11 @@
 package org.zalando.zally.ruleset.zally
 
-import org.zalando.zally.test.ZallyAssertions
+import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Violation
-import org.intellij.lang.annotations.Language
-import org.junit.jupiter.api.Test
+import org.zalando.zally.test.ZallyAssertions
 
 class TagAllOperationsRuleTest {
 

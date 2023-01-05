@@ -1,13 +1,5 @@
 package org.zalando.zally.apireview
 
-import org.zalando.zally.Application
-import org.zalando.zally.apireview.RestApiTestConfiguration.Companion.assertRuleManagerUsingLimitedRules
-import org.zalando.zally.core.RulesManager
-import org.zalando.zally.dto.ApiDefinitionRequest
-import org.zalando.zally.dto.ApiDefinitionResponse
-import org.zalando.zally.dto.RuleDTO
-import org.zalando.zally.dto.RulesListDTO
-import org.zalando.zally.statistic.ReviewStatistics
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,6 +10,14 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.util.UriComponentsBuilder.fromPath
+import org.zalando.zally.Application
+import org.zalando.zally.apireview.RestApiTestConfiguration.Companion.assertRuleManagerUsingLimitedRules
+import org.zalando.zally.core.RulesManager
+import org.zalando.zally.dto.ApiDefinitionRequest
+import org.zalando.zally.dto.ApiDefinitionResponse
+import org.zalando.zally.dto.RuleDTO
+import org.zalando.zally.dto.RulesListDTO
+import org.zalando.zally.statistic.ReviewStatistics
 import java.time.LocalDate
 
 @SpringBootTest(

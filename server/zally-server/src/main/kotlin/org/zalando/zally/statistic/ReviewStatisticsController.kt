@@ -1,8 +1,5 @@
 package org.zalando.zally.statistic
 
-import org.zalando.zally.apireview.ApiReviewRepository
-import org.zalando.zally.exception.InsufficientTimeIntervalParameterException
-import org.zalando.zally.exception.TimeParameterIsInTheFutureException
 import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -10,6 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
+import org.zalando.zally.apireview.ApiReviewRepository
+import org.zalando.zally.exception.InsufficientTimeIntervalParameterException
+import org.zalando.zally.exception.TimeParameterIsInTheFutureException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -21,11 +21,14 @@ class ReviewStatisticsController(private val apiReviewRepository: ApiReviewRepos
     @ResponseBody
     @GetMapping("/review-statistics")
     fun retrieveReviewStatistics(
-        @RequestParam(value = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) from: LocalDate?,
-        @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) to: LocalDate?,
+        @RequestParam(value = "from", required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        from: LocalDate?,
+        @RequestParam(value = "to", required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        to: LocalDate?,
         @RequestParam(value = "user_agent", required = false) userAgent: String?
     ): ReviewStatistics {
-
         if (from != null && from.isAfter(today())) {
             throw TimeParameterIsInTheFutureException()
         }

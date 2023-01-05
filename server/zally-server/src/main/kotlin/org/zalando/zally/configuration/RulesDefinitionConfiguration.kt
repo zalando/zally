@@ -1,6 +1,5 @@
 package org.zalando.zally.configuration
 
-import org.zalando.zally.rule.api.Rule
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
@@ -10,6 +9,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.type.filter.AnnotationTypeFilter
+import org.zalando.zally.rule.api.Rule
 
 /**
  * Register classes annotated with [Rule] as BeanDefinition prior to any Bean instantiation.

@@ -1,10 +1,10 @@
 package org.zalando.zally.core
 
-import org.zalando.zally.core.ContentParseResultAssert.Companion.assertThat
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+import org.zalando.zally.core.ContentParseResultAssert.Companion.assertThat
 
 class DefaultContextFactoryTest {
 

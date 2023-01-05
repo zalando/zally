@@ -1,13 +1,6 @@
 package org.zalando.zally.apireview
 
 import com.google.common.collect.ImmutableMap
-import org.zalando.zally.configuration.WebMvcConfiguration
-import org.zalando.zally.dto.ApiDefinitionRequest
-import org.zalando.zally.exception.MissingApiDefinitionException
-import org.zalando.zally.util.ErrorResponse
-import org.zalando.zally.util.JadlerUtil
-import org.zalando.zally.util.readApiDefinition
-import org.zalando.zally.util.resourceToString
 import net.jadler.Jadler.closeJadler
 import net.jadler.Jadler.initJadlerUsing
 import net.jadler.stubbing.server.jdk.JdkStubHttpServer
@@ -22,6 +15,13 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
+import org.zalando.zally.configuration.WebMvcConfiguration
+import org.zalando.zally.dto.ApiDefinitionRequest
+import org.zalando.zally.exception.MissingApiDefinitionException
+import org.zalando.zally.util.ErrorResponse
+import org.zalando.zally.util.JadlerUtil
+import org.zalando.zally.util.readApiDefinition
+import org.zalando.zally.util.resourceToString
 import java.io.IOException
 
 class RestApiViolationsTest : RestApiBaseTest() {
@@ -104,7 +104,9 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Throws(IOException::class)
     fun shouldRespondWithBadRequestWhenApiDefinitionFieldIsMissing() {
         val responseEntity = restTemplate.postForEntity(
-            RestApiBaseTest.API_VIOLATIONS_URL, ImmutableMap.of("my_api", "dummy"), ErrorResponse::class.java
+            RestApiBaseTest.API_VIOLATIONS_URL,
+            ImmutableMap.of("my_api", "dummy"),
+            ErrorResponse::class.java
         )
 
         assertThat(responseEntity.statusCode).isEqualTo(BAD_REQUEST)
@@ -161,7 +163,9 @@ class RestApiViolationsTest : RestApiBaseTest() {
     fun shouldReturn404WhenHostNotRecognised() {
         val request = ApiDefinitionRequest.fromUrl("http://remote-localhost/test.yaml")
         val responseEntity = restTemplate.postForEntity(
-            RestApiBaseTest.API_VIOLATIONS_URL, request, ErrorResponse::class.java
+            RestApiBaseTest.API_VIOLATIONS_URL,
+            request,
+            ErrorResponse::class.java
         )
 
         assertThat(responseEntity.statusCode).isEqualTo(NOT_FOUND)

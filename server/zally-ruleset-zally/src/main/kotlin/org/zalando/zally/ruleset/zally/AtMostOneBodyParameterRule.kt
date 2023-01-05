@@ -1,11 +1,11 @@
 package org.zalando.zally.ruleset.zally
 
+import io.swagger.models.parameters.BodyParameter
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import io.swagger.models.parameters.BodyParameter
 
 @Rule(
     ruleSet = ZallyRuleSet::class,

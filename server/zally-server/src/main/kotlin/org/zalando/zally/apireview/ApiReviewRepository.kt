@@ -1,9 +1,9 @@
 package org.zalando.zally.apireview
 
-import org.zalando.zally.statistic.ReviewStatistics
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
+import org.zalando.zally.statistic.ReviewStatistics
 import java.time.LocalDate
 import java.util.UUID
 

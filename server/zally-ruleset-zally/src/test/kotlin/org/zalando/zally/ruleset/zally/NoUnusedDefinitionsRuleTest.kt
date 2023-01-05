@@ -1,9 +1,9 @@
 package org.zalando.zally.ruleset.zally
 
-import org.zalando.zally.test.ZallyAssertions
-import org.zalando.zally.core.ObjectTreeReader
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.zalando.zally.core.ObjectTreeReader
+import org.zalando.zally.test.ZallyAssertions
 
 class NoUnusedDefinitionsRuleTest {
 
@@ -13,7 +13,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkSwagger with unreferenced definitions returns violations`() {
-
         @Language("YAML")
         val root = reader.read(
             """
@@ -34,7 +33,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkSwagger with referenced definitions returns empty`() {
-
         @Language("YAML")
         val root = reader.read(
             """
@@ -57,7 +55,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkSwagger with discriminator enum returns empty`() {
-
         @Language("YAML")
         val root = reader.read(
             """
@@ -118,7 +115,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkSwagger with unreferenced parameter returns violations`() {
-
         @Language("YAML")
         val root = reader.read(
             """
@@ -139,7 +135,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkSwagger with referenced parameter returns no violations`() {
-
         @Language("YAML")
         val root = reader.read(
             """
@@ -163,7 +158,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkSwagger with unreferenced response returns violations`() {
-
         @Language("YAML")
         val root = reader.read(
             """
@@ -184,7 +178,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkSwagger with referenced response returns no violations`() {
-
         @Language("YAML")
         val root = reader.read(
             """
@@ -210,7 +203,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkOpenAPI with unreferenced definitions returns violations`() {
-
         @Language("YAML")
         val root = reader.read(
             """
@@ -232,7 +224,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkOpenAPI with referenced definitions returns empty`() {
-
         @Language("YAML")
         val root = reader.read(
             """
@@ -256,7 +247,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkOpenAPI with discriminator enum returns empty`() {
-
         @Language("YAML")
         val root = reader.read(
             """
@@ -321,7 +311,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkOpenAPI with unreferenced parameter returns violations`() {
-
         @Language("YAML")
         val root = reader.read(
             """
@@ -345,7 +334,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkOpenAPI with referenced parameter returns no violations`() {
-
         @Language("YAML")
         val root = reader.read(
             """
@@ -372,7 +360,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkOpenAPI with unreferenced response returns violations`() {
-
         @Language("YAML")
         val root = reader.read(
             """
@@ -394,7 +381,6 @@ class NoUnusedDefinitionsRuleTest {
 
     @Test
     fun `checkOpenAPI with referenced response returns no violations`() {
-
         @Language("YAML")
         val root = reader.read(
             """

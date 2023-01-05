@@ -43,7 +43,9 @@ class UpperCaseEnums {
     private fun validateEnum(scheme: Schema<Any>, context: Context): List<Violation> {
         val enumValues = if (scheme.isExtensibleEnum()) {
             scheme.extensibleEnum()
-        } else scheme.enum
+        } else {
+            scheme.enum
+        }
 
         return enumValues.filterNotNull().filterNot { it is String }.map {
             context.violation(

@@ -14,7 +14,8 @@ pipeline:
           if [ -n "${CDP_PULL_REQUEST_NUMBER}" ]; then
             echo "We're in a pull request, aborting."; exit 0;
           fi;
-          IMAGE="${DOCKER_IMAGE_PREFIX}/zally:${CDP_BUILD_VERSION}"
+          PREFIX: "pierone.stups.zalan.do/builder-knowledge"
+          IMAGE="${PREFIX}/zally:${CDP_PULL_REQUEST_NUMBER}"
           docker build -t "${IMAGE}" . && docker push "${IMAGE}"
     cache:
       paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
@@ -32,7 +33,8 @@ pipeline:
           if [ -n "${CDP_PULL_REQUEST_NUMBER}" ]; then
             echo "We're in a pull request, aborting."; exit 0;
           fi;
-          IMAGE="${DOCKER_IMAGE_PREFIX}/zally-web-ui-dummy:${CDP_BUILD_VERSION}"
+          PREFIX: "pierone.stups.zalan.do/builder-knowledge"
+          IMAGE="${PREFIX}/zally-web-ui-dummy:${CDP_BUILD_VERSION}"
           docker build -t "${IMAGE}" . && docker push "${IMAGE}"
     cache:
       paths: [ ~/.npm ]

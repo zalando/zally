@@ -1,13 +1,13 @@
 package org.zalando.zally.ruleset.zalando
 
+import io.swagger.parser.util.ClasspathHelper.loadFileFromClasspath
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import org.zalando.zally.core.ContentParseResult.ParsedSuccessfully
 import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.core.rulesConfig
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.test.ZallyAssertions.assertThat
-import io.swagger.parser.util.ClasspathHelper.loadFileFromClasspath
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
 
 class PluralizeResourceNamesRuleTest {
 

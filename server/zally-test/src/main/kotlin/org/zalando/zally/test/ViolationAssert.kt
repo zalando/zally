@@ -1,8 +1,8 @@
 package org.zalando.zally.test
 
-import org.zalando.zally.rule.api.Violation
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.StringAssert
+import org.zalando.zally.rule.api.Violation
 
 @Suppress("UndocumentedPublicClass")
 class ViolationAssert(actual: Violation?) :

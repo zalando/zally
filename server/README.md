@@ -23,6 +23,12 @@ cd zally/server
 ./gradlew clean build
 ```
 
+1. Fix linter violations
+
+```bash
+./gradlew spotlessApply
+```
+
 1. Run Zally server using:
 
 ```bash

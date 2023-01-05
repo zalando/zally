@@ -57,7 +57,9 @@ class PathParameterRule {
                 .filter {
                     if (it.content != null) {
                         it.content.isEmpty() || it.content.size > 1
-                    } else false
+                    } else {
+                        false
+                    }
                 }
                 .map { parameter ->
                     context.violation(contentMapStructureErrorMessage(parameter.name), parameter)

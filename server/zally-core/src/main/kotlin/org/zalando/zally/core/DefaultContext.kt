@@ -1,15 +1,15 @@
 package org.zalando.zally.core
 
 import com.fasterxml.jackson.core.JsonPointer
-import org.zalando.zally.core.ast.ReverseAst
-import org.zalando.zally.rule.api.Context
-import org.zalando.zally.rule.api.Violation
 import io.swagger.models.Swagger
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.oas.models.PathItem.HttpMethod
 import io.swagger.v3.oas.models.responses.ApiResponse
+import org.zalando.zally.core.ast.ReverseAst
+import org.zalando.zally.rule.api.Context
+import org.zalando.zally.rule.api.Violation
 
 class DefaultContext(
     override val source: String,

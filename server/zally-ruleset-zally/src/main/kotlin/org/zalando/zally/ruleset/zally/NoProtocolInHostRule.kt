@@ -1,12 +1,12 @@
 package org.zalando.zally.ruleset.zally
 
+import io.swagger.models.Swagger
 import org.zalando.zally.core.toJsonPointer
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import io.swagger.models.Swagger
 
 /**
  * Validates that [Swagger.host] does not contain a url scheme as required by
@@ -29,7 +29,6 @@ class NoProtocolInHostRule {
     fun validate(context: Context): List<Violation> {
         val host = context.swagger?.host.orEmpty()
         return when {
-
             context.isOpenAPI3() -> emptyList()
 
             "://" in host -> listOf(

@@ -1,11 +1,11 @@
 package org.zalando.zally.ruleset.zally
 
+import org.zalando.zally.core.util.getAllProperties
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import org.zalando.zally.core.util.getAllProperties
 import java.math.BigDecimal
 
 @Rule(

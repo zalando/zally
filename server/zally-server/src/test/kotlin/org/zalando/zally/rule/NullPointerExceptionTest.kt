@@ -4,14 +4,6 @@ import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
-import org.zalando.zally.apireview.RestApiTestConfiguration.Companion.assertRuleManagerUsingAllAnnotatedRules
-import org.zalando.zally.core.CompositeRulesValidator
-import org.zalando.zally.core.EMPTY_JSON_POINTER
-import org.zalando.zally.core.ObjectTreeReader
-import org.zalando.zally.core.RulesManager
-import org.zalando.zally.core.RulesPolicy
-import org.zalando.zally.core.plus
-import org.zalando.zally.core.toEscapedJsonPointer
 import io.swagger.util.Yaml
 import org.intellij.lang.annotations.Language
 import org.junit.ClassRule
@@ -23,6 +15,14 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.rules.SpringClassRule
 import org.springframework.test.context.junit4.rules.SpringMethodRule
+import org.zalando.zally.apireview.RestApiTestConfiguration.Companion.assertRuleManagerUsingAllAnnotatedRules
+import org.zalando.zally.core.CompositeRulesValidator
+import org.zalando.zally.core.EMPTY_JSON_POINTER
+import org.zalando.zally.core.ObjectTreeReader
+import org.zalando.zally.core.RulesManager
+import org.zalando.zally.core.RulesPolicy
+import org.zalando.zally.core.plus
+import org.zalando.zally.core.toEscapedJsonPointer
 
 @SpringBootTest
 @ActiveProfiles("test", "all-annotated-rules")

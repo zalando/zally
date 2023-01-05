@@ -1,14 +1,14 @@
 package org.zalando.zally.rule
 
-import org.zalando.zally.apireview.RestApiBaseTest
-import org.zalando.zally.core.RulesManager
-import org.zalando.zally.util.ErrorResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.test.context.TestPropertySource
+import org.zalando.zally.apireview.RestApiBaseTest
+import org.zalando.zally.core.RulesManager
+import org.zalando.zally.util.ErrorResponse
 
 @Suppress("UndocumentedPublicClass")
 @TestPropertySource(properties = ["zally.ignoreRules=TestCheckAlwaysReport3MustViolations"])
@@ -57,7 +57,6 @@ class RestSupportedRulesTest : RestApiBaseTest() {
 
     @Test
     fun testFilterByType() {
-
         var count = 0
         count += getSupportedRules("MuST", null).size
         count += getSupportedRules("ShOuLd", null).size

@@ -8,7 +8,8 @@ class InaccessibleResourceUrlExceptionTest {
     @Test
     fun shouldReturnParametersSpecifiedInConstructor() {
         val exception = InaccessibleResourceUrlException(
-            "Test Message", HttpStatus.BAD_REQUEST
+            "Test Message",
+            HttpStatus.BAD_REQUEST
         )
 
         assertEquals("Test Message", exception.message)

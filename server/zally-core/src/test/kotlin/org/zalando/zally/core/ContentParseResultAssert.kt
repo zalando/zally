@@ -1,9 +1,9 @@
 package org.zalando.zally.core
 
-import org.zalando.zally.rule.api.Context
-import org.zalando.zally.rule.api.Violation
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.Assertions
+import org.zalando.zally.rule.api.Context
+import org.zalando.zally.rule.api.Violation
 
 class ContentParseResultAssert<T : Any>(actual: ContentParseResult<T>?) :
     AbstractAssert<ContentParseResultAssert<T>, ContentParseResult<T>?>(actual, ContentParseResultAssert::class.java) {

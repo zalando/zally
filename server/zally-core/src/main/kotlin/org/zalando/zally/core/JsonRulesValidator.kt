@@ -2,8 +2,8 @@ package org.zalando.zally.core
 
 import com.fasterxml.jackson.core.JsonPointer
 import com.fasterxml.jackson.databind.JsonNode
-import org.zalando.zally.core.ast.ReverseAst
 import io.swagger.util.Json
+import org.zalando.zally.core.ast.ReverseAst
 
 class JsonRulesValidator(rules: RulesManager) : RulesValidator<JsonNode>(rules) {
     private var ast: ReverseAst? = null

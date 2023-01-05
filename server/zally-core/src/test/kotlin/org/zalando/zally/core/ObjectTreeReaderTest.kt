@@ -84,7 +84,6 @@ class ObjectTreeReaderTest {
     /** Tests that advanced YAML is supported */
     @Test
     fun readSupportsYamlAnchorsAndReferences() {
-
         val contents = """
             Idable:
               type: object
