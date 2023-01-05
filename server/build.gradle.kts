@@ -7,7 +7,7 @@ java {
 }
 
 plugins {
-    val kotlinVersion = "1.6.21"
+    val kotlinVersion = "1.8.0"
     val klintVersion = "11.0.0"
 
     // The buildscript is also kotlin, so we apply at the root level
@@ -20,12 +20,10 @@ plugins {
     `maven-publish`
     signing
     eclipse
-    id("com.github.ben-manes.versions") version "0.44.0"
-    id("org.jetbrains.dokka") version "1.7.20" apply false
 
-    // We apply this so that ktlint can format the top level buildscript
-    id("org.jlleitschuh.gradle.ktlint") version klintVersion
-    id("org.jlleitschuh.gradle.ktlint-idea") version klintVersion
+    id("org.jetbrains.dokka") version "1.7.20" apply false
+    id("com.github.ben-manes.versions") version "0.44.0"
+    id("com.diffplug.spotless") version "6.12.1"
 }
 
 allprojects {
@@ -35,13 +33,12 @@ allprojects {
 }
 
 subprojects {
-
     group = "org.zalando"
 
     apply(plugin = "kotlin")
     apply(plugin = "kotlin-kapt")
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "com.github.ben-manes.versions")
+    apply(plugin = "com.diffplug.spotless")
     apply(plugin = "org.jetbrains.dokka")
     apply(plugin = "maven-publish")
     apply(plugin = "jacoco")
@@ -156,6 +153,7 @@ subprojects {
 
     dependencies {
         implementation("org.jetbrains.kotlin:kotlin-stdlib")
+        implementation("org.jetbrains.kotlin:kotlin-reflect")
 
         // We define this here so all subprojects use the same version of jackson
         implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
@@ -173,6 +171,17 @@ subprojects {
     jacoco {
         toolVersion = "0.8.8"
     }
+
+    // spotless {
+    //     kotlin {
+    //         target("**/*.kt")
+    //         ktlint("0.47.1")
+    //     }
+    //     kotlinGradle {
+    //         target("**/*.gradle.kts", "*.gradle.kts")
+    //         ktlint("0.47.1")
+    //     }
+    // }
 
     tasks.test {
         useJUnitPlatform()

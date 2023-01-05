@@ -2,7 +2,7 @@
 version = ""
 
 plugins {
-    val kotlinVersion = "1.6.21"
+    val kotlinVersion = "1.8.0"
 
     kotlin("plugin.jpa") version kotlinVersion
     kotlin("plugin.noarg") version kotlinVersion
@@ -26,7 +26,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa") {
         exclude("org.hibernate", "hibernate-entitymanager")
     }
-    implementation("org.flywaydb:flyway-core:9.10.2")
+    implementation("org.flywaydb:flyway-core:9.11.0")
     implementation("org.hsqldb:hsqldb:2.7.1")
     implementation("org.postgresql:postgresql:42.5.1")
     implementation("org.hibernate:hibernate-core")

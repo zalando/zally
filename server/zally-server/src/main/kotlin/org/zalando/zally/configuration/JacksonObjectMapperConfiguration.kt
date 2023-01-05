@@ -38,7 +38,7 @@ class JacksonObjectMapperConfiguration {
                 Jdk8Module(),
                 JavaTimeModule(),
                 ProblemModule(),
-                KotlinModule()
+                KotlinModule.Builder().build()
             )
         return mapper
     }
