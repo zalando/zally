@@ -6,17 +6,18 @@ pipeline:
     vm_config:
       type: linux
       image: cdp-runtime/jdk17
+      size: large
     commands:
       - desc: Build server
         cmd: |
-          cd $PWD/server
-          ./gradlew --console=plain build
+          cd ${PWD}/server;
+          ./gradlew --console=plain build;
           if [ -n "${CDP_PULL_REQUEST_NUMBER}" ]; then
             echo "We're in a pull request, aborting."; exit 0;
           fi;
-          PREFIX="pierone.stups.zalan.do/builder-knowledge"
-          IMAGE="${PREFIX}/zally:${CDP_PULL_REQUEST_NUMBER}"
-          docker build -t "${IMAGE}" . && docker push "${IMAGE}"
+          PREFIX="pierone.stups.zalan.do/builder-knowledge";
+          IMAGE="${PREFIX}/zally:${CDP_BUILD_VERSION}";
+          docker build -t "${IMAGE}" . && docker push "${IMAGE}";
     cache:
       paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
 
@@ -28,13 +29,7 @@ pipeline:
     commands:
       - desc: Build Web UI
         cmd: |
-          cd $PWD/web-ui
-          yarn install -q ; yarn test ; yarn build
-          if [ -n "${CDP_PULL_REQUEST_NUMBER}" ]; then
-            echo "We're in a pull request, aborting."; exit 0;
-          fi;
-          PREFIX="pierone.stups.zalan.do/builder-knowledge"
-          IMAGE="${PREFIX}/zally-web-ui-dummy:${CDP_BUILD_VERSION}"
-          docker build -t "${IMAGE}" . && docker push "${IMAGE}"
+          cd ${PWD}/web-ui;
+          yarn install -q; yarn test; yarn build;
     cache:
       paths: [ ~/.npm ]
