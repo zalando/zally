@@ -14,7 +14,7 @@ pipeline:
           if [ -n "${CDP_PULL_REQUEST_NUMBER}" ]; then
             echo "We're in a pull request, aborting."; exit 0;
           fi;
-          PREFIX: "pierone.stups.zalan.do/builder-knowledge"
+          PREFIX="pierone.stups.zalan.do/builder-knowledge"
           IMAGE="${PREFIX}/zally:${CDP_PULL_REQUEST_NUMBER}"
           docker build -t "${IMAGE}" . && docker push "${IMAGE}"
     cache:
@@ -33,7 +33,7 @@ pipeline:
           if [ -n "${CDP_PULL_REQUEST_NUMBER}" ]; then
             echo "We're in a pull request, aborting."; exit 0;
           fi;
-          PREFIX: "pierone.stups.zalan.do/builder-knowledge"
+          PREFIX="pierone.stups.zalan.do/builder-knowledge"
           IMAGE="${PREFIX}/zally-web-ui-dummy:${CDP_BUILD_VERSION}"
           docker build -t "${IMAGE}" . && docker push "${IMAGE}"
     cache:
