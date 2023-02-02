@@ -1,5 +1,6 @@
-allow_concurrent_steps: true
 version: "2017-09-20"
+schedule: "0 7 * * 1" # At 07:00 UTC on Mondays
+allow_concurrent_steps: true
 pipeline:
   - id: build-server
     type: script
