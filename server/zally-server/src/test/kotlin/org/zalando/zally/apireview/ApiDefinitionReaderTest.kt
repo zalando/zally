@@ -12,12 +12,11 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.MediaType.TEXT_HTML_VALUE
 import org.springframework.web.client.RestTemplate
+import org.zalando.zally.configuration.RestTemplateConfiguration
 import org.zalando.zally.dto.ApiDefinitionRequest
 import org.zalando.zally.exception.InaccessibleResourceUrlException
 import org.zalando.zally.exception.MissingApiDefinitionException
 import org.zalando.zally.util.JadlerUtil
-import org.zalando.zally.configuration.RestTemplateConfiguration
-
 
 class ApiDefinitionReaderTest {
 

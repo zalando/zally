@@ -21,20 +21,26 @@ class IdentifyResourcesViaPathSegments {
     private val pathParameterContainsPrefixOrSuffix = "Path parameter must not contain prefixes and suffixes"
 
     private val pathStartingWithAParameter = """(^/\{[^/]+\}|/)""".toRegex()
+
     @Check(severity = Severity.SHOULD)
     fun pathStartsWithResource(context: Context): List<Violation> = context.validatePaths(
         pathFilter = { pathStartingWithAParameter.matches(it.key) },
-        action = { context.violations(pathStartsWithParameter, "/paths".toJsonPointer() + it.key.toEscapedJsonPointer()) })
+        action = { context.violations(pathStartsWithParameter, "/paths".toJsonPointer() + it.key.toEscapedJsonPointer()) }
+    )
 
     private val pathContainingSuccessiveParameters = """.*\}/\{.*""".toRegex()
+
     @Check(severity = Severity.SHOULD)
     fun pathDoesNotContainSuccessiveParameters(context: Context): List<Violation> = context.validatePaths(
         pathFilter = { pathContainingSuccessiveParameters.matches(it.key) },
-        action = { context.violations(pathContainsSuccessiveParameters, "/paths".toJsonPointer() + it.key.toEscapedJsonPointer()) })
+        action = { context.violations(pathContainsSuccessiveParameters, "/paths".toJsonPointer() + it.key.toEscapedJsonPointer()) }
+    )
 
     private val pathContainingPrefixedOrSuffixedParameter = """.*/([^/]+\{[^/]+\}|\{[^/]+\}[^/]+).*""".toRegex()
+
     @Check(severity = Severity.SHOULD)
     fun pathParameterDoesNotContainPrefixAndSuffix(context: Context): List<Violation> = context.validatePaths(
         pathFilter = { pathContainingPrefixedOrSuffixedParameter.matches(it.key) },
-        action = { context.violations(pathParameterContainsPrefixOrSuffix, "/paths".toJsonPointer() + it.key.toEscapedJsonPointer()) })
+        action = { context.violations(pathParameterContainsPrefixOrSuffix, "/paths".toJsonPointer() + it.key.toEscapedJsonPointer()) }
+    )
 }

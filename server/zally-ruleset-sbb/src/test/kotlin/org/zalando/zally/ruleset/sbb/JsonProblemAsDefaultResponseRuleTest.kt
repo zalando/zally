@@ -1,9 +1,9 @@
 package org.zalando.zally.ruleset.sbb
 
-import org.zalando.zally.core.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.zalando.zally.core.DefaultContextFactory
 
 class JsonProblemAsDefaultResponseRuleTest {
 
@@ -19,7 +19,7 @@ class JsonProblemAsDefaultResponseRuleTest {
               '/pets':
                 get:
                   responses:
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkContainsDefaultResponse(context)
@@ -44,7 +44,7 @@ class JsonProblemAsDefaultResponseRuleTest {
                         application/problem+json:
                           schema:
                             ${'$'}ref: 'http://example.com'
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkDefaultResponseIsProblemJson(context)
@@ -70,7 +70,7 @@ class JsonProblemAsDefaultResponseRuleTest {
                         application/problem+json:
                           schema:
                             ${'$'}ref: 'https://zalando.github.io/problem/schema.yaml#/Problem'
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.checkDefaultResponseIsProblemJson(context)

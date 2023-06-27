@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.google.common.io.Resources
 import com.typesafe.config.Config
+import org.slf4j.LoggerFactory
 import org.zalando.zally.core.JsonSchemaValidator
 import org.zalando.zally.core.ObjectTreeReader
 import org.zalando.zally.rule.api.Check
@@ -12,7 +13,6 @@ import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
 import org.zalando.zally.ruleset.sbb.UseOpenApiRule.OpenApiVersion.OPENAPI3
 import org.zalando.zally.ruleset.sbb.UseOpenApiRule.OpenApiVersion.SWAGGER
-import org.slf4j.LoggerFactory
 import java.net.URL
 
 @Rule(
@@ -46,7 +46,7 @@ class UseOpenApiRule(rulesConfig: Config) {
             ?.validate(spec)
             .orEmpty()
             .map {
-            Violation("Does not match ${version.name.toLowerCase()} schema: ${it.description}", it.pointer)
+                Violation("Does not match ${version.name.toLowerCase()} schema: ${it.description}", it.pointer)
             }
     }
 
@@ -55,7 +55,8 @@ class UseOpenApiRule(rulesConfig: Config) {
             "http://json-schema.org/draft-04/schema" to Resources.getResource("schemas/json-schema.json"),
             "http://swagger.io/v2/schema.json" to SWAGGER.resource,
             "http://openapis.org/v3/schema.json" to OPENAPI3.resource,
-            "https://spec.openapis.org/oas/3.0/schema/2019-04-02" to OPENAPI3.resource)
+            "https://spec.openapis.org/oas/3.0/schema/2019-04-02" to OPENAPI3.resource
+        )
             .mapValues { (_, url) -> url.toString() }
 
         val reader = ObjectTreeReader()

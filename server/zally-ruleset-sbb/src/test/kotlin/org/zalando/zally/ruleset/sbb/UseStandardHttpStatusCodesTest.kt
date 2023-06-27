@@ -1,13 +1,13 @@
 package org.zalando.zally.ruleset.sbb
 
+import org.assertj.core.api.Assertions.assertThat
+import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContext
 import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.core.rulesConfig
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.ruleset.zalando.util.openApiWithOperations
-import org.assertj.core.api.Assertions.assertThat
-import org.intellij.lang.annotations.Language
-import org.junit.Test
 
 @Suppress("UndocumentedPublicClass")
 class UseStandardHttpStatusCodesTest {

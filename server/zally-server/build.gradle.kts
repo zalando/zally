@@ -19,7 +19,7 @@ dependencies {
 
     implementation(project(":zally-core"))
     implementation(project(":zally-ruleset-sbb"))
-    implementation(project(":zally-ruleset-zalando"))
+    // implementation(project(":zally-ruleset-zalando"))
     implementation(project(":zally-ruleset-zally"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-undertow")

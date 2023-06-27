@@ -24,7 +24,6 @@ class RestTemplateConfiguration {
     }
 
     private fun createOAuth2RestTemplate(oauth2Config: RemoteUrlsConfiguration.OAuth2ClientConfig): OAuth2RestTemplate {
-
         val resourceDetails = ClientCredentialsResourceDetails()
         resourceDetails.accessTokenUri = oauth2Config.accessTokenUri
         resourceDetails.clientId = oauth2Config.clientId

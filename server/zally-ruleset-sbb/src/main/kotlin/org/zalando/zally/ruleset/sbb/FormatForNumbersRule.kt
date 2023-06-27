@@ -18,6 +18,7 @@ class FormatForNumbersRule(rulesConfig: Config) {
     private val description = """Numeric properties must have valid format specified"""
 
     private val numberTypes = listOf("integer", "number")
+
     @Suppress("UNCHECKED_CAST")
     private val type2format = rulesConfig.getConfig("${javaClass.simpleName}.formats").entrySet()
         .map { (key, config) -> key to config.unwrapped() as List<String> }.toMap()

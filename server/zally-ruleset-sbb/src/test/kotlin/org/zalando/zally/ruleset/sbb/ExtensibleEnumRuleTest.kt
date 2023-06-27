@@ -1,8 +1,8 @@
 package org.zalando.zally.ruleset.sbb
 
-import org.zalando.zally.core.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.zalando.zally.core.DefaultContextFactory
 
 class ExtensibleEnumRuleTest {
 

@@ -3,7 +3,7 @@ package org.zalando.zally.ruleset.sbb
 import com.typesafe.config.ConfigFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.zalando.zally.core.ObjectTreeReader
 import org.zalando.zally.core.rulesConfig
 import org.zalando.zally.ruleset.zalando.util.getResourceJson
@@ -78,7 +78,7 @@ class UseOpenApiRuleTest {
               title: "Minimal API"
               version: "1.0.0"
             paths: {}
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val violations = rule.validateSchema(jsonNode)

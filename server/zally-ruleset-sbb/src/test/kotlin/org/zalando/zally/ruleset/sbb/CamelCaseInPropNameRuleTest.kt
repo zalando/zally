@@ -1,10 +1,10 @@
 package org.zalando.zally.ruleset.sbb
 
-import org.zalando.zally.core.rulesConfig
-import org.zalando.zally.core.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.zalando.zally.core.DefaultContextFactory
+import org.zalando.zally.core.rulesConfig
 
 class CamelCaseInPropNameRuleTest {
 
@@ -21,7 +21,7 @@ class CamelCaseInPropNameRuleTest {
                   properties:
                     super_mega_laser_turbo_article:
                       type: boolean
-            """.trimIndent()
+        """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkPropertyNames(context)
@@ -42,7 +42,7 @@ class CamelCaseInPropNameRuleTest {
                   properties:
                     articleTitle:
                       type: string
-            """.trimIndent()
+        """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkPropertyNames(context)
@@ -61,7 +61,7 @@ class CamelCaseInPropNameRuleTest {
                   properties:
                     _links:
                       type: string
-            """.trimIndent()
+        """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkPropertyNames(context)

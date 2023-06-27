@@ -1,10 +1,10 @@
 package org.zalando.zally.ruleset.sbb
 
-import org.zalando.zally.core.rulesConfig
-import org.zalando.zally.core.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.zalando.zally.core.DefaultContextFactory
+import org.zalando.zally.core.rulesConfig
 
 class LimitNumberOfSubResourcesRuleTest {
 
@@ -17,7 +17,7 @@ class LimitNumberOfSubResourcesRuleTest {
               openapi: "3.0.0"
               paths:
                 /worlds/{world-id}/countries/{country-id}/states/{state-id}/cities/{city-id}/streets/{street-id}: {}
-              """.trimIndent()
+        """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkNumberOfSubResources(context)

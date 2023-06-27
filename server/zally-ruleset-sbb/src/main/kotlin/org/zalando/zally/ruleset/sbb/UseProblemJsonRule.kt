@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.io.Resources
+import io.swagger.v3.oas.models.responses.ApiResponse
 import org.zalando.zally.core.EMPTY_JSON_POINTER
 import org.zalando.zally.core.JsonSchemaValidator
 import org.zalando.zally.core.ObjectTreeReader
@@ -13,7 +14,6 @@ import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import io.swagger.v3.oas.models.responses.ApiResponse
 
 @Rule(
     ruleSet = SBBRuleSet::class,

@@ -1,9 +1,14 @@
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 plugins {
@@ -47,10 +52,6 @@ subprojects {
 
     kapt {
         includeCompileClasspath = false
-    }
-
-    tasks.withType<KotlinCompile>().configureEach() {
-        kotlinOptions.jvmTarget = "17"
     }
 
     tasks.withType<DokkaTask>().configureEach {

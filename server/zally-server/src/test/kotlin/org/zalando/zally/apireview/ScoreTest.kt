@@ -40,7 +40,8 @@ class ScoreTest {
             "name",
             "apiId",
             OffsetDateTime.now(),
-            LocalDate.now())
+            LocalDate.now()
+        )
     }
 
     private fun violationResultsForTesting(numberOfMusts: Int, numberOfShoulds: Int, numberOfMays: Int): List<Result> {
@@ -61,7 +62,8 @@ class ScoreTest {
                     "Some Arbitrary Description for ID $it",
                     severity,
                     JsonPointer.empty(),
-                    IntRange.EMPTY)
+                    IntRange.EMPTY
+                )
             }
             .toList()
     }

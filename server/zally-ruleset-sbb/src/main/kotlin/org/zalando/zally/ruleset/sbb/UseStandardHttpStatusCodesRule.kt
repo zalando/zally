@@ -1,12 +1,12 @@
 package org.zalando.zally.ruleset.sbb
 
 import com.typesafe.config.Config
+import io.swagger.v3.oas.models.PathItem
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import io.swagger.v3.oas.models.PathItem
 
 /**
  * Validate that HTTP methods and statuses align as expected

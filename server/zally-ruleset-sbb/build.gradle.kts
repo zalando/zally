@@ -1,8 +1,8 @@
 dependencies {
     kapt(project(":zally-core"))
 
-    compile(project(":zally-core"))
-    compile("de.mpg.mpi-inf:javatools:1.1")
+    implementation(project(":zally-core"))
+    implementation("de.mpg.mpi-inf:javatools:2017-06-28")
 
-    testCompile(project(":zally-test"))
+    testImplementation(project(":zally-test"))
 }

@@ -21,13 +21,17 @@ class ApiMetaInformationRule {
     fun checkInfoTitle(context: Context): Violation? =
         if (context.api.info?.title.isNullOrBlank()) {
             context.violation("Title has to be provided", "/info/title".toJsonPointer())
-        } else null
+        } else {
+            null
+        }
 
     @Check(severity = Severity.MUST)
     fun checkInfoDescription(context: Context): Violation? =
         if (context.api.info?.description.isNullOrBlank()) {
             context.violation("Description has to be provided", "/info/description".toJsonPointer())
-        } else null
+        } else {
+            null
+        }
 
     @Check(severity = Severity.MUST)
     fun checkInfoVersion(context: Context): Violation? {
@@ -45,17 +49,23 @@ class ApiMetaInformationRule {
     fun checkContactName(context: Context): Violation? =
         if (context.api.info?.contact?.name.isNullOrBlank()) {
             context.violation("Contact name has to be provided", "/info/contact/name".toJsonPointer())
-        } else null
+        } else {
+            null
+        }
 
     @Check(severity = Severity.MUST)
     fun checkContactUrl(context: Context): Violation? =
         if (context.api.info?.contact?.url.isNullOrBlank()) {
             context.violation("Contact URL has to be provided", "/info/contact/url".toJsonPointer())
-        } else null
+        } else {
+            null
+        }
 
     @Check(severity = Severity.MUST)
     fun checkContactEmail(context: Context): Violation? =
         if (context.api.info?.contact?.email.isNullOrBlank()) {
             context.violation("Contact e-mail has to be provided", "/info/contact/email".toJsonPointer())
-        } else null
+        } else {
+            null
+        }
 }

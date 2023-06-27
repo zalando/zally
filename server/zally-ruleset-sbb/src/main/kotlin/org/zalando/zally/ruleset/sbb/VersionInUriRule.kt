@@ -1,13 +1,13 @@
 package org.zalando.zally.ruleset.sbb
 
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.PathItem
+import io.swagger.v3.oas.models.servers.Server
 import org.zalando.zally.rule.api.Check
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
-import io.swagger.v3.oas.models.OpenAPI
-import io.swagger.v3.oas.models.PathItem
-import io.swagger.v3.oas.models.servers.Server
 
 @Rule(
     ruleSet = SBBRuleSet::class,

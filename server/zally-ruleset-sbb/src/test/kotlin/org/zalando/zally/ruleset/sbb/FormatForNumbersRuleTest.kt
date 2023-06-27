@@ -1,10 +1,10 @@
 package org.zalando.zally.ruleset.sbb
 
-import org.zalando.zally.core.rulesConfig
-import org.zalando.zally.core.DefaultContextFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.zalando.zally.core.DefaultContextFactory
+import org.zalando.zally.core.rulesConfig
 
 class FormatForNumbersRuleTest {
 
@@ -25,7 +25,7 @@ class FormatForNumbersRuleTest {
                     age:
                       type: number
                       format: decimal
-            """.trimIndent()
+        """.trimIndent()
 
         val violations = rule.checkNumberFormat(DefaultContextFactory().getOpenApiContext(content))
 
@@ -46,7 +46,7 @@ class FormatForNumbersRuleTest {
                   properties:
                     age:
                       type: number
-            """.trimIndent()
+        """.trimIndent()
 
         val violations = rule.checkNumberFormat(DefaultContextFactory().getOpenApiContext(content))
 
@@ -70,7 +70,7 @@ class FormatForNumbersRuleTest {
                     age:
                       type: number
                       format: weird_number_format
-            """.trimIndent()
+        """.trimIndent()
 
         val violations = rule.checkNumberFormat(DefaultContextFactory().getOpenApiContext(content))
 
@@ -86,7 +86,7 @@ class FormatForNumbersRuleTest {
             swagger: '2.0'
             info:
               title: Empty API
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -112,7 +112,7 @@ class FormatForNumbersRuleTest {
                       examples:
                         application/json:
                           - name: Named thing
-            """.trimIndent()
+        """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
