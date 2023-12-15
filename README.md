@@ -39,7 +39,7 @@ Trying out Zally is easy. You can build and run the whole Zally stack (web-ui, s
 and database) by executing:
 
 ```bash
-./build-and-run.sh
+docker compose up -d
 ```
 
 Web UI is accessible on `http://localhost:8080`; Zally server on `http://localhost:8000`

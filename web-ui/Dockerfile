@@ -2,6 +2,8 @@ FROM registry.opensource.zalan.do/library/node-18-alpine:latest
 
 MAINTAINER "http://zalando.github.io/"
 
+RUN apk --no-cache add curl
+
 COPY package.json ./
 COPY yarn.lock ./
 

@@ -11,15 +11,15 @@ services:
   web-ui:
     build: ./web-ui
     environment:
-    - ZALLY_API_URL=${ZALLY_API_URL:-http://localhost:8000}
+      - ZALLY_API_URL=${ZALLY_API_URL:-http://localhost:8000}
     depends_on:
-    - server
+      - server
     links:
-    - server:server.local
+      - server:server.local
     ports:
-    - "8080:3000"
+      - "8080:3000"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
       interval: 5s
       timeout: 2s
       retries: 10
@@ -27,32 +27,35 @@ services:
   server:
     build: ./server
     depends_on:
-    - postgres
+      - postgres
     links:
-    - postgres:postgres.local
+      - postgres:postgres.local
     ports:
-    - "8000:8000"
+      - "8000:8000"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:7979/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:7979/health" ]
       interval: 5s
       timeout: 2s
       retries: 10
     environment:
-    - SPRING_PROFILES_ACTIVE=dev
-    - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres.local:5432/zally
-    - SPRING_DATASOURCE_USERNAME=postgres
-    - SPRING_DATASOURCE_PASSWORD=postgres
-    - MANAGEMENT_PORT=7979
-    - TOKEN_INFO_URI=https://url.not.set
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres.local:5432/zally
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - MANAGEMENT_PORT=7979
+      - TOKEN_INFO_URI=https://url.not.set
   postgres:
     image: postgres:13
     environment:
-    - POSTGRES_PASSWORD=postgres
-    - POSTGRES_DB=zally
-    ports:
-    - "54321:5432"
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=zally
+    volumes:
+      - "postgres-data:/var/lib/postgresql/data"
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
+
+volumes:
+  postgres-data:
