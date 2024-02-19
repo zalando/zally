@@ -118,14 +118,16 @@ class RestApiViolationsTest : RestApiBaseTest() {
 
     @Test
     fun shouldRespondWithViolationWhenApiDefinitionFieldIsNotValidSwaggerDefinition() {
+        val rule101Link = "https://zalando.github.io/restful-api-guidelines/#101"
         val response = sendApiDefinition(
             ApiDefinitionRequest.fromJson("\"no swagger definition\"")
         )
 
         assertThat(response.violations).hasSize(5)
         assertThat(response.violations[0].title).isEqualTo("provide API specification using OpenAPI")
-        // TODO: fails with exception after switch to swagger-parser:2.1.9
-        // assertThat(response.violations[0].description).isEqualTo("attribute openapi is not of type `object`")
+        // the input is just a string, it has no attributes
+        assertThat(response.violations[0].description).isEqualTo("attribute  is not of type `object`")
+        assertThat(response.violations[0].ruleLink).isEqualTo(rule101Link)
         assertThat(response.violations[1].title).isEqualTo("TestCheckIsOpenApi3")
         assertThat(response.externalId).isNotNull()
     }
