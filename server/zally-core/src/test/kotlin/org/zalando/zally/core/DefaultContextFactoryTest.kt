@@ -15,6 +15,15 @@ class DefaultContextFactoryTest {
     //
 
     @Test
+    fun `OPEN API -- not applicable when content is a String without any properties`() {
+        @Language("YAML")
+        val content = "Pets API".trimIndent()
+        val result = defaultContextFactory.parseOpenApiContext(content)
+
+        assertThat(result).resultsInNotApplicable()
+    }
+
+    @Test
     fun `OPEN API -- not applicable when content does not contain the openapi property`() {
         @Language("YAML")
         val content = """
