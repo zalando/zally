@@ -30,7 +30,12 @@ class DefaultContextFactoryTest {
                 openapi: {la: 3.0.0}
             """
         val result = defaultContextFactory.parseOpenApiContext(content)
-        assertThat(result).resultsInParsedWithErrors()
+        assertThat(result).resultsInErrors(
+            Violation(
+                description = "attribute openapi is not of type `string`",
+                pointer = JsonPointer.empty()
+            )
+        )
     }
 
     @Test
