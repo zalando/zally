@@ -24,6 +24,16 @@ class DefaultContextFactoryTest {
     }
 
     @Test
+    fun `OPEN API -- Openapi property is expected to be String according to the OpenAPI3 spec`() {
+        @Language("YAML")
+        val content = """
+                openapi: {la: 3.0.0}
+            """
+        val result = defaultContextFactory.parseOpenApiContext(content)
+        assertThat(result).resultsInParsedWithErrors()
+    }
+
+    @Test
     fun `OPEN API -- not applicable when content does not contain the openapi property`() {
         @Language("YAML")
         val content = """
