@@ -1,10 +1,12 @@
 package org.zalando.zally.core
 
+import com.fasterxml.jackson.core.JsonPointer
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.zalando.zally.core.ContentParseResultAssert.Companion.assertThat
+import org.zalando.zally.rule.api.Violation
 
 class DefaultContextFactoryTest {
 
