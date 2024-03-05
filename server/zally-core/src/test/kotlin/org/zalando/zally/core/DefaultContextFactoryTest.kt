@@ -1,10 +1,12 @@
 package org.zalando.zally.core
 
+import com.fasterxml.jackson.core.JsonPointer
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.zalando.zally.core.ContentParseResultAssert.Companion.assertThat
+import org.zalando.zally.rule.api.Violation
 
 class DefaultContextFactoryTest {
 
@@ -13,6 +15,30 @@ class DefaultContextFactoryTest {
     //
     // OPEN API
     //
+
+    @Test
+    fun `OPEN API -- not applicable when content is a String without any properties`() {
+        @Language("YAML")
+        val content = "Pets API".trimIndent()
+        val result = defaultContextFactory.parseOpenApiContext(content)
+
+        assertThat(result).resultsInNotApplicable()
+    }
+
+    @Test
+    fun `OPEN API -- Openapi property is expected to be String according to the OpenAPI3 spec`() {
+        @Language("YAML")
+        val content = """
+                openapi: {la: 3.0.0}
+            """
+        val result = defaultContextFactory.parseOpenApiContext(content)
+        assertThat(result).resultsInErrors(
+            Violation(
+                description = "attribute openapi is not of type `string`",
+                pointer = JsonPointer.empty()
+            )
+        )
+    }
 
     @Test
     fun `OPEN API -- not applicable when content does not contain the openapi property`() {

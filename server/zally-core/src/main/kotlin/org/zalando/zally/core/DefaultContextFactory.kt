@@ -102,7 +102,12 @@ class DefaultContextFactory(
 
         val parseResult = OpenAPIV3Parser().readContents(content, authorizationValue, parseOptions)
         return if (parseResult.openAPI === null) {
-            if (parseResult.messages.isEmpty() || parseResult.messages.contains("attribute openapi is missing")) {
+            val openApiIsMissing = parseResult.messages.contains("attribute openapi is missing")
+            val errorConstructingInstance = parseResult.messages.any {
+                it.contains("Cannot construct instance", ignoreCase = true)
+            }
+
+            if (parseResult.messages.isEmpty() || openApiIsMissing || errorConstructingInstance) {
                 ContentParseResult.NotApplicable()
             } else {
                 ContentParseResult.ParsedWithErrors(parseResult.messages.filterNotNull().map(::errorToViolation))
