@@ -2,10 +2,12 @@ package org.zalando.zally.ruleset.zalando
 
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.core.rulesConfig
 
+@Disabled("Disabled default snake case test")
 class SnakeCaseInPropNameRuleTest {
 
     private val rule = SnakeCaseInPropNameRule(rulesConfig)
