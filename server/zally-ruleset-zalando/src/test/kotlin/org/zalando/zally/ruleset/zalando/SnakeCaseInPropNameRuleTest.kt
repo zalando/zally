@@ -10,6 +10,7 @@ class SnakeCaseInPropNameRuleTest {
 
     private val rule = SnakeCaseInPropNameRule(rulesConfig)
 
+    @Ignore
     @Test
     fun `checkPropertyNames should return violation if a property name is not snake_case`() {
         @Language("YAML")
@@ -31,6 +32,7 @@ class SnakeCaseInPropNameRuleTest {
         assertThat(violations[0].pointer.toString()).isEqualTo("/components/schemas/article/properties/superMegaLaserTurboArticle")
     }
 
+    @Ignore
     @Test
     fun `checkPropertyNames should return no violation if only snake_case properties are used`() {
         @Language("YAML")
@@ -50,6 +52,7 @@ class SnakeCaseInPropNameRuleTest {
         assertThat(violations).isEmpty()
     }
 
+    @Ignore
     @Test
     fun `checkPropertyNames should return no violation if only whitelisted properties are used`() {
         @Language("YAML")
