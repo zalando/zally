@@ -62,7 +62,7 @@ class ApiViolationsController(
     @ResponseBody
     @GetMapping("/api-violations/{externalId}")
     fun getExistingViolationResponse(
-        @PathVariable(value = "externalId") externalId: UUID
+        @PathVariable externalId: UUID
     ): ApiDefinitionResponse {
         val review = apiReviewRepository.findByExternalId(externalId) ?: throw ApiReviewNotFoundException()
 
