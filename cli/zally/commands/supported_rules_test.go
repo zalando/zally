@@ -2,13 +2,14 @@ package commands
 
 import (
 	"bytes"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/zalando/zally/cli/zally/utils/formatters"
 
@@ -69,7 +70,7 @@ func TestFetchRules(t *testing.T) {
 		testServer := httptest.NewServer(http.HandlerFunc(handler))
 		defer testServer.Close()
 
-		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
+		requestBuilder := utils.NewRequestBuilder(testServer.URL, "Bearer", "", app)
 		rules, err := fetchRules(requestBuilder, "", false)
 
 		tests.AssertEquals(t, nil, err)
@@ -89,7 +90,7 @@ func TestFetchRules(t *testing.T) {
 		testServer := httptest.NewServer(http.HandlerFunc(handler))
 		defer testServer.Close()
 
-		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
+		requestBuilder := utils.NewRequestBuilder(testServer.URL, "Bearer", "", app)
 		rules, err := fetchRules(requestBuilder, "", false)
 
 		tests.AssertEquals(t, "Cannot submit file for linting. HTTP Status: 400, Response: Something went wrong", err.Error())
@@ -106,7 +107,7 @@ func TestFetchRules(t *testing.T) {
 		testServer := httptest.NewServer(http.HandlerFunc(handler))
 		defer testServer.Close()
 
-		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
+		requestBuilder := utils.NewRequestBuilder(testServer.URL, "Bearer", "", app)
 		fetchRules(requestBuilder, "must", false)
 	})
 }
