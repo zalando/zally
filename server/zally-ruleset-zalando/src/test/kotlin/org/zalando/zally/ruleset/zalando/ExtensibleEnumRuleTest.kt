@@ -57,7 +57,7 @@ class ExtensibleEnumRuleTest {
     }
 
     @Test
-    fun `checkForEnums should return violation if no enums are used`() {
+    fun `checkForEnums should return no violation if no enums are used`() {
         val content = """
             openapi: 3.0.1
             components:
