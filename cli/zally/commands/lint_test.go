@@ -2,10 +2,11 @@ package commands
 
 import (
 	"flag"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 
 	"net/http"
 	"net/http/httptest"
@@ -61,7 +62,7 @@ func TestDoRequest(t *testing.T) {
 		testServer := httptest.NewServer(http.HandlerFunc(handler))
 		defer testServer.Close()
 
-		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
+		requestBuilder := utils.NewRequestBuilder(testServer.URL, "Bearer", "", app)
 		data, _ := readFile("testdata/minimal_swagger.json")
 
 		violations, err := doRequest(requestBuilder, data, false)
@@ -78,7 +79,7 @@ func TestDoRequest(t *testing.T) {
 		testServer := httptest.NewServer(http.HandlerFunc(handler))
 		defer testServer.Close()
 
-		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
+		requestBuilder := utils.NewRequestBuilder(testServer.URL, "Bearer", "", app)
 		data, _ := readFile("testdata/minimal_swagger.json")
 
 		violations, err := doRequest(requestBuilder, data, false)
@@ -96,7 +97,7 @@ func TestDoRequest(t *testing.T) {
 		testServer := httptest.NewServer(http.HandlerFunc(handler))
 		defer testServer.Close()
 
-		requestBuilder := utils.NewRequestBuilder(testServer.URL, "", app)
+		requestBuilder := utils.NewRequestBuilder(testServer.URL, "Bearer", "", app)
 		data, _ := readFile("testdata/minimal_swagger.json")
 
 		violations, err := doRequest(requestBuilder, data, false)

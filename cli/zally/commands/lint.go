@@ -42,8 +42,18 @@ func lint(c *cli.Context) error {
 		return domain.NewAppError(err, domain.ClientError)
 	}
 	skipSslVerification := c.Bool("skip-ssl-verification")
-	requestBuilder := utils.NewRequestBuilder(
-		c.GlobalString("linter-service"), c.GlobalString("token"), c.App)
+
+	var requestBuilder *utils.RequestBuilder
+
+	//If token is set, the Oauth2 auth-scheme will be used
+	if c.GlobalString("token") != "" {
+		requestBuilder = utils.NewRequestBuilder(
+			c.GlobalString("linter-service"), "Bearer", c.GlobalString("token"), c.App)
+	} else {
+		requestBuilder = utils.NewRequestBuilder(
+			c.GlobalString("linter-service"), c.GlobalString("auth-scheme"), c.GlobalString("auth-params"), c.App)
+	}
+
 	violations, err := doRequest(requestBuilder, data, skipSslVerification)
 	if err != nil {
 		return domain.NewAppError(err, domain.ServerError)

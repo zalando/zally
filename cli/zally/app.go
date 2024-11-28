@@ -25,8 +25,18 @@ func CreateApp() *cli.App {
 			EnvVar: "ZALLY_URL",
 		},
 		cli.StringFlag{
+			Name:   "auth-scheme, as",
+			Usage:  "Scheme used for authentication `AUTH_SCHEME`",
+			EnvVar: "AUTH_SCHEME",
+		},
+		cli.StringFlag{
+			Name:   "auth-params, ap",
+			Usage:  "Parameters used for authentication `AUTH_PARAMS`",
+			EnvVar: "AUTH_PARAMS",
+		},
+		cli.StringFlag{
 			Name:   "token, t",
-			Usage:  "OAuth2 Token `OAUTH2_TOKEN`",
+			Usage:  "OAuth2 Token (When set will overload auth-scheme and -params) `OAUTH2_TOKEN`",
 			EnvVar: "TOKEN",
 		},
 		cli.StringFlag{
