@@ -1,5 +1,6 @@
 package org.zalando.zally.configuration
 
+import jakarta.servlet.http.HttpServletRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -7,7 +8,6 @@ import org.mockito.Mockito
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.security.web.util.matcher.RegexRequestMatcher
-import javax.servlet.http.HttpServletRequest
 
 /**
  * This serves as a reminder/documentation of how the matchers do work.

@@ -1,7 +1,13 @@
 package org.zalando.zally.apireview
 
-import org.hibernate.annotations.Parameter
-import org.hibernate.annotations.Type
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 import org.zalando.zally.core.Result
 import org.zalando.zally.dto.ApiDefinitionRequest
 import org.zalando.zally.rule.api.Severity
@@ -11,14 +17,6 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.UUID
-import javax.persistence.CascadeType
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.OneToMany
 
 @Suppress("unused")
 @Entity
@@ -29,10 +27,7 @@ class ApiReview(
     violations: List<Result> = emptyList(),
     val name: String? = OpenApiHelper.extractApiName(apiDefinition),
     val apiId: String? = OpenApiHelper.extractApiId(apiDefinition),
-    @Type(
-        type = "org.jadira.usertype.dateandtime.threeten.PersistentOffsetDateTime",
-        parameters = [Parameter(name = "javaZone", value = "UTC")]
-    )
+
     @Column(nullable = false)
     val created: OffsetDateTime = Instant.now().atOffset(ZoneOffset.UTC),
     @Column(nullable = false)
