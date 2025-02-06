@@ -3,14 +3,28 @@ package org.zalando.zally.ruleset.zalando
 import org.assertj.core.api.Assertions
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.zalando.zally.core.DefaultContextFactory
+import java.util.stream.Stream
 
 class EnumValueTypeTest {
 
     private val rule = EnumValueTypeRule()
 
-    @Test
-    fun `fail validation if 'x-extensible-enum' has a 'string' type`() {
+    companion object {
+        @JvmStatic
+        fun nonStringTypes(): Stream<Arguments> = Stream.of(
+            Arguments.of("number", "1", "2"),
+            Arguments.of("integer", "1", "2"),
+            Arguments.of("boolean", "true", "false")
+        )
+    }
+
+    @ParameterizedTest
+    @MethodSource("nonStringTypes")
+    fun `fail validation if 'x-extensible-enum' has a non-'string' type`(nonStringType: String, value1: String, value2: String) {
         @Language("YAML")
         val spec = """
             openapi: 3.0.1
@@ -26,11 +40,10 @@ class EnumValueTypeTest {
                             type: object
                             properties:
                               prop-1:
-                                type: integer
+                                type: $nonStringType
                                 x-extensible-enum:
-                                  - 1
-                                  - 2
-                                  - 3
+                                  - $value1
+                                  - $value2
                     
         """.trimIndent()
 
