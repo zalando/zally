@@ -43,7 +43,7 @@ class ApiDefinitionReader(private val client: RestTemplate) {
     } catch (exception: HttpClientErrorException) {
         throw InaccessibleResourceUrlException(
             "${exception.message} while retrieving api definition url",
-            exception.statusCode
+            HttpStatus.valueOf(exception.statusCode.value())
         )
     } catch (exception: ResourceAccessException) {
         throw InaccessibleResourceUrlException(
