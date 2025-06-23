@@ -135,7 +135,7 @@ class DefaultContextFactoryTest {
                       required: true
                       schema:
                         type: string
-            """.trimIndent()
+        """.trimIndent()
 
         val result = defaultContextFactory.parseOpenApiContext(content)
         assertThat(result).resultsInSuccess()
