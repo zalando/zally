@@ -11,7 +11,6 @@ import org.zalando.zally.rule.api.Violation
 class DefaultContextFactoryTest {
 
     private val defaultContextFactory = DefaultContextFactory()
-    private val ref = "\$ref"
 
     //
     // OPEN API
@@ -118,7 +117,7 @@ class DefaultContextFactoryTest {
                   /items/{item-id}:
                     get:
                       parameters:
-                        - $ref: "#/components/parameters/PathParameter"
+                        - ${'$'}ref: "#/components/parameters/PathParameter"
                       responses: 
                         default:
                          description: Response
@@ -363,7 +362,7 @@ class DefaultContextFactoryTest {
                     200:
                       description: List of nodes.
                       schema:
-                        $ref: '#/definitions/ReadNode'
+                        ${'$'}ref: '#/definitions/ReadNode'
             definitions:
               WriteNode:
                 type: object
@@ -373,10 +372,10 @@ class DefaultContextFactoryTest {
                   children:
                     type: array
                     items:
-                      $ref: '#/definitions/WriteNode'
+                      ${'$'}ref: '#/definitions/WriteNode'
               ReadNode:
                 allOf:
-                  - $ref: '#/definitions/WriteNode'
+                  - ${'$'}ref: '#/definitions/WriteNode'
                   - type: object
                     properties:
                       extra: # property that WriteNode doesn't have
@@ -384,7 +383,7 @@ class DefaultContextFactoryTest {
                       children: # children redefined to be ReadNode rather than WriteNode
                         type: array
                         items:
-                          $ref: '#/definitions/ReadNode'
+                          ${'$'}ref: '#/definitions/ReadNode'
         """.trimIndent()
         val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
@@ -416,14 +415,14 @@ class DefaultContextFactoryTest {
                   - id-mappings
                 description: List of identifiers associated with the source id.
                 parameters:
-                  - $ref: '#/parameters/identifier_type'
-                  - $ref: '#/parameters/source_identifier'
-                  - $ref: '#/parameters/target_identifier_type'
+                  - ${'$'}ref: '#/parameters/identifier_type'
+                  - ${'$'}ref: '#/parameters/source_identifier'
+                  - ${'$'}ref: '#/parameters/target_identifier_type'
                 responses:
                   200:
                     description: The identifiers associated with the source id.
                     schema:
-                      $ref: '#/definitions/IdMappingResults'
+                      ${'$'}ref: '#/definitions/IdMappingResults'
                   401:
                     description: User is not authenticated
                   403:
@@ -431,7 +430,7 @@ class DefaultContextFactoryTest {
                   404:
                     description: Identifier is not found
                     schema:
-                      $ref: '#definitions/Problem'
+                      ${'$'}ref: '#definitions/Problem'
                 security:
                   - oauth2:
                     - 'cross-device-graph-service.read'
