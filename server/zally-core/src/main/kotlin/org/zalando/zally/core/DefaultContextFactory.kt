@@ -88,7 +88,7 @@ class DefaultContextFactory(
     private fun parseOpenApi(content: String, authorization: String?): ContentParseResult<SwaggerParseResult> {
         val parseOptions = ParseOptions()
         parseOptions.isResolve = true
-        // parseOptions.isResolveFully = true // https://github.com/swagger-api/swagger-parser/issues/682
+        parseOptions.isResolveFully = true // Needed to resolve references in OpenAPI 3.1.0
 
         val authorizationValue = when {
             authorization is String && propagateAuthorizationUrls.isNotEmpty() ->

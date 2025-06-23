@@ -3,9 +3,9 @@ package org.zalando.zally.core
 import com.fasterxml.jackson.core.JsonPointer
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.zalando.zally.core.ContentParseResultAssert.Companion.assertThat
+import org.zalando.zally.core.util.getAllParameters
 import org.zalando.zally.rule.api.Violation
 
 class DefaultContextFactoryTest {
@@ -53,20 +53,6 @@ class DefaultContextFactoryTest {
     }
 
     @Test
-    @Disabled("OpenAPI 3.1 seems now to be supported by latest swagger parser")
-    fun `OPEN API -- OpenAPI 3-1 is not applicable`() {
-        // The parsing results in no OpenAPI 3.1 object model until the latest
-        // parser is providing support. Than we can remove this test case and
-        // and enable the subsequent tests.
-        @Language("YAML")
-        val content = """
-                openapi: 3.1.0
-            """
-        val result = defaultContextFactory.parseOpenApiContext(content)
-        assertThat(result).resultsInNotApplicable()
-    }
-
-    @Test
     fun `OPEN API -- OpenAPI 3-1 without info and paths succeeds with messages`() {
         // The parsing results in a valid OpenAPI 3.1 object model, but
         // with messages that `info` and `paths` are missing. Let the
@@ -82,7 +68,6 @@ class DefaultContextFactoryTest {
     }
 
     @Test
-    @Disabled("OpenAPI 3.1 is not supported by latest swagger parser yet")
     fun `OPEN API -- OpenAPI 3-1 with oauth but without scopes succeeds`() {
         @Language("YAML")
         val content = """
@@ -103,7 +88,6 @@ class DefaultContextFactoryTest {
     }
 
     @Test
-    @Disabled("OpenAPI 3.1 is not supported by latest swagger parser yet")
     fun `OPEN API -- OpenAPI 3-1 is recognised as an OpenAPI3 spec`() {
         @Language("YAML")
         val content = """
@@ -117,6 +101,50 @@ class DefaultContextFactoryTest {
         assertThat(result).resultsInSuccess()
         val success = result as ContentParseResult.ParsedSuccessfully
         assertThat(success.result.isOpenAPI3()).isTrue()
+    }
+
+    @Test
+    fun `OPEN API -- OpenAPI 3-1-0 all refs are resolved`() {
+        @Language("YAML")
+        val content = """
+                openapi: '3.1.0'
+                info:
+                  title: API 1
+                  contact: 
+                    name: "Team One"
+                  version: 1.0.0
+                paths:
+                  /items/{item-id}:
+                    get:
+                      parameters:
+                        - ${'$'}ref: "#/components/parameters/PathParameter"
+                      responses: 
+                        default:
+                         description: Response
+                         content:                        
+                           application/json:
+                             schema: 
+                               type: string
+                components: 
+                  parameters:
+                    PathParameter:
+                      in: path  
+                      name: item-id                            
+                      description: The id of the pet to retrieve
+                      required: true
+                      schema:
+                        type: string
+        """.trimIndent()
+
+        val result = defaultContextFactory.parseOpenApiContext(content)
+        assertThat(result).resultsInSuccess()
+        val success = result as ContentParseResult.ParsedSuccessfully
+        assertThat(success.result.isOpenAPI3()).isTrue()
+
+        val params = success.result.api.getAllParameters()
+        assertThat(params).hasSize(2)
+        assertThat(params).allMatch { it.name == "item-id" }
+        assertThat(params).allMatch { it.`$ref` == null }
     }
 
     @Test
@@ -367,8 +395,6 @@ class DefaultContextFactoryTest {
     fun `OpenAPI Resolve NPE workaround is avoided when converted Swagger has components with null schemas`() {
         // This Swagger, after being converted, causes the `components` property to exist (not
         // null), but having a null `schemas`, which causes the NPE.
-        val ref = "\$ref"
-
         @Language("YAML")
         val content = """
           swagger: '2.0'
@@ -389,14 +415,14 @@ class DefaultContextFactoryTest {
                   - id-mappings
                 description: List of identifiers associated with the source id.
                 parameters:
-                  - $ref: '#/parameters/identifier_type'
-                  - $ref: '#/parameters/source_identifier'
-                  - $ref: '#/parameters/target_identifier_type'
+                  - ${'$'}ref: '#/parameters/identifier_type'
+                  - ${'$'}ref: '#/parameters/source_identifier'
+                  - ${'$'}ref: '#/parameters/target_identifier_type'
                 responses:
                   200:
                     description: The identifiers associated with the source id.
                     schema:
-                      $ref: '#/definitions/IdMappingResults'
+                      ${'$'}ref: '#/definitions/IdMappingResults'
                   401:
                     description: User is not authenticated
                   403:
@@ -404,7 +430,7 @@ class DefaultContextFactoryTest {
                   404:
                     description: Identifier is not found
                     schema:
-                      $ref: '#definitions/Problem'
+                      ${'$'}ref: '#definitions/Problem'
                 security:
                   - oauth2:
                     - 'cross-device-graph-service.read'
