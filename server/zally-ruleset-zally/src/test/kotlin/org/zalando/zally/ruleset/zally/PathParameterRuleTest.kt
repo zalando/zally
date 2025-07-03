@@ -341,4 +341,44 @@ class PathParameterRuleTest {
 
         assertThat(violations).isEmpty()
     }
+
+    @Test
+    internal fun `return no violations when validating referenced parameters on OpenAPI 3-1-0`() {
+        @Language("YAML")
+        val context = DefaultContextFactory().getOpenApiContext(
+            """
+            openapi: '3.1.0'
+            info:
+              title: API 1
+              contact: 
+                name: "Team One"
+              version: 1.0.0
+            paths:
+              /items/{item-id}:
+                get:
+                  parameters:
+                    - ${'$'}ref: "#/components/parameters/PathParameter"
+                  responses: 
+                    default:
+                     description: Response
+                     content:                        
+                       application/json:
+                         schema: 
+                           type: string
+            components: 
+              parameters:
+                PathParameter:
+                  in: path  
+                  name: item-id                            
+                  description: The id of the pet to retrieve
+                  required: true
+                  schema:
+                    type: string
+            """.trimIndent()
+        )
+
+        val violations = rule.checkSchemaOrContentProperty(context)
+
+        assertThat(violations).isEmpty()
+    }
 }
