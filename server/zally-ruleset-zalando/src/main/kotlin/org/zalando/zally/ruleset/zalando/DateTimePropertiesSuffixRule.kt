@@ -13,7 +13,7 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "235",
     severity = Severity.SHOULD,
-    title = "Name date/time properties using the \"_at\" suffix"
+    title = "Name date/time properties using the common suffix"
 )
 class DateTimePropertiesSuffixRule(rulesConfig: Config) {
 
@@ -22,7 +22,7 @@ class DateTimePropertiesSuffixRule(rulesConfig: Config) {
         .map { Regex(it) }
         .toSet()
 
-    private val propertyFormats = setOf("date", "date-time")
+    private val propertyFormats = setOf("date", "time", "date-time")
 
     @Check(severity = Severity.SHOULD)
     fun validate(context: Context): List<Violation> {
