@@ -21,10 +21,10 @@ class ReviewStatisticsController(private val apiReviewRepository: ApiReviewRepos
     @ResponseBody
     @GetMapping("/review-statistics")
     fun retrieveReviewStatistics(
-        @RequestParam(value = "from", required = false)
+        @RequestParam(required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         from: LocalDate?,
-        @RequestParam(value = "to", required = false)
+        @RequestParam(required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         to: LocalDate?,
         @RequestParam(value = "user_agent", required = false) userAgent: String?

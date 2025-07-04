@@ -9,7 +9,7 @@ plugins {
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.allopen") version kotlinVersion
 
-    id("org.springframework.boot") version "2.7.7"
+    id("org.springframework.boot") version "3.3.3"
 }
 
 apply(plugin = "io.spring.dependency-management")
@@ -28,14 +28,13 @@ dependencies {
     }
     implementation("org.flywaydb:flyway-core:9.11.0")
     implementation("org.hsqldb:hsqldb:2.7.1")
-    implementation("org.postgresql:postgresql:42.5.1")
-    implementation("org.hibernate:hibernate-core")
-    implementation("org.jadira.usertype:usertype.core:7.0.0.CR1") {
-        exclude("org.hibernate", "hibernate-entitymanager")
-    }
+    implementation("org.postgresql:postgresql:42.7.2")
+    implementation("org.hibernate.orm:hibernate-core")
+
     implementation("org.zalando.stups:stups-spring-oauth2-server:1.0.24")
     implementation("org.zalando:problem:0.27.1")
-    implementation("org.zalando:problem-spring-web:0.27.0")
+    implementation("org.zalando:jackson-datatype-problem:0.27.1")
+    implementation("org.zalando:problem-spring-web:0.29.1")
     implementation("org.zalando:twintip-spring-web:1.2.0")
 
     testImplementation(project(":zally-test"))
