@@ -13,7 +13,7 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "235",
     severity = Severity.SHOULD,
-    title = "Name date/time properties using the common suffix"
+    title = "Name date/time properties using the common conventions"
 )
 class DateTimePropertiesSuffixRule(rulesConfig: Config) {
 

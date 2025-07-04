@@ -107,7 +107,7 @@ class DateTimePropertiesSuffixRuleTest {
     }
 
     @Test
-    fun `should fail on prefix _at and succeed on prefix patterns`() {
+    fun `should fail on prefix at_ and succeed on prefix patterns`() {
         @Language("YAML")
         val content = """
             openapi: '3.0.1'
