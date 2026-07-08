@@ -91,9 +91,6 @@
               "minimum": 599,
               "maximum": 600
             },
-            "exclusiveMaximum": {
-              "type": "boolean"
-            },
             "example": {
               "type": "integer"
             }
@@ -102,8 +99,7 @@
             "type",
             "format",
             "minimum",
-            "maximum",
-            "exclusiveMaximum"
+            "maximum"
           ]
         },
         "detail": {

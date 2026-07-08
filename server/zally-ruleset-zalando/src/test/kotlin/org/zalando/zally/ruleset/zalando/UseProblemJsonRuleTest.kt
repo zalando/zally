@@ -69,7 +69,7 @@ class UseProblemJsonRuleTest {
         ZallyAssertions
             .assertThat(violations)
             .descriptionsEqualTo(
-                "$description Object has missing required properties ([\"exclusiveMaximum\",\"format\",\"maximum\",\"minimum\"])",
+                "$description Object has missing required properties ([\"format\",\"maximum\",\"minimum\"])",
                 "$description Instance value (\"string\") not found in enum (possible values: [\"integer\"])"
             )
             .pointersEqualTo(
@@ -107,7 +107,7 @@ class UseProblemJsonRuleTest {
         ZallyAssertions
             .assertThat(violations)
             .descriptionsEqualTo(
-                "$description Object has missing required properties ([\"exclusiveMaximum\",\"format\",\"maximum\",\"minimum\"])",
+                "$description Object has missing required properties ([\"format\",\"maximum\",\"minimum\"])",
                 "$description Instance value (\"string\") not found in enum (possible values: [\"integer\"])"
             )
             .pointersEqualTo(
