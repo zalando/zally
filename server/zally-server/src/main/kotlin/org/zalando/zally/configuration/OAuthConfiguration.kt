@@ -37,28 +37,30 @@ class OAuthConfiguration : ResourceServerConfigurerAdapter() {
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http
-            .httpBasic().disable()
-            .requestMatchers().antMatchers("/**")
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.NEVER)
-            .and()
-            .authorizeRequests()
-            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .regexMatchers("/health/?").permitAll()
-            .regexMatchers(
-                "/metrics/?(\\?.*)?",
-                "/api-violations/?([a-z0-9-]+/?)?(\\?)?",
-                "/supported-rules/?(\\?.*)?",
-                "/review-statistics/?(\\?.*)?"
-            )
-            .access("#oauth2.hasScope('uid')")
-            .antMatchers("**").denyAll()
+            .authorizeHttpRequests { it.requestMatchers("/**") }
+            .httpBasic { it.disable() }
+            .sessionManagement {
+                it.sessionCreationPolicy(SessionCreationPolicy.NEVER)
+            }
+            .authorizeHttpRequests {
+                it.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    .requestMatchers("/health/?").permitAll()
+                    .requestMatchers(
+                        "/metrics/?(\\?.*)?",
+                        "/api-violations/?([a-z0-9-]+/?)?(\\?)?",
+                        "/supported-rules/?(\\?.*)?",
+                        "/review-statistics/?(\\?.*)?"
+                    )
+                    .hasAuthority("SCOPE_uid")
+                    .anyRequest().denyAll()
+            }
 
         http
-            .exceptionHandling()
-            .authenticationEntryPoint(problemSupport)
-            .accessDeniedHandler(problemSupport)
+            .exceptionHandling { handling ->
+                handling
+                    .authenticationEntryPoint(problemSupport)
+                    .accessDeniedHandler(problemSupport)
+            }
     }
 
     @Bean

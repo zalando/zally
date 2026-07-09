@@ -12,7 +12,7 @@ import org.zalando.problem.spring.web.advice.SpringAdviceTrait
 @ControllerAdvice
 class ExceptionHandling : ProblemHandling, SpringAdviceTrait {
 
-    @ExceptionHandler
+    @ExceptionHandler(MissingApiDefinitionException::class)
     fun handleMissingApiDefinitionException(
         exception: MissingApiDefinitionException,
         request: NativeWebRequest
@@ -20,7 +20,7 @@ class ExceptionHandling : ProblemHandling, SpringAdviceTrait {
         return create(HttpStatus.BAD_REQUEST, exception, request)
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(InaccessibleResourceUrlException::class)
     fun handleUnaccessibleResourceUrlException(
         exception: InaccessibleResourceUrlException,
         request: NativeWebRequest
@@ -28,16 +28,16 @@ class ExceptionHandling : ProblemHandling, SpringAdviceTrait {
         return create(exception.httpStatus, exception, request)
     }
 
-    @ExceptionHandler
-    fun handleUnsufficientTimeIntervalParameterException(
+    @ExceptionHandler(InsufficientTimeIntervalParameterException::class)
+    fun handleInsufficientTimeIntervalParameterException(
         exception: InsufficientTimeIntervalParameterException,
         request: NativeWebRequest
     ): ResponseEntity<Problem> {
         return create(HttpStatus.BAD_REQUEST, exception, request)
     }
 
-    @ExceptionHandler
-    fun handleUnsufficientTimeIntervalParameterException(
+    @ExceptionHandler(TimeParameterIsInTheFutureException::class)
+    fun handleTimeParameterIsInTheFutureException(
         exception: TimeParameterIsInTheFutureException,
         request: NativeWebRequest
     ): ResponseEntity<Problem> {

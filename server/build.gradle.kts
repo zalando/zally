@@ -161,7 +161,6 @@ subprojects {
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.1")
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.14.1")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.1")
-        implementation("org.yaml:snakeyaml:1.33")
 
         testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.9.1")
         testImplementation("com.jayway.jsonpath:json-path-assert:2.7.0")
