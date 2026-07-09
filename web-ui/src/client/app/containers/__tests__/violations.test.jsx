@@ -27,7 +27,7 @@ describe('Violations container component', () => {
   describe('when call handleFormSubmit', () => {
     test('should handle success', () => {
       const violations = [{}];
-      const violationsCount = 1;
+      const violationsCount = { must: 1, should: 0 };
       getApiViolations.mockReturnValueOnce(
         Promise.resolve({
           violations: violations,

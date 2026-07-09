@@ -53,6 +53,20 @@ describe('Violations component', () => {
     const component = shallow(<Violations violations={[]} />);
     expect(component.find('Violation')).toHaveLength(0);
   });
+
+  test('should show MUST and SHOULD counts', () => {
+    const violationsCount = { must: 2, should: 3 };
+    const component = shallow(
+      <Violations violations={[]} violationsCount={violationsCount} />
+    );
+    const counts = component.find('.violations-heading__count');
+
+    expect(counts).toHaveLength(2);
+    expect(counts.at(0).text()).toContain('MUST:2');
+    expect(counts.at(1).text()).toContain('SHOULD:3');
+    expect(counts.at(0).find('RuleType')).toHaveLength(1);
+    expect(counts.at(1).find('RuleType')).toHaveLength(1);
+  });
 });
 
 describe('Violation component', () => {
@@ -168,13 +182,14 @@ describe('ViolationsResult component', () => {
   describe('when state is complete with violations', () => {
     test('should render violations', () => {
       const violations = [{}, {}];
+      const violationsCount = { must: 1, should: 2 };
       const component = shallow(
         <ViolationsResult
           pending={false}
           complete={true}
           errorMsgText={null}
           violations={violations}
-          violationsCount={2}
+          violationsCount={violationsCount}
           successMsgTitle=""
           successMsgText=""
         />
@@ -186,7 +201,7 @@ describe('ViolationsResult component', () => {
 
       expect(Violations).toHaveLength(1);
       expect(Violations.prop('violations')).toEqual(violations);
-      expect(Violations.prop('violationsCount')).toEqual(2);
+      expect(Violations.prop('violationsCount')).toEqual(violationsCount);
     });
   });
 });

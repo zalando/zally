@@ -62,6 +62,7 @@ export class URL extends Violations {
           errorMsgText={this.state.error}
           externalId={this.state.externalId}
           violations={this.state.violations}
+          violationsCount={this.state.violationsCount}
           successMsgTitle={this.state.successMsgTitle}
           successMsgText={this.state.successMsgText}
         />

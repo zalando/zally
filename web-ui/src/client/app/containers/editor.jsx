@@ -135,28 +135,30 @@ export class Editor extends Violations {
               />
             ) : null}
             <div className="dc-show-from-large">
-              <ViolationsResult
-                pending={this.state.pending}
-                complete={this.state.ajaxComplete}
-                errorMsgText={this.state.error}
-                externalId={this.state.externalId}
-                violations={this.state.violations}
-                successMsgTitle={this.state.successMsgTitle}
-                successMsgText={this.state.successMsgText}
-              />
+                <ViolationsResult
+                  pending={this.state.pending}
+                  complete={this.state.ajaxComplete}
+                  errorMsgText={this.state.error}
+                  externalId={this.state.externalId}
+                  violations={this.state.violations}
+                  violationsCount={this.state.violationsCount}
+                  successMsgTitle={this.state.successMsgTitle}
+                  successMsgText={this.state.successMsgText}
+                />
             </div>
           </div>
         </div>
         <Dialog show={this.state.showOverlay} onHide={this.handleHideOverlay}>
-          <ViolationsResult
-            pending={this.state.pending}
-            complete={this.state.ajaxComplete}
-            errorMsgText={this.state.error}
-            externalId={this.state.externalId}
-            violations={this.state.violations}
-            successMsgTitle={this.state.successMsgTitle}
-            successMsgText={this.state.successMsgText}
-          />
+            <ViolationsResult
+              pending={this.state.pending}
+              complete={this.state.ajaxComplete}
+              errorMsgText={this.state.error}
+              externalId={this.state.externalId}
+              violations={this.state.violations}
+              violationsCount={this.state.violationsCount}
+              successMsgTitle={this.state.successMsgTitle}
+              successMsgText={this.state.successMsgText}
+            />
         </Dialog>
       </div>
     );

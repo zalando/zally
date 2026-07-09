@@ -6,14 +6,42 @@ import FluidContainer from './fluid-container.jsx';
 import { Link } from 'react-router-dom';
 
 export function Violations(props) {
+  const {
+    externalId,
+    violations = [],
+    violationsCount = {},
+  } = props;
+
+  const parseCount = value =>
+    typeof value === 'number' ? value : 0;
+
+  const severityCounts = [
+    { label: 'MUST', value: parseCount(violationsCount.must) },
+    { label: 'SHOULD', value: parseCount(violationsCount.should) },
+  ];
+
   return (
     <div>
       <div className="dc-row">
         <div className="dc-column">
-          <h3>
-            VIOLATIONS
-            <span style={{ float: 'right' }}>
-              <Link to={'/editor/' + props.externalId} className="dc-link">
+          <h3 className="violations-heading">
+            <span className="violations-heading__title">VIOLATIONS</span>
+              <span className="violations-heading__counts">
+                {severityCounts.map(({ label, value }) => (
+                  <span
+                    key={label}
+                    className="violations-heading__count"
+                  >
+                    <strong>{label}:</strong>
+                    <span className="violations-heading__count-value">
+                      {value}
+                    </span>
+                    <RuleType type={label} />
+                  </span>
+                ))}
+              </span>
+            <span className="violations-heading__link">
+              <Link to={'/editor/' + externalId} className="dc-link">
                 <i className="dc-icon dc-icon--interactive dc-icon--link" />
               </Link>
             </span>
@@ -25,7 +53,7 @@ export function Violations(props) {
           <div className="dc-row">
             <div className="dc-column">
               <ul className="violations-content">
-                {props.violations.map((violation, index) => {
+                {violations.map((violation, index) => {
                   return <Violation key={index} violation={violation} />;
                 })}
               </ul>
