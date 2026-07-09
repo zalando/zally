@@ -97,20 +97,25 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
             val name = m.name
             try {
                 m.invoke(obj)?.let { value ->
+                    val nextNodePointer: JsonPointer
+                    var skipNode = false
+
                     if (m.isAnnotationPresent(JsonAnyGetter::class.java)) {
                         // A `JsonAnyGetter` method is simply a wrapper for nested properties.
                         // We must not use the method name but re-use the current pointer.
-                        nodes.push(Node(value, pointer, marker, /* skip */true))
+                        nextNodePointer = pointer
+                        skipNode = true
+                    } else if (name in this.extensionMethodNames) {
+                        // Extension methods return a Map of OpenAPI extensions.
+                        // Assigning the parent's pointer here ensures the Map itself doesn't add a path segment,
+                        // to avoid issues like '/parent//extension-key'
+                        nextNodePointer = pointer
                     } else {
-                        // Do not add extension names to the JsonNode path
-                        val nextPath = m.name
-                            .takeIf { it !in this.extensionMethodNames }
-                            ?.removePrefix("get")
-                            ?.replaceFirstChar({ it.lowercase() })
-                            ?: ""
-
-                        nodes.push(Node(value, pointer + nextPath.toEscapedJsonPointer(), marker))
+                        // Regular bean property: a new path segment is created from the property name.
+                        val propertyName = name.removePrefix("get").replaceFirstChar { it.lowercase() }
+                        nextNodePointer = pointer + propertyName.toEscapedJsonPointer()
                     }
+                    nodes.push(Node(value, nextNodePointer, marker, skipNode))
                 }
             } catch (e: ReflectiveOperationException) {
                 throw ReverseAstException("Error invoking $name on ${obj.javaClass.name} at path $pointer", e)
