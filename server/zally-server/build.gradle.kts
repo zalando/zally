@@ -47,6 +47,10 @@ dependencies {
     testImplementation("org.mockito:mockito-core:4.11.0")
 }
 
+tasks.withType<JavaExec> {
+    systemProperty("bind-type", "true")
+}
+
 tasks.bootRun {
     jvmArgs = listOf("-Dspring.profiles.active=dev")
 }

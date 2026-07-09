@@ -15,4 +15,4 @@ COPY --from=builder /var/app/zally-server/build/libs/zally-server.jar /
 
 EXPOSE 8080
 
-CMD java -jar /zally-server.jar
+CMD java -Dbind-type=true -jar /zally-server.jar
