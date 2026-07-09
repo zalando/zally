@@ -4,14 +4,10 @@ MAINTAINER "http://zalando.github.io/"
 
 RUN apk --no-cache add curl
 
-COPY package.json ./
-COPY yarn.lock ./
-
-RUN yarn --production
-
-COPY src ./src
-COPY server.js ./
+COPY ./ ./
+RUN yarn
+RUN yarn build
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["yarn", "start"]
