@@ -8,6 +8,7 @@ import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Rule
 import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
+import java.net.URI
 
 @Rule(
     ruleSet = ZalandoRuleSet::class,
@@ -17,7 +18,7 @@ import org.zalando.zally.rule.api.Violation
 )
 class NoVersionInUriRule {
     private val description = "URL contains version number"
-    private val versionRegex = "(.*)v[0-9]+(.*)".toRegex()
+    private val versionRegex = "(^|[^A-Za-z0-9])v[0-9]+([^A-Za-z0-9]|$)".toRegex(RegexOption.IGNORE_CASE)
 
     @Check(severity = Severity.MUST)
     fun checkServerURLs(context: Context): List<Violation> =
@@ -26,10 +27,15 @@ class NoVersionInUriRule {
 
     private fun violatingServers(api: OpenAPI): Collection<Server> =
         api.servers.orEmpty()
-            .filter { it?.url?.matches(versionRegex) ?: false }
+            .filterNotNull()
+            .filter { server ->
+                // only evaluate the PATH part of the URL, never host/scheme/query
+                val path = runCatching { URI(server.url).path }.getOrNull().orEmpty()
+                path.matches(versionRegex) || versionRegex.containsMatchIn(path)
+            }
 
     private fun violatingPaths(api: OpenAPI): Collection<PathItem> =
         api.paths.orEmpty().entries
-            .filter { (path, _) -> path.matches(versionRegex) }
+            .filter { (path, _) -> versionRegex.containsMatchIn(path) }
             .map { (_, pathEntry) -> pathEntry }
 }
