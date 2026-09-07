@@ -2,7 +2,7 @@
 
 ## Zally RESTful API (Zally Server)
 
-In order to lint an API specification you just have to send a HTTP `POST` request
+In order to lint an API specification you just have to send an HTTP `POST` request
 to a running instance of Zally Server. Here is a request example:
 
 ```bash
