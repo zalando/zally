@@ -20,7 +20,7 @@ interface Context {
     val swagger: Swagger?
 
     /**
-     * @return `true` if the source is a OpenAPI 3 specification.
+     * @return `true` if the source is an OpenAPI 3 specification.
      */
     fun isOpenAPI3(): Boolean
 
