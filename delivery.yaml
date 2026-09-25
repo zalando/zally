@@ -16,9 +16,10 @@ pipeline:
           if [ -n "${CDP_PULL_REQUEST_NUMBER}" ]; then
             echo "We're in a pull request, aborting."; exit 0;
           fi;
-          PREFIX="pierone.stups.zalan.do/builder-knowledge";
+          PREFIX="${CDP_REGISTRY}/builder-knowledge";
           IMAGE="${PREFIX}/zally:${CDP_BUILD_VERSION}";
-          docker build -t "${IMAGE}" . && docker push "${IMAGE}";
+          docker build -t "${IMAGE}" . && docker push "${IMAGE}" &&
+          cdp-promote-image "${IMAGE}";
     cache:
       paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
 
