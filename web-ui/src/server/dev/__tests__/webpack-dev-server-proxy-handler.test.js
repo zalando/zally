@@ -22,7 +22,7 @@ describe('webpack-dev-server-proxy-handler', () => {
     expect(typeof webpackDevServerProxyHandler).toEqual('function');
   });
 
-  test('pipe the response to the the expected url', () => {
+  test('pipe the response to the expected url', () => {
     const req = { url: '/bundle.js' };
     const res = {};
     const mockRequestResponse = {
