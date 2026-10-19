@@ -18,7 +18,11 @@ pipeline:
           fi;
           PREFIX="${CDP_REGISTRY}/builder-knowledge";
           IMAGE="${PREFIX}/zally:${CDP_BUILD_VERSION}";
-          docker build -t "${IMAGE}" . && docker push "${IMAGE}";
+          BASE_IMAGE="${CDP_REGISTRY}/library/eclipse-temurin-17-jdk:latest";
+          docker build --build-arg BASE_IMAGE="${BASE_IMAGE}" \
+            --tag "${IMAGE}" . && docker push "${IMAGE}" && \
+          cdp-promote-image "${IMAGE}";
+
     cache:
       paths: [ ~/.gradle/caches, ~/.gradle/wrapper ]
 
