@@ -1,4 +1,5 @@
-FROM eclipse-temurin:17 as builder
+ARG BASE_IMAGE=eclipse-temurin:17
+FROM ${BASE_IMAGE} as builder
 
 WORKDIR /var/app
 
@@ -6,7 +7,7 @@ COPY . .
 RUN ./gradlew
 RUN ./gradlew build
 
-FROM eclipse-temurin:17
+FROM ${BASE_IMAGE}
 
 LABEL org.opencontainers.image.authors="https://opensource.zalando.com/"
 
