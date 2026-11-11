@@ -59,4 +59,19 @@ class NoVersionInUriRuleTest {
 
         assertThat(violations).isEmpty()
     }
+
+    @Test
+    fun `checkServerURLs should return no violations if v1 appears in host`() {
+        @Language("YAML")
+        val spec = """
+            openapi: 3.0.1
+            servers:
+              - url: "https://dev1-inter.net/api"
+        """.trimIndent()
+        val context = DefaultContextFactory().getOpenApiContext(spec)
+
+        val violations = rule.checkServerURLs(context)
+
+        assertThat(violations).isEmpty()
+    }
 }
