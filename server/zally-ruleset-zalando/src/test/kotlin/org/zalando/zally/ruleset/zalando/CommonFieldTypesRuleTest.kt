@@ -109,6 +109,25 @@ class CommonFieldTypesRuleTest {
     }
 
     @Test
+    fun `checkTypesOfCommonFields should not return any violations for openapi version with 'type' as array`() {
+        @Language("YAML")
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.1.0
+                components:
+                  schemas:
+                    Pet:
+                      properties:
+                        id:
+                          type: string
+                """.trimIndent()
+            )
+
+        assertThat(rule.checkTypesOfCommonFields(context)).isEmpty()
+    }
+
+    @Test
     fun `checkTypesOfCommonFields should return a violation for a specification with invalid common field in a schema`() {
         @Language("YAML")
         val context = DefaultContextFactory().getOpenApiContext(
@@ -262,7 +281,7 @@ class CommonFieldTypesRuleTest {
                 CustomId:
                   type: object
                   properties:
-                    id: 
+                    id:
                       type: integer
                       format: int64
             """.trimIndent()

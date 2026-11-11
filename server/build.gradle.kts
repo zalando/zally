@@ -49,7 +49,7 @@ subprojects {
         includeCompileClasspath = false
     }
 
-    tasks.withType<KotlinCompile>().configureEach() {
+    tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions.jvmTarget = "17"
     }
 
@@ -186,6 +186,7 @@ subprojects {
     tasks.test {
         useJUnitPlatform()
         finalizedBy(tasks.jacocoTestReport)
+        systemProperty("bind-type", "true")
     }
 
     tasks.jacocoTestReport {
