@@ -19,10 +19,11 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "172",
     severity = Severity.SHOULD,
-    title = "Prefer standard media type names"
+    title = "Prefer standard media type names",
 )
-class MediaTypesRule(config: Config) {
-
+class MediaTypesRule(
+    config: Config,
+) {
     private val versionedMediaType = "^\\w+/[-+.\\w]+;(v|version)=\\d+$".toRegex()
 
     private val description = "Custom media types should only be used for versioning"
@@ -31,36 +32,46 @@ class MediaTypesRule(config: Config) {
 
     @Check(severity = Severity.SHOULD)
     fun validate(context: Context): List<Violation> =
-        context.api.mediaTypes()
+        context.api
+            .mediaTypes()
             .filterNot { (type, _) -> isStandardJsonMediaType(type) }
             .filterNot { (type, _) -> isVersionedMediaType(type) }
             .map { (_, value) -> context.violation(description, value) }
 
     fun isStandardJsonMediaType(mediaType: String): Boolean = mediaType in standardMediaTypes
 
-    fun isVersionedMediaType(mediaType: String): Boolean {
-        return versionedMediaType.matches(mediaType)
-    }
+    fun isVersionedMediaType(mediaType: String): Boolean = versionedMediaType.matches(mediaType)
 
     private fun OpenAPI.mediaTypes(): List<Pair<String, MediaType>> =
         requestBodies().map { it.content }.flatMap { it.mediaTypes() } +
             apiResponses().map { it.content }.flatMap { it.mediaTypes() }
 
-    private fun OpenAPI.requestBodies(): List<RequestBody> = components?.requestBodies?.values.orEmpty() +
-        paths?.values?.flatMap { path ->
-            path?.readOperations()?.mapNotNull { op ->
-                op?.requestBody
-            }.orEmpty()
-        }.orEmpty()
+    private fun OpenAPI.requestBodies(): List<RequestBody> =
+        components?.requestBodies?.values.orEmpty() +
+            paths
+                ?.values
+                ?.flatMap { path ->
+                    path
+                        ?.readOperations()
+                        ?.mapNotNull { op ->
+                            op?.requestBody
+                        }.orEmpty()
+                }.orEmpty()
 
-    private fun OpenAPI.apiResponses(): Collection<ApiResponse> = components?.responses?.values.orEmpty() +
-        paths?.values?.flatMap { path ->
-            path?.readOperations()?.flatMap { op ->
-                op?.responses?.values.orEmpty()
-            }.orEmpty()
-        }.orEmpty()
+    private fun OpenAPI.apiResponses(): Collection<ApiResponse> =
+        components?.responses?.values.orEmpty() +
+            paths
+                ?.values
+                ?.flatMap { path ->
+                    path
+                        ?.readOperations()
+                        ?.flatMap { op ->
+                            op?.responses?.values.orEmpty()
+                        }.orEmpty()
+                }.orEmpty()
 
-    private fun Content?.mediaTypes() = this
-        ?.map { it.key to it.value }
-        .orEmpty()
+    private fun Content?.mediaTypes() =
+        this
+            ?.map { it.key to it.value }
+            .orEmpty()
 }

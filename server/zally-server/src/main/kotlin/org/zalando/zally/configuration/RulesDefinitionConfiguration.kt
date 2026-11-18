@@ -16,10 +16,9 @@ import org.zalando.zally.rule.api.Rule
  */
 @Configuration
 class RulesDefinitionConfiguration {
-
     @Bean
-    fun rulesDefinitions(): BeanDefinitionRegistryPostProcessor {
-        return object : BeanDefinitionRegistryPostProcessor {
+    fun rulesDefinitions(): BeanDefinitionRegistryPostProcessor =
+        object : BeanDefinitionRegistryPostProcessor {
             @Throws(BeansException::class)
             override fun postProcessBeanDefinitionRegistry(registry: BeanDefinitionRegistry) {
                 val provider = ClassPathScanningCandidateComponentProvider(false)
@@ -38,5 +37,4 @@ class RulesDefinitionConfiguration {
                 // no op
             }
         }
-    }
 }

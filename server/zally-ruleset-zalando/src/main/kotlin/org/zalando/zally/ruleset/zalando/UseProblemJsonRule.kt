@@ -20,12 +20,13 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "176",
     severity = Severity.MUST,
-    title = "Use Problem JSON"
+    title = "Use Problem JSON",
 )
 class UseProblemJsonRule {
     private val problemDetailsObjectMediaType = "application/problem+json"
-    private val description = "Operations should return problem JSON when any problem occurs during processing " +
-        "whether caused by client or server."
+    private val description =
+        "Operations should return problem JSON when any problem occurs during processing " +
+            "whether caused by client or server."
 
     private val objectMapper by lazy {
         ObjectMapper()
@@ -40,30 +41,32 @@ class UseProblemJsonRule {
     }
 
     @Check(severity = Severity.MUST)
-    fun validate(context: Context): List<Violation> {
-        return context.api.paths.orEmpty().flatMap { (_, pathItem) ->
+    fun validate(context: Context): List<Violation> =
+        context.api.paths.orEmpty().flatMap { (_, pathItem) ->
             pathItem?.readOperations().orEmpty().flatMap { op ->
-                op.responses.orEmpty()
+                op.responses
+                    .orEmpty()
                     .filter { (code, _) ->
                         code.toIntOrNull() in 400..599 || code == "default"
-                    }
-                    .flatMap { (_, response) ->
+                    }.flatMap { (_, response) ->
                         testForProblemSchema(response, context.isOpenAPI3())
-                    }
-                    .map { (schema, validation) ->
-                        context.violation(description, schema)
+                    }.map { (schema, validation) ->
+                        context
+                            .violation(description, schema)
                             .let {
                                 Violation(
                                     "${it.description} ${validation.description}",
-                                    it.pointer + validation.pointer
+                                    it.pointer + validation.pointer,
                                 )
                             }
                     }
             }
         }
-    }
 
-    private fun testForProblemSchema(response: ApiResponse, isOpenAPI3: Boolean): List<Pair<Any, Violation>> =
+    private fun testForProblemSchema(
+        response: ApiResponse,
+        isOpenAPI3: Boolean,
+    ): List<Pair<Any, Violation>> =
         response.content?.flatMap { (type, mediaType) ->
             // doesn't check media type in OpenAPI2 (Swagger) specifications because of converting issues
             if (isOpenAPI3 && !type.startsWith(problemDetailsObjectMediaType)) {

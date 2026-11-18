@@ -13,7 +13,7 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "115",
     severity = Severity.MUST,
-    title = "Do Not Use URI Versioning"
+    title = "Do Not Use URI Versioning",
 )
 class NoVersionInUriRule {
     private val description = "URL contains version number"
@@ -25,11 +25,14 @@ class NoVersionInUriRule {
             .map { context.violation(description, it) }
 
     private fun violatingServers(api: OpenAPI): Collection<Server> =
-        api.servers.orEmpty()
+        api.servers
+            .orEmpty()
             .filter { it?.url?.matches(versionRegex) ?: false }
 
     private fun violatingPaths(api: OpenAPI): Collection<PathItem> =
-        api.paths.orEmpty().entries
+        api.paths
+            .orEmpty()
+            .entries
             .filter { (path, _) -> path.matches(versionRegex) }
             .map { (_, pathEntry) -> pathEntry }
 }

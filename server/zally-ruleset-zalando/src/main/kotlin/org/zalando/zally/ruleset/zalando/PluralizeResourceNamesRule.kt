@@ -18,45 +18,48 @@ import org.zalando.zally.ruleset.zalando.util.WordUtil.isPlural
     ruleSet = ZalandoRuleSet::class,
     id = "134",
     severity = Severity.MUST,
-    title = "Pluralize Resource Names"
+    title = "Pluralize Resource Names",
 )
-class PluralizeResourceNamesRule(rulesConfig: Config) {
-
+class PluralizeResourceNamesRule(
+    rulesConfig: Config,
+) {
     private val slash = "/"
 
     private val slashes = "/+".toRegex()
 
     @Suppress("SpreadOperator")
-    internal val whitelist = mutableListOf(
-        *rulesConfig
-            .getConfig(javaClass.simpleName)
-            .getStringList("whitelist")
-            .map { it.toRegex() }
-            .toTypedArray()
-    )
+    internal val whitelist =
+        mutableListOf(
+            *rulesConfig
+                .getConfig(javaClass.simpleName)
+                .getStringList("whitelist")
+                .map { it.toRegex() }
+                .toTypedArray(),
+        )
 
     @Check(severity = Severity.MUST)
-    fun validate(context: Context): List<Violation> {
-        return context.validatePaths { (path, _) ->
+    fun validate(context: Context): List<Violation> =
+        context.validatePaths { (path, _) ->
             pathSegments(sanitizedPath(path, whitelist))
                 .filter { isNonViolating(it) }
                 .map { violation(context, it, PATHS.toJsonPointer() + path.toEscapedJsonPointer()) }
         }
-    }
 
-    private fun sanitizedPath(path: String, regexList: List<Regex>): String {
-        return regexList.fold("/$path/".replace(slashes, slash)) { updated, regex ->
+    private fun sanitizedPath(
+        path: String,
+        regexList: List<Regex>,
+    ): String =
+        regexList.fold("/$path/".replace(slashes, slash)) { updated, regex ->
             updated.replace(regex, slash)
         }
-    }
 
-    private fun pathSegments(path: String): List<String> {
-        return path.split(slashes).filter { !it.isEmpty() }
-    }
+    private fun pathSegments(path: String): List<String> = path.split(slashes).filter { !it.isEmpty() }
 
-    private fun isNonViolating(it: String) =
-        !PatternUtil.isPathVariable(it) && !isPlural(it)
+    private fun isNonViolating(it: String) = !PatternUtil.isPathVariable(it) && !isPlural(it)
 
-    private fun violation(context: Context, term: String, pointer: JsonPointer) =
-        context.violation("Resource '$term' appears to be singular", pointer)
+    private fun violation(
+        context: Context,
+        term: String,
+        pointer: JsonPointer,
+    ) = context.violation("Resource '$term' appears to be singular", pointer)
 }

@@ -21,22 +21,22 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZallyRuleSet::class,
     id = "M008",
     severity = Severity.MUST,
-    title = "Host should not contain protocol"
+    title = "Host should not contain protocol",
 )
 class NoProtocolInHostRule {
-
     @Check(severity = Severity.MUST)
     fun validate(context: Context): List<Violation> {
         val host = context.swagger?.host.orEmpty()
         return when {
             context.isOpenAPI3() -> emptyList()
 
-            "://" in host -> listOf(
-                Violation(
-                    "'$host' contains protocol information which should be listed separately as schemes",
-                    "/host".toJsonPointer()
+            "://" in host ->
+                listOf(
+                    Violation(
+                        "'$host' contains protocol information which should be listed separately as schemes",
+                        "/host".toJsonPointer(),
+                    ),
                 )
-            )
 
             else -> emptyList()
         }

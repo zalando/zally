@@ -9,31 +9,35 @@ import java.util.Objects
 
 data class HeaderElement(
     val name: String,
-    val element: Any
+    val element: Any,
 )
 
 fun OpenAPI.getAllHeaders(): Set<HeaderElement> {
-    fun Collection<Parameter>?.extractHeaders() = orEmpty()
-        .filter { it.`in` == "header" }
-        .map { HeaderElement(it.name, it) }
-        .toSet()
+    fun Collection<Parameter>?.extractHeaders() =
+        orEmpty()
+            .filter { it.`in` == "header" }
+            .map { HeaderElement(it.name, it) }
+            .toSet()
 
-    fun Collection<ApiResponse>?.extractHeaders() = orEmpty()
-        .flatMap { it.headers.orEmpty().entries }
-        .map { HeaderElement(it.key, it.value) }
-        .toSet()
+    fun Collection<ApiResponse>?.extractHeaders() =
+        orEmpty()
+            .flatMap { it.headers.orEmpty().entries }
+            .map { HeaderElement(it.key, it.value) }
+            .toSet()
 
     val fromComponentsParams = components?.parameters?.values.extractHeaders()
 
-    val fromPaths = paths.orEmpty().flatMap { (_, path) ->
-        val fromPathParameters = path?.parameters.extractHeaders()
-        val fromOperations = path?.readOperations().orEmpty().flatMap { operation ->
-            val fromOpParams = operation?.parameters.extractHeaders()
-            val fromOpResponses = operation?.responses?.values.extractHeaders()
-            fromOpParams + fromOpResponses
+    val fromPaths =
+        paths.orEmpty().flatMap { (_, path) ->
+            val fromPathParameters = path?.parameters.extractHeaders()
+            val fromOperations =
+                path?.readOperations().orEmpty().flatMap { operation ->
+                    val fromOpParams = operation?.parameters.extractHeaders()
+                    val fromOpResponses = operation?.responses?.values.extractHeaders()
+                    fromOpParams + fromOpResponses
+                }
+            fromPathParameters + fromOperations
         }
-        fromPathParameters + fromOperations
-    }
 
     val fromComponentsHeaders = components?.headers.orEmpty().map { HeaderElement(it.key, it.value) }
 
@@ -44,24 +48,65 @@ fun OpenAPI.getAllHeaders(): Set<HeaderElement> {
  * Returns all defined schemas of an API specification
  * @return a collection of schemas
  */
-fun OpenAPI.getAllSchemas(): Collection<Schema<Any>> = this.components?.schemas.orEmpty().values +
-    this.components?.parameters.orEmpty().mapNotNull { it.value.schema } +
-    this.components?.responses.orEmpty().values.flatMap { it.content.orEmpty().values.mapNotNull { v -> v.schema } } +
-    this.components?.requestBodies.orEmpty().values.flatMap { it.content.orEmpty().values.mapNotNull { v -> v.schema } } +
-    this.paths.orEmpty().flatMap {
-        it.value?.readOperations().orEmpty()
-            .flatMap { operation -> operation.parameters.orEmpty().mapNotNull { parameter -> parameter.schema } }
-    } +
-    this.paths.orEmpty().flatMap {
-        it.value?.readOperations().orEmpty().flatMap { operation ->
-            operation.responses.orEmpty()
-                .flatMap { response -> response.value.content.orEmpty().values.mapNotNull { v -> v.schema } }
+fun OpenAPI.getAllSchemas(): Collection<Schema<Any>> =
+    this.components
+        ?.schemas
+        .orEmpty()
+        .values +
+        this.components
+            ?.parameters
+            .orEmpty()
+            .mapNotNull { it.value.schema } +
+        this.components
+            ?.responses
+            .orEmpty()
+            .values
+            .flatMap {
+                it.content
+                    .orEmpty()
+                    .values
+                    .mapNotNull { v -> v.schema }
+            } +
+        this.components
+            ?.requestBodies
+            .orEmpty()
+            .values
+            .flatMap {
+                it.content
+                    .orEmpty()
+                    .values
+                    .mapNotNull { v -> v.schema }
+            } +
+        this.paths.orEmpty().flatMap {
+            it.value
+                ?.readOperations()
+                .orEmpty()
+                .flatMap { operation -> operation.parameters.orEmpty().mapNotNull { parameter -> parameter.schema } }
+        } +
+        this.paths.orEmpty().flatMap {
+            it.value?.readOperations().orEmpty().flatMap { operation ->
+                operation.responses
+                    .orEmpty()
+                    .flatMap { response ->
+                        response.value.content
+                            .orEmpty()
+                            .values
+                            .mapNotNull { v -> v.schema }
+                    }
+            }
+        } +
+        this.paths.orEmpty().flatMap {
+            it.value
+                ?.readOperations()
+                .orEmpty()
+                .flatMap { readOps ->
+                    readOps.requestBody
+                        ?.content
+                        .orEmpty()
+                        .values
+                        .mapNotNull { v -> v.schema }
+                }
         }
-    } +
-    this.paths.orEmpty().flatMap {
-        it.value?.readOperations().orEmpty()
-            .flatMap { readOps -> readOps.requestBody?.content.orEmpty().values.mapNotNull { v -> v.schema } }
-    }
 
 /**
  * Traverses the schemas and returns all included schemas
@@ -102,7 +147,13 @@ fun OpenAPI.getAllProperties(): Map<String, Schema<Any>> {
         val nonPrimitiveSchemas = properties.filterNot { isPrimitive(it.value) }
 
         collector.putAll(primitiveSchemas.associateBy({ it.key }, { it.value }))
-        traverseSchemas(nonPrimitiveSchemas.flatMap { it.value.properties.orEmpty().values })
+        traverseSchemas(
+            nonPrimitiveSchemas.flatMap {
+                it.value.properties
+                    .orEmpty()
+                    .values
+            },
+        )
     }
 
     traverseSchemas(this.getAllSchemas())
@@ -115,8 +166,16 @@ fun OpenAPI.getAllProperties(): Map<String, Schema<Any>> {
  * @return a collection of parameters
  */
 fun OpenAPI.getAllParameters(): Collection<Parameter> =
-    this.components?.parameters?.values.orEmpty().filterNotNull().toList() +
-        this.paths.orEmpty().values.flatMap { it?.parameters.orEmpty().filterNotNull() } +
+    this.components
+        ?.parameters
+        ?.values
+        .orEmpty()
+        .filterNotNull()
+        .toList() +
+        this.paths
+            .orEmpty()
+            .values
+            .flatMap { it?.parameters.orEmpty().filterNotNull() } +
         this.paths.orEmpty().values.flatMap {
             it?.readOperations().orEmpty().flatMap { it?.parameters.orEmpty().filterNotNull() }
         }
@@ -133,32 +192,64 @@ fun SecurityScheme.isBearer(): Boolean = this.scheme == "bearer" && this.type ==
  */
 fun SecurityScheme.isOAuth2(): Boolean = this.type == SecurityScheme.Type.OAUTH2
 
-fun SecurityScheme.allFlows() = listOfNotNull(
-    this.flows?.implicit,
-    this.flows?.password,
-    this.flows?.clientCredentials,
-    this.flows?.authorizationCode
-)
+fun SecurityScheme.allFlows() =
+    listOfNotNull(
+        this.flows?.implicit,
+        this.flows?.password,
+        this.flows?.clientCredentials,
+        this.flows?.authorizationCode,
+    )
 
 fun SecurityScheme.allScopes(): List<String> =
-    this.allFlows().flatMap { flow -> flow.scopes?.keys.orEmpty() }.toSet().filterNotNull()
+    this
+        .allFlows()
+        .flatMap { flow -> flow.scopes?.keys.orEmpty() }
+        .toSet()
+        .filterNotNull()
 
 /**
  * Calculates custom hash to avoid calling the hash of the parent schema.
  * E.g. io.swagger.v3.oas.models.media.ArraySchema#hashCode() calls super#hashCode()
  * which fails for recursive data structures (endless loop -> StackOverflow)
  */
-private fun Schema<Any>.customHash(): Int = Objects.hash(
-    title, multipleOf, maximum, exclusiveMaximum, minimum,
-    exclusiveMinimum, maxLength, minLength, pattern, maxItems, minItems, uniqueItems, maxProperties, minProperties,
-    required, type, not, properties, additionalProperties, description, format, `$ref`, nullable, readOnly, writeOnly,
-    example, externalDocs, deprecated, xml, extensions, discriminator
-)
+private fun Schema<Any>.customHash(): Int =
+    Objects.hash(
+        title,
+        multipleOf,
+        maximum,
+        exclusiveMaximum,
+        minimum,
+        exclusiveMinimum,
+        maxLength,
+        minLength,
+        pattern,
+        maxItems,
+        minItems,
+        uniqueItems,
+        maxProperties,
+        minProperties,
+        required,
+        type,
+        not,
+        properties,
+        additionalProperties,
+        description,
+        format,
+        `$ref`,
+        nullable,
+        readOnly,
+        writeOnly,
+        example,
+        externalDocs,
+        deprecated,
+        xml,
+        extensions,
+        discriminator,
+    )
 
 fun Schema<Any>.isEnum(): Boolean = this.enum?.isNotEmpty() ?: false
 
-fun Schema<Any>.isExtensibleEnum(): Boolean =
-    this.extensions?.containsKey("x-extensible-enum") ?: false
+fun Schema<Any>.isExtensibleEnum(): Boolean = this.extensions?.containsKey("x-extensible-enum") ?: false
 
 fun Schema<Any>.extensibleEnum(): List<Any?> =
     if (this.isExtensibleEnum()) {

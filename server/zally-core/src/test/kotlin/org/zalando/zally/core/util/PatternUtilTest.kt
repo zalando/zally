@@ -9,7 +9,6 @@ import org.zalando.zally.core.util.PatternUtil.isPathVariable
  * Unit tests for patterns utility
  */
 class PatternUtilTest {
-
     @Test
     fun checkIsPathVariable() {
         assertTrue(isPathVariable("{test}"))

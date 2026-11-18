@@ -20,12 +20,15 @@ import java.net.URL
     ruleSet = ZalandoRuleSet::class,
     id = "101",
     severity = Severity.MUST,
-    title = "Provide API Specification using OpenAPI"
+    title = "Provide API Specification using OpenAPI",
 )
-class UseOpenApiRule(rulesConfig: Config) {
-
+class UseOpenApiRule(
+    rulesConfig: Config,
+) {
     private enum class OpenApiVersion {
-        SWAGGER, OPENAPI3;
+        SWAGGER,
+        OPENAPI3,
+        ;
 
         val resource: URL by lazy {
             javaClass.classLoader.getResource("schemas/${name.lowercase()}-schema.json")
@@ -38,10 +41,11 @@ class UseOpenApiRule(rulesConfig: Config) {
 
     @Check(severity = Severity.MUST)
     fun validateSchema(spec: JsonNode): List<Violation> {
-        val version = when {
-            spec.get("swagger") != null -> SWAGGER
-            else -> OPENAPI3
-        }
+        val version =
+            when {
+                spec.get("swagger") != null -> SWAGGER
+                else -> OPENAPI3
+            }
 
         return jsonSchemaValidators[version]
             ?.validate(spec)
@@ -65,13 +69,13 @@ class UseOpenApiRule(rulesConfig: Config) {
     }
 
     private fun getSchemaValidators(config: Config): Map<OpenApiVersion, JsonSchemaValidator> {
-        val defaultSchemaRedirects = mapOf(
-            "http://json-schema.org/draft-04/schema" to javaClass.classLoader.getResource("schemas/json-schema.json"),
-            "http://swagger.io/v2/schema.json" to SWAGGER.resource,
-            "http://openapis.org/v3/schema.json" to OPENAPI3.resource,
-            "https://spec.openapis.org/oas/3.0/schema/2019-04-02" to OPENAPI3.resource
-        )
-            .mapValues { (_, url) -> url.toString() }
+        val defaultSchemaRedirects =
+            mapOf(
+                "http://json-schema.org/draft-04/schema" to javaClass.classLoader.getResource("schemas/json-schema.json"),
+                "http://swagger.io/v2/schema.json" to SWAGGER.resource,
+                "http://openapis.org/v3/schema.json" to OPENAPI3.resource,
+                "https://spec.openapis.org/oas/3.0/schema/2019-04-02" to OPENAPI3.resource,
+            ).mapValues { (_, url) -> url.toString() }
 
         val reader = ObjectTreeReader()
         return OpenApiVersion
@@ -79,25 +83,27 @@ class UseOpenApiRule(rulesConfig: Config) {
             .map { version ->
                 val configPath = "schema_urls.${version.name.lowercase()}"
 
-                val (url, schemaRedirects) = when {
-                    config.hasPath(configPath) -> URL(config.getString(configPath)) to emptyMap()
-                    else -> version.resource to defaultSchemaRedirects
-                }
+                val (url, schemaRedirects) =
+                    when {
+                        config.hasPath(configPath) -> URL(config.getString(configPath)) to emptyMap()
+                        else -> version.resource to defaultSchemaRedirects
+                    }
 
                 try {
-                    val schema = reader.read(url)
-                        .apply {
-                            // to avoid resolving the `id` property of the schema by the validator
-                            this as ObjectNode
-                            remove("id")
-                        }
+                    val schema =
+                        reader
+                            .read(url)
+                            .apply {
+                                // to avoid resolving the `id` property of the schema by the validator
+                                this as ObjectNode
+                                remove("id")
+                            }
 
                     version to JsonSchemaValidator(schema, schemaRedirects)
                 } catch (e: Exception) {
                     log.error("Unable to load schema: $url", e)
                     throw e
                 }
-            }
-            .toMap()
+            }.toMap()
     }
 }

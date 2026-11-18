@@ -8,4 +8,5 @@ insert_final_newline=true
 # possible values: number (e.g. 120) (package name, imports & comments are ignored), "off"
 # it's automatically set to 100 on `ktlint --android ...` (per Android Kotlin Style Guide)
 max_line_length=off
-disabled_rules=import-ordering
+# ktlint 0.x used `disabled_rules=import-ordering`; 1.x configures each rule on its own
+ktlint_standard_import-ordering=disabled

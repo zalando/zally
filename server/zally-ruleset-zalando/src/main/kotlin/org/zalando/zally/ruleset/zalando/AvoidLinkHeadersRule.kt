@@ -12,10 +12,11 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "166",
     severity = Severity.MUST,
-    title = "Avoid Link in Header Rule"
+    title = "Avoid Link in Header Rule",
 )
-class AvoidLinkHeadersRule(rulesConfig: Config) {
-
+class AvoidLinkHeadersRule(
+    rulesConfig: Config,
+) {
     private val headersWhitelist = rulesConfig.getStringList("HttpHeadersRule.whitelist").toSet()
 
     private val description = "Do Not Use Link Headers with JSON entities"

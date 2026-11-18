@@ -6,17 +6,18 @@ import org.assertj.core.api.ObjectAssert
 import org.zalando.zally.rule.api.Violation
 
 @Suppress("UndocumentedPublicClass", "SpreadOperator")
-class ViolationsAssert(violations: List<Violation>?) :
-    AbstractListAssert<ViolationsAssert, List<Violation>, Violation, ObjectAssert<Violation>>(
+class ViolationsAssert(
+    violations: List<Violation>?,
+) : AbstractListAssert<ViolationsAssert, List<Violation>, Violation, ObjectAssert<Violation>>(
         violations,
-        ViolationsAssert::class.java
+        ViolationsAssert::class.java,
     ) {
-    override fun newAbstractIterableAssert(iterable: MutableIterable<Violation>?): ViolationsAssert =
-        ViolationsAssert(violations = iterable?.toList())
+    override fun newAbstractIterableAssert(iterable: MutableIterable<Violation>?): ViolationsAssert = ViolationsAssert(violations = iterable?.toList())
 
-    override fun toAssert(value: Violation?, description: String?): ObjectAssert<Violation> {
-        return ObjectAssert<Violation>(value).`as`(description)
-    }
+    override fun toAssert(
+        value: Violation?,
+        description: String?,
+    ): ObjectAssert<Violation> = ObjectAssert<Violation>(value).`as`(description)
 
     fun descriptionsAllEqualTo(description: String): ViolationsAssert {
         descriptions().containsOnly(description)

@@ -9,13 +9,13 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.core.rulesConfig
 
 class DateTimePropertiesSuffixRuleTest {
-
     private val rule = DateTimePropertiesSuffixRule(rulesConfig)
 
     @Test
     fun `should pass with correct format and suffix`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: '3.0.1'
             info:
               title: Test API
@@ -39,7 +39,7 @@ class DateTimePropertiesSuffixRuleTest {
                     was_delivered_day:
                       type: string
                       format: date
-        """.trimIndent()
+            """.trimIndent()
         val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations).isEmpty()
     }
@@ -47,7 +47,8 @@ class DateTimePropertiesSuffixRuleTest {
     @Test
     fun `should ignore fields with non-date and time types`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: '3.0.1'
             info:
               title: Test API
@@ -67,7 +68,7 @@ class DateTimePropertiesSuffixRuleTest {
                       type: string                      
                     was_delivered:
                       type: int                                          
-        """.trimIndent()
+            """.trimIndent()
         val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations).isEmpty()
     }
@@ -75,7 +76,8 @@ class DateTimePropertiesSuffixRuleTest {
     @Test
     fun `should fail on suffix _at and succeed on infix patterns`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: '3.0.1'
             info:
               title: Test API
@@ -99,17 +101,18 @@ class DateTimePropertiesSuffixRuleTest {
                     was_delivered_day_suffix:
                       type: string
                       format: date
-        """.trimIndent()
+            """.trimIndent()
         val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations.map { it.description }).containsExactly(
-            rule.generateMessage("was_created_at_suffix", "string", "date-time")
+            rule.generateMessage("was_created_at_suffix", "string", "date-time"),
         )
     }
 
     @Test
     fun `should fail on prefix at_ and succeed on prefix patterns`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: '3.0.1'
             info:
               title: Test API
@@ -133,17 +136,18 @@ class DateTimePropertiesSuffixRuleTest {
                     day_delivered_suffix:
                       type: string
                       format: date
-        """.trimIndent()
+            """.trimIndent()
         val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations.map { it.description }).containsExactly(
-            rule.generateMessage("at_created", "string", "date-time")
+            rule.generateMessage("at_created", "string", "date-time"),
         )
     }
 
     @Test
     fun `should fail on leading _`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: '3.0.1'
             info:
               title: Test API
@@ -167,21 +171,22 @@ class DateTimePropertiesSuffixRuleTest {
                     _day:
                       type: string
                       format: date
-        """.trimIndent()
+            """.trimIndent()
         val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations.map { it.description }).containsExactly(
             rule.generateMessage("_at", "string", "date-time"),
             rule.generateMessage("_time", "string", "time"),
             rule.generateMessage("_timestamp", "string", "date-time"),
             rule.generateMessage("_date", "string", "date"),
-            rule.generateMessage("_day", "string", "date")
+            rule.generateMessage("_day", "string", "date"),
         )
     }
 
     @Test
     fun `should fail on trailing _`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: '3.0.1'
             info:
               title: Test API
@@ -205,14 +210,14 @@ class DateTimePropertiesSuffixRuleTest {
                     day_:
                       type: string
                       format: date
-        """.trimIndent()
+            """.trimIndent()
         val violations = rule.validate(DefaultContextFactory().getOpenApiContext(content))
         assertThat(violations.map { it.description }).containsExactly(
             rule.generateMessage("at_", "string", "date-time"),
             rule.generateMessage("time_", "string", "time"),
             rule.generateMessage("timestamp_", "string", "date-time"),
             rule.generateMessage("date_", "string", "date"),
-            rule.generateMessage("day_", "string", "date")
+            rule.generateMessage("day_", "string", "date"),
         )
     }
 }

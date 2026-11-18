@@ -7,17 +7,17 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.core.rulesConfig
 
 class KebabCaseInPathSegmentsRuleTest {
-
     private val rule = KebabCaseInPathSegmentsRule(rulesConfig)
 
     @Test
     fun `checkKebabCaseInPathSegments should return violation for path segments which are not lowercase separate words with hyphens`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               /partnerOrders: {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkKebabCaseInPathSegments(context)
@@ -30,11 +30,12 @@ class KebabCaseInPathSegmentsRuleTest {
     @Test
     fun `checkKebabCaseInPathSegments should return violation for sub resource names which are not lowercase separate words with hyphens`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               /partner-orders/{order-id}/orderItems: {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkKebabCaseInPathSegments(context)
@@ -47,11 +48,12 @@ class KebabCaseInPathSegmentsRuleTest {
     @Test
     fun `checkKebabCaseInPathSegments should return no violation if all segments are lowercase separated words with hyphens`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               /partner-orders/{orderId}/order-items: {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkKebabCaseInPathSegments(context)

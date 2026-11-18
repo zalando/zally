@@ -7,13 +7,13 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.test.ZallyAssertions
 
 class PluralizeNamesForArraysRuleTest {
-
     private val rule = PluralizeNamesForArraysRule()
 
     @Test
     fun `checkArrayPropertyNamesArePlural should return violations for array property names which are not pluralized`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             components:
               schemas:
@@ -23,7 +23,7 @@ class PluralizeNamesForArraysRuleTest {
                       type: array
                       items:
                         type: string
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkArrayPropertyNamesArePlural(context)
@@ -38,7 +38,8 @@ class PluralizeNamesForArraysRuleTest {
     @Test
     fun `checkArrayPropertyNamesArePlural should not return violations for array property names which are pluralized`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             components:
               schemas:
@@ -48,7 +49,7 @@ class PluralizeNamesForArraysRuleTest {
                       type: array
                       items:
                         type: string
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkArrayPropertyNamesArePlural(context)

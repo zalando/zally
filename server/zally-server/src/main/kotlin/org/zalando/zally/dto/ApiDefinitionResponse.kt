@@ -7,5 +7,5 @@ data class ApiDefinitionResponse(
     val message: String? = null,
     val violations: List<ViolationDTO> = emptyList(),
     val violationsCount: Map<String, Int> = emptyMap(),
-    val apiDefinition: String?
+    val apiDefinition: String?,
 )

@@ -12,27 +12,28 @@ import org.zalando.zally.test.ZallyAssertions.assertThat
  */
 @Suppress("StringLiteralDuplication", "UndocumentedPublicFunction", "UnsafeCallOnNullableType", "TooManyFunctions")
 class SecureAllEndpointsWithScopesRuleTest {
-
-    private val config = getConfigFromContent(
-        """
-        SecureAllEndpointsWithScopesRule {
-          scope_regex: "^(uid)|(([a-z-]+\\.){1,2}(read|write))${'$'}"
-          path_whitelist: [
-            "^/whitelisted/.*",
-            /obscure/
-          ]
-        }
-        """.trimIndent()
-    )
+    private val config =
+        getConfigFromContent(
+            """
+            SecureAllEndpointsWithScopesRule {
+              scope_regex: "^(uid)|(([a-z-]+\\.){1,2}(read|write))${'$'}"
+              path_whitelist: [
+                "^/whitelisted/.*",
+                /obscure/
+              ]
+            }
+            """.trimIndent(),
+        )
 
     private val rule = SecureAllEndpointsWithScopesRule(config)
 
     @Test
     fun `checkDefinedScopeFormats with no security`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: 2.0
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -44,7 +45,8 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `checkDefinedScopeFormats with valid oauth2 scopes`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: 2.0
             securityDefinitions:
               implicit-oauth2:
@@ -53,7 +55,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   uid: Any logged in user
                   fulfillment-order.read: Can read fulfillment-order app
                   sales-order.shipment-order.write: Can create shipment-orders in the sales-order app
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -65,7 +67,8 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `checkDefinedScopeFormats with basic scopes`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: 2.0
             securityDefinitions:
               lazy-in-house-scripts:
@@ -73,7 +76,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                 scopes:
                   indexer: Can perform nightly indexing operations
                   expiry: Can perform automated expiry operations
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -85,7 +88,8 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `checkDefinedScopeFormats with invalid oauth2 scopes`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: 2.0
             securityDefinitions:
               implicit-oauth2:
@@ -93,13 +97,14 @@ class SecureAllEndpointsWithScopesRuleTest {
                 flow: implicit
                 scopes:
                   max: Any user called Max
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = rule.checkDefinedScopeFormats(context)
 
-        ZallyAssertions.assertThat(violations)
+        ZallyAssertions
+            .assertThat(violations)
             .descriptionsAllEqualTo("scope 'max' does not match regex '^(uid)|(([a-z-]+\\.){1,2}(read|write))\$'")
             .pointersEqualTo("/securityDefinitions/implicit-oauth2/scopes")
     }
@@ -107,9 +112,10 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `checkOperationsAreScoped with empty swagger`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: 2.0
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -121,7 +127,8 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `checkOperationsAreScoped with no scope`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: "2.0"
             securityDefinitions:
               oauth2:
@@ -135,7 +142,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   responses:
                     200:
                       description: Success
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -149,7 +156,8 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `checkOperationsAreScoped with defined scope`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: "2.0"
             securityDefinitions:
               oauth2:
@@ -166,7 +174,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   security:
                   - oauth2:
                     - defined-scope
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -178,7 +186,8 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `checkOperationsAreScoped with undefined scope`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: "2.0"
             securityDefinitions:
               oauth2:
@@ -195,7 +204,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   security:
                   - oauth2:
                     - undefined-scope
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -209,7 +218,8 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `checkOperationsAreScoped with defined top level scope`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: "2.0"
             securityDefinitions:
               oauth2:
@@ -226,7 +236,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   responses:
                     200:
                       description: Success
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -238,7 +248,8 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `checkOperationsAreScoped with no scope on whitelisted path`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: "2.0"
             securityDefinitions:
               oauth2:
@@ -257,7 +268,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   responses:
                     200:
                       description: Success
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -269,7 +280,8 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `checkOperationsAreScoped with no scopes defined with OpenAPI components`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             openapi: 3.0.1
             
             paths:
@@ -286,7 +298,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                   flows:
                     clientCredentials:
                       tokenUrl: 'https://example.com'
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(yaml)
 
@@ -300,7 +312,8 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `Rule supports Bearer security scheme`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             openapi: 3.0.1
             
             paths:
@@ -323,7 +336,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                 BearerAuth:
                   type: http
                   scheme: bearer
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(yaml)
 
@@ -334,7 +347,8 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `Unsecured path is detected using Bearer security scheme`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             openapi: 3.0.1
             
             paths:
@@ -355,7 +369,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                 BearerAuth:
                   type: http
                   scheme: bearer
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(yaml)
 
@@ -366,7 +380,8 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `Rule supports Bearer global security scheme`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             openapi: 3.0.1
             security:
               - BearerAuth: ['scope.execute']
@@ -386,7 +401,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                 BearerAuth:
                   type: http
                   scheme: bearer
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(yaml)
 
@@ -397,7 +412,8 @@ class SecureAllEndpointsWithScopesRuleTest {
     @Test
     fun `Security scheme names match`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             openapi: 3.0.1
             security:
               - AnotherBearerAuth: ['scope.execute']
@@ -419,7 +435,7 @@ class SecureAllEndpointsWithScopesRuleTest {
                 BearerAuth:
                   type: http
                   scheme: bearer
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(yaml)
 

@@ -8,7 +8,6 @@ import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.oas.models.responses.ApiResponse
 
 interface Context {
-
     /**
      * Parsed OpenAPI 3 object represents either the OpenAPI 3 specification or converted OpenAPI 2 (Swagger) spec.
      */
@@ -37,7 +36,7 @@ interface Context {
      */
     fun validatePaths(
         pathFilter: (Map.Entry<String, PathItem?>) -> Boolean = { true },
-        action: (Map.Entry<String, PathItem?>) -> List<Violation?>
+        action: (Map.Entry<String, PathItem?>) -> List<Violation?>,
     ): List<Violation>
 
     /**
@@ -50,7 +49,7 @@ interface Context {
     fun validateOperations(
         pathFilter: (Map.Entry<String, PathItem?>) -> Boolean = { true },
         operationFilter: (Map.Entry<PathItem.HttpMethod, Operation?>) -> Boolean = { true },
-        action: (Map.Entry<PathItem.HttpMethod, Operation?>) -> List<Violation?>
+        action: (Map.Entry<PathItem.HttpMethod, Operation?>) -> List<Violation?>,
     ): List<Violation>
 
     /**
@@ -65,7 +64,7 @@ interface Context {
         pathFilter: (Map.Entry<String, PathItem?>) -> Boolean = { true },
         operationFilter: (Map.Entry<PathItem.HttpMethod, Operation?>) -> Boolean = { true },
         responseFilter: (Map.Entry<String, ApiResponse?>) -> Boolean = { true },
-        action: (Map.Entry<String, ApiResponse?>) -> List<Violation?>
+        action: (Map.Entry<String, ApiResponse?>) -> List<Violation?>,
     ): List<Violation>
 
     /**
@@ -75,7 +74,10 @@ interface Context {
      * @param value the OpenAPI or Swagger model node
      * @return the new Violation
      */
-    fun violations(description: String, value: Any): List<Violation>
+    fun violations(
+        description: String,
+        value: Any,
+    ): List<Violation>
 
     /**
      * Creates a List of one Violation with the specified pointer, defaulting to the last recorded location.
@@ -83,7 +85,10 @@ interface Context {
      * @param pointer an existing pointer or null
      * @return the new Violation
      */
-    fun violations(description: String, pointer: JsonPointer): List<Violation>
+    fun violations(
+        description: String,
+        pointer: JsonPointer,
+    ): List<Violation>
 
     /**
      * Creates a Violation with a pointer to the OpenAPI or Swagger model node specified,
@@ -92,7 +97,10 @@ interface Context {
      * @param value the OpenAPI or Swagger model node
      * @return the new Violation
      */
-    fun violation(description: String, value: Any): Violation
+    fun violation(
+        description: String,
+        value: Any,
+    ): Violation
 
     /**
      * Creates a Violation with the specified pointer, defaulting to the last recorded location.
@@ -100,7 +108,10 @@ interface Context {
      * @param pointer an existing pointer or null
      * @return the new Violation
      */
-    fun violation(description: String, pointer: JsonPointer): Violation
+    fun violation(
+        description: String,
+        pointer: JsonPointer,
+    ): Violation
 
     /**
      * Check whether a location should be ignored by a specific rule.
@@ -108,7 +119,10 @@ interface Context {
      * @param ruleId the rule id to check
      * @return true if the location should be ignored for this rule
      */
-    fun isIgnored(pointer: JsonPointer, ruleId: String): Boolean
+    fun isIgnored(
+        pointer: JsonPointer,
+        ruleId: String,
+    ): Boolean
 
     /**
      * Look up the JsonPointer for an OpenAPI or Swagger model element.

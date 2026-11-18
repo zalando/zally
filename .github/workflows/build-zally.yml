@@ -4,7 +4,8 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    # boot4/** : stacked PRs of the Spring Boot migration target the previous stage's branch, not main
+    branches: [ main, 'boot4/**' ]
 
 jobs:
   build-zally:

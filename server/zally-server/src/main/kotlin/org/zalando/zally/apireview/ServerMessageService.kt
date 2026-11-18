@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 @Service
 class ServerMessageService(
     @Value("#{'\${zally.cli.deprecatedCliAgents}'.split(',')}") private val deprecatedCliAgents: List<String>,
-    @param:Value("\${zally.cli.releasesPage:}") private val releasesPage: String
+    @param:Value("\${zally.cli.releasesPage:}") private val releasesPage: String,
 ) {
     private val logger = LoggerFactory.getLogger(ServerMessageService::class.java)
 

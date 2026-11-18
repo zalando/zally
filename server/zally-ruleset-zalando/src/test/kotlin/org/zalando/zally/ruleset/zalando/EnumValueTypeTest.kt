@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 
 class EnumValueTypeTest {
-
     private val rule = EnumValueTypeRule()
 
     @Test
     fun `fail validation if 'x-extensible-enum' has a 'string' type`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -32,7 +32,7 @@ class EnumValueTypeTest {
                                   - 2
                                   - 3
                     
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
@@ -43,7 +43,8 @@ class EnumValueTypeTest {
     @Test
     fun `pass validation if 'x-extensible-enum' has a 'string' type`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -63,7 +64,7 @@ class EnumValueTypeTest {
                                   - two
                                   - three
                     
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(spec)
 

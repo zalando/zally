@@ -13,14 +13,12 @@ import java.util.Arrays
 
 @Configuration
 class WebMvcConfiguration : WebMvcConfigurer {
-
     @Autowired
     @Qualifier("yamlObjectMapper")
     private lateinit var yamlObjectMapper: ObjectMapper
 
     override fun configureContentNegotiation(configurer: ContentNegotiationConfigurer) {
         configurer
-            .favorPathExtension(true)
             .favorParameter(false)
             .ignoreAcceptHeader(false)
             .defaultContentType(MediaType.APPLICATION_JSON)

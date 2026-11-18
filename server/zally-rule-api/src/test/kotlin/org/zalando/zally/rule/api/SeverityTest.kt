@@ -6,7 +6,6 @@ import org.zalando.zally.rule.api.Severity.HINT
 import org.zalando.zally.rule.api.Severity.MUST
 
 class SeverityTest {
-
     private val sorted = Severity.values().toSortedSet()
 
     @Test

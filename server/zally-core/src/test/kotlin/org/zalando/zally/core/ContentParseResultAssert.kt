@@ -5,9 +5,9 @@ import org.assertj.core.api.Assertions
 import org.zalando.zally.rule.api.Context
 import org.zalando.zally.rule.api.Violation
 
-class ContentParseResultAssert<T : Any>(actual: ContentParseResult<T>?) :
-    AbstractAssert<ContentParseResultAssert<T>, ContentParseResult<T>?>(actual, ContentParseResultAssert::class.java) {
-
+class ContentParseResultAssert<T : Any>(
+    actual: ContentParseResult<T>?,
+) : AbstractAssert<ContentParseResultAssert<T>, ContentParseResult<T>?>(actual, ContentParseResultAssert::class.java) {
     fun resultsInSuccess() {
         failIfNot<ContentParseResult.ParsedSuccessfully<T>>()
     }
@@ -35,7 +35,7 @@ class ContentParseResultAssert<T : Any>(actual: ContentParseResult<T>?) :
                         "Expected result to be '$type'. Was 'ParsedWithErrors' instead with those violations: $violations"
                     }
                     is ContentParseResult.ParsedSuccessfully -> "Expected result to be '$type'. Was 'ParsedSuccessfully' instead."
-                }
+                },
             )
         }
     }

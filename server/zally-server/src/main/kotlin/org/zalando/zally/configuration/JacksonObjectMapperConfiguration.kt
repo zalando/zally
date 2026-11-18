@@ -12,33 +12,27 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
-import org.zalando.problem.jackson.ProblemModule
 
 @Configuration
 class JacksonObjectMapperConfiguration {
-
     @Bean
     @Primary
-    fun createObjectMapper(): ObjectMapper {
-        return configure(ObjectMapper())
-    }
+    fun createObjectMapper(): ObjectMapper = configure(ObjectMapper())
 
     @Bean
     @Qualifier("yamlObjectMapper")
-    fun createYamlObjectMapper(): ObjectMapper {
-        return configure(ObjectMapper(YAMLFactory()))
-    }
+    fun createYamlObjectMapper(): ObjectMapper = configure(ObjectMapper(YAMLFactory()))
 
     private fun configure(mapper: ObjectMapper): ObjectMapper {
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        mapper
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
             .registerModules(
                 Jdk8Module(),
                 JavaTimeModule(),
-                ProblemModule(),
-                KotlinModule.Builder().build()
+                KotlinModule.Builder().build(),
             )
         return mapper
     }

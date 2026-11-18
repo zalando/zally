@@ -12,16 +12,18 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "132",
     severity = Severity.SHOULD,
-    title = "Use uppercase separate words with hyphens for HTTP headers"
+    title = "Use uppercase separate words with hyphens for HTTP headers",
 )
-class PascalCaseHttpHeadersRule(config: Config) {
-
+class PascalCaseHttpHeadersRule(
+    config: Config,
+) {
     val description = "Header has to be Hyphenated-Pascal-Case"
 
     private val checker = CaseChecker.load(config)
 
     @Check(severity = Severity.SHOULD)
     fun checkHttpHeaders(context: Context): List<Violation> =
-        checker.checkHeadersNames(context)
+        checker
+            .checkHeadersNames(context)
             .map { Violation(description, it.pointer) }
 }

@@ -7,17 +7,17 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.core.rulesConfig
 
 class LimitNumberOfSubResourcesRuleTest {
-
     private val rule = LimitNumberOfSubResourcesRule(rulesConfig)
 
     @Test
     fun `checkNumberOfSubResources should return violation if number of sub resources exceeds the limit`() {
         @Language("YAML")
-        val spec = """
-              openapi: "3.0.0"
-              paths:
-                /worlds/{world-id}/countries/{country-id}/states/{state-id}/cities/{city-id}/streets/{street-id}: {}
-        """.trimIndent()
+        val spec =
+            """
+            openapi: "3.0.0"
+            paths:
+              /worlds/{world-id}/countries/{country-id}/states/{state-id}/cities/{city-id}/streets/{street-id}: {}
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkNumberOfSubResources(context)
@@ -30,11 +30,12 @@ class LimitNumberOfSubResourcesRuleTest {
     @Test
     fun `checkNumberOfSubResources should return no violation if number of sub resources doesn not exceed the limit`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               /articles: {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkNumberOfSubResources(context)

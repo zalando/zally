@@ -4,14 +4,14 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 class CaseCheckerTest {
-
     private val upper = "[A-Z]+".toRegex()
     private val lower = "[a-z]+".toRegex()
     private val white = "white".toRegex()
-    private val cases = sortedMapOf(
-        "lower" to lower,
-        "UPPER" to upper
-    )
+    private val cases =
+        sortedMapOf(
+            "lower" to lower,
+            "UPPER" to upper,
+        )
     private val check = CaseChecker.CaseCheck(listOf(lower, white))
     private val cut = CaseChecker(cases, check)
 

@@ -21,8 +21,8 @@ tasks.register<MediaTypesConfigurationTask>("generate-media-types-config") {
             "model",
             "multipart",
             "text",
-            "video"
-        )
+            "video",
+        ),
     )
     outputFile.set(file("${project.projectDir}/src/main/resources/media-types.json"))
 }

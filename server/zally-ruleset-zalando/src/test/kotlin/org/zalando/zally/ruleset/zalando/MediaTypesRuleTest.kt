@@ -12,7 +12,6 @@ import org.zalando.zally.core.toJsonPointer
 import org.zalando.zally.rule.api.Violation
 
 class MediaTypesRuleTest {
-
     private val rule = MediaTypesRule(rulesConfig)
 
     @Test
@@ -56,107 +55,111 @@ class MediaTypesRuleTest {
     @Test
     fun `versioned custom media type causes no violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.0
-            paths:
-              "/shipment-order/{shipment_order_id}":
-                get:
-                  responses:
-                    200:
-                      content:
-                        "application/x.zalando.contract+json;v=123": {}
-                        "application/vnd.api+json;version=3": {}
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.0
+                paths:
+                  "/shipment-order/{shipment_order_id}":
+                    get:
+                      responses:
+                        200:
+                          content:
+                            "application/x.zalando.contract+json;v=123": {}
+                            "application/vnd.api+json;version=3": {}
+                """.trimIndent(),
+            )
         assertThat(rule.validate(context)).isEmpty()
     }
 
     @Test
     fun `custom media type without versioning causes violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.0
-            paths:
-              "/shipment-order/{shipment_order_id}":
-                get:
-                  responses:
-                    200:
-                      content:
-                        "application/json": {}
-                        "application/vnd.unknown-api+json": {}
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.0
+                paths:
+                  "/shipment-order/{shipment_order_id}":
+                    get:
+                      responses:
+                        200:
+                          content:
+                            "application/json": {}
+                            "application/vnd.unknown-api+json": {}
+                """.trimIndent(),
+            )
         assertThat(rule.validate(context)).hasSameElementsAs(
             listOf(
-                v("/paths/~1shipment-order~1{shipment_order_id}/get/responses/200/content/application~1vnd.unknown-api+json")
-            )
+                v("/paths/~1shipment-order~1{shipment_order_id}/get/responses/200/content/application~1vnd.unknown-api+json"),
+            ),
         )
     }
 
     @Test
     fun `only some of multiple paths without versioning causes violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.0
-            paths:
-              "/path1":
-                get:
-                  responses:
-                    200:
-                      content:
-                        "application/json": {}
-                        "application/vnd.unknown-api+json": {}
-              "/path2":
-                get:
-                  responses:
-                    200:
-                      content:
-                        "application/x.zalando.contract+json": {}
-              "/path3":
-                get:
-                  responses:
-                    200:
-                      content:
-                        "application/x.zalando.contract+json;v=123": {}
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.0
+                paths:
+                  "/path1":
+                    get:
+                      responses:
+                        200:
+                          content:
+                            "application/json": {}
+                            "application/vnd.unknown-api+json": {}
+                  "/path2":
+                    get:
+                      responses:
+                        200:
+                          content:
+                            "application/x.zalando.contract+json": {}
+                  "/path3":
+                    get:
+                      responses:
+                        200:
+                          content:
+                            "application/x.zalando.contract+json;v=123": {}
+                """.trimIndent(),
+            )
         val result = rule.validate(context)
         assertThat(result).hasSameElementsAs(
             listOf(
                 v("/paths/~1path1/get/responses/200/content/application~1vnd.unknown-api+json"),
-                v("/paths/~1path2/get/responses/200/content/application~1x.zalando.contract+json")
-            )
+                v("/paths/~1path2/get/responses/200/content/application~1x.zalando.contract+json"),
+            ),
         )
     }
 
     @Test
     fun `invalid shared components cause violations`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.0
-            components:
-              requestBodies:
-                NamedRequest:
-                  content:
-                    "application/invalid": {}
-              responses:
-                NamedResponse:
-                  description: description
-                  content:
-                    "application/invalid": {}
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.0
+                components:
+                  requestBodies:
+                    NamedRequest:
+                      content:
+                        "application/invalid": {}
+                  responses:
+                    NamedResponse:
+                      description: description
+                      content:
+                        "application/invalid": {}
+                """.trimIndent(),
+            )
 
         val result = rule.validate(context)
         assertThat(result).hasSameElementsAs(
             listOf(
                 v("/components/requestBodies/NamedRequest/content/application~1invalid"),
-                v("/components/responses/NamedResponse/content/application~1invalid")
-            )
+                v("/components/responses/NamedResponse/content/application~1invalid"),
+            ),
         )
     }
 
@@ -174,8 +177,8 @@ class MediaTypesRuleTest {
                 v("/paths/~1products~1{product_id}/get/responses/200"),
                 v("/paths/~1products~1{product_id}~1children/get/responses/200"),
                 v("/paths/~1products~1{product_id}~1updates~1{update_id}/get/responses/200"),
-                v("/paths/~1request-groups~1{request_group_id}~1updates/get/responses/200")
-            )
+                v("/paths/~1request-groups~1{request_group_id}~1updates/get/responses/200"),
+            ),
         )
     }
 
@@ -185,8 +188,9 @@ class MediaTypesRuleTest {
         assertThat(rule.validate(context)).isEmpty()
     }
 
-    private fun v(pointer: String) = Violation(
-        description = "Custom media types should only be used for versioning",
-        pointer = pointer.toJsonPointer()
-    )
+    private fun v(pointer: String) =
+        Violation(
+            description = "Custom media types should only be used for versioning",
+            pointer = pointer.toJsonPointer(),
+        )
 }

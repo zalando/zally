@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 
 class QueryParameterCollectionFormatRuleTest {
-
     private val rule = QueryParameterCollectionFormatRule()
 
     @Test
     fun `checkParametersCollectionFormat should return violation if invalid collection format is set`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             components:
               parameters:
@@ -21,7 +21,7 @@ class QueryParameterCollectionFormatRuleTest {
                   style: spaceDelimited
                   schema:
                     type: array
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkParametersCollectionFormat(context)
@@ -35,7 +35,8 @@ class QueryParameterCollectionFormatRuleTest {
     @Test
     fun `checkParametersCollectionFormat should return no violation if valid collection format is set`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             components:
               parameters:
@@ -44,7 +45,7 @@ class QueryParameterCollectionFormatRuleTest {
                   style: form
                   schema:
                     type: array
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkParametersCollectionFormat(context)
@@ -55,7 +56,8 @@ class QueryParameterCollectionFormatRuleTest {
     @Test
     fun `checkParametersCollectionFormat should ignore OpenAPI 2 (Swagger) specifications`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             swagger: 2.0
             info:
               title: Old API
@@ -67,7 +69,7 @@ class QueryParameterCollectionFormatRuleTest {
                 type: array
                 items:
                   type: string
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getSwaggerContext(content)
 
         val violations = rule.checkParametersCollectionFormat(context)

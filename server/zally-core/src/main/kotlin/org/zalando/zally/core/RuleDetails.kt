@@ -8,8 +8,10 @@ import java.lang.reflect.Method
 data class RuleDetails(
     val ruleSet: RuleSet,
     val rule: Rule,
-    val instance: Any
+    val instance: Any,
 ) {
-    fun toCheckDetails(check: Check, method: Method): CheckDetails =
-        CheckDetails(ruleSet, rule, instance, check, method)
+    fun toCheckDetails(
+        check: Check,
+        method: Method,
+    ): CheckDetails = CheckDetails(ruleSet, rule, instance, check, method)
 }

@@ -10,7 +10,6 @@ import org.zalando.zally.rule.api.Context
 import org.zalando.zally.test.ZallyAssertions.assertThat
 
 class PluralizeResourceNamesRuleTest {
-
     private val rule = PluralizeResourceNamesRule(rulesConfig)
 
     @Test
@@ -27,11 +26,10 @@ class PluralizeResourceNamesRuleTest {
         assertThat(violations)
             .descriptionsEqualTo(
                 "Resource 'pet' appears to be singular",
-                "Resource 'tail' appears to be singular"
-            )
-            .pointersEqualTo(
+                "Resource 'tail' appears to be singular",
+            ).pointersEqualTo(
                 "/paths/~1pet~1cats",
-                "/paths/~1pets~1cats~1{cat-id}~1tail~1{tail-id}~1strands"
+                "/paths/~1pets~1cats~1{cat-id}~1tail~1{tail-id}~1strands",
             )
     }
 
@@ -70,7 +68,7 @@ class PluralizeResourceNamesRuleTest {
                 "/paths/~1queue~1configs~1{config-id}",
                 "/paths/~1queue~1models",
                 "/paths/~1queue~1models~1{model-id}",
-                "/paths/~1queue~1summaries"
+                "/paths/~1queue~1summaries",
             )
     }
 
@@ -93,11 +91,10 @@ class PluralizeResourceNamesRuleTest {
         assertThat(violations)
             .descriptionsEqualTo(
                 "Resource 'singular' appears to be singular",
-                "Resource 'thing' appears to be singular"
-            )
-            .pointersEqualTo(
+                "Resource 'thing' appears to be singular",
+            ).pointersEqualTo(
                 "/paths/~1singular~1thing",
-                "/paths/~1singular~1thing"
+                "/paths/~1singular~1thing",
             )
     }
 
@@ -110,11 +107,10 @@ class PluralizeResourceNamesRuleTest {
         assertThat(violations)
             .descriptionsEqualTo(
                 "Resource 'prefix' appears to be singular",
-                "Resource 'suffix' appears to be singular"
-            )
-            .pointersEqualTo(
+                "Resource 'suffix' appears to be singular",
+            ).pointersEqualTo(
                 "/paths/~1prefix~1{parameter}~1suffix",
-                "/paths/~1prefix~1{parameter}~1suffix"
+                "/paths/~1prefix~1{parameter}~1suffix",
             )
     }
 
@@ -160,21 +156,21 @@ class PluralizeResourceNamesRuleTest {
         assertThat(violations)
             .descriptionsEqualTo(
                 "Resource 'prefix' appears to be singular",
-                "Resource 'suffix' appears to be singular"
-            )
-            .pointersEqualTo(
+                "Resource 'suffix' appears to be singular",
+            ).pointersEqualTo(
                 "/paths/~1prefix~1whitelisted~1suffix",
-                "/paths/~1prefix~1whitelisted~1suffix"
+                "/paths/~1prefix~1whitelisted~1suffix",
             )
     }
 
     @Suppress("UnsafeCallOnNullableType")
     private fun openApiContextWithPath(path: String): Context {
-        val content = """
-                openapi: 3.0.0
-                paths:
-                  $path: {}
-        """.trimIndent()
+        val content =
+            """
+            openapi: 3.0.0
+            paths:
+              $path: {}
+            """.trimIndent()
         val result = DefaultContextFactory().parseOpenApiContext(content)
         assertThat(result).isInstanceOf(ParsedSuccessfully::class.java)
         return (result as ParsedSuccessfully).result

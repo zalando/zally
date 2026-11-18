@@ -20,7 +20,6 @@ import org.zalando.zally.rule.api.Violation
 
 @Configuration
 class RestApiTestConfiguration {
-
     companion object {
         fun assertRuleManagerUsingLimitedRules(rulesManager: RulesManager) {
             assertThat(rulesManager.rules.map { it.ruleSet.url.toString() })
@@ -34,7 +33,7 @@ class RestApiTestConfiguration {
                 .contains(
                     "https://zally.example.com/TestRuleSet",
                     "https://zalando.github.io/restful-api-guidelines/",
-                    "https://github.com/zalando/zally/blob/master/server/rules.md"
+                    "https://github.com/zalando/zally/blob/master/server/rules.md",
                 )
         }
     }
@@ -45,23 +44,25 @@ class RestApiTestConfiguration {
     @Bean
     @Primary
     @Profile("all-annotated-rules")
-    fun rulesManagerWithAllAnnotatedRules(config: Config): RulesManager = RulesManager
-        .fromInstances(
-            config,
-            context.getBeansWithAnnotation(Rule::class.java).values
-        )
+    fun rulesManagerWithAllAnnotatedRules(config: Config): RulesManager =
+        RulesManager
+            .fromInstances(
+                config,
+                context.getBeansWithAnnotation(Rule::class.java).values,
+            )
 
     @Bean
     @Primary
     @Profile("limited-rules")
-    fun rulesManagerWithLimitedRules(config: Config): RulesManager = RulesManager
-        .fromInstances(
-            config,
-            listOf(
-                TestCheckIsOpenApi3(),
-                TestCheckAlwaysReport3MustViolations()
+    fun rulesManagerWithLimitedRules(config: Config): RulesManager =
+        RulesManager
+            .fromInstances(
+                config,
+                listOf(
+                    TestCheckIsOpenApi3(),
+                    TestCheckAlwaysReport3MustViolations(),
+                ),
             )
-        )
 
     class TestRuleSet : AbstractRuleSet()
 
@@ -70,18 +71,16 @@ class RestApiTestConfiguration {
         ruleSet = TestRuleSet::class,
         id = "TestCheckIsOpenApi3",
         severity = Severity.MUST,
-        title = "TestCheckIsOpenApi3"
+        title = "TestCheckIsOpenApi3",
     )
     class TestCheckIsOpenApi3 {
-
         @Check(severity = Severity.MUST)
-        fun validate(json: JsonNode): Violation? {
-            return if ("3.0.0" != json.path("openapi").textValue()) {
+        fun validate(json: JsonNode): Violation? =
+            if ("3.0.0" != json.path("openapi").textValue()) {
                 Violation("TestCheckIsOpenApi3", "/openapi".toJsonPointer())
             } else {
                 null
             }
-        }
     }
 
     /** Rule used for testing  */
@@ -89,17 +88,17 @@ class RestApiTestConfiguration {
         ruleSet = TestRuleSet::class,
         id = "TestCheckAlwaysReport3MustViolations",
         severity = Severity.MUST,
-        title = "TestCheckAlwaysReport3MustViolations"
+        title = "TestCheckAlwaysReport3MustViolations",
     )
     class TestCheckAlwaysReport3MustViolations {
-
         @Check(severity = Severity.MUST)
-        fun validate(@Suppress("UNUSED_PARAMETER") json: JsonNode): Iterable<Violation> {
-            return listOf(
+        fun validate(
+            @Suppress("UNUSED_PARAMETER") json: JsonNode,
+        ): Iterable<Violation> =
+            listOf(
                 Violation("TestCheckAlwaysReport3MustViolations #1", EMPTY_JSON_POINTER),
                 Violation("TestCheckAlwaysReport3MustViolations #2", EMPTY_JSON_POINTER),
-                Violation("TestCheckAlwaysReport3MustViolations #3", EMPTY_JSON_POINTER)
+                Violation("TestCheckAlwaysReport3MustViolations #3", EMPTY_JSON_POINTER),
             )
-        }
     }
 }

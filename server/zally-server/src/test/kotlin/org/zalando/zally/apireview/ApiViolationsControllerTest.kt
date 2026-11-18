@@ -27,7 +27,6 @@ import org.zalando.zally.dto.ApiDefinitionRequest
 @AutoConfigureMockMvc
 @Suppress("UnsafeCallOnNullableType")
 class ApiViolationsControllerTest {
-
     @Autowired
     private lateinit var mvc: MockMvc
 
@@ -40,12 +39,12 @@ class ApiViolationsControllerTest {
     @Test
     @Throws(Exception::class)
     fun violationsResponseReferencesFullGuidelinesUrl() {
-        mvc.perform(
-            post("/api-violations")
-                .contentType("application/json")
-                .content("{\"api_definition_string\":\"\"}")
-        )
-            .andExpect(status().isOk)
+        mvc
+            .perform(
+                post("/api-violations")
+                    .contentType("application/json")
+                    .content("{\"api_definition_string\":\"\"}"),
+            ).andExpect(status().isOk)
             .andExpect(header().exists("Location"))
             .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(content().string(containsString("https://zalando.github.io/restful-api-guidelines")))
@@ -57,28 +56,31 @@ class ApiViolationsControllerTest {
 
     @Test
     fun `getExistingViolationResponse with no previous apis responds NotFound`() {
-        mvc.perform(
-            get("/api-violations/00000000-0000-0000-0000-000000000000")
-                .accept("application/json")
-        )
-            .andExpect(status().isNotFound)
+        mvc
+            .perform(
+                get("/api-violations/00000000-0000-0000-0000-000000000000")
+                    .accept("application/json"),
+            ).andExpect(status().isNotFound)
     }
 
     @Test
     fun `getExistingViolationResponse with existing responds Ok`() {
-        val location = mvc.perform(
-            post("/api-violations")
-                .contentType("application/json")
-                .content("{\"api_definition_string\":\"\"}")
-        )
-            .andExpect(status().isOk)
-            .andReturn().response.getHeaderValue("Location")!!
+        val location =
+            mvc
+                .perform(
+                    post("/api-violations")
+                        .contentType("application/json")
+                        .content("{\"api_definition_string\":\"\"}"),
+                ).andExpect(status().isOk)
+                .andReturn()
+                .response
+                .getHeaderValue("Location")!!
 
-        mvc.perform(
-            get(location.toString())
-                .accept("application/json")
-        )
-            .andExpect(status().isOk)
+        mvc
+            .perform(
+                get(location.toString())
+                    .accept("application/json"),
+            ).andExpect(status().isOk)
             .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath("$.external_id", notNullValue()))
             .andExpect(jsonPath("$.violations", notNullValue()))
@@ -96,12 +98,12 @@ class ApiViolationsControllerTest {
     fun `all rules must be able to cope with recursive api specifications`() {
         val objectMapper = JacksonObjectMapperConfiguration().createObjectMapper()
         val request = objectMapper.writeValueAsString(ApiDefinitionRequest(apiDefinitionString = recursiveSpec))
-        mvc.perform(
-            post("/api-violations")
-                .contentType("application/json")
-                .content(request)
-        )
-            .andExpect(status().isOk)
+        mvc
+            .perform(
+                post("/api-violations")
+                    .contentType("application/json")
+                    .content(request),
+            ).andExpect(status().isOk)
     }
 
     /**
@@ -113,38 +115,39 @@ class ApiViolationsControllerTest {
     fun `all rules must be able to cope with empty (minimal) api specifications`() {
         val objectMapper = JacksonObjectMapperConfiguration().createObjectMapper()
         val request = objectMapper.writeValueAsString(ApiDefinitionRequest(apiDefinitionString = "openapi: 3.0.1"))
-        mvc.perform(
-            post("/api-violations")
-                .contentType("application/json")
-                .content(request)
-        )
-            .andExpect(status().isOk)
+        mvc
+            .perform(
+                post("/api-violations")
+                    .contentType("application/json")
+                    .content(request),
+            ).andExpect(status().isOk)
     }
 
     @Language("YAML")
-    private val recursiveSpec = """
-      openapi: 3.0.1
-      paths:
-        /products/{product_id}:
-          get:
-            responses:
-              200:
-                content:
-                  application/json:
-                    schema:
-                      ${'$'}ref: "#/components/schemas/FacetGetResponse"
-      components:
-        schemas:
-          FacetGetResponse:
-            allOf:
-              - ${'$'}ref: "#/components/schemas/ProductResource"
-          ProductResource:
-            allOf:
-              - type: object
-                properties:
-                  children:
-                    type: array
-                    items:
-                      ${'$'}ref: "#/components/schemas/ProductResource"
-    """.trimIndent()
+    private val recursiveSpec =
+        """
+        openapi: 3.0.1
+        paths:
+          /products/{product_id}:
+            get:
+              responses:
+                200:
+                  content:
+                    application/json:
+                      schema:
+                        ${'$'}ref: "#/components/schemas/FacetGetResponse"
+        components:
+          schemas:
+            FacetGetResponse:
+              allOf:
+                - ${'$'}ref: "#/components/schemas/ProductResource"
+            ProductResource:
+              allOf:
+                - type: object
+                  properties:
+                    children:
+                      type: array
+                      items:
+                        ${'$'}ref: "#/components/schemas/ProductResource"
+        """.trimIndent()
 }

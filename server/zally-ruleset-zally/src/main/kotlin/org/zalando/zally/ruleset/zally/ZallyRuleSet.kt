@@ -9,9 +9,10 @@ class ZallyRuleSet : AbstractRuleSet() {
 
     override fun url(rule: Rule): URI {
         val heading = "${rule.id}: ${rule.title}"
-        val ref = heading
-            .lowercase()
-            .replace(Regex("[^a-z0-9]+"), "-")
+        val ref =
+            heading
+                .lowercase()
+                .replace(Regex("[^a-z0-9]+"), "-")
         return url.resolve("#$ref")
     }
 }

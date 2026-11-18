@@ -1,0 +1,1807 @@
+### post json definition
+> POST /api-violations
+> Content-Type: application/json
+> body: {"api_definition":{"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}}}
+< 200
+< content-type: application/json
+< location: http://localhost:<port>/api-violations/<uuid>
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"external_id":"<uuid>","message":"","violations":[{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #1","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #2","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #3","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null}],"violations_count":{"must":3,"should":0,"may":0,"hint":0},"api_definition":"{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Tiny\",\"version\":\"1.0.0\"},\"paths\":{}}"}
+
+### post string definition
+> POST /api-violations
+> Content-Type: application/json
+> body: {"api_definition_string":"{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Tiny\",\"version\":\"1.0.0\"},\"paths\":{}}"}
+< 200
+< content-type: application/json
+< location: http://localhost:<port>/api-violations/<uuid>
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"external_id":"<uuid>","message":"","violations":[{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #1","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #2","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #3","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null}],"violations_count":{"must":3,"should":0,"may":0,"hint":0},"api_definition":"{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Tiny\",\"version\":\"1.0.0\"},\"paths\":{}}"}
+
+### post accept yaml
+> POST /api-violations
+> Accept: application/x-yaml
+> Content-Type: application/json
+> body: {"api_definition":{"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}}}
+< 200
+< content-type: application/x-yaml
+< location: http://localhost:<port>/api-violations/<uuid>
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: ---
+external_id: "<uuid>"
+message: ""
+violations:
+- title: "TestCheckAlwaysReport3MustViolations"
+  description: "TestCheckAlwaysReport3MustViolations #1"
+  violation_type: "MUST"
+  rule_link: "https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations"
+  paths:
+  - ""
+  pointer: ""
+  start_line: null
+  end_line: null
+- title: "TestCheckAlwaysReport3MustViolations"
+  description: "TestCheckAlwaysReport3MustViolations #2"
+  violation_type: "MUST"
+  rule_link: "https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations"
+  paths:
+  - ""
+  pointer: ""
+  start_line: null
+  end_line: null
+- title: "TestCheckAlwaysReport3MustViolations"
+  description: "TestCheckAlwaysReport3MustViolations #3"
+  violation_type: "MUST"
+  rule_link: "https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations"
+  paths:
+  - ""
+  pointer: ""
+  start_line: null
+  end_line: null
+violations_count:
+  must: 3
+  should: 0
+  may: 0
+  hint: 0
+api_definition: "{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Tiny\",\"version\":\"\
+  1.0.0\"},\"paths\":{}}"
+
+### post accept text yaml
+> POST /api-violations
+> Accept: text/x-yaml
+> Content-Type: application/json
+> body: {"api_definition":{"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}}}
+< 200
+< content-type: text/x-yaml
+< location: http://localhost:<port>/api-violations/<uuid>
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: ---
+external_id: "<uuid>"
+message: ""
+violations:
+- title: "TestCheckAlwaysReport3MustViolations"
+  description: "TestCheckAlwaysReport3MustViolations #1"
+  violation_type: "MUST"
+  rule_link: "https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations"
+  paths:
+  - ""
+  pointer: ""
+  start_line: null
+  end_line: null
+- title: "TestCheckAlwaysReport3MustViolations"
+  description: "TestCheckAlwaysReport3MustViolations #2"
+  violation_type: "MUST"
+  rule_link: "https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations"
+  paths:
+  - ""
+  pointer: ""
+  start_line: null
+  end_line: null
+- title: "TestCheckAlwaysReport3MustViolations"
+  description: "TestCheckAlwaysReport3MustViolations #3"
+  violation_type: "MUST"
+  rule_link: "https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations"
+  paths:
+  - ""
+  pointer: ""
+  start_line: null
+  end_line: null
+violations_count:
+  must: 3
+  should: 0
+  may: 0
+  hint: 0
+api_definition: "{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Tiny\",\"version\":\"\
+  1.0.0\"},\"paths\":{}}"
+
+### post accept json
+> POST /api-violations
+> Accept: application/json
+> Content-Type: application/json
+> body: {"api_definition":{"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}}}
+< 200
+< content-type: application/json
+< location: http://localhost:<port>/api-violations/<uuid>
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"external_id":"<uuid>","message":"","violations":[{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #1","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #2","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #3","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null}],"violations_count":{"must":3,"should":0,"may":0,"hint":0},"api_definition":"{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Tiny\",\"version\":\"1.0.0\"},\"paths\":{}}"}
+
+### post accept anything
+> POST /api-violations
+> Accept: */*
+> Content-Type: application/json
+> body: {"api_definition":{"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}}}
+< 200
+< content-type: application/json
+< location: http://localhost:<port>/api-violations/<uuid>
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"external_id":"<uuid>","message":"","violations":[{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #1","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #2","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #3","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null}],"violations_count":{"must":3,"should":0,"may":0,"hint":0},"api_definition":"{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Tiny\",\"version\":\"1.0.0\"},\"paths\":{}}"}
+
+### post accept html
+> POST /api-violations
+> Accept: text/html
+> Content-Type: application/json
+> body: {"api_definition":{"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}}}
+< 406
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Not Acceptable","status":406,"detail":"No acceptable representation"}
+
+### post trailing slash
+> POST /api-violations/
+> Content-Type: application/json
+> body: {"api_definition":{"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}}}
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/api-violations/"}
+
+### post yaml suffix
+> POST /api-violations.yaml
+> Content-Type: application/json
+> body: {"api_definition":{"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}}}
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/api-violations.yaml"}
+
+### post json suffix
+> POST /api-violations.json
+> Content-Type: application/json
+> body: {"api_definition":{"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}}}
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/api-violations.json"}
+
+### post ignore rules
+> POST /api-violations
+> Content-Type: application/json
+> body: {"api_definition":{"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}},"ignore_rules":["TestCheckIsOpenApi3"]}
+< 200
+< content-type: application/json
+< location: http://localhost:<port>/api-violations/<uuid>
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"external_id":"<uuid>","message":"","violations":[{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #1","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #2","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #3","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null}],"violations_count":{"must":3,"should":0,"may":0,"hint":0},"api_definition":"{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Tiny\",\"version\":\"1.0.0\"},\"paths\":{}}"}
+
+### post unparsable definition
+> POST /api-violations
+> Content-Type: application/json
+> body: {"api_definition":"no swagger definition"}
+< 200
+< content-type: application/json
+< location: http://localhost:<port>/api-violations/<uuid>
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"external_id":"<uuid>","message":"","violations":[{"title":"provide API specification using OpenAPI","description":"attribute  is not of type `object`","violation_type":"MUST","rule_link":"https://zalando.github.io/restful-api-guidelines/#101","paths":[""],"pointer":"","start_line":1,"end_line":1},{"title":"TestCheckIsOpenApi3","description":"TestCheckIsOpenApi3","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckIsOpenApi3","paths":["/openapi"],"pointer":"/openapi","start_line":1,"end_line":1},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #1","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":1,"end_line":1},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #2","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":1,"end_line":1},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #3","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":1,"end_line":1}],"violations_count":{"must":5,"should":0,"may":0,"hint":0},"api_definition":"\"no swagger definition\""}
+
+### post with user agent
+> POST /api-violations
+> User-Agent: unirest-java/1.3.11
+> Content-Type: application/json
+> body: {"api_definition":{"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}}}
+< 200
+< content-type: application/json
+< location: http://localhost:<port>/api-violations/<uuid>
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"external_id":"<uuid>","message":"Please update your CLI: https://github.com/zalando/zally/releases","violations":[{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #1","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #2","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #3","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null}],"violations_count":{"must":3,"should":0,"may":0,"hint":0},"api_definition":"{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Tiny\",\"version\":\"1.0.0\"},\"paths\":{}}"}
+
+### post unknown fields are ignored
+> POST /api-violations
+> Content-Type: application/json
+> body: {"api_definition":{"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}},"unknown":1}
+< 200
+< content-type: application/json
+< location: http://localhost:<port>/api-violations/<uuid>
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"external_id":"<uuid>","message":"","violations":[{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #1","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #2","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #3","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null}],"violations_count":{"must":3,"should":0,"may":0,"hint":0},"api_definition":"{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Tiny\",\"version\":\"1.0.0\"},\"paths\":{}}"}
+
+### post malformed json
+> POST /api-violations
+> Content-Type: application/json
+> body: {"api_definition": 
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"JSON parse error: Unexpected end-of-input within/between Object entries"}
+
+### post empty body
+> POST /api-violations
+> Content-Type: application/json
+> body: 
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"Required request body is missing: public org.springframework.http.ResponseEntity<org.zalando.zally.dto.ApiDefinitionResponse> org.zalando.zally.apireview.ApiViolationsController.validate(org.zalando.zally.dto.ApiDefinitionRequest,java.lang.String,java.lang.String,org.springframework.web.util.UriComponentsBuilder)"}
+
+### post json array
+> POST /api-violations
+> Content-Type: application/json
+> body: []
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"JSON parse error: Cannot deserialize value of type `org.zalando.zally.dto.ApiDefinitionRequest` from Array value (token `JsonToken.START_ARRAY`)"}
+
+### post no definition
+> POST /api-violations
+> Content-Type: application/json
+> body: {"my_api":"dummy"}
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"An api definition is missing in api_definition field"}
+
+### post wrong type
+> POST /api-violations
+> Content-Type: application/json
+> body: {"api_definition_url":42,"ignore_rules":"x"}
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"JSON parse error: Cannot construct instance of `java.util.ArrayList` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('x')"}
+
+### post unknown host
+> POST /api-violations
+> Content-Type: application/json
+> body: {"api_definition_url":"http://remote-localhost/test.yaml"}
+< 404
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Not Found","status":404,"detail":"Unknown host while retrieving api definition url: remote-localhost"}
+
+### post invalid url
+> POST /api-violations
+> Content-Type: application/json
+> body: {"api_definition_url":"not a url"}
+< 500
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Internal Server Error","status":500,"detail":"URI is not absolute"}
+
+### post text plain
+> POST /api-violations
+> Content-Type: text/plain
+> body: {"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}}
+< 415
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Unsupported Media Type","status":415,"detail":"Content-Type 'text/plain;charset=UTF-8' is not supported"}
+
+### post no content type
+> POST /api-violations
+> Content-Type: null
+> body: {"openapi":"3.0.0","info":{"title":"Tiny","version":"1.0.0"},"paths":{}}
+< 415
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Unsupported Media Type","status":415,"detail":"Content-Type 'application/octet-stream' is not supported"}
+
+### post yaml content type
+> POST /api-violations
+> Content-Type: application/x-yaml
+> body: openapi: 3.0.0
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"An api definition is missing in api_definition field"}
+
+### get review
+> GET /api-violations/{id}
+< 200
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"external_id":"<uuid>","message":"","violations":[{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #1","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #2","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null},{"title":"TestCheckAlwaysReport3MustViolations","description":"TestCheckAlwaysReport3MustViolations #3","violation_type":"MUST","rule_link":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","paths":[""],"pointer":"","start_line":null,"end_line":null}],"violations_count":{"must":3,"should":0,"may":0,"hint":0},"api_definition":"{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Tiny\",\"version\":\"1.0.0\"},\"paths\":{}}"}
+
+### get review trailing slash
+> GET /api-violations/{id}/
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/api-violations/<uuid>/"}
+
+### get review accept yaml
+> GET /api-violations/{id}
+> Accept: application/x-yaml
+< 200
+< content-type: application/x-yaml
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: ---
+external_id: "<uuid>"
+message: ""
+violations:
+- title: "TestCheckAlwaysReport3MustViolations"
+  description: "TestCheckAlwaysReport3MustViolations #1"
+  violation_type: "MUST"
+  rule_link: "https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations"
+  paths:
+  - ""
+  pointer: ""
+  start_line: null
+  end_line: null
+- title: "TestCheckAlwaysReport3MustViolations"
+  description: "TestCheckAlwaysReport3MustViolations #2"
+  violation_type: "MUST"
+  rule_link: "https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations"
+  paths:
+  - ""
+  pointer: ""
+  start_line: null
+  end_line: null
+- title: "TestCheckAlwaysReport3MustViolations"
+  description: "TestCheckAlwaysReport3MustViolations #3"
+  violation_type: "MUST"
+  rule_link: "https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations"
+  paths:
+  - ""
+  pointer: ""
+  start_line: null
+  end_line: null
+violations_count:
+  must: 3
+  should: 0
+  may: 0
+  hint: 0
+api_definition: "{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Tiny\",\"version\":\"\
+  1.0.0\"},\"paths\":{}}"
+
+### get review yaml suffix
+> GET /api-violations/{id}.yaml
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"Method parameter 'externalId': Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; UUID string too large"}
+
+### get review json suffix
+> GET /api-violations/{id}.json
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"Method parameter 'externalId': Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; UUID string too large"}
+
+### get review unknown id
+> GET /api-violations/6f1f1b1e-9a38-4c7e-8d0e-111111111111
+< 404
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Not Found","status":404}
+
+### get review invalid id
+> GET /api-violations/not-a-uuid
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"Method parameter 'externalId': Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; Invalid UUID string: not-a-uuid"}
+
+### get review accept html
+> GET /api-violations/{id}
+> Accept: text/html
+< 406
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Not Acceptable","status":406,"detail":"No acceptable representation"}
+
+### get api-violations without id
+> GET /api-violations
+< 405
+< content-type: application/problem+json
+< allow: POST
+< body: {"title":"Method Not Allowed","status":405,"detail":"Request method 'GET' is not supported"}
+
+### get api-violations trailing slash
+> GET /api-violations/
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/api-violations/"}
+
+### put review
+> PUT /api-violations/{id}
+> Content-Type: application/json
+> body: {}
+< 405
+< content-type: application/problem+json
+< allow: GET
+< body: {"title":"Method Not Allowed","status":405,"detail":"Request method 'PUT' is not supported"}
+
+### delete review
+> DELETE /api-violations/{id}
+< 405
+< content-type: application/problem+json
+< allow: GET
+< body: {"title":"Method Not Allowed","status":405,"detail":"Request method 'DELETE' is not supported"}
+
+### head review
+> HEAD /api-violations/{id}
+< 200
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body:
+
+### options review
+> OPTIONS /api-violations/{id}
+< 200
+< allow: GET,HEAD,OPTIONS
+< body:
+
+### rules
+> GET /supported-rules
+< 200
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"rules":[{"title":"TestCheckAlwaysReport3MustViolations","type":"MUST","url":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","code":"TestCheckAlwaysReport3MustViolations","is_active":true},{"title":"TestCheckIsOpenApi3","type":"MUST","url":"https://zally.example.com/TestRuleSet#TestCheckIsOpenApi3","code":"TestCheckIsOpenApi3","is_active":true}]}
+
+### rules trailing slash
+> GET /supported-rules/
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/supported-rules/"}
+
+### rules accept yaml
+> GET /supported-rules
+> Accept: application/x-yaml
+< 200
+< content-type: application/x-yaml
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: ---
+rules:
+- title: "TestCheckAlwaysReport3MustViolations"
+  type: "MUST"
+  url: "https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations"
+  code: "TestCheckAlwaysReport3MustViolations"
+  is_active: true
+- title: "TestCheckIsOpenApi3"
+  type: "MUST"
+  url: "https://zally.example.com/TestRuleSet#TestCheckIsOpenApi3"
+  code: "TestCheckIsOpenApi3"
+  is_active: true
+
+### rules accept text yaml
+> GET /supported-rules
+> Accept: text/x-yaml
+< 200
+< content-type: text/x-yaml
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: ---
+rules:
+- title: "TestCheckAlwaysReport3MustViolations"
+  type: "MUST"
+  url: "https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations"
+  code: "TestCheckAlwaysReport3MustViolations"
+  is_active: true
+- title: "TestCheckIsOpenApi3"
+  type: "MUST"
+  url: "https://zally.example.com/TestRuleSet#TestCheckIsOpenApi3"
+  code: "TestCheckIsOpenApi3"
+  is_active: true
+
+### rules yaml suffix
+> GET /supported-rules.yaml
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/supported-rules.yaml"}
+
+### rules json suffix
+> GET /supported-rules.json
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/supported-rules.json"}
+
+### rules accept html
+> GET /supported-rules
+> Accept: text/html
+< 406
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Not Acceptable","status":406,"detail":"No acceptable representation"}
+
+### rules accept xml
+> GET /supported-rules
+> Accept: application/xml
+< 406
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Not Acceptable","status":406,"detail":"No acceptable representation"}
+
+### rules type filter
+> GET /supported-rules?type=MUST
+< 200
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"rules":[{"title":"TestCheckAlwaysReport3MustViolations","type":"MUST","url":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","code":"TestCheckAlwaysReport3MustViolations","is_active":true},{"title":"TestCheckIsOpenApi3","type":"MUST","url":"https://zally.example.com/TestRuleSet#TestCheckIsOpenApi3","code":"TestCheckIsOpenApi3","is_active":true}]}
+
+### rules type filter lower case
+> GET /supported-rules?type=must
+< 200
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"rules":[{"title":"TestCheckAlwaysReport3MustViolations","type":"MUST","url":"https://zally.example.com/TestRuleSet#TestCheckAlwaysReport3MustViolations","code":"TestCheckAlwaysReport3MustViolations","is_active":true},{"title":"TestCheckIsOpenApi3","type":"MUST","url":"https://zally.example.com/TestRuleSet#TestCheckIsOpenApi3","code":"TestCheckIsOpenApi3","is_active":true}]}
+
+### rules invalid type
+> GET /supported-rules?type=bogus
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"Method parameter 'type': Failed to convert value of type 'java.lang.String' to required type 'org.zalando.zally.rule.api.Severity'; No enum constant org.zalando.zally.rule.api.Severity.BOGUS"}
+
+### rules inactive
+> GET /supported-rules?is_active=false
+< 200
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"rules":[]}
+
+### rules invalid is_active
+> GET /supported-rules?is_active=maybe
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"Method parameter 'is_active': Failed to convert value of type 'java.lang.String' to required type 'java.lang.Boolean'; Invalid boolean value [maybe]"}
+
+### rules post
+> POST /supported-rules
+> Content-Type: application/json
+> body: {}
+< 405
+< content-type: application/problem+json
+< allow: GET
+< body: {"title":"Method Not Allowed","status":405,"detail":"Request method 'POST' is not supported"}
+
+### rules options
+> OPTIONS /supported-rules
+< 200
+< allow: GET,HEAD,OPTIONS
+< body:
+
+### rules preflight
+> OPTIONS /supported-rules
+> Origin: https://example.org
+> Access-Control-Request-Method: GET
+< 200
+< allow: GET, HEAD, POST, PUT, DELETE, OPTIONS, TRACE, PATCH
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< access-control-allow-origin: *
+< access-control-allow-methods: GET
+< access-control-max-age: 1800
+< body:
+
+### statistics
+> GET /review-statistics
+< 200
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"total_reviews":15,"total_reviews_deduplicated":1,"successful_reviews":12,"number_of_endpoints":0,"must_violations":38,"should_violations":0,"may_violations":0,"hint_violations":0}
+
+### statistics trailing slash
+> GET /review-statistics/
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/review-statistics/"}
+
+### statistics yaml suffix
+> GET /review-statistics.yaml
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/review-statistics.yaml"}
+
+### statistics accept yaml
+> GET /review-statistics
+> Accept: application/x-yaml
+< 200
+< content-type: application/x-yaml
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: ---
+total_reviews: 15
+total_reviews_deduplicated: 1
+successful_reviews: 12
+number_of_endpoints: 0
+must_violations: 38
+should_violations: 0
+may_violations: 0
+hint_violations: 0
+
+### statistics from
+> GET /review-statistics?from=2000-01-01
+< 200
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"total_reviews":15,"total_reviews_deduplicated":1,"successful_reviews":12,"number_of_endpoints":0,"must_violations":38,"should_violations":0,"may_violations":0,"hint_violations":0}
+
+### statistics from and to
+> GET /review-statistics?from=2000-01-01&to=2000-01-31
+< 200
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"total_reviews":0,"total_reviews_deduplicated":0,"successful_reviews":0,"number_of_endpoints":0,"must_violations":0,"should_violations":0,"may_violations":0,"hint_violations":0}
+
+### statistics user agent
+> GET /review-statistics?user_agent=unirest
+< 200
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"total_reviews":0,"total_reviews_deduplicated":0,"successful_reviews":0,"number_of_endpoints":0,"must_violations":0,"should_violations":0,"may_violations":0,"hint_violations":0}
+
+### statistics empty user agent
+> GET /review-statistics?user_agent=
+< 200
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"total_reviews":15,"total_reviews_deduplicated":1,"successful_reviews":12,"number_of_endpoints":0,"must_violations":38,"should_violations":0,"may_violations":0,"hint_violations":0}
+
+### statistics to without from
+> GET /review-statistics?to=2000-01-31
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"TO parameter was supplied without corresponding FROM parameter"}
+
+### statistics from in the future
+> GET /review-statistics?from=2999-01-01
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"Time parameter is in the future"}
+
+### statistics invalid date
+> GET /review-statistics?from=yesterday
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"Method parameter 'from': Failed to convert value of type 'java.lang.String' to required type 'java.time.LocalDate'; Failed to convert from type [java.lang.String] to type [@org.springframework.web.bind.annotation.RequestParam @org.springframework.format.annotation.DateTimeFormat java.time.LocalDate] for value [yesterday]"}
+
+### statistics invalid to
+> GET /review-statistics?from=2000-01-01&to=31.01.2000
+< 400
+< content-type: application/problem+json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"title":"Bad Request","status":400,"detail":"Method parameter 'to': Failed to convert value of type 'java.lang.String' to required type 'java.time.LocalDate'; Failed to convert from type [java.lang.String] to type [@org.springframework.web.bind.annotation.RequestParam @org.springframework.format.annotation.DateTimeFormat java.time.LocalDate] for value [31.01.2000]"}
+
+### statistics post
+> POST /review-statistics
+> Content-Type: application/json
+> body: {}
+< 405
+< content-type: application/problem+json
+< allow: GET
+< body: {"title":"Method Not Allowed","status":405,"detail":"Request method 'POST' is not supported"}
+
+### api
+> GET /api
+< 200
+< content-type: application/json
+< access-control-allow-origin: *
+< access-control-allow-methods: GET
+< access-control-allow-headers: 
+< access-control-max-age: 3600
+< body: {
+  "openapi" : "3.0.3",
+  "info" : {
+    "title" : "Zally - Zalando's API Linter",
+    "description" : "Zally is a quality assurance tool. It's main purpose is to check the complience of\nAPI specifications to a specific set of API design rules.\n\nThe service is able to lint the API specification in OpenAPI format. The result of\nthe linting is a set of Violations. A violation contains information about the violated\nrule, its severity, and path of the violation in the specification document.\n\nThe API also provides a result and statistics endpoint. It contains aggregated statics like\nthe number of linting requests and the number of checked endpoints. Additionally, all\nlinting results and the linted API specifications can be retrieved.\n",
+    "version" : "2.3.0",
+    "x-api-id" : "<uuid>",
+    "x-audience" : "company-internal",
+    "contact" : {
+      "name" : "Team API Management",
+      "email" : "team-api-management@zalando.de",
+      "url" : "http://tech.zalando.de"
+    }
+  },
+  "externalDocs" : {
+    "description" : "Open Source project's page",
+    "url" : "https://opensource.zalando.com/zally/"
+  },
+  "servers" : [ {
+    "url" : "https://zally.on.inter.net",
+    "description" : "Production Zally Web UI instance"
+  } ],
+  "paths" : {
+    "/api-violations" : {
+      "post" : {
+        "summary" : "API Violations",
+        "description" : "The API Violations endpoint validates given Swagger Specification\nagainst the rules defined in *Zalando* RESTful API Guidelines\n(http://zalando.github.io/restful-api-guidelines/).\n\nA successful response includes the list of violations grouped by\nthe API Guidelines rules.\n\nIf an api definition is supplied via url then any non-successful\nresponses from that will be passed on. For example you may be\nusing Zally without authentication but supply a password\nprotected url and still get a `401 Unauthorized` response.\n",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LintingRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "API swagger is OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LintingResponse"
+                }
+              }
+            },
+            "headers" : {
+              "Location" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uri"
+                },
+                "description" : "The URI where the validation result can be rerequested."
+              }
+            }
+          },
+          "400" : {
+            "description" : "Input file not parsable",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Error object",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ "uid" ]
+        } ]
+      }
+    },
+    "/api-violations/{externalId}" : {
+      "get" : {
+        "summary" : "Get previous generated validation result",
+        "description" : "Retreive a previous validation result in the same format as when\nit was originally processed.\n\nIf the idenfied validation result cannot be found then a\n`404 Not Found` response is returned.\n",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/ExternalId"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "API swagger is OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LintingResponse"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "No such API review",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Error object",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ "uid" ]
+        } ]
+      }
+    },
+    "/supported-rules" : {
+      "get" : {
+        "summary" : "Suported Rules",
+        "description" : "Returns a list of rules which are supported by a current Zally\ninstallation.\n",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/RulesType"
+        }, {
+          "$ref" : "#/components/parameters/IsActive"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of supported rules is successfully returned",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SupportedRulesResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "One of the query parameters is incorrect",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Error object",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ "uid" ]
+        } ]
+      }
+    },
+    "/review-statistics" : {
+      "get" : {
+        "summary" : "Provides query capabilites for linting summaries and automatically computed review statistics.",
+        "description" : "Returns a list of all linting results and review statistics for a given\ninterval in time. If none of the query parameters is supplied, a list of\nall linting results and review statistics for the last week is returned.\n",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/From"
+        }, {
+          "$ref" : "#/components/parameters/To"
+        }, {
+          "$ref" : "#/components/parameters/UserAgent"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of queried review statistics",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReviewStatisticsResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "One of the query parameters is incorrect",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Error object",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "BearerAuth" : [ "uid" ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "securitySchemes" : {
+      "BearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      }
+    },
+    "parameters" : {
+      "RulesType" : {
+        "name" : "type",
+        "in" : "query",
+        "description" : "Rules Type",
+        "required" : false,
+        "schema" : {
+          "type" : "string",
+          "x-extensible-enum" : [ "MUST", "SHOULD", "COULD", "MAY", "HINT" ]
+        }
+      },
+      "IsActive" : {
+        "name" : "is_active",
+        "in" : "query",
+        "description" : "Is Rule Active",
+        "required" : false,
+        "schema" : {
+          "type" : "boolean"
+        }
+      },
+      "From" : {
+        "name" : "from",
+        "in" : "query",
+        "description" : "All review statistics from this day",
+        "required" : false,
+        "schema" : {
+          "type" : "string",
+          "format" : "date"
+        }
+      },
+      "To" : {
+        "name" : "to",
+        "in" : "query",
+        "description" : "All review statistics until this day, only works in conjunction with from parameter",
+        "required" : false,
+        "schema" : {
+          "type" : "string",
+          "format" : "date"
+        }
+      },
+      "UserAgent" : {
+        "name" : "user_agent",
+        "in" : "query",
+        "description" : "Review statistics requested with the specified User-Agent",
+        "required" : false,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "ExternalId" : {
+        "name" : "externalId",
+        "in" : "path",
+        "description" : "Identifier of a previous validation result",
+        "required" : true,
+        "schema" : {
+          "type" : "string",
+          "format" : "uuid"
+        }
+      }
+    },
+    "schemas" : {
+      "LintingRequest" : {
+        "type" : "object",
+        "description" : "Request containing a swagger definition file. One of the following fields must be provided:\napi_definition, api_definition_string, or api_definition_url.\n",
+        "properties" : {
+          "api_definition" : {
+            "type" : "object",
+            "description" : "Specification object in OpenAPI format"
+          },
+          "api_definition_string" : {
+            "type" : "string",
+            "description" : "Raw API Specification string in OpenAPI format"
+          },
+          "api_definition_url" : {
+            "type" : "string",
+            "description" : "Link to the specification in OpenAPI format"
+          },
+          "ignore_rules" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            },
+            "description" : "List of rule ids to be ignored"
+          }
+        }
+      },
+      "LintingResponse" : {
+        "type" : "object",
+        "description" : "Linting Response",
+        "required" : [ "violations", "violations_count" ],
+        "properties" : {
+          "violations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Violation"
+            },
+            "description" : "List of violations"
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "Custom server message"
+          },
+          "violations_count" : {
+            "$ref" : "#/components/schemas/ViolationsCount"
+          },
+          "api_definition" : {
+            "type" : "string",
+            "description" : "Specification object in OpenAPI format"
+          }
+        }
+      },
+      "SupportedRulesResponse" : {
+        "type" : "object",
+        "description" : "Supported Rules",
+        "required" : [ "supported_rules" ],
+        "properties" : {
+          "supported_rules" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Rule"
+            }
+          }
+        }
+      },
+      "ReviewStatisticsResponse" : {
+        "type" : "object",
+        "description" : "Linting results and review statistics for a given interval in time",
+        "required" : [ "total_reviews", "total_reviews_deduplicated", "successful_reviews", "number_of_endpoints", "must_violations", "should_violations", "may_violations", "hint_violations" ],
+        "properties" : {
+          "total_reviews" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 23,
+            "description" : "Total number of lintings"
+          },
+          "total_reviews_deduplicated" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 12,
+            "description" : "Unique APIs linted"
+          },
+          "successful_reviews" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 17,
+            "description" : "Number of successful lintings"
+          },
+          "number_of_endpoints" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 10,
+            "description" : "Number of endpoints in the linted APIs"
+          },
+          "must_violations" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 123,
+            "description" : "Number of MUST violations"
+          },
+          "should_violations" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 81,
+            "description" : "Number of SHOULD violations"
+          },
+          "may_violations" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 32,
+            "description" : "Number of MAY violations"
+          },
+          "hint_violations" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 5,
+            "description" : "Number of HINTS"
+          }
+        }
+      },
+      "Violation" : {
+        "type" : "object",
+        "description" : "Violation Object",
+        "required" : [ "title", "description", "violation_type", "paths" ],
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "description" : "Violation title"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Violation text"
+          },
+          "violation_type" : {
+            "$ref" : "#/components/schemas/RuleType"
+          },
+          "rule_link" : {
+            "type" : "string",
+            "description" : "Violated rule URL"
+          },
+          "paths" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            },
+            "description" : "Violated paths"
+          },
+          "pointer" : {
+            "type" : "string",
+            "description" : "JsonPointer to the violated path in the specification"
+          },
+          "start_line" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 1,
+            "description" : "The line starting the violated location, if known"
+          },
+          "end_line" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 5,
+            "description" : "The line ending the violated location, if known"
+          }
+        }
+      },
+      "ViolationsCount" : {
+        "type" : "object",
+        "description" : "Violation Count",
+        "required" : [ "must", "should", "may", "could", "hint" ],
+        "properties" : {
+          "must" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "should" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "may" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "could" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "hint" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "Rule" : {
+        "type" : "object",
+        "description" : "Rule",
+        "required" : [ "title", "code", "type", "url", "is_active" ],
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "description" : "Rule title",
+            "example" : "Do Not Use URI Versioning"
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "Rule id",
+            "example" : "115"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/RuleType"
+          },
+          "url" : {
+            "type" : "string",
+            "description" : "Link to the rule's description",
+            "example" : "https://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning"
+          },
+          "is_active" : {
+            "type" : "boolean",
+            "description" : "Shows whether the rule is activated",
+            "example" : true
+          }
+        }
+      },
+      "RuleType" : {
+        "type" : "string",
+        "x-extensible-enum" : [ "MUST", "SHOULD", "COULD", "MAY", "HINT" ],
+        "description" : "Rule type / severity"
+      }
+    }
+  }
+}
+
+### api trailing slash
+> GET /api/
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: <omitted, json object>
+
+### api accept json
+> GET /api
+> Accept: application/json
+< 200
+< content-type: application/json
+< access-control-allow-origin: *
+< access-control-allow-methods: GET
+< access-control-allow-headers: 
+< access-control-max-age: 3600
+< body: <omitted, json object>
+
+### api accept yaml
+> GET /api
+> Accept: application/x-yaml
+< 200
+< content-type: application/x-yaml;charset=UTF-8
+< access-control-allow-origin: *
+< access-control-allow-methods: GET
+< access-control-allow-headers: 
+< access-control-max-age: 3600
+< body: ---
+openapi: "3.0.3"
+info:
+  title: "Zally - Zalando's API Linter"
+  description: "Zally is a quality assurance tool. It's main purpose is to check the\
+    \ complience of\nAPI specifications to a specific set of API design rules.\n\n\
+    The service is able to lint the API specification in OpenAPI format. The result\
+    \ of\nthe linting is a set of Violations. A violation contains information about\
+    \ the violated\nrule, its severity, and path of the violation in the specification\
+    \ document.\n\nThe API also provides a result and statistics endpoint. It contains\
+    \ aggregated statics like\nthe number of linting requests and the number of checked\
+    \ endpoints. Additionally, all\nlinting results and the linted API specifications\
+    \ can be retrieved.\n"
+  version: "2.3.0"
+  x-api-id: "<uuid>"
+  x-audience: "company-internal"
+  contact:
+    name: "Team API Management"
+    email: "team-api-management@zalando.de"
+    url: "http://tech.zalando.de"
+externalDocs:
+  description: "Open Source project's page"
+  url: "https://opensource.zalando.com/zally/"
+servers:
+- url: "https://zally.on.inter.net"
+  description: "Production Zally Web UI instance"
+paths:
+  /api-violations:
+    post:
+      summary: "API Violations"
+      description: "The API Violations endpoint validates given Swagger Specification\n\
+        against the rules defined in *Zalando* RESTful API Guidelines\n(http://zalando.github.io/restful-api-guidelines/).\n\
+        \nA successful response includes the list of violations grouped by\nthe API\
+        \ Guidelines rules.\n\nIf an api definition is supplied via url then any non-successful\n\
+        responses from that will be passed on. For example you may be\nusing Zally\
+        \ without authentication but supply a password\nprotected url and still get\
+        \ a `401 Unauthorized` response.\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LintingRequest"
+      responses:
+        "200":
+          description: "API swagger is OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LintingResponse"
+          headers:
+            Location:
+              schema:
+                type: "string"
+                format: "uri"
+              description: "The URI where the validation result can be rerequested."
+        "400":
+          description: "Input file not parsable"
+          content:
+            application/problem+json:
+              schema:
+                $ref: "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+        default:
+          description: "Error object"
+          content:
+            application/problem+json:
+              schema:
+                $ref: "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+      security:
+      - BearerAuth:
+        - "uid"
+  /api-violations/{externalId}:
+    get:
+      summary: "Get previous generated validation result"
+      description: "Retreive a previous validation result in the same format as when\n\
+        it was originally processed.\n\nIf the idenfied validation result cannot be\
+        \ found then a\n`404 Not Found` response is returned.\n"
+      parameters:
+      - $ref: "#/components/parameters/ExternalId"
+      responses:
+        "200":
+          description: "API swagger is OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LintingResponse"
+        "404":
+          description: "No such API review"
+          content:
+            application/problem+json:
+              schema:
+                $ref: "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+        default:
+          description: "Error object"
+          content:
+            application/problem+json:
+              schema:
+                $ref: "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+      security:
+      - BearerAuth:
+        - "uid"
+  /supported-rules:
+    get:
+      summary: "Suported Rules"
+      description: "Returns a list of rules which are supported by a current Zally\n\
+        installation.\n"
+      parameters:
+      - $ref: "#/components/parameters/RulesType"
+      - $ref: "#/components/parameters/IsActive"
+      responses:
+        "200":
+          description: "List of supported rules is successfully returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportedRulesResponse"
+        "400":
+          description: "One of the query parameters is incorrect"
+          content:
+            application/problem+json:
+              schema:
+                $ref: "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+        default:
+          description: "Error object"
+          content:
+            application/problem+json:
+              schema:
+                $ref: "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+      security:
+      - BearerAuth:
+        - "uid"
+  /review-statistics:
+    get:
+      summary: "Provides query capabilites for linting summaries and automatically\
+        \ computed review statistics."
+      description: "Returns a list of all linting results and review statistics for\
+        \ a given\ninterval in time. If none of the query parameters is supplied,\
+        \ a list of\nall linting results and review statistics for the last week is\
+        \ returned.\n"
+      parameters:
+      - $ref: "#/components/parameters/From"
+      - $ref: "#/components/parameters/To"
+      - $ref: "#/components/parameters/UserAgent"
+      responses:
+        "200":
+          description: "List of queried review statistics"
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ReviewStatisticsResponse"
+        "400":
+          description: "One of the query parameters is incorrect"
+          content:
+            application/problem+json:
+              schema:
+                $ref: "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+        default:
+          description: "Error object"
+          content:
+            application/problem+json:
+              schema:
+                $ref: "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+      security:
+      - BearerAuth:
+        - "uid"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: "http"
+      scheme: "bearer"
+      bearerFormat: "JWT"
+  parameters:
+    RulesType:
+      name: "type"
+      in: "query"
+      description: "Rules Type"
+      required: false
+      schema:
+        type: "string"
+        x-extensible-enum:
+        - "MUST"
+        - "SHOULD"
+        - "COULD"
+        - "MAY"
+        - "HINT"
+    IsActive:
+      name: "is_active"
+      in: "query"
+      description: "Is Rule Active"
+      required: false
+      schema:
+        type: "boolean"
+    From:
+      name: "from"
+      in: "query"
+      description: "All review statistics from this day"
+      required: false
+      schema:
+        type: "string"
+        format: "date"
+    To:
+      name: "to"
+      in: "query"
+      description: "All review statistics until this day, only works in conjunction\
+        \ with from parameter"
+      required: false
+      schema:
+        type: "string"
+        format: "date"
+    UserAgent:
+      name: "user_agent"
+      in: "query"
+      description: "Review statistics requested with the specified User-Agent"
+      required: false
+      schema:
+        type: "string"
+    ExternalId:
+      name: "externalId"
+      in: "path"
+      description: "Identifier of a previous validation result"
+      required: true
+      schema:
+        type: "string"
+        format: "uuid"
+  schemas:
+    LintingRequest:
+      type: "object"
+      description: "Request containing a swagger definition file. One of the following\
+        \ fields must be provided:\napi_definition, api_definition_string, or api_definition_url.\n"
+      properties:
+        api_definition:
+          type: "object"
+          description: "Specification object in OpenAPI format"
+        api_definition_string:
+          type: "string"
+          description: "Raw API Specification string in OpenAPI format"
+        api_definition_url:
+          type: "string"
+          description: "Link to the specification in OpenAPI format"
+        ignore_rules:
+          type: "array"
+          items:
+            type: "string"
+          description: "List of rule ids to be ignored"
+    LintingResponse:
+      type: "object"
+      description: "Linting Response"
+      required:
+      - "violations"
+      - "violations_count"
+      properties:
+        violations:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Violation"
+          description: "List of violations"
+        message:
+          type: "string"
+          description: "Custom server message"
+        violations_count:
+          $ref: "#/components/schemas/ViolationsCount"
+        api_definition:
+          type: "string"
+          description: "Specification object in OpenAPI format"
+    SupportedRulesResponse:
+      type: "object"
+      description: "Supported Rules"
+      required:
+      - "supported_rules"
+      properties:
+        supported_rules:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Rule"
+    ReviewStatisticsResponse:
+      type: "object"
+      description: "Linting results and review statistics for a given interval in\
+        \ time"
+      required:
+      - "total_reviews"
+      - "total_reviews_deduplicated"
+      - "successful_reviews"
+      - "number_of_endpoints"
+      - "must_violations"
+      - "should_violations"
+      - "may_violations"
+      - "hint_violations"
+      properties:
+        total_reviews:
+          type: "integer"
+          format: "int32"
+          example: 23
+          description: "Total number of lintings"
+        total_reviews_deduplicated:
+          type: "integer"
+          format: "int32"
+          example: 12
+          description: "Unique APIs linted"
+        successful_reviews:
+          type: "integer"
+          format: "int32"
+          example: 17
+          description: "Number of successful lintings"
+        number_of_endpoints:
+          type: "integer"
+          format: "int32"
+          example: 10
+          description: "Number of endpoints in the linted APIs"
+        must_violations:
+          type: "integer"
+          format: "int32"
+          example: 123
+          description: "Number of MUST violations"
+        should_violations:
+          type: "integer"
+          format: "int32"
+          example: 81
+          description: "Number of SHOULD violations"
+        may_violations:
+          type: "integer"
+          format: "int32"
+          example: 32
+          description: "Number of MAY violations"
+        hint_violations:
+          type: "integer"
+          format: "int32"
+          example: 5
+          description: "Number of HINTS"
+    Violation:
+      type: "object"
+      description: "Violation Object"
+      required:
+      - "title"
+      - "description"
+      - "violation_type"
+      - "paths"
+      properties:
+        title:
+          type: "string"
+          description: "Violation title"
+        description:
+          type: "string"
+          description: "Violation text"
+        violation_type:
+          $ref: "#/components/schemas/RuleType"
+        rule_link:
+          type: "string"
+          description: "Violated rule URL"
+        paths:
+          type: "array"
+          items:
+            type: "string"
+          description: "Violated paths"
+        pointer:
+          type: "string"
+          description: "JsonPointer to the violated path in the specification"
+        start_line:
+          type: "integer"
+          format: "int32"
+          example: 1
+          description: "The line starting the violated location, if known"
+        end_line:
+          type: "integer"
+          format: "int32"
+          example: 5
+          description: "The line ending the violated location, if known"
+    ViolationsCount:
+      type: "object"
+      description: "Violation Count"
+      required:
+      - "must"
+      - "should"
+      - "may"
+      - "could"
+      - "hint"
+      properties:
+        must:
+          type: "integer"
+          format: "int32"
+        should:
+          type: "integer"
+          format: "int32"
+        may:
+          type: "integer"
+          format: "int32"
+        could:
+          type: "integer"
+          format: "int32"
+        hint:
+          type: "integer"
+          format: "int32"
+    Rule:
+      type: "object"
+      description: "Rule"
+      required:
+      - "title"
+      - "code"
+      - "type"
+      - "url"
+      - "is_active"
+      properties:
+        title:
+          type: "string"
+          description: "Rule title"
+          example: "Do Not Use URI Versioning"
+        code:
+          type: "string"
+          description: "Rule id"
+          example: "115"
+        type:
+          $ref: "#/components/schemas/RuleType"
+        url:
+          type: "string"
+          description: "Link to the rule's description"
+          example: "https://zalando.github.io/restful-api-guidelines/compatibility/Compatibility.html#must-do-not-use-uri-versioning"
+        is_active:
+          type: "boolean"
+          description: "Shows whether the rule is activated"
+          example: true
+    RuleType:
+      type: "string"
+      x-extensible-enum:
+      - "MUST"
+      - "SHOULD"
+      - "COULD"
+      - "MAY"
+      - "HINT"
+      description: "Rule type / severity"
+
+### schema discovery
+> GET /.well-known/schema-discovery
+< 200
+< content-type: application/json
+< body: {"schema_url":"/api","schema_type":"swagger-2.0"}
+
+### schema discovery accept yaml
+> GET /.well-known/schema-discovery
+> Accept: application/x-yaml
+< 406
+< content-type: application/problem+json
+< body: {"title":"Not Acceptable","status":406,"detail":"No acceptable representation"}
+
+### unknown path
+> GET /unknown
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/unknown"}
+
+### unknown path post
+> POST /unknown
+> Content-Type: application/json
+> body: {}
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/unknown"}
+
+### unknown path accept yaml
+> GET /unknown
+> Accept: application/x-yaml
+< 404
+< content-type: application/x-yaml
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: ---
+timestamp: <timestamp>
+status: 404
+error: "Not Found"
+path: "/unknown"
+
+### root
+> GET /
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/"}
+
+### health on the main port
+> GET /health
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/health"}
+
+### metrics on the main port
+> GET /metrics
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/metrics"}
+
+### management health
+> GET /health  [management port]
+< 200
+< content-type: application/json
+< body: {"status":"UP"}
+
+### management health trailing slash
+> GET /health/  [management port]
+< 200
+< content-type: application/json
+< body: {"status":"UP"}
+
+### management health accept yaml
+> GET /health  [management port]
+> Accept: application/x-yaml
+< 406
+< content-type: application/problem+json
+< body: {"title":"Not Acceptable","status":406,"detail":"No acceptable representation"}
+
+### management metrics
+> GET /metrics  [management port]
+< 200
+< content-type: application/json
+< body: <omitted, json object>
+
+### management metric
+> GET /metrics/jvm.memory.used  [management port]
+< 200
+< content-type: application/json
+< content-disposition: inline;filename=f.txt
+< body: <omitted, json object>
+
+### management unknown metric
+> GET /metrics/no.such.metric  [management port]
+< 404
+< body:
+
+### management info
+> GET /info  [management port]
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/info"}
+
+### management env
+> GET /env  [management port]
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/env"}
+
+### management unknown
+> GET /unknown  [management port]
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/unknown"}
+
+### management api
+> GET /api  [management port]
+< 404
+< content-type: application/json
+< vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers
+< body: {"timestamp":"<timestamp>","status":404,"error":"Not Found","path":"/api"}
+
+### management health post
+> POST /health  [management port]
+> Content-Type: application/json
+> body: {}
+< 405
+< content-type: application/problem+json
+< allow: GET
+< body: {"title":"Method Not Allowed","status":405,"detail":"Request method 'POST' is not supported"}

@@ -6,17 +6,17 @@ import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 
 class NoVersionInUriRuleTest {
-
     private val rule = NoVersionInUriRule()
 
     @Test
     fun `checkServerURLs should return a violation if a server URL contains a version as base path`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             servers:
               - url: "https://inter.net/api/v1.0"
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkServerURLs(context)
@@ -30,11 +30,12 @@ class NoVersionInUriRuleTest {
     @Test
     fun `checkServerURLs should return a violation if (sub) resource names contain version suffix`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               /shop/orders-v1/{order-id}: {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkServerURLs(context)
@@ -48,11 +49,12 @@ class NoVersionInUriRuleTest {
     @Test
     fun `checkServerURLs should return no violations if a server URL does not contain a version as base path`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             servers:
               - url: "https://inter.net/api/"
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkServerURLs(context)

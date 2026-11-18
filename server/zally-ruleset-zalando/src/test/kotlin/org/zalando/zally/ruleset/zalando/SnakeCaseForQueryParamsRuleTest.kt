@@ -6,12 +6,12 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.core.rulesConfig
 
 class SnakeCaseForQueryParamsRuleTest {
-
     private val rule = SnakeCaseForQueryParamsRule(rulesConfig)
 
     @Test
     fun `checkQueryParameter should return violation if query parameter is not snake_case`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -19,7 +19,7 @@ class SnakeCaseForQueryParamsRuleTest {
                   parameters:
                     - name: filterExpensiveArticles
                       in: query
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkQueryParameter(context)
@@ -31,7 +31,8 @@ class SnakeCaseForQueryParamsRuleTest {
 
     @Test
     fun `checkQueryParameter should return no violation if query parameters are snake_case`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -39,7 +40,7 @@ class SnakeCaseForQueryParamsRuleTest {
                   parameters:
                     - name: filter_expensive_articles
                       in: query
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkQueryParameter(context)

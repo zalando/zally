@@ -6,16 +6,17 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.test.ZallyAssertions
 
 class UseProblemJsonRuleTest {
-
     private val rule = UseProblemJsonRule()
 
-    private val description = "Operations should return problem JSON when any problem occurs during processing " +
-        "whether caused by client or server."
+    private val description =
+        "Operations should return problem JSON when any problem occurs during processing " +
+            "whether caused by client or server."
 
     @Test
     fun `should return violation if wrong media type is used as the default response`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             info:
               version: 1.0.0
@@ -29,7 +30,7 @@ class UseProblemJsonRuleTest {
                         application/json:
                           schema:
                             ${'$'}ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(content)
         val violations = rule.validate(context)
@@ -43,7 +44,8 @@ class UseProblemJsonRuleTest {
     @Test
     fun `should return violation if a wrong schema is used for Problem Details Object`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             info:
               version: 1.0.0
@@ -61,7 +63,7 @@ class UseProblemJsonRuleTest {
                             properties:
                               status:
                                 type: string
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(content)
         val violations = rule.validate(context)
@@ -70,18 +72,18 @@ class UseProblemJsonRuleTest {
             .assertThat(violations)
             .descriptionsEqualTo(
                 "$description Object has missing required properties ([\"format\",\"maximum\",\"minimum\"])",
-                "$description Instance value (\"string\") not found in enum (possible values: [\"integer\"])"
-            )
-            .pointersEqualTo(
+                "$description Instance value (\"string\") not found in enum (possible values: [\"integer\"])",
+            ).pointersEqualTo(
                 "/paths/~1bad/get/responses/default/content/application~1problem+json/schema/properties/status",
-                "/paths/~1bad/get/responses/default/content/application~1problem+json/schema/properties/status/type"
+                "/paths/~1bad/get/responses/default/content/application~1problem+json/schema/properties/status/type",
             )
     }
 
     @Test
     fun `should return violation if a incorrect schema is used for Problem Details Object (OpenAPI 2)`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             swagger: '2.0'
             info:
               version: 1.0.0
@@ -99,7 +101,7 @@ class UseProblemJsonRuleTest {
                         properties:
                           status:
                             type: string
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(content)
         val violations = rule.validate(context)
@@ -108,18 +110,18 @@ class UseProblemJsonRuleTest {
             .assertThat(violations)
             .descriptionsEqualTo(
                 "$description Object has missing required properties ([\"format\",\"maximum\",\"minimum\"])",
-                "$description Instance value (\"string\") not found in enum (possible values: [\"integer\"])"
-            )
-            .pointersEqualTo(
+                "$description Instance value (\"string\") not found in enum (possible values: [\"integer\"])",
+            ).pointersEqualTo(
                 "/paths/~1pets/get/responses/default/schema/properties/status",
-                "/paths/~1pets/get/responses/default/schema/properties/status/type"
+                "/paths/~1pets/get/responses/default/schema/properties/status/type",
             )
     }
 
     @Test
     fun `should return no violation if Problem Details Object is properly used as default response`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             info:
               title: Pets API
@@ -134,7 +136,7 @@ class UseProblemJsonRuleTest {
                         application/problem+json:
                           schema:
                             "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(content)
         val violations = rule.validate(context)
@@ -147,7 +149,8 @@ class UseProblemJsonRuleTest {
     @Test
     fun `should return no violation if Problem Details Object is properly used as default response (OpenAPI 2)`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             swagger: '2.0'
             info:
               version: 1.0.0
@@ -163,7 +166,7 @@ class UseProblemJsonRuleTest {
                       description: Error object
                       schema:
                         "${'$'}ref": https://zalando.github.io/problem/schema.yaml#/Problem
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(content)
         val violations = rule.validate(context)
@@ -176,7 +179,8 @@ class UseProblemJsonRuleTest {
     @Test
     fun `should return no violation when custom reference is used`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             info:
               title: Pets API
@@ -208,7 +212,7 @@ class UseProblemJsonRuleTest {
                       type: "string"
                     code:
                       type: "string"
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(content)
         val violations = rule.validate(context)
@@ -221,7 +225,8 @@ class UseProblemJsonRuleTest {
     @Test
     fun `should return violations when wrong reference is used`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             info:
               title: Pets API
@@ -247,7 +252,7 @@ class UseProblemJsonRuleTest {
                     description:
                       type: string
                       example: many many problems
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(content)
         val violations = rule.validate(context)
@@ -256,18 +261,18 @@ class UseProblemJsonRuleTest {
             .assertThat(violations)
             .descriptionsEqualTo(
                 "$description Object has missing required properties ([\"format\"])",
-                "$description Instance value (\"number\") not found in enum (possible values: [\"string\"])"
-            )
-            .pointersEqualTo(
+                "$description Instance value (\"number\") not found in enum (possible values: [\"string\"])",
+            ).pointersEqualTo(
                 "/components/schemas/Problem/properties/instance",
-                "/components/schemas/Problem/properties/instance/type"
+                "/components/schemas/Problem/properties/instance/type",
             )
     }
 
     @Test
     fun `should return no violation if date and time properties are used in the Problem object schema`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             info:
               version: 1.0.0
@@ -290,7 +295,7 @@ class UseProblemJsonRuleTest {
                                   type: string
                                   format: date-time
                                   example: "2020-05-14T14:22:01Z" 
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(content)
         val violations = rule.validate(context)

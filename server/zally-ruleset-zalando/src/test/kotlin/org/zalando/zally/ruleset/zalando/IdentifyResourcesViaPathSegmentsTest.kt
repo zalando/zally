@@ -7,7 +7,6 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.rule.api.Context
 
 class IdentifyResourcesViaPathSegmentsTest {
-
     private val rule = IdentifyResourcesViaPathSegments()
 
     @Test
@@ -36,9 +35,10 @@ class IdentifyResourcesViaPathSegmentsTest {
 
     @Test
     fun `should return a violation if path parameter contains prefix`() {
-        val violations = rule.pathParameterDoesNotContainPrefixAndSuffix(
-            withPath("/orders/de-{order-id}")
-        )
+        val violations =
+            rule.pathParameterDoesNotContainPrefixAndSuffix(
+                withPath("/orders/de-{order-id}"),
+            )
 
         assertThat(violations).isNotEmpty
         assertThat(violations[0].description).containsPattern(".*must not contain prefixes and suffixes*")
@@ -47,9 +47,10 @@ class IdentifyResourcesViaPathSegmentsTest {
 
     @Test
     fun `should return a violation if path parameter contains suffix`() {
-        val violations = rule.pathParameterDoesNotContainPrefixAndSuffix(
-            withPath("/orders/{order-id}-de")
-        )
+        val violations =
+            rule.pathParameterDoesNotContainPrefixAndSuffix(
+                withPath("/orders/{order-id}-de"),
+            )
 
         assertThat(violations).isNotEmpty
         assertThat(violations[0].description).containsPattern(".*must not contain prefixes and suffixes*")
@@ -66,11 +67,12 @@ class IdentifyResourcesViaPathSegmentsTest {
 
     private fun withPath(path: String): Context {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.0
             paths:
               $path: {}
-        """.trimIndent()
+            """.trimIndent()
 
         return DefaultContextFactory().getOpenApiContext(content)
     }

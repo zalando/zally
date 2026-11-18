@@ -11,15 +11,17 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "218",
     severity = Severity.MUST,
-    title = "Contain API Meta Information"
+    title = "Contain API Meta Information",
 )
 class ApiMetaInformationRule {
-
     private val versionRegex = """^\d+.\d+(.\d+)?""".toRegex()
 
     @Check(severity = Severity.MUST)
     fun checkInfoTitle(context: Context): Violation? =
-        if (context.api.info?.title.isNullOrBlank()) {
+        if (context.api.info
+                ?.title
+                .isNullOrBlank()
+        ) {
             context.violation("Title has to be provided", "/info/title".toJsonPointer())
         } else {
             null
@@ -27,7 +29,10 @@ class ApiMetaInformationRule {
 
     @Check(severity = Severity.MUST)
     fun checkInfoDescription(context: Context): Violation? =
-        if (context.api.info?.description.isNullOrBlank()) {
+        if (context.api.info
+                ?.description
+                .isNullOrBlank()
+        ) {
             context.violation("Description has to be provided", "/info/description".toJsonPointer())
         } else {
             null
@@ -47,7 +52,11 @@ class ApiMetaInformationRule {
 
     @Check(severity = Severity.MUST)
     fun checkContactName(context: Context): Violation? =
-        if (context.api.info?.contact?.name.isNullOrBlank()) {
+        if (context.api.info
+                ?.contact
+                ?.name
+                .isNullOrBlank()
+        ) {
             context.violation("Contact name has to be provided", "/info/contact/name".toJsonPointer())
         } else {
             null
@@ -55,7 +64,11 @@ class ApiMetaInformationRule {
 
     @Check(severity = Severity.MUST)
     fun checkContactUrl(context: Context): Violation? =
-        if (context.api.info?.contact?.url.isNullOrBlank()) {
+        if (context.api.info
+                ?.contact
+                ?.url
+                .isNullOrBlank()
+        ) {
             context.violation("Contact URL has to be provided", "/info/contact/url".toJsonPointer())
         } else {
             null
@@ -63,7 +76,11 @@ class ApiMetaInformationRule {
 
     @Check(severity = Severity.MUST)
     fun checkContactEmail(context: Context): Violation? =
-        if (context.api.info?.contact?.email.isNullOrBlank()) {
+        if (context.api.info
+                ?.contact
+                ?.email
+                .isNullOrBlank()
+        ) {
             context.violation("Contact e-mail has to be provided", "/info/contact/email".toJsonPointer())
         } else {
             null

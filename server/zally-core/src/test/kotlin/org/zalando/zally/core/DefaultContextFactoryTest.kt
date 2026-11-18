@@ -9,7 +9,6 @@ import org.zalando.zally.core.util.getAllParameters
 import org.zalando.zally.rule.api.Violation
 
 class DefaultContextFactoryTest {
-
     private val defaultContextFactory = DefaultContextFactory()
 
     //
@@ -35,8 +34,8 @@ class DefaultContextFactoryTest {
         assertThat(result).resultsInErrors(
             Violation(
                 description = "attribute openapi is not of type `string`",
-                pointer = JsonPointer.empty()
-            )
+                pointer = JsonPointer.empty(),
+            ),
         )
     }
 
@@ -106,35 +105,36 @@ class DefaultContextFactoryTest {
     @Test
     fun `OPEN API -- OpenAPI 3-1-0 all refs are resolved`() {
         @Language("YAML")
-        val content = """
-                openapi: '3.1.0'
-                info:
-                  title: API 1
-                  contact: 
-                    name: "Team One"
-                  version: 1.0.0
-                paths:
-                  /items/{item-id}:
-                    get:
-                      parameters:
-                        - ${'$'}ref: "#/components/parameters/PathParameter"
-                      responses: 
-                        default:
-                         description: Response
-                         content:                        
-                           application/json:
-                             schema: 
-                               type: string
-                components: 
+        val content =
+            """
+            openapi: '3.1.0'
+            info:
+              title: API 1
+              contact: 
+                name: "Team One"
+              version: 1.0.0
+            paths:
+              /items/{item-id}:
+                get:
                   parameters:
-                    PathParameter:
-                      in: path  
-                      name: item-id                            
-                      description: The id of the pet to retrieve
-                      required: true
-                      schema:
-                        type: string
-        """.trimIndent()
+                    - ${'$'}ref: "#/components/parameters/PathParameter"
+                  responses: 
+                    default:
+                     description: Response
+                     content:                        
+                       application/json:
+                         schema: 
+                           type: string
+            components: 
+              parameters:
+                PathParameter:
+                  in: path  
+                  name: item-id                            
+                  description: The id of the pet to retrieve
+                  required: true
+                  schema:
+                    type: string
+            """.trimIndent()
 
         val result = defaultContextFactory.parseOpenApiContext(content)
         assertThat(result).resultsInSuccess()
@@ -246,13 +246,14 @@ class DefaultContextFactoryTest {
     @Test
     fun `OPEN API -- OpenAPI 2-0 is not recognize as OpenAPI3 spec`() {
         @Language("YAML")
-        val content = """
-                swagger: '2.0'
-                info:
-                  version: 1.0.0
-                  title: Pets API
-                paths: {}
-        """.trimIndent()
+        val content =
+            """
+            swagger: '2.0'
+            info:
+              version: 1.0.0
+              title: Pets API
+            paths: {}
+            """.trimIndent()
         val result = defaultContextFactory.parseOpenApiContext(content)
         assertThat(result).resultsInNotApplicable()
     }
@@ -296,15 +297,16 @@ class DefaultContextFactoryTest {
     @Test
     fun `SWAGGER -- OpenAPI 2-0 without security definition type succeeds`() {
         @Language("YAML")
-        val content = """
-                swagger: 2.0
-                info:
-                  title: Bleh
-                securityDefinitions:
-                  oa: {}
-                    # type: oauth2
-                paths: {}
-        """.trimIndent()
+        val content =
+            """
+            swagger: 2.0
+            info:
+              title: Bleh
+            securityDefinitions:
+              oa: {}
+                # type: oauth2
+            paths: {}
+            """.trimIndent()
         val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
     }
@@ -315,18 +317,19 @@ class DefaultContextFactoryTest {
         // object) would throw an exception. New behaviour tested here: the returned `Context`
         // is null because the file was not parsed (convertible, here).
         @Language("YAML")
-        val content = """
-                swagger: 2.0
-                info:
-                  title: Bleh
-                securityDefinitions:
-                  oa:
-                    type: oauth2
-                    # flow: application
-                    # scopes:
-                    #   foo: Description of 'foo'
-                paths: {}
-        """.trimIndent()
+        val content =
+            """
+            swagger: 2.0
+            info:
+              title: Bleh
+            securityDefinitions:
+              oa:
+                type: oauth2
+                # flow: application
+                # scopes:
+                #   foo: Description of 'foo'
+            paths: {}
+            """.trimIndent()
         val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
     }
@@ -334,13 +337,14 @@ class DefaultContextFactoryTest {
     @Test
     fun `SWAGGER -- OpenAPI 2-0 is not recognized as an OpenAPI3 spec`() {
         @Language("YAML")
-        val content = """
-                swagger: 2.0
-                info:
-                  title: Bleh
-                  version: 1.0.0
-                paths: {}
-        """.trimIndent()
+        val content =
+            """
+            swagger: 2.0
+            info:
+              title: Bleh
+              version: 1.0.0
+            paths: {}
+            """.trimIndent()
         val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
         val success = result as ContentParseResult.ParsedSuccessfully
@@ -350,7 +354,8 @@ class DefaultContextFactoryTest {
     @Test
     fun `SWAGGER -- OpenAPI 2-0 with recursive-model-extension succeeds`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             swagger: '2.0'
             info:
               title: Tree API
@@ -384,7 +389,7 @@ class DefaultContextFactoryTest {
                         type: array
                         items:
                           ${'$'}ref: '#/definitions/ReadNode'
-        """.trimIndent()
+            """.trimIndent()
         val result = defaultContextFactory.parseSwaggerContext(content)
         assertThat(result).resultsInSuccess()
         val success = result as ContentParseResult.ParsedSuccessfully
@@ -396,45 +401,46 @@ class DefaultContextFactoryTest {
         // This Swagger, after being converted, causes the `components` property to exist (not
         // null), but having a null `schemas`, which causes the NPE.
         @Language("YAML")
-        val content = """
-          swagger: '2.0'
-          info:
-            version: 1.0.0
-            title: Swagger Petstore
-            description: A sample API that uses a petstore as an example to demonstrate features
-              in the swagger-2.0 specification
-            termsOfService: http://swagger.io/terms/
-            contact:
-              name: Swagger API Team
-            license:
-              name: MIT
-          paths:
-            /identifier-types/{identifier_type}/source-ids/{source_identifier}:
-              get:
-                tags:
-                  - id-mappings
-                description: List of identifiers associated with the source id.
-                parameters:
-                  - ${'$'}ref: '#/parameters/identifier_type'
-                  - ${'$'}ref: '#/parameters/source_identifier'
-                  - ${'$'}ref: '#/parameters/target_identifier_type'
-                responses:
-                  200:
-                    description: The identifiers associated with the source id.
-                    schema:
-                      ${'$'}ref: '#/definitions/IdMappingResults'
-                  401:
-                    description: User is not authenticated
-                  403:
-                    description: User is not authorized
-                  404:
-                    description: Identifier is not found
-                    schema:
-                      ${'$'}ref: '#definitions/Problem'
-                security:
-                  - oauth2:
-                    - 'cross-device-graph-service.read'
-        """.trimIndent()
+        val content =
+            """
+            swagger: '2.0'
+            info:
+              version: 1.0.0
+              title: Swagger Petstore
+              description: A sample API that uses a petstore as an example to demonstrate features
+                in the swagger-2.0 specification
+              termsOfService: http://swagger.io/terms/
+              contact:
+                name: Swagger API Team
+              license:
+                name: MIT
+            paths:
+              /identifier-types/{identifier_type}/source-ids/{source_identifier}:
+                get:
+                  tags:
+                    - id-mappings
+                  description: List of identifiers associated with the source id.
+                  parameters:
+                    - ${'$'}ref: '#/parameters/identifier_type'
+                    - ${'$'}ref: '#/parameters/source_identifier'
+                    - ${'$'}ref: '#/parameters/target_identifier_type'
+                  responses:
+                    200:
+                      description: The identifiers associated with the source id.
+                      schema:
+                        ${'$'}ref: '#/definitions/IdMappingResults'
+                    401:
+                      description: User is not authenticated
+                    403:
+                      description: User is not authorized
+                    404:
+                      description: Identifier is not found
+                      schema:
+                        ${'$'}ref: '#definitions/Problem'
+                  security:
+                    - oauth2:
+                      - 'cross-device-graph-service.read'
+            """.trimIndent()
         val result = defaultContextFactory.parseSwaggerContext(content)
         ContentParseResultAssert.assertThat(result).resultsInSuccess()
     }

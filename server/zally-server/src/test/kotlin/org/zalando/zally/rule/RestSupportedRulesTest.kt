@@ -13,7 +13,6 @@ import org.zalando.zally.util.ErrorResponse
 @Suppress("UndocumentedPublicClass")
 @TestPropertySource(properties = ["zally.ignoreRules=TestCheckAlwaysReport3MustViolations"])
 class RestSupportedRulesTest : RestApiBaseTest() {
-
     private val ignoredRules = listOf("TestCheckAlwaysReport3MustViolations")
 
     @Autowired
@@ -33,7 +32,7 @@ class RestSupportedRulesTest : RestApiBaseTest() {
             assertTrue(
                 prev!! <= next!!,
                 "Item #" + i + " is out of order:\n" +
-                    rules.joinToString(separator = "\n") { it.toString() }
+                    rules.joinToString(separator = "\n") { it.toString() },
             )
         }
     }

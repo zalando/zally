@@ -8,5 +8,5 @@ data class ReviewStatistics(
     val mustViolations: Long = 0,
     val shouldViolations: Long = 0,
     val mayViolations: Long = 0,
-    val hintViolations: Long = 0
+    val hintViolations: Long = 0,
 )

@@ -20,32 +20,40 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "105",
     severity = Severity.MUST,
-    title = "Secure All Endpoints With Scopes"
+    title = "Secure All Endpoints With Scopes",
 )
-class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
-
-    private val scopeRegex = Regex(
-        rulesConfig.getString(
-            "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.scope_regex"
+class SecureAllEndpointsWithScopesRule(
+    rulesConfig: Config,
+) {
+    private val scopeRegex =
+        Regex(
+            rulesConfig.getString(
+                "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.scope_regex",
+            ),
         )
-    )
 
-    private val pathWhitelist = rulesConfig.getStringList(
-        "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.path_whitelist"
-    )
-        .map { it.toRegex() }
+    private val pathWhitelist =
+        rulesConfig
+            .getStringList(
+                "${SecureAllEndpointsWithScopesRule::class.java.simpleName}.path_whitelist",
+            ).map { it.toRegex() }
 
     @Check(severity = Severity.MUST)
     fun checkDefinedScopeFormats(context: Context): List<Violation> =
-        context.api.components?.securitySchemes?.values.orEmpty()
+        context.api.components
+            ?.securitySchemes
+            ?.values
+            .orEmpty()
             .filter { it.isOAuth2() }
             .filterNotNull()
             .flatMap { it.allFlows() }
             .flatMap { flow ->
-                flow.scopes.orEmpty().keys.filterNot { scope ->
-                    scopeRegex.matches(scope)
-                }
-                    .map { scope ->
+                flow.scopes
+                    .orEmpty()
+                    .keys
+                    .filterNot { scope ->
+                        scopeRegex.matches(scope)
+                    }.map { scope ->
                         context.violation("scope '$scope' does not match regex '$scopeRegex'", flow.scopes)
                     }
             }
@@ -56,32 +64,36 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
 
         // val definedScopes = definedScopes(context.api)
         return context.validateOperations(pathFilter = this::pathFilter) { (_, op) ->
-            op?.let {
-                val definedOpSecurityRequirements = definedSecurityRequirements(op, context.api)
+            op
+                ?.let {
+                    val definedOpSecurityRequirements = definedSecurityRequirements(op, context.api)
 
-                if (definedOpSecurityRequirements.isEmpty()) {
-                    context.violations("Endpoint is not secured by scope(s)", op.security ?: op)
-                } else {
-                    definedOpSecurityRequirements.flatMap {
-                        it.map { (opSchemeName, opScopes) ->
-                            val matchingScheme = securitySchemes[opSchemeName]
-                            when {
-                                matchingScheme == null -> {
-                                    context.violation("Security scheme $opSchemeName not found", op)
-                                }
-                                matchingScheme.isOAuth2() -> {
-                                    validateOAuth2Schema(context, op, opScopes, matchingScheme, opSchemeName)
-                                }
-                                else -> null
-                            } // Scopes are only used with OAuth 2 and OpenID Connect
+                    if (definedOpSecurityRequirements.isEmpty()) {
+                        context.violations("Endpoint is not secured by scope(s)", op.security ?: op)
+                    } else {
+                        definedOpSecurityRequirements.flatMap {
+                            it.map { (opSchemeName, opScopes) ->
+                                val matchingScheme = securitySchemes[opSchemeName]
+                                when {
+                                    matchingScheme == null -> {
+                                        context.violation("Security scheme $opSchemeName not found", op)
+                                    }
+                                    matchingScheme.isOAuth2() -> {
+                                        validateOAuth2Schema(context, op, opScopes, matchingScheme, opSchemeName)
+                                    }
+                                    else -> null
+                                } // Scopes are only used with OAuth 2 and OpenID Connect
+                            }
                         }
                     }
-                }
-            }.orEmpty()
+                }.orEmpty()
         }
     }
 
-    private fun definedSecurityRequirements(operation: Operation, api: OpenAPI): List<SecurityRequirement> {
+    private fun definedSecurityRequirements(
+        operation: Operation,
+        api: OpenAPI,
+    ): List<SecurityRequirement> {
         val operationSecurity = operation.security.orEmpty()
         if (operationSecurity.isEmpty()) {
             return api.security.orEmpty()
@@ -94,12 +106,12 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
         op: Operation,
         requestedScopes: List<String?>,
         definedScheme: SecurityScheme,
-        schemeName: String
+        schemeName: String,
     ): Violation? {
         if (requestedScopes.isEmpty()) {
             return context.violation(
                 "Endpoint is not secured by OAuth2 scope(s)",
-                op.security ?: op
+                op.security ?: op,
             )
         }
         val definedScopes = definedScheme.allScopes()
@@ -108,13 +120,12 @@ class SecureAllEndpointsWithScopesRule(rulesConfig: Config) {
         return if (undefined.isNotEmpty()) {
             context.violation(
                 "Endpoint is secured by undefined OAuth2 scope(s): $schemeName:${undefined.joinToString()}",
-                op.security ?: op
+                op.security ?: op,
             )
         } else {
             null
         }
     }
 
-    private fun pathFilter(entry: Map.Entry<String, PathItem?>): Boolean =
-        pathWhitelist.none { it.containsMatchIn(entry.key) }
+    private fun pathFilter(entry: Map.Entry<String, PathItem?>): Boolean = pathWhitelist.none { it.containsMatchIn(entry.key) }
 }

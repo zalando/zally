@@ -12,7 +12,7 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "154",
     severity = Severity.SHOULD,
-    title = "Use and Specify Explicitly the Form-Style Query Format for Collection Parameters"
+    title = "Use and Specify Explicitly the Form-Style Query Format for Collection Parameters",
 )
 class QueryParameterCollectionFormatRule {
     private val allowedStyle = Parameter.StyleEnum.FORM
@@ -21,7 +21,8 @@ class QueryParameterCollectionFormatRule {
     @Check(severity = Severity.SHOULD)
     fun checkParametersCollectionFormat(context: Context): List<Violation> =
         if (context.isOpenAPI3()) {
-            context.api.getAllParameters()
+            context.api
+                .getAllParameters()
                 .filter { "query" == it.`in` && "array" == it.schema?.type }
                 .filter { it.style == null || allowedStyle != it.style }
                 .map { context.violation(description, it) }

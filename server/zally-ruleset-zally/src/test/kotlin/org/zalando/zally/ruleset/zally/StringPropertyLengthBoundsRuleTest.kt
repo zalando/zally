@@ -8,29 +8,29 @@ import org.zalando.zally.core.rulesConfig
 import org.zalando.zally.test.ZallyAssertions
 
 class StringPropertyLengthBoundsRuleTest {
-
     private val cut = StringPropertyLengthBoundsRule(rulesConfig)
 
     @Test
     fun `checkStringLengthBounds with bounded string length returns no violations`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.2
-            info:
-              title: Thing API
-              version: 1.0.0
-            components:
-              schemas:
-                Thing:
-                  type: object
-                  properties:
-                    theString:
-                      type: string
-                      minLength: 0
-                      maxLength: 10
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.2
+                info:
+                  title: Thing API
+                  version: 1.0.0
+                components:
+                  schemas:
+                    Thing:
+                      type: object
+                      properties:
+                        theString:
+                          type: string
+                          minLength: 0
+                          maxLength: 10
+                """.trimIndent(),
+            )
 
         val violations = cut.checkStringLengthBounds(context)
 
@@ -42,22 +42,23 @@ class StringPropertyLengthBoundsRuleTest {
     @Test
     fun `checkStringLengthBounds with left-bounded string length returns max violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.2
-            info:
-              title: Thing API
-              version: 1.0.0
-            components:
-              schemas:
-                Thing:
-                  type: object
-                  properties:
-                    theString:
-                      type: string
-                      minLength: 0
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.2
+                info:
+                  title: Thing API
+                  version: 1.0.0
+                components:
+                  schemas:
+                    Thing:
+                      type: object
+                      properties:
+                        theString:
+                          type: string
+                          minLength: 0
+                """.trimIndent(),
+            )
 
         val violations = cut.checkStringLengthBounds(context)
 
@@ -70,22 +71,23 @@ class StringPropertyLengthBoundsRuleTest {
     @Test
     fun `checkStringLengthBounds with right-bounded string length returns min violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.2
-            info:
-              title: Thing API
-              version: 1.0.0
-            components:
-              schemas:
-                Thing:
-                  type: object
-                  properties:
-                    theString:
-                      type: string
-                      maxLength: 10
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.2
+                info:
+                  title: Thing API
+                  version: 1.0.0
+                components:
+                  schemas:
+                    Thing:
+                      type: object
+                      properties:
+                        theString:
+                          type: string
+                          maxLength: 10
+                """.trimIndent(),
+            )
 
         val violations = cut.checkStringLengthBounds(context)
 
@@ -98,21 +100,22 @@ class StringPropertyLengthBoundsRuleTest {
     @Test
     fun `checkStringLengthBounds with unbounded string length returns min and max violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.2
-            info:
-              title: Thing API
-              version: 1.0.0
-            components:
-              schemas:
-                Thing:
-                  type: object
-                  properties:
-                    theString:
-                      type: string
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.2
+                info:
+                  title: Thing API
+                  version: 1.0.0
+                components:
+                  schemas:
+                    Thing:
+                      type: object
+                      properties:
+                        theString:
+                          type: string
+                """.trimIndent(),
+            )
 
         val violations = cut.checkStringLengthBounds(context)
 
@@ -125,23 +128,24 @@ class StringPropertyLengthBoundsRuleTest {
     @Test
     fun `checkStringLengthBounds with negative bounded string length returns min and max violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.2
-            info:
-              title: Thing API
-              version: 1.0.0
-            components:
-              schemas:
-                Thing:
-                  type: object
-                  properties:
-                    theString:
-                      type: string
-                      minLength: -100
-                      maxLength: -50
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.2
+                info:
+                  title: Thing API
+                  version: 1.0.0
+                components:
+                  schemas:
+                    Thing:
+                      type: object
+                      properties:
+                        theString:
+                          type: string
+                          minLength: -100
+                          maxLength: -50
+                """.trimIndent(),
+            )
 
         val violations = cut.checkStringLengthBounds(context)
 
@@ -154,23 +158,24 @@ class StringPropertyLengthBoundsRuleTest {
     @Test
     fun `checkStringLengthBounds with reversed bounded string length returns min and max violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.2
-            info:
-              title: Thing API
-              version: 1.0.0
-            components:
-              schemas:
-                Thing:
-                  type: object
-                  properties:
-                    theString:
-                      type: string
-                      minLength: 50
-                      maxLength: 10
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.2
+                info:
+                  title: Thing API
+                  version: 1.0.0
+                components:
+                  schemas:
+                    Thing:
+                      type: object
+                      properties:
+                        theString:
+                          type: string
+                          minLength: 50
+                          maxLength: 10
+                """.trimIndent(),
+            )
 
         val violations = cut.checkStringLengthBounds(context)
 
@@ -186,26 +191,27 @@ class StringPropertyLengthBoundsRuleTest {
 
         assumeTrue(
             format !in cut.formatWhitelist,
-            "test assumes config StringPropertyLengthBoundsRule.formatWhitelist excludes '$format'"
+            "test assumes config StringPropertyLengthBoundsRule.formatWhitelist excludes '$format'",
         )
 
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.2
-            info:
-              title: Thing API
-              version: 1.0.0
-            components:
-              schemas:
-                Thing:
-                  type: object
-                  properties:
-                    theString:
-                      type: string
-                      format: $format
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.2
+                info:
+                  title: Thing API
+                  version: 1.0.0
+                components:
+                  schemas:
+                    Thing:
+                      type: object
+                      properties:
+                        theString:
+                          type: string
+                          format: $format
+                """.trimIndent(),
+            )
 
         val violations = cut.checkStringLengthBounds(context)
 
@@ -221,26 +227,27 @@ class StringPropertyLengthBoundsRuleTest {
 
         assumeTrue(
             format in cut.formatWhitelist,
-            "test assumes config StringPropertyLengthBoundsRule.formatWhitelist includes '$format'"
+            "test assumes config StringPropertyLengthBoundsRule.formatWhitelist includes '$format'",
         )
 
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.2
-            info:
-              title: Thing API
-              version: 1.0.0
-            components:
-              schemas:
-                Thing:
-                  type: object
-                  properties:
-                    theString:
-                      type: string
-                      format: $format
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.2
+                info:
+                  title: Thing API
+                  version: 1.0.0
+                components:
+                  schemas:
+                    Thing:
+                      type: object
+                      properties:
+                        theString:
+                          type: string
+                          format: $format
+                """.trimIndent(),
+            )
 
         val violations = cut.checkStringLengthBounds(context)
 
@@ -253,27 +260,28 @@ class StringPropertyLengthBoundsRuleTest {
     fun `checkStringLengthBounds with pattern returns no violations`() {
         assumeTrue(
             cut.patternImpliesLimits,
-            "Test assumes config StringPropertyLengthBoundsRule.patternImpliesLimits is 'true'"
+            "Test assumes config StringPropertyLengthBoundsRule.patternImpliesLimits is 'true'",
         )
 
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.2
-            info:
-              title: Thing API
-              version: 1.0.0
-            components:
-              schemas:
-                Thing:
-                  type: object
-                  properties:
-                    theString:
-                      type: string
-                      minLength: 0
-                      maxLength: 5
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.2
+                info:
+                  title: Thing API
+                  version: 1.0.0
+                components:
+                  schemas:
+                    Thing:
+                      type: object
+                      properties:
+                        theString:
+                          type: string
+                          minLength: 0
+                          maxLength: 5
+                """.trimIndent(),
+            )
 
         val violations = cut.checkStringLengthBounds(context)
 
@@ -285,22 +293,23 @@ class StringPropertyLengthBoundsRuleTest {
     @Test
     fun `checkStringLengthBounds with enum returns no violations`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.2
-            info:
-              title: Thing API
-              version: 1.0.0
-            components:
-              schemas:
-                Thing:
-                  type: object
-                  properties:
-                    theString:
-                      type: string
-                      enum: [foo, bar]
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.2
+                info:
+                  title: Thing API
+                  version: 1.0.0
+                components:
+                  schemas:
+                    Thing:
+                      type: object
+                      properties:
+                        theString:
+                          type: string
+                          enum: [foo, bar]
+                """.trimIndent(),
+            )
 
         val violations = cut.checkStringLengthBounds(context)
 

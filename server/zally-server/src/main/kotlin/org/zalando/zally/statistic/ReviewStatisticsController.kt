@@ -16,8 +16,9 @@ import java.time.ZoneOffset
 
 @CrossOrigin
 @RestController
-class ReviewStatisticsController(private val apiReviewRepository: ApiReviewRepository) {
-
+class ReviewStatisticsController(
+    private val apiReviewRepository: ApiReviewRepository,
+) {
     @ResponseBody
     @GetMapping("/review-statistics")
     fun retrieveReviewStatistics(
@@ -27,7 +28,7 @@ class ReviewStatisticsController(private val apiReviewRepository: ApiReviewRepos
         @RequestParam(value = "to", required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         to: LocalDate?,
-        @RequestParam(value = "user_agent", required = false) userAgent: String?
+        @RequestParam(value = "user_agent", required = false) userAgent: String?,
     ): ReviewStatistics {
         if (from != null && from.isAfter(today())) {
             throw TimeParameterIsInTheFutureException()
@@ -37,18 +38,19 @@ class ReviewStatisticsController(private val apiReviewRepository: ApiReviewRepos
             throw InsufficientTimeIntervalParameterException()
         }
 
-        val apiReviewStatistics = if (from != null) {
-            apiReviewRepository.findByDayBetween(userAgent, from, to ?: today())
-        } else {
-            apiReviewRepository.findFromLastWeek(userAgent)
-        }
+        val apiReviewStatistics =
+            if (from != null) {
+                apiReviewRepository.findByDayBetween(userAgent, from, to ?: today())
+            } else {
+                apiReviewRepository.findFromLastWeek(userAgent)
+            }
 
         LOG.info(
             "Found {} api reviews from {} to {} user_agent {}",
             apiReviewStatistics.totalReviews,
             from,
             to,
-            userAgent
+            userAgent,
         )
         return apiReviewStatistics
     }
@@ -65,17 +67,14 @@ class ReviewStatisticsController(private val apiReviewRepository: ApiReviewRepos
     private fun ApiReviewRepository.findByDayBetween(
         userAgent: String?,
         from: LocalDate,
-        to: LocalDate
-    ): ReviewStatistics {
-        return when {
+        to: LocalDate,
+    ): ReviewStatistics =
+        when {
             userAgent == null || userAgent.isEmpty() -> getReviewStatistics(from, to)
             else -> getReviewStatistics(from, to, userAgent)
         }
-    }
 
-    private fun today(): LocalDate {
-        return Instant.now().atOffset(ZoneOffset.UTC).toLocalDate()
-    }
+    private fun today(): LocalDate = Instant.now().atOffset(ZoneOffset.UTC).toLocalDate()
 
     companion object {
         private val LOG = LoggerFactory.getLogger(ReviewStatisticsController::class.java)

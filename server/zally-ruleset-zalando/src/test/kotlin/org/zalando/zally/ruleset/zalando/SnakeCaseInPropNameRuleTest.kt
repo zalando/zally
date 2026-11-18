@@ -7,13 +7,13 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.core.rulesConfig
 
 class SnakeCaseInPropNameRuleTest {
-
     private val rule = SnakeCaseInPropNameRule(rulesConfig)
 
     @Test
     fun `checkPropertyNames should return violation if a property name is not snake_case`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: '3.0.1'
             components:
               schemas:
@@ -21,7 +21,7 @@ class SnakeCaseInPropNameRuleTest {
                   properties:
                     superMegaLaserTurboArticle:
                       type: boolean
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkPropertyNames(context)
@@ -34,7 +34,8 @@ class SnakeCaseInPropNameRuleTest {
     @Test
     fun `checkPropertyNames should return no violation if only snake_case properties are used`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: '3.0.1'
             components:
               schemas:
@@ -42,7 +43,7 @@ class SnakeCaseInPropNameRuleTest {
                   properties:
                     article_title:
                       type: string
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkPropertyNames(context)
@@ -53,7 +54,8 @@ class SnakeCaseInPropNameRuleTest {
     @Test
     fun `checkPropertyNames should return no violation if only whitelisted properties are used`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: '3.0.1'
             components:
               schemas:
@@ -61,7 +63,7 @@ class SnakeCaseInPropNameRuleTest {
                   properties:
                     _links:
                       type: string
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkPropertyNames(context)

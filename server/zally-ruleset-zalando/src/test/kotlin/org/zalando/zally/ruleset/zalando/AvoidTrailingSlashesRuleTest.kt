@@ -7,17 +7,17 @@ import org.zalando.zally.test.ZallyAssertions.assertThat
 
 @Suppress("StringLiteralDuplication", "UndocumentedPublicClass", "UnsafeCallOnNullableType")
 class AvoidTrailingSlashesRuleTest {
-
     private val rule = AvoidTrailingSlashesRule()
 
     @Test
     fun emptySwagger() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: '3.0.0'
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: '3.0.0'
+                """.trimIndent(),
+            )
 
         val violations = rule.validate(context)
 
@@ -27,14 +27,15 @@ class AvoidTrailingSlashesRuleTest {
     @Test
     fun positiveCase() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: '3.0.0'
-            paths:
-              /: {}
-              /api/test-api: {}
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: '3.0.0'
+                paths:
+                  /: {}
+                  /api/test-api: {}
+                """.trimIndent(),
+            )
 
         val violations = rule.validate(context)
 
@@ -44,17 +45,18 @@ class AvoidTrailingSlashesRuleTest {
     @Test
     fun negativeCase() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: '3.0.0'
-            paths:
-              /api/test-api/: {}
-              /api//test-api: {}
-              /api/test: {}
-              /some/other/path: {}
-              /long/bad/path/with/slash/: {}
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: '3.0.0'
+                paths:
+                  /api/test-api/: {}
+                  /api//test-api: {}
+                  /api/test: {}
+                  /some/other/path: {}
+                  /long/bad/path/with/slash/: {}
+                """.trimIndent(),
+            )
 
         val violations = rule.validate(context)
 

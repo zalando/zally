@@ -1,7 +1,15 @@
 package org.zalando.zally.apireview
 
-import org.hibernate.annotations.Parameter
-import org.hibernate.annotations.Type
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 import org.zalando.zally.core.Result
 import org.zalando.zally.dto.ApiDefinitionRequest
 import org.zalando.zally.rule.api.Severity
@@ -11,14 +19,6 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.UUID
-import javax.persistence.CascadeType
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.OneToMany
 
 @Suppress("unused")
 @Entity
@@ -29,17 +29,15 @@ class ApiReview(
     violations: List<Result> = emptyList(),
     val name: String? = OpenApiHelper.extractApiName(apiDefinition),
     val apiId: String? = OpenApiHelper.extractApiId(apiDefinition),
-    @Type(
-        type = "org.jadira.usertype.dateandtime.threeten.PersistentOffsetDateTime",
-        parameters = [Parameter(name = "javaZone", value = "UTC")]
-    )
+    // The column is TIMESTAMP WITHOUT TIME ZONE and holds UTC wall-clock time.
+    // TIMESTAMP (not TIMESTAMP_WITH_TIMEZONE) plus hibernate.jdbc.time_zone=UTC (application.yml) reads and writes it as UTC.
+    @JdbcTypeCode(SqlTypes.TIMESTAMP)
     @Column(nullable = false)
     val created: OffsetDateTime = Instant.now().atOffset(ZoneOffset.UTC),
     @Column(nullable = false)
     val day: LocalDate? = created.toLocalDate(),
-    val numberOfEndpoints: Int = EndpointCounter.count(apiDefinition)
+    val numberOfEndpoints: Int = EndpointCounter.count(apiDefinition),
 ) : Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0
@@ -58,5 +56,9 @@ class ApiReview(
     val hintViolations: Int = countViolations(Severity.HINT)
 
     private fun countViolations(severity: Severity) =
-        ruleViolations.stream().filter { r -> r.type === severity }.count().toInt()
+        ruleViolations
+            .stream()
+            .filter { r -> r.type === severity }
+            .count()
+            .toInt()
 }

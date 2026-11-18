@@ -6,20 +6,20 @@ import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 
 class Use429HeaderForRateLimitRuleTest {
-
     private val rule = Use429HeaderForRateLimitRule()
 
     @Test
     fun `checkHeadersForRateLimiting should return violation if no rate limit is provided via headers`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               /articles:
                 get:
                   responses:
                     429: {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkHeadersForRateLimiting(context)
@@ -32,7 +32,8 @@ class Use429HeaderForRateLimitRuleTest {
     @Test
     fun `checkHeadersForRateLimiting should return no violation if rate limit information is provided via headers`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               /articles:
@@ -41,7 +42,7 @@ class Use429HeaderForRateLimitRuleTest {
                     429:
                       headers:
                         Retry-After: {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkHeadersForRateLimiting(context)
@@ -52,13 +53,14 @@ class Use429HeaderForRateLimitRuleTest {
     @Test
     fun `checkHeadersForRateLimiting avoid bug 787 NPE on missing response`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             swagger: "2.0"
             paths:
               /articles:
                 get:
                   description: asd
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getSwaggerContext(content)
 
         val violations = rule.checkHeadersForRateLimiting(context)

@@ -6,17 +6,17 @@ import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 
 class NestedPathsMayBeRootPathsRuleTest {
-
     private val rule = NestedPathsMayBeRootPathsRule()
 
     @Test
     fun `checkNestedPaths should return violations for paths containing nested sub resources`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               "/countries/{country-id}/populated/cities/{city-id}": {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkNestedPaths(context)
@@ -30,11 +30,12 @@ class NestedPathsMayBeRootPathsRuleTest {
     @Test
     fun `checkNestedPaths should return no violations if there are no paths containing nested sub resources`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               /pets/dogs: {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkNestedPaths(context)

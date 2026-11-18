@@ -8,7 +8,6 @@ import org.zalando.zally.core.rulesConfig
 import org.zalando.zally.rule.api.Context
 
 class ProprietaryHeadersRuleTest {
-
     private val rule = ProprietaryHeadersRule(rulesConfig)
 
     @Test
@@ -67,20 +66,22 @@ class ProprietaryHeadersRuleTest {
     @Test
     fun `validate(Request, Response)Headers should return no violation for empty API`() {
         @Language("YAML")
-        val violations = rule.validateRequestHeaders(
-            DefaultContextFactory().getOpenApiContext(
-                """
+        val violations =
+            rule.validateRequestHeaders(
+                DefaultContextFactory().getOpenApiContext(
+                    """
             openapi: 3.0.1
-        """
+        """,
+                ),
             )
-        )
 
         assertThat(violations).isEmpty()
     }
 
     private fun withRequestHttpHeader(header: String): Context {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               /pets:
@@ -88,13 +89,14 @@ class ProprietaryHeadersRuleTest {
                   parameters:
                     - name: $header
                       in: header
-        """.trimIndent()
+            """.trimIndent()
         return DefaultContextFactory().getOpenApiContext(content)
     }
 
     private fun withResponseHttpHeader(header: String): Context {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               '/pets':
@@ -104,7 +106,7 @@ class ProprietaryHeadersRuleTest {
                       headers:
                         $header:
                           description: header in test
-        """.trimIndent()
+            """.trimIndent()
         return DefaultContextFactory().getOpenApiContext(content)
     }
 }

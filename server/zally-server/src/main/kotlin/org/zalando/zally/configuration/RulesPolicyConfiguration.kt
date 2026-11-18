@@ -7,12 +7,9 @@ import org.zalando.zally.core.RulesPolicy
 
 @Configuration
 class RulesPolicyConfiguration {
-
     @Value("\${zally.ignoreRules:}")
     private lateinit var ignoredRules: List<String>
 
     @Bean
-    fun rulesPolicy(): RulesPolicy {
-        return RulesPolicy(ignoredRules)
-    }
+    fun rulesPolicy(): RulesPolicy = RulesPolicy(ignoredRules)
 }

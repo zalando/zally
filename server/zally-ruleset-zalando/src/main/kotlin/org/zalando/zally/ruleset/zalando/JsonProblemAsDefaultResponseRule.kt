@@ -13,45 +13,62 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "151",
     severity = Severity.MUST,
-    title = "Specify Success and Error Responses"
+    title = "Specify Success and Error Responses",
 )
 class JsonProblemAsDefaultResponseRule {
-    private val validRefs = listOf(
-        "https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.1.yaml#/Problem",
-        "https://opensource.zalando.com/restful-api-guidelines/problem-1.0.1.yaml#/Problem",
-        "https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.0.yaml#/Problem",
-        "https://opensource.zalando.com/restful-api-guidelines/problem-1.0.0.yaml#/Problem",
-        "https://opensource.zalando.com/problem/schema.yaml#/Problem",
-        "https://zalando.github.io/problem/schema.yaml#/Problem"
-    )
+    private val validRefs =
+        listOf(
+            "https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.1.yaml#/Problem",
+            "https://opensource.zalando.com/restful-api-guidelines/problem-1.0.1.yaml#/Problem",
+            "https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.0.yaml#/Problem",
+            "https://opensource.zalando.com/restful-api-guidelines/problem-1.0.0.yaml#/Problem",
+            "https://opensource.zalando.com/problem/schema.yaml#/Problem",
+            "https://zalando.github.io/problem/schema.yaml#/Problem",
+        )
     private val validContentTypes = listOf("application/json", "application/problem+json")
 
     @Check(severity = Severity.SHOULD)
-    fun checkContainsDefaultResponse(context: Context): List<Violation> = responsesPerOperation(context)
-        .filterNot { "default" in it.second.keys }
-        .map { context.violation("operation should contain the default response", it.first) }
+    fun checkContainsDefaultResponse(context: Context): List<Violation> =
+        responsesPerOperation(context)
+            .filterNot { "default" in it.second.keys }
+            .map { context.violation("operation should contain the default response", it.first) }
 
     @Check(severity = Severity.SHOULD)
-    fun checkDefaultResponseIsProblemJsonMediaType(context: Context): List<Violation> = responsesPerOperation(context)
-        .filter { "default" in it.second.keys }
-        .flatMap { it.second.getValue("default").content.orEmpty().entries }
-        .filterNot { (contentType, _) -> contentType in validContentTypes }
-        .map { context.violation("media-type application/problem+json should be used as default response", it.value) }
+    fun checkDefaultResponseIsProblemJsonMediaType(context: Context): List<Violation> =
+        responsesPerOperation(context)
+            .filter { "default" in it.second.keys }
+            .flatMap {
+                it.second
+                    .getValue("default")
+                    .content
+                    .orEmpty()
+                    .entries
+            }.filterNot { (contentType, _) -> contentType in validContentTypes }
+            .map { context.violation("media-type application/problem+json should be used as default response", it.value) }
 
     @Check(severity = Severity.SHOULD)
-    fun checkDefaultResponseIsProblemJsonSchema(context: Context): List<Violation> = responsesPerOperation(context)
-        .filter { "default" in it.second.keys }
-        .flatMap { it.second.getValue("default").content.orEmpty().entries }
-        .filter { (contentType, _) -> contentType in validContentTypes }
-        .filterNot { it.value?.schema?.`$ref` in validRefs }
-        .filterNot { isProblemJsonSchema(it.value?.schema) }
-        .map { context.violation("problem+json should be used as default response", it.value) }
+    fun checkDefaultResponseIsProblemJsonSchema(context: Context): List<Violation> =
+        responsesPerOperation(context)
+            .filter { "default" in it.second.keys }
+            .flatMap {
+                it.second
+                    .getValue("default")
+                    .content
+                    .orEmpty()
+                    .entries
+            }.filter { (contentType, _) -> contentType in validContentTypes }
+            .filterNot { it.value?.schema?.`$ref` in validRefs }
+            .filterNot { isProblemJsonSchema(it.value?.schema) }
+            .map { context.violation("problem+json should be used as default response", it.value) }
 
     private fun responsesPerOperation(context: Context): Collection<Pair<Operation, Map<String, ApiResponse>>> =
-        context.api.paths?.values
+        context.api.paths
+            ?.values
             .orEmpty()
             .flatMap {
-                it?.readOperations().orEmpty()
+                it
+                    ?.readOperations()
+                    .orEmpty()
                     .map { operation -> Pair(operation, operation.responses.orEmpty()) }
             }
 

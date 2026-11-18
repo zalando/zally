@@ -12,21 +12,24 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "147",
     severity = Severity.SHOULD,
-    title = "Limit number of Sub-resources level"
+    title = "Limit number of Sub-resources level",
 )
-class LimitNumberOfSubResourcesRule(rulesConfig: Config) {
+class LimitNumberOfSubResourcesRule(
+    rulesConfig: Config,
+) {
     private val subResourcesLimit = rulesConfig.getConfig(javaClass.simpleName).getInt("subresources_limit")
     private val description = "Number of sub-resources should not exceed $subResourcesLimit"
 
     @Check(severity = Severity.SHOULD)
     fun checkNumberOfSubResources(context: Context): List<Violation> =
-        context.api.paths.orEmpty().entries
+        context.api.paths
+            .orEmpty()
+            .entries
             .map { (path, pathObj) ->
                 Pair(
                     path.split("/").filter { it.isNotEmpty() && !PatternUtil.isPathVariable(it) }.size - 1,
-                    pathObj
+                    pathObj,
                 )
-            }
-            .filter { (numberOfSubResources, _) -> numberOfSubResources > subResourcesLimit }
+            }.filter { (numberOfSubResources, _) -> numberOfSubResources > subResourcesLimit }
             .map { (_, pathObj) -> context.violation(description, pathObj) }
 }

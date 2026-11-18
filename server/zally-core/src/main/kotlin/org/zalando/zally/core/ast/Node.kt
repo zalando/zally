@@ -10,7 +10,7 @@ internal data class Node(
     val pointer: JsonPointer,
     val marker: Marker?,
     val skip: Boolean = false,
-    val children: MutableList<Node> = mutableListOf()
+    val children: MutableList<Node> = mutableListOf(),
 ) {
     fun hasChildren(): Boolean = children.isNotEmpty()
 }

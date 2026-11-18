@@ -19,19 +19,22 @@ import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 
 class OpenApiUtilTest {
-
     @Test
     fun `getAllHeaders should return headers from components parameters`() {
-        val api = OpenAPI().apply {
-            components = Components().apply {
-                parameters = mapOf(
-                    "User-Agent" to Parameter().apply {
-                        `in` = "header"
-                        name = "User-Agent"
+        val api =
+            OpenAPI().apply {
+                components =
+                    Components().apply {
+                        parameters =
+                            mapOf(
+                                "User-Agent" to
+                                    Parameter().apply {
+                                        `in` = "header"
+                                        name = "User-Agent"
+                                    },
+                            )
                     }
-                )
             }
-        }
 
         val headers = api.getAllHeaders()
 
@@ -41,21 +44,24 @@ class OpenApiUtilTest {
 
     @Test
     fun `getAllHeaders should return headers from paths`() {
-        val api = OpenAPI().apply {
-            val paths = Paths()
-            val pathItem = PathItem()
-            pathItem.get = Operation().apply {
-                parameters = listOf(
-                    Parameter().apply {
-                        `in` = "header"
-                        name = "User-Agent"
+        val api =
+            OpenAPI().apply {
+                val paths = Paths()
+                val pathItem = PathItem()
+                pathItem.get =
+                    Operation().apply {
+                        parameters =
+                            listOf(
+                                Parameter().apply {
+                                    `in` = "header"
+                                    name = "User-Agent"
+                                },
+                            )
                     }
-                )
-            }
-            paths.addPathItem("path", pathItem)
+                paths.addPathItem("path", pathItem)
 
-            this.paths = paths
-        }
+                this.paths = paths
+            }
 
         val headers = api.getAllHeaders()
 
@@ -65,11 +71,13 @@ class OpenApiUtilTest {
 
     @Test
     fun `getAllHeaders should return headers from components`() {
-        val api = OpenAPI().apply {
-            components = Components().apply {
-                headers = mapOf("User-Agent" to Header())
+        val api =
+            OpenAPI().apply {
+                components =
+                    Components().apply {
+                        headers = mapOf("User-Agent" to Header())
+                    }
             }
-        }
 
         val headers = api.getAllHeaders()
 
@@ -89,11 +97,13 @@ class OpenApiUtilTest {
 
     @Test
     fun `getAllSchemas should return component schemas`() {
-        val api = OpenAPI().apply {
-            components = Components().apply {
-                schemas = mapOf("pet" to Schema<String>())
+        val api =
+            OpenAPI().apply {
+                components =
+                    Components().apply {
+                        schemas = mapOf("pet" to Schema<String>())
+                    }
             }
-        }
 
         val schemas = api.getAllSchemas()
 
@@ -103,15 +113,19 @@ class OpenApiUtilTest {
 
     @Test
     fun `getAllSchemas should return component response schemas`() {
-        val api = OpenAPI().apply {
-            components = Components().apply {
-                responses = mapOf(
-                    "response" to ApiResponse().apply {
-                        schemas = mapOf("pet" to Schema<String>())
+        val api =
+            OpenAPI().apply {
+                components =
+                    Components().apply {
+                        responses =
+                            mapOf(
+                                "response" to
+                                    ApiResponse().apply {
+                                        schemas = mapOf("pet" to Schema<String>())
+                                    },
+                            )
                     }
-                )
             }
-        }
 
         val schemas = api.getAllSchemas()
 
@@ -121,15 +135,19 @@ class OpenApiUtilTest {
 
     @Test
     fun `getAllSchemas should return component request body schemas`() {
-        val api = OpenAPI().apply {
-            components = Components().apply {
-                requestBodies = mapOf(
-                    "request" to RequestBody().apply {
-                        schemas = mapOf("pet" to Schema<String>())
+        val api =
+            OpenAPI().apply {
+                components =
+                    Components().apply {
+                        requestBodies =
+                            mapOf(
+                                "request" to
+                                    RequestBody().apply {
+                                        schemas = mapOf("pet" to Schema<String>())
+                                    },
+                            )
                     }
-                )
             }
-        }
 
         val schemas = api.getAllSchemas()
 
@@ -139,20 +157,23 @@ class OpenApiUtilTest {
 
     @Test
     fun `getAllSchemas should return operation parameter schemas`() {
-        val api = OpenAPI().apply {
-            val paths = Paths()
-            val pathItem = PathItem()
-            pathItem.get = Operation().apply {
-                parameters = listOf(
-                    Parameter().apply {
-                        `in` = "body"
-                        schema = Schema<String>()
+        val api =
+            OpenAPI().apply {
+                val paths = Paths()
+                val pathItem = PathItem()
+                pathItem.get =
+                    Operation().apply {
+                        parameters =
+                            listOf(
+                                Parameter().apply {
+                                    `in` = "body"
+                                    schema = Schema<String>()
+                                },
+                            )
                     }
-                )
+                paths.addPathItem("path", pathItem)
+                this.paths = paths
             }
-            paths.addPathItem("path", pathItem)
-            this.paths = paths
-        }
 
         val schemas = api.getAllSchemas()
 
@@ -162,29 +183,31 @@ class OpenApiUtilTest {
 
     @Test
     fun `getAllSchemas should return operation response schemas`() {
-        val api = OpenAPI().apply {
-            val paths = Paths()
-            val pathItem = PathItem()
-            pathItem.get = Operation().apply {
-                val responses = ApiResponses()
-                responses.addApiResponse(
-                    "response",
-                    ApiResponse().apply {
-                        val content = Content()
-                        content.addMediaType(
-                            "application/json",
-                            MediaType().apply {
-                                schema = Schema<String>()
-                            }
+        val api =
+            OpenAPI().apply {
+                val paths = Paths()
+                val pathItem = PathItem()
+                pathItem.get =
+                    Operation().apply {
+                        val responses = ApiResponses()
+                        responses.addApiResponse(
+                            "response",
+                            ApiResponse().apply {
+                                val content = Content()
+                                content.addMediaType(
+                                    "application/json",
+                                    MediaType().apply {
+                                        schema = Schema<String>()
+                                    },
+                                )
+                                this.content = content
+                            },
                         )
-                        this.content = content
+                        this.responses = responses
                     }
-                )
-                this.responses = responses
+                paths.addPathItem("path", pathItem)
+                this.paths = paths
             }
-            paths.addPathItem("path", pathItem)
-            this.paths = paths
-        }
 
         val schemas = api.getAllSchemas()
 
@@ -194,24 +217,27 @@ class OpenApiUtilTest {
 
     @Test
     fun `getAllSchemas should return operation request body schemas`() {
-        val api = OpenAPI().apply {
-            val paths = Paths()
-            val pathItem = PathItem()
-            pathItem.get = Operation().apply {
-                requestBody = RequestBody().apply {
-                    val content = Content()
-                    content.addMediaType(
-                        "application/json",
-                        MediaType().apply {
-                            schema = Schema<String>()
-                        }
-                    )
-                    this.content = content
-                }
+        val api =
+            OpenAPI().apply {
+                val paths = Paths()
+                val pathItem = PathItem()
+                pathItem.get =
+                    Operation().apply {
+                        requestBody =
+                            RequestBody().apply {
+                                val content = Content()
+                                content.addMediaType(
+                                    "application/json",
+                                    MediaType().apply {
+                                        schema = Schema<String>()
+                                    },
+                                )
+                                this.content = content
+                            }
+                    }
+                paths.addPathItem("path", pathItem)
+                this.paths = paths
             }
-            paths.addPathItem("path", pathItem)
-            this.paths = paths
-        }
 
         val schemas = api.getAllSchemas()
 
@@ -231,19 +257,24 @@ class OpenApiUtilTest {
 
     @Test
     fun `getAllTransitiveSchemas should return a set of all schemas`() {
-        val api = OpenAPI().apply {
-            components = Components().apply {
-                schemas = mapOf(
-                    "pet" to Schema<Any>().apply {
-                        title = "pet"
-                        properties = mapOf(
-                            "name" to Schema<String>().apply { title = "name" },
-                            "age" to Schema<Int>().apply { title = "age" }
-                        )
+        val api =
+            OpenAPI().apply {
+                components =
+                    Components().apply {
+                        schemas =
+                            mapOf(
+                                "pet" to
+                                    Schema<Any>().apply {
+                                        title = "pet"
+                                        properties =
+                                            mapOf(
+                                                "name" to Schema<String>().apply { title = "name" },
+                                                "age" to Schema<Int>().apply { title = "age" },
+                                            )
+                                    },
+                            )
                     }
-                )
             }
-        }
 
         val schemas = api.getAllTransitiveSchemas()
 
@@ -263,19 +294,24 @@ class OpenApiUtilTest {
 
     @Test
     fun `getAllProperties should return a map of all properties`() {
-        val api = OpenAPI().apply {
-            components = Components().apply {
-                schemas = mapOf(
-                    "pet" to Schema<Any>().apply {
-                        title = "pet"
-                        properties = mapOf(
-                            "name" to Schema<String>().apply { title = "name" },
-                            "age" to Schema<Int>().apply { title = "age" }
-                        )
+        val api =
+            OpenAPI().apply {
+                components =
+                    Components().apply {
+                        schemas =
+                            mapOf(
+                                "pet" to
+                                    Schema<Any>().apply {
+                                        title = "pet"
+                                        properties =
+                                            mapOf(
+                                                "name" to Schema<String>().apply { title = "name" },
+                                                "age" to Schema<Int>().apply { title = "age" },
+                                            )
+                                    },
+                            )
                     }
-                )
             }
-        }
 
         val schemas = api.getAllProperties()
 
@@ -295,15 +331,19 @@ class OpenApiUtilTest {
 
     @Test
     fun `getAllParameters should return components parameters`() {
-        val api = OpenAPI().apply {
-            components = Components().apply {
-                parameters = mapOf(
-                    "pet" to Parameter().apply {
-                        name = "name"
+        val api =
+            OpenAPI().apply {
+                components =
+                    Components().apply {
+                        parameters =
+                            mapOf(
+                                "pet" to
+                                    Parameter().apply {
+                                        name = "name"
+                                    },
+                            )
                     }
-                )
             }
-        }
 
         val schemas = api.getAllParameters()
 
@@ -313,17 +353,19 @@ class OpenApiUtilTest {
 
     @Test
     fun `getAllParameters should return paths parameters`() {
-        val api = OpenAPI().apply {
-            val paths = Paths()
-            val pathItem = PathItem()
-            pathItem.parameters = listOf(
-                Parameter().apply {
-                    name = "name"
-                }
-            )
-            paths.addPathItem("path", pathItem)
-            this.paths = paths
-        }
+        val api =
+            OpenAPI().apply {
+                val paths = Paths()
+                val pathItem = PathItem()
+                pathItem.parameters =
+                    listOf(
+                        Parameter().apply {
+                            name = "name"
+                        },
+                    )
+                paths.addPathItem("path", pathItem)
+                this.paths = paths
+            }
 
         val schemas = api.getAllParameters()
 
@@ -333,19 +375,22 @@ class OpenApiUtilTest {
 
     @Test
     fun `getAllParameters should return path operation parameters`() {
-        val api = OpenAPI().apply {
-            val paths = Paths()
-            val pathItem = PathItem()
-            pathItem.get = Operation().apply {
-                parameters = listOf(
-                    Parameter().apply {
-                        name = "name"
+        val api =
+            OpenAPI().apply {
+                val paths = Paths()
+                val pathItem = PathItem()
+                pathItem.get =
+                    Operation().apply {
+                        parameters =
+                            listOf(
+                                Parameter().apply {
+                                    name = "name"
+                                },
+                            )
                     }
-                )
+                paths.addPathItem("path", pathItem)
+                this.paths = paths
             }
-            paths.addPathItem("path", pathItem)
-            this.paths = paths
-        }
 
         val schemas = api.getAllParameters()
 
@@ -366,7 +411,8 @@ class OpenApiUtilTest {
     @Test
     fun `getAllTransitiveSchemas should be able to cope with recursive schemas`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
 openapi: 3.0.1
 paths:
   /products/{product_id}:
@@ -390,7 +436,7 @@ components:
               type: array
               items:
                 ${'$'}ref: "#/components/schemas/ProductResource"
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val schemas = context.api.getAllTransitiveSchemas()

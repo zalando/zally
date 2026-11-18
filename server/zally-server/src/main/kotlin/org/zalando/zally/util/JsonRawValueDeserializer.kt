@@ -6,7 +6,8 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
 
 class JsonRawValueDeserializer : JsonDeserializer<String>() {
-
-    override fun deserialize(jp: JsonParser, context: DeserializationContext): String =
-        jp.readValueAsTree<TreeNode>().toString()
+    override fun deserialize(
+        jp: JsonParser,
+        context: DeserializationContext,
+    ): String = jp.readValueAsTree<TreeNode>().toString()
 }

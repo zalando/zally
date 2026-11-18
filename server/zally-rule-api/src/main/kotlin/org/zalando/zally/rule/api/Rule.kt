@@ -16,5 +16,5 @@ annotation class Rule(
     /** The stated severity for this rule  */
     val severity: Severity,
     /** A title for this rule  */
-    val title: String
+    val title: String,
 )

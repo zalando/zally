@@ -6,18 +6,18 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.test.ZallyAssertions
 
 class AtMostOneBodyParameterRuleTest {
-
     private val cut = AtMostOneBodyParameterRule()
 
     @Test
     fun withEmptyReturnsEmpty() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: '2.0'
             info:
               title: API Title
               version: 1.0.0
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -29,7 +29,8 @@ class AtMostOneBodyParameterRuleTest {
     @Test
     fun withOneBodyParameterReturnsEmpty() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: '2.0'
             info:
               title: API Title
@@ -46,7 +47,7 @@ class AtMostOneBodyParameterRuleTest {
                   responses:
                     200:
                       description: Done
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -58,7 +59,8 @@ class AtMostOneBodyParameterRuleTest {
     @Test
     fun withTwoBodyParameterReturnsViolations() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: '2.0'
             info:
               title: API Title
@@ -80,13 +82,14 @@ class AtMostOneBodyParameterRuleTest {
                   responses:
                     200:
                       description: Done
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
         val violations = cut.validate(context)
 
-        ZallyAssertions.assertThat(violations)
+        ZallyAssertions
+            .assertThat(violations)
             .descriptionsAllEqualTo("There can only be one body parameter")
             .pointersEqualTo("/paths/~1things/post/parameters/0", "/paths/~1things/post/parameters/1")
     }

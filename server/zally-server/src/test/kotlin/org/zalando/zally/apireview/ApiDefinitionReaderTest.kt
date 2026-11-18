@@ -18,7 +18,6 @@ import org.zalando.zally.exception.MissingApiDefinitionException
 import org.zalando.zally.util.JadlerUtil
 
 class ApiDefinitionReaderTest {
-
     private val contentInJson = "{\"swagger\":\"2.0\"}"
 
     private lateinit var reader: ApiDefinitionReader

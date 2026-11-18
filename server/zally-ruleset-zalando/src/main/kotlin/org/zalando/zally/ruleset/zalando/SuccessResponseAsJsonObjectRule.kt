@@ -10,21 +10,31 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "110",
     severity = Severity.MUST,
-    title = "Response As JSON Object"
+    title = "Response As JSON Object",
 )
 class SuccessResponseAsJsonObjectRule {
-
     private val description = "Always return JSON objects as top-level data structures to support extensibility"
 
     @Check(severity = Severity.MUST)
     fun checkJSONObjectIsUsedAsSuccessResponseType(context: Context): List<Violation> =
-        context.api.paths.orEmpty().values
+        context.api.paths
+            .orEmpty()
+            .values
             .flatMap {
-                it?.readOperations().orEmpty()
-                    .flatMap { it.responses.orEmpty().filter { (resCode, _) -> isSuccess(resCode) }.values }
-            }
-            .flatMap {
-                it?.content.orEmpty().entries
+                it
+                    ?.readOperations()
+                    .orEmpty()
+                    .flatMap {
+                        it.responses
+                            .orEmpty()
+                            .filter { (resCode, _) -> isSuccess(resCode) }
+                            .values
+                    }
+            }.flatMap {
+                it
+                    ?.content
+                    .orEmpty()
+                    .entries
                     .filter { (mediaType, _) -> mediaType.contains("json") }
             }.mapNotNull { it.value?.schema }
             .filterNot { schema -> schema.type.isNullOrEmpty() || "object" == schema.type }

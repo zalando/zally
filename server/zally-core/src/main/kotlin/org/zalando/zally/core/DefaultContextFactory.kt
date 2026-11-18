@@ -14,17 +14,16 @@ import org.zalando.zally.rule.api.Violation
 import java.util.regex.Pattern
 
 class DefaultContextFactory(
-    private val propagateAuthorizationUrls: List<Pattern> = emptyList()
+    private val propagateAuthorizationUrls: List<Pattern> = emptyList(),
 ) {
-
     private val log = LoggerFactory.getLogger(DefaultContextFactory::class.java)
 
     init {
         log.info("propagate authorization for $propagateAuthorizationUrls")
     }
 
-    fun getOpenApiContext(content: String): Context {
-        return when (val openApiResult = parseOpenApiContext(content)) {
+    fun getOpenApiContext(content: String): Context =
+        when (val openApiResult = parseOpenApiContext(content)) {
             is ContentParseResult.ParsedSuccessfully ->
                 openApiResult.result
             is ContentParseResult.ParsedWithErrors -> {
@@ -35,10 +34,9 @@ class DefaultContextFactory(
                 throw RuntimeException("Missing the 'openapi' property.")
             }
         }
-    }
 
-    fun getSwaggerContext(content: String): Context {
-        return when (val swaggerResult = parseSwaggerContext(content)) {
+    fun getSwaggerContext(content: String): Context =
+        when (val swaggerResult = parseSwaggerContext(content)) {
             is ContentParseResult.ParsedSuccessfully ->
                 swaggerResult.result
             is ContentParseResult.ParsedWithErrors -> {
@@ -49,9 +47,11 @@ class DefaultContextFactory(
                 throw RuntimeException("Missing the 'swagger' property.")
             }
         }
-    }
 
-    fun parseOpenApiContext(content: String, authorization: String? = null): ContentParseResult<Context> {
+    fun parseOpenApiContext(
+        content: String,
+        authorization: String? = null,
+    ): ContentParseResult<Context> {
         try {
             val parseResult = parseOpenApi(content, authorization)
             if (parseResult !is ContentParseResult.ParsedSuccessfully) return parseResult.of()
@@ -80,32 +80,37 @@ class DefaultContextFactory(
             DefaultContext(
                 content,
                 convertResult.result.openAPI,
-                parseResult.result.swagger
-            )
+                parseResult.result.swagger,
+            ),
         )
     }
 
-    private fun parseOpenApi(content: String, authorization: String?): ContentParseResult<SwaggerParseResult> {
+    private fun parseOpenApi(
+        content: String,
+        authorization: String?,
+    ): ContentParseResult<SwaggerParseResult> {
         val parseOptions = ParseOptions()
         parseOptions.isResolve = true
         parseOptions.isResolveFully = true // Needed to resolve references in OpenAPI 3.1.0
 
-        val authorizationValue = when {
-            authorization is String && propagateAuthorizationUrls.isNotEmpty() ->
-                mutableListOf(
-                    AuthorizationValue("Authorization", authorization, "header") { url ->
-                        propagateAuthorizationUrls.any { it.matcher(url.toString()).matches() }
-                    }
-                )
-            else -> mutableListOf()
-        }
+        val authorizationValue =
+            when {
+                authorization is String && propagateAuthorizationUrls.isNotEmpty() ->
+                    mutableListOf(
+                        AuthorizationValue("Authorization", authorization, "header") { url ->
+                            propagateAuthorizationUrls.any { it.matcher(url.toString()).matches() }
+                        },
+                    )
+                else -> mutableListOf()
+            }
 
         val parseResult = OpenAPIV3Parser().readContents(content, authorizationValue, parseOptions)
         return if (parseResult.openAPI === null) {
             val openApiIsMissing = parseResult.messages.contains("attribute openapi is missing")
-            val errorConstructingInstance = parseResult.messages.any {
-                it.contains("Cannot construct instance", ignoreCase = true)
-            }
+            val errorConstructingInstance =
+                parseResult.messages.any {
+                    it.contains("Cannot construct instance", ignoreCase = true)
+                }
 
             if (parseResult.messages.isEmpty() || openApiIsMissing || errorConstructingInstance) {
                 ContentParseResult.NotApplicable()
@@ -123,7 +128,7 @@ class DefaultContextFactory(
         } catch (e: NullPointerException) {
             log.warn(
                 "Failed to fully resolve OpenAPI schema. Error not covered by pre-resolve checks.\n${parseResult.openAPI}",
-                e
+                e,
             )
         }
         return ContentParseResult.ParsedSuccessfully(parseResult)
@@ -145,16 +150,17 @@ class DefaultContextFactory(
     }
 
     private fun convertSwaggerToOpenAPI(parseResult: SwaggerDeserializationResult): ContentParseResult<SwaggerParseResult> {
-        val convertResult = try {
-            SwaggerConverter().convert(parseResult)
-        } catch (t: Throwable) {
-            log.warn(
-                "Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. Error not covered by pre-convert checks.",
-                t
-            )
-            val violation = Violation("Unable to parse specification", EMPTY_JSON_POINTER)
-            return ContentParseResult.ParsedWithErrors(listOf(violation))
-        }
+        val convertResult =
+            try {
+                SwaggerConverter().convert(parseResult)
+            } catch (t: Throwable) {
+                log.warn(
+                    "Unable to convert specification from 'Swagger 2' to 'OpenAPI 3'. Error not covered by pre-convert checks.",
+                    t,
+                )
+                val violation = Violation("Unable to parse specification", EMPTY_JSON_POINTER)
+                return ContentParseResult.ParsedWithErrors(listOf(violation))
+            }
         return if (convertResult.openAPI === null) {
             if (convertResult.messages.orEmpty().isNotEmpty()) {
                 ContentParseResult.ParsedWithErrors(convertResult.messages.mapNotNull(::errorToViolation))
@@ -168,6 +174,5 @@ class DefaultContextFactory(
         }
     }
 
-    private fun errorToViolation(error: String): Violation =
-        Violation(error, EMPTY_JSON_POINTER)
+    private fun errorToViolation(error: String): Violation = Violation(error, EMPTY_JSON_POINTER)
 }
