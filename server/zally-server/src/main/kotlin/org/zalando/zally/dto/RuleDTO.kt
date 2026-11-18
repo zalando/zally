@@ -8,5 +8,5 @@ data class RuleDTO(
     val type: Severity? = null,
     val url: String? = null,
     val code: String? = null,
-    @JsonProperty("is_active") val active: Boolean? = null
+    @JsonProperty("is_active") val active: Boolean? = null,
 )

@@ -13,7 +13,6 @@ import java.net.URI
 import java.util.Arrays.asList
 
 class ApiReviewTest {
-
     @Test
     fun shouldAggregateRuleTypeCount() {
         val mustViolation1 = result(Severity.MUST, "/pointer1".toJsonPointer())
@@ -50,13 +49,16 @@ class ApiReviewTest {
         assertThat(apiReview.name).isEqualTo("Test Service")
     }
 
-    private fun result(severity: Severity, pointer: JsonPointer): Result =
+    private fun result(
+        severity: Severity,
+        pointer: JsonPointer,
+    ): Result =
         Result(
             id = "TestRuleId",
             url = URI.create("http://rules.example.com/test"),
             title = "Test Rule Title",
             description = "Description of test rule",
             violationType = severity,
-            pointer = pointer
+            pointer = pointer,
         )
 }

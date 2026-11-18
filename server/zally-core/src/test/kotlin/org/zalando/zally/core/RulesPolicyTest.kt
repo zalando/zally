@@ -10,7 +10,6 @@ import org.zalando.zally.rule.api.Severity
 import org.zalando.zally.rule.api.Violation
 
 class RulesPolicyTest {
-
     class RulesPolicyTestRuleSet : AbstractRuleSet()
 
     /** TestRule used for testing RulesPolicy */
@@ -18,10 +17,11 @@ class RulesPolicyTest {
         ruleSet = RulesPolicyTestRuleSet::class,
         id = "TestRule",
         severity = Severity.MUST,
-        title = "Test Rule"
+        title = "Test Rule",
     )
-    class TestRule(val result: Violation?) {
-
+    class TestRule(
+        val result: Violation?,
+    ) {
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
         fun validate(swagger: Swagger): Violation? = result

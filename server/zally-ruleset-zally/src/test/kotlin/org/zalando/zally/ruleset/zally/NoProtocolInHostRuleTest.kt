@@ -6,17 +6,17 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.test.ZallyAssertions
 
 class NoProtocolInHostRuleTest {
-
     private val rule = NoProtocolInHostRule()
 
     @Test
     fun `validate swagger with empty swagger returns no violations`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getSwaggerContext(
-            """
-            swagger: 2.0
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getSwaggerContext(
+                """
+                swagger: 2.0
+                """.trimIndent(),
+            )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -26,12 +26,13 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate swagger with simple hostname returns no violations`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getSwaggerContext(
-            """
-            swagger: 2.0
-            host: google.com
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getSwaggerContext(
+                """
+                swagger: 2.0
+                host: google.com
+                """.trimIndent(),
+            )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -41,12 +42,13 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate swagger with http protocol included returns a violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getSwaggerContext(
-            """
-            swagger: 2.0
-            host: http://google.com
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getSwaggerContext(
+                """
+                swagger: 2.0
+                host: http://google.com
+                """.trimIndent(),
+            )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -57,12 +59,13 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate swagger with https protocol included returns a violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getSwaggerContext(
-            """
-            swagger: 2.0
-            host: https://google.com
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getSwaggerContext(
+                """
+                swagger: 2.0
+                host: https://google.com
+                """.trimIndent(),
+            )
 
         ZallyAssertions
             .assertThat(rule.validate(context))
@@ -73,14 +76,15 @@ class NoProtocolInHostRuleTest {
     @Test
     fun `validate openapi with url including protocol returns no violations`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: 3.0.1
-            servers:
-              - url: https://google.com
-                description: OpenAPI expects a URL, not a hostname, so this is correct!
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: 3.0.1
+                servers:
+                  - url: https://google.com
+                    description: OpenAPI expects a URL, not a hostname, so this is correct!
+                """.trimIndent(),
+            )
 
         ZallyAssertions
             .assertThat(rule.validate(context))

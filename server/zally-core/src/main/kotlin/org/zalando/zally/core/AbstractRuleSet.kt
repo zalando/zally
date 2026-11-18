@@ -5,7 +5,6 @@ import org.zalando.zally.rule.api.RuleSet
 import java.net.URI
 
 abstract class AbstractRuleSet : RuleSet {
-
     override val id: String
         get() = javaClass.simpleName
 
@@ -15,9 +14,10 @@ abstract class AbstractRuleSet : RuleSet {
 
     override fun hashCode(): Int = id.hashCode()
 
-    override fun equals(other: Any?): Boolean = other != null &&
-        this.javaClass == other.javaClass &&
-        this.id == (other as RuleSet).id
+    override fun equals(other: Any?): Boolean =
+        other != null &&
+            this.javaClass == other.javaClass &&
+            this.id == (other as RuleSet).id
 
     override fun toString(): String = id
 }

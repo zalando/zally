@@ -20,8 +20,10 @@ import org.zalando.zally.rule.api.Severity
  */
 @CrossOrigin
 @RestController
-class SupportedRulesController(private val rules: RulesManager, private val rulesPolicy: RulesPolicy) {
-
+class SupportedRulesController(
+    private val rules: RulesManager,
+    private val rulesPolicy: RulesPolicy,
+) {
     /**
      * Registers serialization binding for Severity enum
      * @param binder the binder to configure
@@ -41,40 +43,44 @@ class SupportedRulesController(private val rules: RulesManager, private val rule
     @GetMapping("/supported-rules")
     fun listSupportedRules(
         @RequestParam(value = "type", required = false) typeFilter: Severity?,
-        @RequestParam(value = "is_active", required = false) isActiveFilter: Boolean?
+        @RequestParam(value = "is_active", required = false) isActiveFilter: Boolean?,
     ): RulesListDTO {
-        val filteredRules = rules
-            .rules
-            .filter { filterByIsActive(it, isActiveFilter) }
-            .filter { filterByType(it, typeFilter) }
-            .map { this.toDto(it) }
-            .sortedWith(
-                compareBy(
-                    RuleDTO::type,
-                    RuleDTO::code,
-                    RuleDTO::title
+        val filteredRules =
+            rules
+                .rules
+                .filter { filterByIsActive(it, isActiveFilter) }
+                .filter { filterByType(it, typeFilter) }
+                .map { this.toDto(it) }
+                .sortedWith(
+                    compareBy(
+                        RuleDTO::type,
+                        RuleDTO::code,
+                        RuleDTO::title,
+                    ),
                 )
-            )
 
         return RulesListDTO(filteredRules)
     }
 
-    private fun filterByIsActive(details: RuleDetails, isActiveFilter: Boolean?): Boolean {
+    private fun filterByIsActive(
+        details: RuleDetails,
+        isActiveFilter: Boolean?,
+    ): Boolean {
         val isActive = rulesPolicy.accepts(details.rule)
         return isActiveFilter == null || isActive == isActiveFilter
     }
 
-    private fun filterByType(details: RuleDetails, typeFilter: Severity?): Boolean {
-        return typeFilter == null || typeFilter == details.rule.severity
-    }
+    private fun filterByType(
+        details: RuleDetails,
+        typeFilter: Severity?,
+    ): Boolean = typeFilter == null || typeFilter == details.rule.severity
 
-    private fun toDto(details: RuleDetails): RuleDTO {
-        return RuleDTO(
+    private fun toDto(details: RuleDetails): RuleDTO =
+        RuleDTO(
             details.rule.title,
             details.rule.severity,
             details.ruleSet.url(details.rule).toString(),
             details.rule.id,
-            rulesPolicy.accepts(details.rule)
+            rulesPolicy.accepts(details.rule),
         )
-    }
 }

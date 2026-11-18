@@ -11,5 +11,5 @@ data class Result(
     val description: String,
     val violationType: Severity,
     val pointer: JsonPointer,
-    val lines: IntRange? = null
+    val lines: IntRange? = null,
 )

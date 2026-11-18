@@ -14,5 +14,5 @@ data class ViolationDTO(
     val paths: List<String> = emptyList(),
     @JsonInclude(Include.NON_NULL) val pointer: String? = null,
     val startLine: Int? = null,
-    val endLine: Int? = null
+    val endLine: Int? = null,
 )

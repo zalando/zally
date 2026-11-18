@@ -16,29 +16,32 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "150",
     severity = Severity.MUST,
-    title = "Use Standard HTTP Status Codes"
+    title = "Use Standard HTTP Status Codes",
 )
-class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
-
-    private val wellUnderstoodResponseCodesAndVerbs = rulesConfig
-        .getConfig("${javaClass.simpleName}.well_understood")
-        .entrySet()
-        .map { (key, config) ->
-            @Suppress("UNCHECKED_CAST")
-            key to config.unwrapped() as List<String>
-        }
-        .toMap()
+class UseStandardHttpStatusCodesRule(
+    rulesConfig: Config,
+) {
+    private val wellUnderstoodResponseCodesAndVerbs =
+        rulesConfig
+            .getConfig("${javaClass.simpleName}.well_understood")
+            .entrySet()
+            .map { (key, config) ->
+                @Suppress("UNCHECKED_CAST")
+                key to config.unwrapped() as List<String>
+            }.toMap()
 
     private val wellUnderstoodResponseCode = wellUnderstoodResponseCodesAndVerbs.keys
 
     private val standardResponseCodes = rulesConfig.getStringList("${javaClass.simpleName}.standard")
 
     companion object Messages {
-        fun wellUnderstoodViolationMessage(path: String, status: String, method: String) =
-            "Path $path should not use $status status code for $method operation"
+        fun wellUnderstoodViolationMessage(
+            path: String,
+            status: String,
+            method: String,
+        ) = "Path $path should not use $status status code for $method operation"
 
-        fun noContentViolationMessage(statusCode: String) =
-            "$statusCode response should have no payload defined"
+        fun noContentViolationMessage(statusCode: String) = "$statusCode response should have no payload defined"
     }
 
     /**
@@ -50,7 +53,9 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
     fun checkWellUnderstoodResponseCodesUsage(context: Context): List<Violation> =
         context.validatePaths { (pathName, pathItem) ->
             pathItem?.readOperationsMap().orEmpty().flatMap { (method, operation) ->
-                operation?.responses.orEmpty()
+                operation
+                    ?.responses
+                    .orEmpty()
                     .filterKeys { status -> !isAllowed(method, status) }
                     .map { (status, response) ->
                         context.violation(wellUnderstoodViolationMessage(pathName, status, method.name), response)
@@ -66,11 +71,14 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
     @Check(severity = Severity.MUST)
     fun checkIfOnlyStandardizedResponseCodesAreUsed(context: Context): List<Violation> =
         context.validateOperations { (_, operation) ->
-            operation?.responses.orEmpty().filterKeys { status ->
-                status !in standardResponseCodes
-            }.map { (status, response) ->
-                context.violation("$status is not a standardized response code", response)
-            }
+            operation
+                ?.responses
+                .orEmpty()
+                .filterKeys { status ->
+                    status !in standardResponseCodes
+                }.map { (status, response) ->
+                    context.violation("$status is not a standardized response code", response)
+                }
         }
 
     /**
@@ -81,22 +89,26 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
     @Check(severity = Severity.SHOULD)
     fun checkIfOnlyWellUnderstoodResponseCodesAreUsed(context: Context): List<Violation> =
         context.validateOperations { (_, operation) ->
-            operation?.responses.orEmpty().filterKeys { status ->
-                status !in wellUnderstoodResponseCode
-            }.map { (status, response) ->
-                context.violation("$status is not a well-understood response code", response)
-            }
+            operation
+                ?.responses
+                .orEmpty()
+                .filterKeys { status ->
+                    status !in wellUnderstoodResponseCode
+                }.map { (status, response) ->
+                    context.violation("$status is not a well-understood response code", response)
+                }
         }
 
     @Check(severity = Severity.SHOULD)
     fun checkThatNoContentResponseHasNoContentDefined(context: Context): List<Violation> =
         context.validateResponses(
             operationFilter = { (method, _) ->
-                method in listOf(
-                    PathItem.HttpMethod.PUT,
-                    PathItem.HttpMethod.PATCH,
-                    PathItem.HttpMethod.DELETE
-                )
+                method in
+                    listOf(
+                        PathItem.HttpMethod.PUT,
+                        PathItem.HttpMethod.PATCH,
+                        PathItem.HttpMethod.DELETE,
+                    )
             },
             responseFilter = { (code, response) ->
                 code == HttpStatus.NoContent.code.toString() && response?.content.orEmpty().isNotEmpty()
@@ -107,10 +119,13 @@ class UseStandardHttpStatusCodesRule(rulesConfig: Config) {
                 } else {
                     listOf(context.violation(noContentViolationMessage(key), response))
                 }
-            }
+            },
         )
 
-    private fun isAllowed(method: PathItem.HttpMethod, statusCode: String): Boolean {
+    private fun isAllowed(
+        method: PathItem.HttpMethod,
+        statusCode: String,
+    ): Boolean {
         val allowedMethods = wellUnderstoodResponseCodesAndVerbs[statusCode.lowercase()].orEmpty()
         return allowedMethods.contains(method.name) || allowedMethods.contains("ALL")
     }

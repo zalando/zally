@@ -1,4 +1,5 @@
-import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 java {
@@ -7,7 +8,7 @@ java {
 }
 
 plugins {
-    val kotlinVersion = "1.8.0"
+    val kotlinVersion = "2.2.21"
     val klintVersion = "11.0.0"
 
     // The buildscript is also kotlin, so we apply at the root level
@@ -21,9 +22,10 @@ plugins {
     signing
     eclipse
 
-    id("org.jetbrains.dokka") version "1.7.20" apply false
+    id("org.jetbrains.dokka") version "2.2.0" apply false
+    id("org.jetbrains.dokka-javadoc") version "2.2.0" apply false
     id("com.github.ben-manes.versions") version "0.44.0"
-    id("com.diffplug.spotless") version "6.12.1"
+    id("com.diffplug.spotless") version "7.2.1"
 }
 
 allprojects {
@@ -31,6 +33,13 @@ allprojects {
         mavenCentral()
     }
 }
+
+/**
+ * The published library modules. They have no Spring Boot BOM, so they pin their own Jackson and snakeyaml, and keep
+ * an older Kotlin language level. Every other module is an application managed by Spring Boot: an explicit version
+ * there would override the Boot-managed one, so a new module gets no pins unless it is listed here.
+ */
+val publishedLibraries = setOf("zally-core", "zally-rule-api", "zally-ruleset-zalando", "zally-ruleset-zally", "zally-test")
 
 subprojects {
     group = "org.zalando"
@@ -40,6 +49,7 @@ subprojects {
     apply(plugin = "com.github.ben-manes.versions")
     apply(plugin = "com.diffplug.spotless")
     apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "org.jetbrains.dokka-javadoc")
     apply(plugin = "maven-publish")
     apply(plugin = "jacoco")
     apply(plugin = "signing")
@@ -49,18 +59,23 @@ subprojects {
         includeCompileClasspath = false
     }
 
-    tasks.withType<KotlinCompile>().configureEach() {
-        kotlinOptions.jvmTarget = "17"
-    }
-
-    tasks.withType<DokkaTask>().configureEach {
-        outputDirectory.set(buildDir.resolve("dokka"))
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+            // The library modules are published: keep the language and API level they were released with, so that
+            // consumers on an older Kotlin compiler can still read their metadata.
+            if (project.name in publishedLibraries) {
+                languageVersion.set(KotlinVersion.KOTLIN_1_8)
+                apiVersion.set(KotlinVersion.KOTLIN_1_8)
+            }
+        }
     }
 
     tasks.register("javadocJar", Jar::class) {
-        dependsOn(tasks["dokkaJavadoc"])
+        val javadoc = tasks.named("dokkaGeneratePublicationJavadoc")
+        dependsOn(javadoc)
         archiveClassifier.set("javadoc")
-        from(tasks["dokkaJavadoc"])
+        from(javadoc)
     }
 
     tasks.register("sourcesJar", Jar::class) {
@@ -155,17 +170,16 @@ subprojects {
         implementation("org.jetbrains.kotlin:kotlin-stdlib")
         implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-        // We define this here so all subprojects use the same version of jackson
-        implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
-        implementation("com.fasterxml.jackson.module:jackson-module-parameter-names:2.14.1")
-        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.1")
-        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.14.1")
-        implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.1")
-        implementation("org.yaml:snakeyaml:1.33")
+        if (project.name in publishedLibraries) {
+            implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
+            implementation("com.fasterxml.jackson.module:jackson-module-parameter-names:2.14.1")
+            implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.1")
+            implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.14.1")
+            implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.1")
+            implementation("org.yaml:snakeyaml:1.33")
+        }
 
-        testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.9.1")
         testImplementation("com.jayway.jsonpath:json-path-assert:2.7.0")
-        testImplementation("org.mockito:mockito-core:4.11.0")
     }
 
     jacoco {
@@ -175,11 +189,11 @@ subprojects {
     spotless {
         kotlin {
             target("**/*.kt")
-            ktlint("0.47.1")
+            ktlint("1.7.1")
         }
         kotlinGradle {
             target("**/*.gradle.kts", "*.gradle.kts")
-            ktlint("0.47.1")
+            ktlint("1.7.1")
         }
     }
 

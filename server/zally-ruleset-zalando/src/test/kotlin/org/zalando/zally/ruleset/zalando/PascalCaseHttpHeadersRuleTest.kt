@@ -7,18 +7,18 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.core.rulesConfig
 
 class PascalCaseHttpHeadersRuleTest {
-
     private val rule = PascalCaseHttpHeadersRule(rulesConfig)
 
     @Test
     fun `checkHttpHeaders should return violation if not pascal case is used`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             components:
               headers:
                 not-pascal-case-header: {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkHttpHeaders(context)
@@ -31,12 +31,13 @@ class PascalCaseHttpHeadersRuleTest {
     @Test
     fun `checkHttpHeaders should return no violation if all headers are pascal case`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             components:
               headers:
                 Hyphenated-Pascal-Case-Header: {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violations = rule.checkHttpHeaders(context)

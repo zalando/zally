@@ -1,12 +1,13 @@
 package org.zalando.zally.util
 
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.core.TreeNode
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonDeserializer
+import tools.jackson.core.JsonParser
+import tools.jackson.core.TreeNode
+import tools.jackson.databind.DeserializationContext
+import tools.jackson.databind.ValueDeserializer
 
-class JsonRawValueDeserializer : JsonDeserializer<String>() {
-
-    override fun deserialize(jp: JsonParser, context: DeserializationContext): String =
-        jp.readValueAsTree<TreeNode>().toString()
+class JsonRawValueDeserializer : ValueDeserializer<String>() {
+    override fun deserialize(
+        jp: JsonParser,
+        context: DeserializationContext,
+    ): String = jp.readValueAsTree<TreeNode>().toString()
 }

@@ -1,0 +1,40 @@
+// OpenRewrite init script: applies the rewrite plugin to the build WITHOUT touching any build.gradle.kts,
+// so there is nothing to clean up afterwards (the Boot 3 -> 4 skill's Phase 4 needs a cleanup step for this).
+//
+//   ./gradlew --init-script openrewrite/init.gradle rewriteDryRun -Drewrite.activeRecipe=<recipe>
+//   ./gradlew --init-script openrewrite/init.gradle rewriteRun    -Drewrite.activeRecipe=<recipe>
+//
+// Recipes are defined in openrewrite/rewrite.yml, see openrewrite/README.md.
+// Versions match the ones pinned by the spring-boot4-migration skill.
+initscript {
+    repositories {
+        maven { url = uri("https://plugins.gradle.org/m2") }
+    }
+    dependencies {
+        classpath("org.openrewrite:plugin:7.39.0")
+    }
+}
+
+rootProject {
+    plugins.apply(org.openrewrite.gradle.RewritePlugin)
+
+    dependencies {
+        rewrite("org.openrewrite.recipe:rewrite-spring:6.31.0")
+    }
+
+    rewrite {
+        configFile = new File(rootProject.projectDir, "openrewrite/rewrite.yml")
+        // Library modules and buildSrc have no Spring dependency. The Jakarta/jaxb/swagger recipes
+        // only do harm there (see README.md).
+        exclusion("**/zally-core/**", "**/zally-rule-api/**", "**/zally-ruleset-zalando/**",
+            "**/zally-ruleset-zally/**", "**/zally-test/**", "**/buildSrc/**")
+    }
+
+    afterEvaluate {
+        if (repositories.isEmpty()) {
+            repositories {
+                mavenCentral()
+            }
+        }
+    }
+}

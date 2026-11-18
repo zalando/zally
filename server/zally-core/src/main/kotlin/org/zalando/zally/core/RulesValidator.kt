@@ -10,12 +10,17 @@ import org.zalando.zally.rule.api.Violation
 import java.lang.reflect.InvocationTargetException
 import java.net.URI
 
-abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidator {
-
+abstract class RulesValidator<RootT : Any>(
+    val rules: RulesManager,
+) : ApiValidator {
     private val log = LoggerFactory.getLogger(RulesValidator::class.java)
     private val reader = ObjectTreeReader()
 
-    override fun validate(content: String, policy: RulesPolicy, authorization: String?): List<Result> {
+    override fun validate(
+        content: String,
+        policy: RulesPolicy,
+        authorization: String?,
+    ): List<Result> {
         val parseResult = parse(content, authorization)
         val locator = JsonPointerLocator(content)
         return when (parseResult) {
@@ -30,7 +35,7 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
                         description = violation.description,
                         violationType = Severity.MUST,
                         pointer = violation.pointer,
-                        lines = locator.locate(violation.pointer)
+                        lines = locator.locate(violation.pointer),
                     )
                 }
             is ParsedSuccessfully ->
@@ -42,44 +47,58 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
         }
     }
 
-    abstract fun parse(content: String, authorization: String?): ContentParseResult<RootT>
+    abstract fun parse(
+        content: String,
+        authorization: String?,
+    ): ContentParseResult<RootT>
 
-    private fun isCheckMethod(details: CheckDetails, root: Any) =
-        when (details.method.parameters.size) {
-            1 -> isRootParameterNeeded(details, root)
-            else -> false
-        }
+    private fun isCheckMethod(
+        details: CheckDetails,
+        root: Any,
+    ) = when (details.method.parameters.size) {
+        1 -> isRootParameterNeeded(details, root)
+        else -> false
+    }
 
-    private fun isRootParameterNeeded(details: CheckDetails, root: Any) =
-        details.method.parameters.isNotEmpty() &&
-            details.method.parameters[0].type.isAssignableFrom(root::class.java)
+    private fun isRootParameterNeeded(
+        details: CheckDetails,
+        root: Any,
+    ) = details.method.parameters.isNotEmpty() &&
+        details.method.parameters[0]
+            .type
+            .isAssignableFrom(root::class.java)
 
-    private fun invoke(details: CheckDetails, root: RootT, locator: JsonPointerLocator): Iterable<Result> {
+    private fun invoke(
+        details: CheckDetails,
+        root: RootT,
+        locator: JsonPointerLocator,
+    ): Iterable<Result> {
         log.debug("validating ${details.method.name} of ${details.instance.javaClass.simpleName} rule")
 
-        val result = try {
-            details.method.invoke(details.instance, root)
-        } catch (e: InvocationTargetException) {
-            throw RuntimeException(
-                "check invocation failed: id=${details.rule.id} " +
-                    "title=${details.rule.title} checkName=${details.method.name} reason=${e.targetException}",
-                e
-            )
-        }
+        val result =
+            try {
+                details.method.invoke(details.instance, root)
+            } catch (e: InvocationTargetException) {
+                throw RuntimeException(
+                    "check invocation failed: id=${details.rule.id} " +
+                        "title=${details.rule.title} checkName=${details.method.name} reason=${e.targetException}",
+                    e,
+                )
+            }
 
-        val violations = when (result) {
-            null -> emptyList()
-            is Violation -> listOf(result)
-            is Iterable<*> -> result.filterIsInstance(Violation::class.java)
-            else -> throw Exception("Unsupported return type for a @Check method!: ${result::class.java}")
-        }
+        val violations =
+            when (result) {
+                null -> emptyList()
+                is Violation -> listOf(result)
+                is Iterable<*> -> result.filterIsInstance(Violation::class.java)
+                else -> throw Exception("Unsupported return type for a @Check method!: ${result::class.java}")
+            }
         log.debug("${violations.count()} violations identified")
 
         return violations
             .filterNot {
                 ignore(root, it.pointer, details.rule.id)
-            }
-            .map {
+            }.map {
                 Result(
                     id = details.rule.id,
                     url = details.ruleSet.url(details.rule),
@@ -87,10 +106,14 @@ abstract class RulesValidator<RootT : Any>(val rules: RulesManager) : ApiValidat
                     description = it.description,
                     violationType = details.check.severity,
                     pointer = it.pointer,
-                    lines = locator.locate(it.pointer)
+                    lines = locator.locate(it.pointer),
                 )
             }
     }
 
-    abstract fun ignore(root: RootT, pointer: JsonPointer, ruleId: String): Boolean
+    abstract fun ignore(
+        root: RootT,
+        pointer: JsonPointer,
+        ruleId: String,
+    ): Boolean
 }

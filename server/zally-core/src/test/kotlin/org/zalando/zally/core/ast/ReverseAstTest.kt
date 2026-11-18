@@ -19,7 +19,8 @@ class ReverseAstTest {
     @Test
     fun `create JSON pointers from Swagger 2 object`() {
         @Language("yaml")
-        val content = """
+        val content =
+            """
             swagger: '2.0'
             info:
               title: Things API
@@ -31,19 +32,26 @@ class ReverseAstTest {
                   responses:
                     '200':
                       description: OK
-        """.trimIndent()
+            """.trimIndent()
 
         val spec = SwaggerParser().parse(content)
         val ast = ReverseAst.fromObject(spec).build()
 
-        val description = spec.paths?.get("/tests")?.get?.responses?.get("200")?.description
+        val description =
+            spec.paths
+                ?.get("/tests")
+                ?.get
+                ?.responses
+                ?.get("200")
+                ?.description
         assertThat(ast.getPointer(description!!)).hasToString("/paths/~1tests/get/responsesObject/200/description")
     }
 
     @Test
     fun `create ignore marker from Swagger 2 object`() {
         @Language("yaml")
-        val content = """
+        val content =
+            """
             swagger: '2.0'
             info:
               title: Things API
@@ -61,7 +69,7 @@ class ReverseAstTest {
                   responses:
                     '200':
                       description: OK
-        """.trimIndent()
+            """.trimIndent()
 
         val spec = SwaggerParser().parse(content)
         val ast = ReverseAst.fromObject(spec).withExtensionMethodNames("getVendorExtensions").build()
@@ -106,7 +114,8 @@ class ReverseAstTest {
     @Test
     fun `create ignore marker from Swagger 2 JSON Node`() {
         @Language("yaml")
-        val content = """
+        val content =
+            """
             swagger: '2.0'
             info:
               title: Things API
@@ -124,7 +133,7 @@ class ReverseAstTest {
                   responses:
                     '200':
                       description: OK
-        """.trimIndent()
+            """.trimIndent()
 
         val json = ObjectTreeReader().read(content)
         val map = Json.mapper().convertValue(json, Map::class.java)
@@ -155,7 +164,8 @@ class ReverseAstTest {
     @Suppress("UnsafeCallOnNullableType")
     fun `ast prefers pointers to shared locations`() {
         @Language("yaml")
-        val content = """
+        val content =
+            """
             openapi: '3.0.0'
             info:
               title: Things API
@@ -182,7 +192,7 @@ class ReverseAstTest {
                     default: "SchemaDefault!!"
                     example: "SchemaExample!!"
                   example: "ParameterExample!!"
-        """.trimIndent()
+            """.trimIndent()
 
         val parsed = OpenAPIParser().readContents(content, null, null).openAPI
         val resolved = OpenAPIResolver(parsed).resolve()
@@ -202,7 +212,8 @@ class ReverseAstTest {
     @Test
     fun `isIgnored even ignores unforeseen descendants of ignored nodes`() {
         @Language("yaml")
-        val content = """
+        val content =
+            """
             swagger: '2.0'
             x-zally-ignore: [215, 218, 219]
             info:
@@ -213,7 +224,7 @@ class ReverseAstTest {
                 email: team@x.com
                 url: https://team.x.com
             paths: {}
-        """.trimIndent()
+            """.trimIndent()
 
         val swagger = SwaggerParser().parse(content)
         val ast = ReverseAst.fromObject(swagger).withExtensionMethodNames("getVendorExtensions").build()
@@ -226,13 +237,14 @@ class ReverseAstTest {
     @Test
     fun `OpenAPI extension JsonPointers are parsed correctly`() {
         @Language("yaml")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             info:
               title: Some API
               x-test-extension: 4
             paths: {}
-        """.trimIndent()
+            """.trimIndent()
 
         val parsed = OpenAPIParser().readContents(content, null, null).openAPI
         val ast = ReverseAst.fromObject(parsed).withExtensionMethodNames("getExtensions").build()
@@ -243,7 +255,8 @@ class ReverseAstTest {
     @Test
     fun `Swagger extension JsonPointers are parsed correctly`() {
         @Language("yaml")
-        val content = """
+        val content =
+            """
             swagger: '2.0'
             info:
               title: Some API
@@ -254,7 +267,7 @@ class ReverseAstTest {
                   and:
                     another: 2
             paths: {}
-        """.trimIndent()
+            """.trimIndent()
 
         val swagger = SwaggerParser().parse(content)
         val ast = ReverseAst.fromObject(swagger).withExtensionMethodNames("getVendorExtensions").build()
@@ -266,7 +279,8 @@ class ReverseAstTest {
     @Test
     fun `isIgnored applies local AND inherited x-zally-ignore`() {
         @Language("yaml")
-        val content = """
+        val content =
+            """
             swagger: '2.0'
             info:
               title: Some API
@@ -278,12 +292,14 @@ class ReverseAstTest {
               x-zally-ignore: [IGNORED_AT_INFO]
             paths: {}
             x-zally-ignore: [IGNORED_AT_ROOT]
-        """.trimIndent()
+            """.trimIndent()
 
         val swagger = SwaggerParser().parse(content)
-        val ast = ReverseAst.fromObject(swagger)
-            .withExtensionMethodNames("getVendorExtensions")
-            .build()
+        val ast =
+            ReverseAst
+                .fromObject(swagger)
+                .withExtensionMethodNames("getVendorExtensions")
+                .build()
 
         assertThat(ast.isIgnored("".toJsonPointer(), "IGNORED_AT_ROOT")).isTrue()
         assertThat(ast.isIgnored("".toJsonPointer(), "IGNORED_AT_INFO")).isFalse()
@@ -293,6 +309,5 @@ class ReverseAstTest {
         assertThat(ast.isIgnored("/info/contact".toJsonPointer(), "IGNORED_AT_INFO")).isTrue()
     }
 
-    private fun resourceToString(resourceName: String): String =
-        IOUtils.toString(ClassLoader.getSystemResourceAsStream(resourceName), Charsets.UTF_8)
+    private fun resourceToString(resourceName: String): String = IOUtils.toString(ClassLoader.getSystemResourceAsStream(resourceName), Charsets.UTF_8)
 }

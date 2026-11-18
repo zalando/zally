@@ -10,10 +10,12 @@ import org.zalando.zally.rule.api.Violation
  */
 class ContextRulesValidator(
     rules: RulesManager,
-    private val defaultContextFactory: DefaultContextFactory
+    private val defaultContextFactory: DefaultContextFactory,
 ) : RulesValidator<Context>(rules) {
-
-    override fun parse(content: String, authorization: String?): ContentParseResult<Context> {
+    override fun parse(
+        content: String,
+        authorization: String?,
+    ): ContentParseResult<Context> {
         // first try to parse an OpenAPI (version 3+)
         val parsedAsOpenApi = defaultContextFactory.parseOpenApiContext(content, authorization)
         if (parsedAsOpenApi !is ContentParseResult.NotApplicable) {
@@ -27,5 +29,9 @@ class ContextRulesValidator(
         return ContentParseResult.ParsedWithErrors(listOf(Violation("No valid Open API specification", EMPTY_JSON_POINTER)))
     }
 
-    override fun ignore(root: Context, pointer: JsonPointer, ruleId: String) = root.isIgnored(pointer, ruleId)
+    override fun ignore(
+        root: Context,
+        pointer: JsonPointer,
+        ruleId: String,
+    ) = root.isIgnored(pointer, ruleId)
 }

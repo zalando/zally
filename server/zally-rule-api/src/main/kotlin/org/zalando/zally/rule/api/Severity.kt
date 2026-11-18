@@ -8,5 +8,5 @@ enum class Severity {
     MUST,
     SHOULD,
     MAY,
-    HINT
+    HINT,
 }

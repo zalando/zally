@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 class JsonPointerExtensionsTest {
-
     @Test
     fun `toJsonPointer with valid string returns JsonPointer`() {
         assertThat("/info/version".toJsonPointer())
@@ -16,8 +15,7 @@ class JsonPointerExtensionsTest {
     fun `toJsonPointer with invalid string throws exception`() {
         assertThatThrownBy {
             "info version".toJsonPointer()
-        }
-            .isInstanceOf(IllegalArgumentException::class.java)
+        }.isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("expression must start with '/'")
     }
 

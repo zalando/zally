@@ -8,12 +8,9 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class RulesConfigConfiguration {
-
     @Value("\${rules-config-path}")
     private lateinit var rulesConfigPath: String
 
     @Bean
-    fun createRulesConfig(): Config {
-        return ConfigFactory.load(rulesConfigPath)
-    }
+    fun createRulesConfig(): Config = ConfigFactory.load(rulesConfigPath)
 }

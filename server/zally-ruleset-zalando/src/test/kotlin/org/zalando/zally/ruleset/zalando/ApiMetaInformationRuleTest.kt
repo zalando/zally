@@ -5,14 +5,14 @@ import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 
 class ApiMetaInformationRuleTest {
-
     val rule = ApiMetaInformationRule()
 
     @Test
     fun `checkInfoTitle should return violation if title is not set`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoTitle(context)
@@ -24,11 +24,12 @@ class ApiMetaInformationRuleTest {
 
     @Test
     fun `checkInfoTitle should return no violation if title is set`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             info:
               title: Awesome API
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoTitle(context)
@@ -38,9 +39,10 @@ class ApiMetaInformationRuleTest {
 
     @Test
     fun `checkInfoDescription should return violation if description is not set`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoDescription(context)
@@ -52,11 +54,12 @@ class ApiMetaInformationRuleTest {
 
     @Test
     fun `checkInfoDescription should return no violation if description is set`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             info:
               description: super awesome mega turbo laser API
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoDescription(context)
@@ -66,9 +69,10 @@ class ApiMetaInformationRuleTest {
 
     @Test
     fun `checkInfoVersion should return violation if version is not set`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoVersion(context)
@@ -80,11 +84,12 @@ class ApiMetaInformationRuleTest {
 
     @Test
     fun `checkInfoVersion should return violation if version doesn't follow the Semver rules`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             info:
               version: alpha-beta-gamma-version.1.1.1.1.1
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoVersion(context)
@@ -96,11 +101,12 @@ class ApiMetaInformationRuleTest {
 
     @Test
     fun `checkInfoVersion should return no violation if version is set`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             info:
               version: 1.0.0
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkInfoVersion(context)
@@ -110,9 +116,10 @@ class ApiMetaInformationRuleTest {
 
     @Test
     fun `checkContactName should return violation if contact name is not set`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkContactName(context)
@@ -124,12 +131,13 @@ class ApiMetaInformationRuleTest {
 
     @Test
     fun `checkContactName should return no violation if contact name is set`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             info:
               contact:
                 name: Awesome Team
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkContactName(context)
@@ -139,9 +147,10 @@ class ApiMetaInformationRuleTest {
 
     @Test
     fun `checkContactUrl should return violation if contact URL is not set`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkContactUrl(context)
@@ -153,12 +162,13 @@ class ApiMetaInformationRuleTest {
 
     @Test
     fun `checkContactUrl should return no violation if contact URL is set`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             info:
               contact:
                 url: https://awesome-team.company.com
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkContactUrl(context)
@@ -168,9 +178,10 @@ class ApiMetaInformationRuleTest {
 
     @Test
     fun `checkContactEmail should return violation if contact e-mail is not set`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkContactEmail(context)
@@ -182,12 +193,13 @@ class ApiMetaInformationRuleTest {
 
     @Test
     fun `checkContactEmail should return no violation if contact e-mail is set`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             info:
               contact:
                 email: awesome-team@company.com
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkContactEmail(context)

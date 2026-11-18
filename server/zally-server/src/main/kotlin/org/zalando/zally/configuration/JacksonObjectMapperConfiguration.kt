@@ -1,45 +1,37 @@
 package org.zalando.zally.configuration
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.PropertyNamingStrategies
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
-import org.zalando.problem.jackson.ProblemModule
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.databind.PropertyNamingStrategies
+import tools.jackson.databind.cfg.DateTimeFeature
+import tools.jackson.databind.cfg.MapperBuilder
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.dataformat.yaml.YAMLMapper
+import tools.jackson.module.kotlin.KotlinModule
 
+/**
+ * The server's own mappers. Jackson 3 ships the Java 8, `java.time` and parameter-name support in databind, so only
+ * the Kotlin module is added. The mappers are immutable: all options are set on the builder.
+ */
 @Configuration
 class JacksonObjectMapperConfiguration {
-
     @Bean
     @Primary
-    fun createObjectMapper(): ObjectMapper {
-        return configure(ObjectMapper())
-    }
+    fun createObjectMapper(): JsonMapper = configure(JsonMapper.builder()).build()
 
     @Bean
     @Qualifier("yamlObjectMapper")
-    fun createYamlObjectMapper(): ObjectMapper {
-        return configure(ObjectMapper(YAMLFactory()))
-    }
+    fun createYamlObjectMapper(): YAMLMapper = configure(YAMLMapper.builder()).build()
 
-    private fun configure(mapper: ObjectMapper): ObjectMapper {
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-            .configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
-            .registerModules(
-                Jdk8Module(),
-                JavaTimeModule(),
-                ProblemModule(),
-                KotlinModule.Builder().build()
-            )
-        return mapper
-    }
+    private fun <M : ObjectMapper, B : MapperBuilder<M, B>> configure(builder: B): B =
+        builder
+            .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .disable(DateTimeFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+            .addModule(KotlinModule.Builder().build())
 }

@@ -7,15 +7,15 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.test.ZallyAssertions
 
 class SecureAllEndpointsRuleTest {
-
     private val rule = SecureAllEndpointsRule()
 
     @Test
     fun `checkHasValidSecuritySchemes should return violation if no security scheme is specified`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violation = rule.checkHasValidSecuritySchemes(context)
@@ -28,7 +28,8 @@ class SecureAllEndpointsRuleTest {
     @Test
     fun `checkHasValidSecuritySchemes should return no violation if OAuth2 security scheme is specified`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             components:
               securitySchemes:
@@ -41,7 +42,7 @@ class SecureAllEndpointsRuleTest {
                       tokenUrl: https://identity.company.com/oauth2/token
                       scopes:
                         read: read access to the resources of this API
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violation = rule.checkHasValidSecuritySchemes(context)
@@ -52,7 +53,8 @@ class SecureAllEndpointsRuleTest {
     @Test
     fun `checkHasValidSecuritySchemes should return no violation if Bearer Authorization security sheme is specified`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             components:
               securitySchemes:
@@ -60,7 +62,7 @@ class SecureAllEndpointsRuleTest {
                   type: http
                   scheme: bearer
                   bearerFormat: JWT
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violation = rule.checkHasValidSecuritySchemes(context)
@@ -71,13 +73,14 @@ class SecureAllEndpointsRuleTest {
     @Test
     fun `checkHasValidSecuritySchemes should return violation if invalid security scheme is specified`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             components:
               securitySchemes:
                 company-oauth2:
                   type: apiKey
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violation = rule.checkHasValidSecuritySchemes(context)
@@ -90,9 +93,10 @@ class SecureAllEndpointsRuleTest {
     @Test
     fun `checkHasNoInvalidSecuritySchemes should return no violation if no security scheme is specified`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkHasNoInvalidSecuritySchemes(context)
@@ -103,7 +107,8 @@ class SecureAllEndpointsRuleTest {
     @Test
     fun `checkHasNoInvalidSecuritySchemes should return no violation if OAuth2 security scheme is specified`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             components:
               securitySchemes:
@@ -116,7 +121,7 @@ class SecureAllEndpointsRuleTest {
                       tokenUrl: https://identity.company.com/oauth2/token
                       scopes:
                         read: read access to the resources of this API
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkHasNoInvalidSecuritySchemes(context)
@@ -127,7 +132,8 @@ class SecureAllEndpointsRuleTest {
     @Test
     fun `checkHasNoInvalidSecuritySchemes should return no violation if Bearer Authorization security sheme is specified`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             components:
               securitySchemes:
@@ -135,7 +141,7 @@ class SecureAllEndpointsRuleTest {
                   type: http
                   scheme: bearer
                   bearerFormat: JWT
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkHasNoInvalidSecuritySchemes(context)
@@ -146,18 +152,20 @@ class SecureAllEndpointsRuleTest {
     @Test
     fun `checkHasNoInvalidSecuritySchemes should return violation if invalid security definition is specified`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             components:
               securitySchemes:
                 company-oauth2:
                   type: apiKey
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkHasNoInvalidSecuritySchemes(context)
 
-        ZallyAssertions.assertThat(violations)
+        ZallyAssertions
+            .assertThat(violations)
             .descriptionsEqualTo("API must be secured by OAuth2 or Bearer Authentication")
             .pointersEqualTo("/components/securitySchemes/company-oauth2")
     }
@@ -165,7 +173,8 @@ class SecureAllEndpointsRuleTest {
     @Test
     fun `checkUsedScopesAreDefined should return violation for each undefined scope`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -184,7 +193,7 @@ class SecureAllEndpointsRuleTest {
                       tokenUrl: https://identity.company.com/oauth2/token
                       scopes:
                         read: read access to the resources of this API
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkUsedScopesAreSpecified(context)
@@ -197,7 +206,8 @@ class SecureAllEndpointsRuleTest {
     @Test
     fun `checkUsedScopesAreSpecified should return no violation if only defined scopes are used`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -222,7 +232,7 @@ class SecureAllEndpointsRuleTest {
                       refreshUrl: https://identity.company.com/oauth2/refresh
                       scopes:
                         read-2: read access to the resources of this API
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkUsedScopesAreSpecified(context)
@@ -233,7 +243,8 @@ class SecureAllEndpointsRuleTest {
     @Test
     fun `checkUsedScopesAreDefined should return no violation for Bearer Authentication`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -247,7 +258,7 @@ class SecureAllEndpointsRuleTest {
                   type: http
                   scheme: bearer
                   bearerFormat: JWT
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
         val violations = rule.checkUsedScopesAreSpecified(context)
 
@@ -257,12 +268,13 @@ class SecureAllEndpointsRuleTest {
     @Test
     fun `checkUsedScopesAreSpecified should ignore OpenAPI 2 (Swagger) specification`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             swagger: 2.0
             info:
               title: Old API
               version: 1
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getSwaggerContext(content)
 
         val violations = rule.checkUsedScopesAreSpecified(context)

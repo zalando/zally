@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 
 class UpperCaseEnumsTest {
-
     private val rule = UpperCaseEnums()
 
     @Test
     fun `should return violation if x-extensible-enum format in parameter is incorrect`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -26,7 +26,7 @@ class UpperCaseEnumsTest {
                           - GERMANY
                           - sweden
                           - spain
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
@@ -37,7 +37,8 @@ class UpperCaseEnumsTest {
     @Test
     fun `should return violation if x-extensible-enum format in schema property is invalid`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -57,7 +58,7 @@ class UpperCaseEnumsTest {
                                   - sweden
                                   - spain
                     
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
@@ -68,7 +69,8 @@ class UpperCaseEnumsTest {
     @Test
     fun `rule should return violation if enum format is incorrect`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -82,7 +84,7 @@ class UpperCaseEnumsTest {
                           - GERMANY
                           - sweden
                           - spain
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
@@ -93,7 +95,8 @@ class UpperCaseEnumsTest {
     @Test
     fun `rule should return no violations`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               '/job-statistics/latest':
@@ -115,7 +118,7 @@ class UpperCaseEnumsTest {
                                   - GERMANY
                                   - SWEDEN
                                   - SPAIN
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
@@ -125,7 +128,8 @@ class UpperCaseEnumsTest {
 
     @Test
     fun `should return violations if the type of the property doesn't match with enum type values`() {
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             paths:
               '/job-statistics/latest':
@@ -151,7 +155,7 @@ class UpperCaseEnumsTest {
                                 x-extensible-enum:
                                   - 1
                                   - 2                                 
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getOpenApiContext(spec)
 

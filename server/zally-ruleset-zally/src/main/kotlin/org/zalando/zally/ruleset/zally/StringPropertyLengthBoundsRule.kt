@@ -13,16 +13,19 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZallyRuleSet::class,
     id = "S007",
     severity = Severity.SHOULD,
-    title = "Define bounds for lengths of string properties"
+    title = "Define bounds for lengths of string properties",
 )
-class StringPropertyLengthBoundsRule(config: Config) {
+class StringPropertyLengthBoundsRule(
+    config: Config,
+) {
+    internal val formatWhitelist =
+        config
+            .getStringList("StringPropertyLengthBoundsRule.formatWhitelist")
+            .toList()
 
-    internal val formatWhitelist = config
-        .getStringList("StringPropertyLengthBoundsRule.formatWhitelist")
-        .toList()
-
-    internal val patternImpliesLimits = config
-        .getBoolean("StringPropertyLengthBoundsRule.patternImpliesLimits")
+    internal val patternImpliesLimits =
+        config
+            .getBoolean("StringPropertyLengthBoundsRule.patternImpliesLimits")
 
     @Check(severity = Severity.SHOULD)
     fun checkStringLengthBounds(context: Context): List<Violation> =
@@ -36,14 +39,16 @@ class StringPropertyLengthBoundsRule(config: Config) {
                     schema.enum != null -> false
                     else -> true
                 }
-            }
-            .flatMap { (_, schema) ->
+            }.flatMap { (_, schema) ->
                 checkStringLengthBoundsReversed(context, schema) +
                     checkStringLengthBound(context, "minLength", schema.minLength, schema) +
                     checkStringLengthBound(context, "maxLength", schema.maxLength, schema)
             }
 
-    private fun checkStringLengthBoundsReversed(context: Context, schema: Schema<Any>): List<Violation> =
+    private fun checkStringLengthBoundsReversed(
+        context: Context,
+        schema: Schema<Any>,
+    ): List<Violation> =
         when {
             schema.minLength != null &&
                 schema.maxLength != null &&
@@ -52,10 +57,14 @@ class StringPropertyLengthBoundsRule(config: Config) {
             else -> emptyList()
         }
 
-    private fun checkStringLengthBound(context: Context, bound: String, value: Int?, schema: Schema<Any>) =
-        when {
-            value == null -> context.violations("No $bound defined", schema)
-            value < 0 -> context.violations("Negative $bound is invalid", schema)
-            else -> emptyList()
-        }
+    private fun checkStringLengthBound(
+        context: Context,
+        bound: String,
+        value: Int?,
+        schema: Schema<Any>,
+    ) = when {
+        value == null -> context.violations("No $bound defined", schema)
+        value < 0 -> context.violations("Negative $bound is invalid", schema)
+        else -> emptyList()
+    }
 }

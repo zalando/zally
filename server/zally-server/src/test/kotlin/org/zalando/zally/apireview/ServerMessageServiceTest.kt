@@ -4,11 +4,11 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class ServerMessageServiceTest {
-
-    private val serverMessageService = ServerMessageService(
-        listOf("unirest-java/1.3.11", "Zally-CLI/1.0"),
-        "https://github.com/zalando/zally/releases"
-    )
+    private val serverMessageService =
+        ServerMessageService(
+            listOf("unirest-java/1.3.11", "Zally-CLI/1.0"),
+            "https://github.com/zalando/zally/releases",
+        )
 
     @Test
     @Throws(Exception::class)

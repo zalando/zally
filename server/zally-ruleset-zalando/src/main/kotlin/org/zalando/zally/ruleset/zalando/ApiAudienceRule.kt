@@ -12,9 +12,11 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "219",
     severity = Severity.MUST,
-    title = "Provide API Audience"
+    title = "Provide API Audience",
 )
-class ApiAudienceRule(rulesConfig: Config) {
+class ApiAudienceRule(
+    rulesConfig: Config,
+) {
     private val validAudiences = rulesConfig.getStringList("${javaClass.simpleName}.audiences").toSet()
 
     private val noApiAudienceDesc = "API Audience must be provided"
@@ -24,7 +26,10 @@ class ApiAudienceRule(rulesConfig: Config) {
 
     @Check(severity = Severity.MUST)
     fun validate(context: Context): Violation? {
-        val audience = context.api.info?.extensions?.get(extensionName)
+        val audience =
+            context.api.info
+                ?.extensions
+                ?.get(extensionName)
 
         return when (audience) {
             null, !is String -> context.violation(noApiAudienceDesc, extensionPointer)

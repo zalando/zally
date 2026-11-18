@@ -9,7 +9,6 @@ import org.zalando.zally.rule.api.Context
 import org.zalando.zally.ruleset.zalando.model.ApiAudience
 
 class FunctionalNamingForHostnamesRuleTest {
-
     private val rule = FunctionalNamingForHostnamesRule(rulesConfig)
 
     @Test
@@ -81,11 +80,12 @@ class FunctionalNamingForHostnamesRuleTest {
     @Test
     fun `(must, should, may)FollowFunctionalNaming should return no violations if audience is not set`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
             openapi: 3.0.1
-        """
-        )
+        """,
+            )
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
         assertThat(rule.shouldFollowFunctionalNaming(context)).isEmpty()
@@ -95,13 +95,14 @@ class FunctionalNamingForHostnamesRuleTest {
     @Test
     fun `(must, should, may)FollowFunctionalNaming should return no violations if audience is null`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             info:
               x-audience:
             servers:
               - url: "infrastructure-service.zalandoapis.com"
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
@@ -112,13 +113,14 @@ class FunctionalNamingForHostnamesRuleTest {
     @Test
     fun `(must, should, may)FollowFunctionalNaming should return no violations if audience is invalid`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             info:
               x-audience: invalid-audience
             servers:
               - url: "infrastructure-service.zalandoapis.com"
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         assertThat(rule.mustFollowFunctionalNaming(context)).isEmpty()
@@ -135,15 +137,19 @@ class FunctionalNamingForHostnamesRuleTest {
         assertThat(rule.mayFollowFunctionalNaming(context)).isEmpty()
     }
 
-    private fun getOpenApiContextWithAudienceAndHostname(audience: String, url: String): Context {
+    private fun getOpenApiContextWithAudienceAndHostname(
+        audience: String,
+        url: String,
+    ): Context {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             info:
               x-audience: $audience
             servers:
               - url: $url
-        """.trimIndent()
+            """.trimIndent()
 
         return DefaultContextFactory().getOpenApiContext(content)
     }
@@ -195,25 +201,29 @@ class FunctionalNamingForHostnamesRuleTest {
         assertThat(rule.mayFollowFunctionalNaming(context)).isEmpty()
     }
 
-    private fun getSwaggerContextWith(audience: String?, url: String?): Context {
-        val content = listOfNotNull(
-            """
+    private fun getSwaggerContextWith(
+        audience: String?,
+        url: String?,
+    ): Context {
+        val content =
+            listOfNotNull(
+                """
             swagger: '2.0'
             schemes:
               - https
             """,
-            audience?.let {
-                """
+                audience?.let {
+                    """
                 info:
                     x-audience: $audience
                 """
-            },
-            url?.let {
-                """
+                },
+                url?.let {
+                    """
                 host: $url
                 """
-            }
-        ).joinToString(separator = "\n", transform = String::trimIndent)
+                },
+            ).joinToString(separator = "\n", transform = String::trimIndent)
 
         return DefaultContextFactory().getSwaggerContext(content)
     }

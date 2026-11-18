@@ -6,7 +6,6 @@ import org.zalando.zally.rule.api.Context
 import org.zalando.zally.test.ZallyAssertions.assertThat
 
 class ApiIdentifierRuleTest {
-
     private val rule = ApiIdentifierRule()
 
     @Test
@@ -40,12 +39,13 @@ class ApiIdentifierRuleTest {
     }
 
     private fun withApiId(apiId: String): Context {
-        val content = """
+        val content =
+            """
             openapi: '3.0.0'
             info:
               x-api-id: $apiId
             paths: {}
-        """.trimIndent()
+            """.trimIndent()
 
         return DefaultContextFactory().getOpenApiContext(content)
     }

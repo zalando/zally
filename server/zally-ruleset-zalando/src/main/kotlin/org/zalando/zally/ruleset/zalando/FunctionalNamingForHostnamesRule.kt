@@ -15,9 +15,11 @@ import org.zalando.zally.ruleset.zalando.model.apiAudience
     ruleSet = ZalandoRuleSet::class,
     id = "224",
     severity = Severity.MUST,
-    title = "Follow Naming Convention for Hostnames"
+    title = "Follow Naming Convention for Hostnames",
 )
-class FunctionalNamingForHostnamesRule(rulesConfig: Config) {
+class FunctionalNamingForHostnamesRule(
+    rulesConfig: Config,
+) {
     private val description = "hostname has to follow the functional naming schema"
 
     private val mustFollow = listOf(ApiAudience.EXTERNAL_PUBLIC, ApiAudience.EXTERNAL_PARTNER)
@@ -35,8 +37,12 @@ class FunctionalNamingForHostnamesRule(rulesConfig: Config) {
         """(https://)?$applicationId\.$organizationUnit\.zalan\.do.*""".toRegex()
 
     @Suppress("UNCHECKED_CAST")
-    private val audienceExceptions = rulesConfig.getConfig("${javaClass.simpleName}.audience_exceptions").entrySet()
-        .map { (key, config) -> key to config.unwrapped() as List<String?> }.toMap()
+    private val audienceExceptions =
+        rulesConfig
+            .getConfig("${javaClass.simpleName}.audience_exceptions")
+            .entrySet()
+            .map { (key, config) -> key to config.unwrapped() as List<String?> }
+            .toMap()
 
     @Check(severity = Severity.MUST)
     fun mustFollowFunctionalNaming(context: Context): List<Violation> = checkHostnames(context, mustFollow)
@@ -47,24 +53,35 @@ class FunctionalNamingForHostnamesRule(rulesConfig: Config) {
     @Check(severity = Severity.MAY)
     fun mayFollowFunctionalNaming(context: Context): List<Violation> = checkHostnames(context, mayFollow)
 
-    internal fun isUrlValid(url: String, apiAudience: ApiAudience): Boolean =
+    internal fun isUrlValid(
+        url: String,
+        apiAudience: ApiAudience,
+    ): Boolean =
         functionHostnameURLRegEx.matches(url) ||
             isValidLegacyUrl(url, apiAudience) ||
             isUrlInExceptionList(url, apiAudience)
 
-    private fun isValidLegacyUrl(url: String, apiAudience: ApiAudience): Boolean =
-        apiAudience == ApiAudience.COMPONENT_INTERNAL && legacyHostnameURLRegEx.matches(url)
+    private fun isValidLegacyUrl(
+        url: String,
+        apiAudience: ApiAudience,
+    ): Boolean = apiAudience == ApiAudience.COMPONENT_INTERNAL && legacyHostnameURLRegEx.matches(url)
 
-    private fun isUrlInExceptionList(url: String, apiAudience: ApiAudience): Boolean =
-        apiAudience == ApiAudience.EXTERNAL_PARTNER && audienceExceptions[apiAudience.code]?.contains(url) ?: false
+    private fun isUrlInExceptionList(
+        url: String,
+        apiAudience: ApiAudience,
+    ): Boolean = apiAudience == ApiAudience.EXTERNAL_PARTNER && audienceExceptions[apiAudience.code]?.contains(url) ?: false
 
-    private fun checkHostnames(context: Context, audiencesToCheck: List<ApiAudience>): List<Violation> {
-        val apiAudience = try {
-            context.api.info?.apiAudience()
-        } catch (e: UnsupportedAudienceException) {
-            // case is covered by "APIAudienceRule"
-            return emptyList()
-        }
+    private fun checkHostnames(
+        context: Context,
+        audiencesToCheck: List<ApiAudience>,
+    ): List<Violation> {
+        val apiAudience =
+            try {
+                context.api.info?.apiAudience()
+            } catch (e: UnsupportedAudienceException) {
+                // case is covered by "APIAudienceRule"
+                return emptyList()
+            }
         return when {
             // cases are covered by "APIAudienceRule"
             apiAudience == null || apiAudience !in audiencesToCheck -> emptyList()
@@ -73,7 +90,10 @@ class FunctionalNamingForHostnamesRule(rulesConfig: Config) {
         }
     }
 
-    private fun checkHostnamesInOpenAPIServers(context: Context, apiAudience: ApiAudience): List<Violation> =
+    private fun checkHostnamesInOpenAPIServers(
+        context: Context,
+        apiAudience: ApiAudience,
+    ): List<Violation> =
         context.api.servers
             .orEmpty()
             .asSequence()
@@ -81,7 +101,10 @@ class FunctionalNamingForHostnamesRule(rulesConfig: Config) {
             .map { context.violation(description, it.url) }
             .toList()
 
-    private fun checkHostnamesInSwaggerHost(context: Context, apiAudience: ApiAudience): List<Violation> =
+    private fun checkHostnamesInSwaggerHost(
+        context: Context,
+        apiAudience: ApiAudience,
+    ): List<Violation> =
         context.swagger!!.host.let { host ->
             when {
                 host == null || isUrlValid(host, apiAudience) -> emptyList()

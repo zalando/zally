@@ -8,7 +8,6 @@ import java.net.URI
  * finer grained logical groupings such as technical vs semantic rules.
  */
 interface RuleSet {
-
     /** A unique identifier for the RuleSet */
     val id: String
 

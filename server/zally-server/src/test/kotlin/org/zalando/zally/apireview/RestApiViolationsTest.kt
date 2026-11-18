@@ -25,7 +25,6 @@ import org.zalando.zally.util.resourceToString
 import java.io.IOException
 
 class RestApiViolationsTest : RestApiBaseTest() {
-
     @Autowired
     private lateinit var wac: WebApplicationContext
 
@@ -88,10 +87,11 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Test
     @Throws(IOException::class)
     fun shouldRespondWithBadRequestOnMalformedJson() {
-        val responseEntity = sendApiDefinition(
-            ApiDefinitionRequest.fromJson("{\"malformed\": \"dummy\""),
-            ErrorResponse::class.java
-        )
+        val responseEntity =
+            sendApiDefinition(
+                ApiDefinitionRequest.fromJson("{\"malformed\": \"dummy\""),
+                ErrorResponse::class.java,
+            )
 
         assertThat(responseEntity.statusCode).isEqualTo(BAD_REQUEST)
         assertThat(responseEntity.headers.contentType!!.toString()).isEqualTo(RestApiBaseTest.APPLICATION_PROBLEM_JSON)
@@ -103,11 +103,12 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Test
     @Throws(IOException::class)
     fun shouldRespondWithBadRequestWhenApiDefinitionFieldIsMissing() {
-        val responseEntity = restTemplate.postForEntity(
-            RestApiBaseTest.API_VIOLATIONS_URL,
-            ImmutableMap.of("my_api", "dummy"),
-            ErrorResponse::class.java
-        )
+        val responseEntity =
+            restTemplate.postForEntity(
+                RestApiBaseTest.API_VIOLATIONS_URL,
+                ImmutableMap.of("my_api", "dummy"),
+                ErrorResponse::class.java,
+            )
 
         assertThat(responseEntity.statusCode).isEqualTo(BAD_REQUEST)
         assertThat(responseEntity.headers.contentType!!.toString()).isEqualTo(RestApiBaseTest.APPLICATION_PROBLEM_JSON)
@@ -119,9 +120,10 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Test
     fun shouldRespondWithViolationWhenApiDefinitionFieldIsNotValidSwaggerDefinition() {
         val rule101Link = "https://zalando.github.io/restful-api-guidelines/#101"
-        val response = sendApiDefinition(
-            ApiDefinitionRequest.fromJson("\"no swagger definition\"")
-        )
+        val response =
+            sendApiDefinition(
+                ApiDefinitionRequest.fromJson("\"no swagger definition\""),
+            )
 
         assertThat(response.violations).hasSize(5)
         assertThat(response.violations[0].title).isEqualTo("provide API specification using OpenAPI")
@@ -137,9 +139,10 @@ class RestApiViolationsTest : RestApiBaseTest() {
     fun shouldReadJsonSpecificationFromUrl() {
         val definitionUrl = JadlerUtil.stubResource("fixtures/openapi3_petstore_expanded.json")
 
-        val violations = sendApiDefinition(
-            ApiDefinitionRequest.fromUrl(definitionUrl)
-        ).violations
+        val violations =
+            sendApiDefinition(
+                ApiDefinitionRequest.fromUrl(definitionUrl),
+            ).violations
 
         assertThat(violations).hasSize(3)
         assertThat(violations[0].description).isEqualTo("TestCheckAlwaysReport3MustViolations #1")
@@ -152,9 +155,10 @@ class RestApiViolationsTest : RestApiBaseTest() {
     fun shouldReadYamlSpecificationFromUrl() {
         val definitionUrl = JadlerUtil.stubResource("fixtures/openapi3_petstore.yaml")
 
-        val violations = sendApiDefinition(
-            ApiDefinitionRequest.fromUrl(definitionUrl)
-        ).violations
+        val violations =
+            sendApiDefinition(
+                ApiDefinitionRequest.fromUrl(definitionUrl),
+            ).violations
 
         assertThat(violations).hasSize(3)
         assertThat(violations[0].title).isEqualTo("TestCheckAlwaysReport3MustViolations")
@@ -164,11 +168,12 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Throws(Exception::class)
     fun shouldReturn404WhenHostNotRecognised() {
         val request = ApiDefinitionRequest.fromUrl("http://remote-localhost/test.yaml")
-        val responseEntity = restTemplate.postForEntity(
-            RestApiBaseTest.API_VIOLATIONS_URL,
-            request,
-            ErrorResponse::class.java
-        )
+        val responseEntity =
+            restTemplate.postForEntity(
+                RestApiBaseTest.API_VIOLATIONS_URL,
+                request,
+                ErrorResponse::class.java,
+            )
 
         assertThat(responseEntity.statusCode).isEqualTo(NOT_FOUND)
         assertThat(responseEntity.body!!.detail).isEqualTo("Unknown host while retrieving api definition url: remote-localhost")
@@ -176,13 +181,14 @@ class RestApiViolationsTest : RestApiBaseTest() {
 
     @Test
     fun shouldReturn404WhenNotFound() {
-        val responseEntity = sendApiDefinition(
-            ApiDefinitionRequest.fromUrl(JadlerUtil.stubNotFound()),
-            ErrorResponse::class.java
-        )
+        val responseEntity =
+            sendApiDefinition(
+                ApiDefinitionRequest.fromUrl(JadlerUtil.stubNotFound()),
+                ErrorResponse::class.java,
+            )
 
         assertThat(responseEntity.statusCode).isEqualTo(NOT_FOUND)
-        assertThat(responseEntity.body!!.detail).isEqualTo("404 Not Found: \"NotFound\" while retrieving api definition url")
+        assertThat(responseEntity.body!!.detail).startsWith("404 Not Found").endsWith("\"NotFound\" while retrieving api definition url")
     }
 
     @Test
@@ -190,28 +196,42 @@ class RestApiViolationsTest : RestApiBaseTest() {
     fun shouldStoreSuccessfulApiReviewRequest() {
         sendApiDefinition(readApiDefinition("fixtures/openapi3_petstore_expanded.json"))
         assertThat(apiReviewRepository.count()).isEqualTo(1L)
-        assertThat(apiReviewRepository.findAll().iterator().next().isSuccessfulProcessed).isTrue()
+        assertThat(
+            apiReviewRepository
+                .findAll()
+                .iterator()
+                .next()
+                .isSuccessfulProcessed,
+        ).isTrue()
     }
 
     @Test
     fun shouldStoreUnsuccessfulApiReviewRequest() {
         sendApiDefinition(
             ApiDefinitionRequest.fromUrl(JadlerUtil.stubNotFound()),
-            ErrorResponse::class.java
+            ErrorResponse::class.java,
         )
 
         assertThat(apiReviewRepository.count()).isEqualTo(1L)
-        assertThat(apiReviewRepository.findAll().iterator().next().isSuccessfulProcessed).isFalse()
+        assertThat(
+            apiReviewRepository
+                .findAll()
+                .iterator()
+                .next()
+                .isSuccessfulProcessed,
+        ).isFalse()
     }
 
     @Test
     @Throws(Exception::class)
     fun shouldAcceptYamlAndRespondWithJson() {
         val mockMvc = MockMvcBuilders.webAppContextSetup(wac).build()
-        val requestBuilder = MockMvcRequestBuilders.post("/api-violations")
-            .contentType(WebMvcConfiguration.MEDIA_TYPE_APP_XYAML)
-            .accept(MediaType.APPLICATION_JSON)
-            .content(resourceToString("fixtures/api_violations_request.yaml"))
+        val requestBuilder =
+            MockMvcRequestBuilders
+                .post("/api-violations")
+                .contentType(WebMvcConfiguration.MEDIA_TYPE_APP_XYAML)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(resourceToString("fixtures/api_violations_request.yaml"))
 
         val result = mockMvc.perform(requestBuilder).andReturn()
 
@@ -223,10 +243,12 @@ class RestApiViolationsTest : RestApiBaseTest() {
     @Throws(Exception::class)
     fun shouldNotAcceptYamlWithoutCorrectContentType() {
         val mockMvc = MockMvcBuilders.webAppContextSetup(wac).build()
-        val requestBuilder = MockMvcRequestBuilders.post("/api-violations")
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-            .content(resourceToString("fixtures/api_violations_request.yaml"))
+        val requestBuilder =
+            MockMvcRequestBuilders
+                .post("/api-violations")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(resourceToString("fixtures/api_violations_request.yaml"))
 
         val result = mockMvc.perform(requestBuilder).andReturn()
 

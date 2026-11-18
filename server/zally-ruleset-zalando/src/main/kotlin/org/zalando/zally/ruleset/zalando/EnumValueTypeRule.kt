@@ -13,21 +13,22 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "125",
     severity = Severity.SHOULD,
-    title = "Represent enumerations as strings"
+    title = "Represent enumerations as strings",
 )
 class EnumValueTypeRule {
-
     private val description = "Enumeration value should have \"type = string\""
 
     @Check(severity = Severity.SHOULD)
     fun validate(context: Context): List<Violation> =
-        context.api.getAllSchemas()
+        context.api
+            .getAllSchemas()
             .filter { it.isExtensibleEnum() }
             .filter { it.type != "string" }
             .map {
                 context.violation("$description: ${it.name}", it)
             } +
-            context.api.getAllProperties()
+            context.api
+                .getAllProperties()
                 .filter { it.value.isExtensibleEnum() }
                 .filter { it.value.type != "string" }
                 .map {

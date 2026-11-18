@@ -7,13 +7,13 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.core.rulesConfig
 
 class FormatForNumbersRuleTest {
-
     private val rule = FormatForNumbersRule(rulesConfig)
 
     @Test
     fun `should not return a violation if number format is set`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: '3.0.1'
             info:
               title: Awesome API
@@ -25,7 +25,7 @@ class FormatForNumbersRuleTest {
                     age:
                       type: number
                       format: decimal
-        """.trimIndent()
+            """.trimIndent()
 
         val violations = rule.checkNumberFormat(DefaultContextFactory().getOpenApiContext(content))
 
@@ -35,7 +35,8 @@ class FormatForNumbersRuleTest {
     @Test
     fun `should return a violation if number format is not set`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: '3.0.1'
             info:
               title: Bad API
@@ -46,7 +47,7 @@ class FormatForNumbersRuleTest {
                   properties:
                     age:
                       type: number
-        """.trimIndent()
+            """.trimIndent()
 
         val violations = rule.checkNumberFormat(DefaultContextFactory().getOpenApiContext(content))
 
@@ -58,7 +59,8 @@ class FormatForNumbersRuleTest {
     @Test
     fun `should return a violation if invalid number format is set`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: '3.0.1'
             info:
               title: Weird API
@@ -70,7 +72,7 @@ class FormatForNumbersRuleTest {
                     age:
                       type: number
                       format: weird_number_format
-        """.trimIndent()
+            """.trimIndent()
 
         val violations = rule.checkNumberFormat(DefaultContextFactory().getOpenApiContext(content))
 
@@ -82,11 +84,12 @@ class FormatForNumbersRuleTest {
     @Test
     fun `should not explode when no schemas are present`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: '2.0'
             info:
               title: Empty API
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 
@@ -98,7 +101,8 @@ class FormatForNumbersRuleTest {
     @Test
     fun `should not explode when schemas is null`() {
         @Language("YAML")
-        val yaml = """
+        val yaml =
+            """
             swagger: '2.0'
             info:
               title: Minimal API
@@ -112,7 +116,7 @@ class FormatForNumbersRuleTest {
                       examples:
                         application/json:
                           - name: Named thing
-        """.trimIndent()
+            """.trimIndent()
 
         val context = DefaultContextFactory().getSwaggerContext(yaml)
 

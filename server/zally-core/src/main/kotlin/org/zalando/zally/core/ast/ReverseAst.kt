@@ -7,31 +7,33 @@ import com.fasterxml.jackson.core.JsonPointer
  */
 class ReverseAst internal constructor(
     private val objectsToNodes: Map<Any, Node>,
-    private val pointersToNodes: Map<String, Node>
+    private val pointersToNodes: Map<String, Node>,
 ) {
+    fun getPointer(key: Any?): JsonPointer? = if (key != null) objectsToNodes[key]?.pointer else null
 
-    fun getPointer(key: Any?): JsonPointer? =
-        if (key != null) objectsToNodes[key]?.pointer else null
-
-    fun isIgnored(pointer: JsonPointer, ignoreValue: String): Boolean =
+    fun isIgnored(
+        pointer: JsonPointer,
+        ignoreValue: String,
+    ): Boolean =
         generateSequence(pointer, JsonPointer::head)
             .map { pointersToNodes[it.toString()] }
             .filterNotNull()
             .find {
                 isIgnored(it.marker, ignoreValue) ||
                     it.hasChildren() && it.children.all { c -> isIgnored(c.marker, ignoreValue) }
-            }
-            .let {
+            }.let {
                 it != null
             }
 
-    private fun isIgnored(marker: Marker?, ignoreValue: String): Boolean =
+    private fun isIgnored(
+        marker: Marker?,
+        ignoreValue: String,
+    ): Boolean =
         marker != null &&
             Marker.TYPE_X_ZALLY_IGNORE == marker.type &&
             marker.values.contains(ignoreValue)
 
-    fun getIgnoreValues(pointer: JsonPointer): Collection<String> =
-        getIgnoreValues(this.pointersToNodes[pointer.toString()])
+    fun getIgnoreValues(pointer: JsonPointer): Collection<String> = getIgnoreValues(this.pointersToNodes[pointer.toString()])
 
     private fun getIgnoreValues(node: Node?): Collection<String> {
         val markers = node?.let { getIgnoreValues(node.marker) }.orEmpty()
@@ -42,10 +44,11 @@ class ReverseAst internal constructor(
         }
     }
 
-    private fun getIgnoreValues(marker: Marker?): Collection<String> = when {
-        marker != null && Marker.TYPE_X_ZALLY_IGNORE == marker.type -> marker.values
-        else -> emptySet()
-    }
+    private fun getIgnoreValues(marker: Marker?): Collection<String> =
+        when {
+            marker != null && Marker.TYPE_X_ZALLY_IGNORE == marker.type -> marker.values
+            else -> emptySet()
+        }
 
     companion object {
         /**
@@ -54,8 +57,6 @@ class ReverseAst internal constructor(
          * @param root Swagger or OpenApi instance.
          * @return ReverseAstBuilder instance.
          */
-        fun <T : Any> fromObject(root: T): ReverseAstBuilder<T> {
-            return ReverseAstBuilder(root)
-        }
+        fun <T : Any> fromObject(root: T): ReverseAstBuilder<T> = ReverseAstBuilder(root)
     }
 }

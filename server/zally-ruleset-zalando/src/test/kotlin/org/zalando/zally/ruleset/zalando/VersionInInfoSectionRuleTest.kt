@@ -6,15 +6,15 @@ import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 
 class VersionInInfoSectionRuleTest {
-
     private val rule = VersionInInfoSectionRule()
 
     @Test
     fun `checkAPIVersion should return violation if version is not set`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkAPIVersion(context)
@@ -27,11 +27,12 @@ class VersionInInfoSectionRuleTest {
     @Test
     fun `checkAPIVersion should return violation if version format is incorrect`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             info:
               version: 1-alpha
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkAPIVersion(context)
@@ -44,11 +45,12 @@ class VersionInInfoSectionRuleTest {
     @Test
     fun `checkAPIVersion should return no violation if version is present in the correct format`() {
         @Language("YAML")
-        val spec = """
+        val spec =
+            """
             openapi: 3.0.1
             info:
               version: 1.0.0
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(spec)
 
         val violation = rule.checkAPIVersion(context)

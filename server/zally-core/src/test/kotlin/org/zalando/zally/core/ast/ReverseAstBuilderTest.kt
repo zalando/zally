@@ -11,7 +11,6 @@ import org.zalando.zally.core.ast.ReverseAstBuilder.Companion.traversalMethods
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "StringLiteralDuplication")
 class ReverseAstBuilderTest {
-
     @Test
     fun `traversalMethods with Enum skips getClass and getDeclaringClass`() {
         val methods = traversalMethods(PathItem.HttpMethod::class.java).map { it.name }
@@ -31,7 +30,7 @@ class ReverseAstBuilderTest {
             "getSummary",
             "getTermsOfService",
             "getTitle",
-            "getVersion"
+            "getVersion",
         )
     }
 
@@ -54,7 +53,7 @@ class ReverseAstBuilderTest {
             "getName",
             "getRequired",
             "getSchema",
-            "getStyle"
+            "getStyle",
         )
     }
 
@@ -78,7 +77,7 @@ class ReverseAstBuilderTest {
             "getSwagger",
             "getTags",
             "getVendorExtensions",
-            "getPaths"
+            "getPaths",
         )
     }
 
@@ -97,7 +96,7 @@ class ReverseAstBuilderTest {
             "getServers",
             "getTags",
             "getWebhooks",
-            "getPaths"
+            "getPaths",
         )
     }
 }

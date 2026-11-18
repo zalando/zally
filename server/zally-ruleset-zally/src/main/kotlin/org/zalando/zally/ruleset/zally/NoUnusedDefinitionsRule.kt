@@ -14,27 +14,27 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZallyRuleSet::class,
     id = "S005",
     severity = Severity.SHOULD,
-    title = "Do not leave unused definitions"
+    title = "Do not leave unused definitions",
 )
 class NoUnusedDefinitionsRule {
-
     @Check(severity = Severity.SHOULD)
     fun checkSwagger(root: JsonNode): List<Violation> {
-        val used = used(root) { node ->
-            node["discriminator"]
-                ?.asText()
-                ?.let { prop ->
-                    node["properties"]
-                        ?.get(prop)
-                        ?.get("enum")
-                        ?.takeIf { it.isArray }
-                        ?.toList()
-                        ?.map { it.asText() }
-                        ?.map {
-                            "/definitions".toJsonPointer() + it.toEscapedJsonPointer()
-                        }
-                }
-        }
+        val used =
+            used(root) { node ->
+                node["discriminator"]
+                    ?.asText()
+                    ?.let { prop ->
+                        node["properties"]
+                            ?.get(prop)
+                            ?.get("enum")
+                            ?.takeIf { it.isArray }
+                            ?.toList()
+                            ?.map { it.asText() }
+                            ?.map {
+                                "/definitions".toJsonPointer() + it.toEscapedJsonPointer()
+                            }
+                    }
+            }
 
         return emptyList<Violation>() +
             unused(root, "/definitions", "Unused definition", used) +
@@ -44,15 +44,16 @@ class NoUnusedDefinitionsRule {
 
     @Check(severity = Severity.SHOULD)
     fun checkOpenAPI(root: JsonNode): List<Violation> {
-        val used = used(root) { node ->
-            node["discriminator"]
-                ?.get("mapping")
-                ?.toList()
-                ?.map { it.asText() }
-                ?.map {
-                    "/components/schemas".toJsonPointer() + it.toEscapedJsonPointer()
-                }
-        }
+        val used =
+            used(root) { node ->
+                node["discriminator"]
+                    ?.get("mapping")
+                    ?.toList()
+                    ?.map { it.asText() }
+                    ?.map {
+                        "/components/schemas".toJsonPointer() + it.toEscapedJsonPointer()
+                    }
+            }
 
         return emptyList<Violation>() +
             unused(root, "/components/schemas", "Unused schema", used) +
@@ -67,18 +68,19 @@ class NoUnusedDefinitionsRule {
 
     private fun used(
         node: JsonNode,
-        discriminators: (JsonNode) -> List<JsonPointer>?
-    ): Set<JsonPointer> = when {
-        node.isArray -> node.flatMap { used(it, discriminators) }.toSet()
-        node.isObject -> {
-            val references = mutableSetOf<JsonPointer>()
-            references += reference(node)
-            references += discriminators(node).orEmpty()
-            references += node.flatMap { used(it, discriminators) }
-            references
+        discriminators: (JsonNode) -> List<JsonPointer>?,
+    ): Set<JsonPointer> =
+        when {
+            node.isArray -> node.flatMap { used(it, discriminators) }.toSet()
+            node.isObject -> {
+                val references = mutableSetOf<JsonPointer>()
+                references += reference(node)
+                references += discriminators(node).orEmpty()
+                references += node.flatMap { used(it, discriminators) }
+                references
+            }
+            else -> emptySet()
         }
-        else -> emptySet()
-    }
 
     private fun reference(node: JsonNode): Sequence<JsonPointer> =
         sequenceOf(node["\$ref"])
@@ -92,10 +94,11 @@ class NoUnusedDefinitionsRule {
         root: JsonNode,
         pointer: String,
         description: String,
-        used: Set<JsonPointer>
+        used: Set<JsonPointer>,
     ): List<Violation> {
         val ptr = pointer.toJsonPointer()
-        return root.at(ptr)
+        return root
+            .at(ptr)
             ?.fieldNames()
             ?.asSequence()
             ?.map { ptr + it.toEscapedJsonPointer() }

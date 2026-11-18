@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test
 
 /** Tests for ObjectTreeReader utility */
 class ObjectTreeReaderTest {
-
     private val cut = ObjectTreeReader()
 
     /** Tests that basic JSON is supported */
     @Test
     fun readSupportsJson() {
-        val contents = """
+        val contents =
+            """
             {
               "swagger": "2.0",
               "info": {
@@ -20,71 +20,67 @@ class ObjectTreeReaderTest {
                 "version": "1.0.0"
               }
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val node = cut.read(contents)
 
         assertThat(
             node
                 .path("swagger")
-                .textValue()
-        )
-            .hasToString("2.0")
+                .textValue(),
+        ).hasToString("2.0")
         assertThat(
             node
                 .path("info")
                 .path("title")
-                .textValue()
-        )
-            .hasToString("Things API")
+                .textValue(),
+        ).hasToString("Things API")
         assertThat(
             node
                 .path("info")
                 .path("version")
-                .textValue()
-        )
-            .hasToString("1.0.0")
+                .textValue(),
+        ).hasToString("1.0.0")
     }
 
     /** Tests that basic YAML is supported */
     @Test
     fun readSupportsYaml() {
-        val contents = """
+        val contents =
+            """
             swagger: '2.0'
             info:
               title: Things API
               description: Description of things
               version: 1.0.0
-        """.trimIndent()
+            """.trimIndent()
 
         val node = cut.read(contents)
 
         assertThat(
             node
                 .path("swagger")
-                .textValue()
-        )
-            .hasToString("2.0")
+                .textValue(),
+        ).hasToString("2.0")
         assertThat(
             node
                 .path("info")
                 .path("title")
-                .textValue()
-        )
-            .hasToString("Things API")
+                .textValue(),
+        ).hasToString("Things API")
         assertThat(
             node
                 .path("info")
                 .path("version")
-                .textValue()
-        )
-            .hasToString("1.0.0")
+                .textValue(),
+        ).hasToString("1.0.0")
     }
 
     /** Tests that advanced YAML is supported */
     @Test
     fun readSupportsYamlAnchorsAndReferences() {
-        val contents = """
+        val contents =
+            """
             Idable:
               type: object
               properties:
@@ -103,7 +99,7 @@ class ObjectTreeReaderTest {
               properties:
                 id: *standard-id-property
                 <<: *thing-editable-properties
-        """.trimIndent()
+            """.trimIndent()
 
         val node = cut.read(contents)
 
@@ -113,9 +109,8 @@ class ObjectTreeReaderTest {
                 .path("properties")
                 .path("id")
                 .path("format")
-                .textValue()
-        )
-            .hasToString("uuid")
+                .textValue(),
+        ).hasToString("uuid")
 
         assertThat(
             node
@@ -123,8 +118,7 @@ class ObjectTreeReaderTest {
                 .path("properties")
                 .path("name")
                 .path("type")
-                .textValue()
-        )
-            .hasToString("string")
+                .textValue(),
+        ).hasToString("string")
     }
 }

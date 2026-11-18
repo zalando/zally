@@ -13,15 +13,16 @@ import javax.tools.StandardLocation
 @AutoService(Processor::class)
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 class RuleProcessor : AbstractProcessor() {
-
     val annotation = Rule::class.java
 
     val rules = mutableListOf<String>()
 
-    override fun getSupportedAnnotationTypes(): MutableSet<String> =
-        mutableSetOf(Rule::class.java.name)
+    override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(Rule::class.java.name)
 
-    override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
+    override fun process(
+        annotations: MutableSet<out TypeElement>,
+        roundEnv: RoundEnvironment,
+    ): Boolean {
         if (roundEnv.processingOver()) {
             processComplete()
         } else {
@@ -31,10 +32,11 @@ class RuleProcessor : AbstractProcessor() {
     }
 
     private fun processRound(roundEnv: RoundEnvironment) {
-        rules += roundEnv
-            .getElementsAnnotatedWith(annotation)
-            .filterIsInstance(TypeElement::class.java)
-            .map { it.qualifiedName.toString() }
+        rules +=
+            roundEnv
+                .getElementsAnnotatedWith(annotation)
+                .filterIsInstance(TypeElement::class.java)
+                .map { it.qualifiedName.toString() }
     }
 
     private fun processComplete() {

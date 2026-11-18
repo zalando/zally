@@ -18,16 +18,18 @@ class OpenApiRulesValidatorTest {
         ruleSet = RulesValidatorTestRuleSet::class,
         id = "TestExtensionRule",
         severity = Severity.MUST,
-        title = "TestExtensionRule"
+        title = "TestExtensionRule",
     )
     class TestExtensionRule {
         @Check(severity = Severity.MUST)
         fun validate(context: Context): List<Violation> {
-            val testExtension = context
-                .api
-                .info
-                ?.extensions?.get("x-test-extension")
-                ?.let { it as? Map<*, *>? }
+            val testExtension =
+                context
+                    .api
+                    .info
+                    ?.extensions
+                    ?.get("x-test-extension")
+                    ?.let { it as? Map<*, *>? }
 
             return testExtension
                 ?.values
@@ -40,7 +42,8 @@ class OpenApiRulesValidatorTest {
     @Test
     fun checkCorrectLineNumbersForExtensionViolation() {
         @Language("yaml")
-        val openApiContent = """
+        val openApiContent =
+            """
             openapi: '3.0.0'
             info:
               x-test-extension:
@@ -51,28 +54,37 @@ class OpenApiRulesValidatorTest {
                     more: 12
               title: Lorem Ipsum
             paths: {}
-        """.trimIndent()
+            """.trimIndent()
 
         val validator = openApiRulesValidator(listOf(TestExtensionRule()), DefaultContextFactory())
         val results = validator.validate(openApiContent, RulesPolicy(emptyList()))
         assertThat(results.map { it.pointer }).containsExactly(
             JsonPointer.compile("/info/x-test-extension/nested"),
             JsonPointer.compile("/info/x-test-extension/paths"),
-            JsonPointer.compile("/info/x-test-extension/and")
+            JsonPointer.compile("/info/x-test-extension/and"),
         )
 
         assertThat(results.map { it.lines }).containsExactly(
             IntRange(4, 4),
             IntRange(5, 5),
-            IntRange(6, 9)
+            IntRange(6, 9),
         )
     }
 
-    private fun openApiRulesValidator(rules: List<Any>, context: DefaultContextFactory): RulesValidator<Context> =
+    private fun openApiRulesValidator(
+        rules: List<Any>,
+        context: DefaultContextFactory,
+    ): RulesValidator<Context> =
         object : RulesValidator<Context>(RulesManager.fromInstances(ConfigFactory.empty(), rules)) {
-            override fun parse(content: String, authorization: String?): ContentParseResult<Context> =
-                context.parseOpenApiContext(content, authorization)
+            override fun parse(
+                content: String,
+                authorization: String?,
+            ): ContentParseResult<Context> = context.parseOpenApiContext(content, authorization)
 
-            override fun ignore(root: Context, pointer: JsonPointer, ruleId: String): Boolean = false
+            override fun ignore(
+                root: Context,
+                pointer: JsonPointer,
+                ruleId: String,
+            ): Boolean = false
         }
 }

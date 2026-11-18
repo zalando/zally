@@ -1,5 +1,8 @@
 package org.zalando.zally.exception
 
-import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 
-class InaccessibleResourceUrlException(message: String, val httpStatus: HttpStatus) : RuntimeException(message)
+class InaccessibleResourceUrlException(
+    message: String,
+    val httpStatus: HttpStatusCode,
+) : RuntimeException(message)

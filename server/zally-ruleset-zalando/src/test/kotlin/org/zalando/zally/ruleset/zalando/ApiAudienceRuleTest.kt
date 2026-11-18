@@ -7,7 +7,6 @@ import org.zalando.zally.rule.api.Context
 import org.zalando.zally.test.ZallyAssertions.assertThat
 
 class ApiAudienceRuleTest {
-
     private val rule = ApiAudienceRule(rulesConfig)
 
     @Test
@@ -41,14 +40,15 @@ class ApiAudienceRuleTest {
     }
 
     private fun withAudience(apiAudience: String): Context {
-        val content = """
+        val content =
+            """
             openapi: '3.0.0'
             info:
               x-audience: $apiAudience
               title: Lorem Ipsum
               version: 1.0.0
             paths: {}
-        """.trimIndent()
+            """.trimIndent()
 
         return DefaultContextFactory().getOpenApiContext(content)
     }

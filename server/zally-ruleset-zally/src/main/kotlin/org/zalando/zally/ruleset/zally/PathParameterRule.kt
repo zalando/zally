@@ -12,28 +12,25 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZallyRuleSet::class,
     id = "Z001",
     severity = Severity.MUST,
-    title = "Path parameters validation"
+    title = "Path parameters validation",
 )
 class PathParameterRule {
-
     companion object {
         const val REQUIRED_ATTRIBUTE_ERROR_MESSAGE =
             "Parameter with location \"path\" must have an attribute \"required=true\" set"
 
-        fun requiredSchemaOrContentErrorMessage(parameterName: String) =
-            "Parameter $parameterName should have either \"schema\" or \"content\" defined"
+        fun requiredSchemaOrContentErrorMessage(parameterName: String) = "Parameter $parameterName should have either \"schema\" or \"content\" defined"
 
-        fun contentMapStructureErrorMessage(parameterName: String) =
-            "Parameter $parameterName: \"content\" property should have exactly one entry"
+        fun contentMapStructureErrorMessage(parameterName: String) = "Parameter $parameterName: \"content\" property should have exactly one entry"
     }
 
     @Check(severity = Severity.MUST)
     fun checkRequiredPathAttribute(context: Context): List<Violation> =
-        context.api.getAllParameters()
+        context.api
+            .getAllParameters()
             .filter { parameter ->
                 parameter.isInPath() && !parameter.required
-            }
-            .map {
+            }.map {
                 context.violation(REQUIRED_ATTRIBUTE_ERROR_MESSAGE, it)
             }
 
@@ -53,15 +50,15 @@ class PathParameterRule {
     @Check(severity = Severity.MUST)
     fun validateParameterContentMapStructure(context: Context): List<Violation> {
         if (context.isOpenAPI3()) {
-            return context.api.getAllParameters()
+            return context.api
+                .getAllParameters()
                 .filter {
                     if (it.content != null) {
                         it.content.isEmpty() || it.content.size > 1
                     } else {
                         false
                     }
-                }
-                .map { parameter ->
+                }.map { parameter ->
                     context.violation(contentMapStructureErrorMessage(parameter.name), parameter)
                 }
         }

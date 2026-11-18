@@ -10,5 +10,5 @@ data class CheckDetails(
     val rule: Rule,
     val instance: Any,
     val check: Check,
-    val method: Method
+    val method: Method,
 )

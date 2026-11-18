@@ -8,7 +8,6 @@ import org.zalando.zally.rule.api.Violation
 import org.zalando.zally.test.ZallyAssertions
 
 class TagAllOperationsRuleTest {
-
     private val cut = TagAllOperationsRule()
 
     private fun TagAllOperationsRule.checkAll(context: Context): List<Violation> =
@@ -21,11 +20,12 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkAll with 'noop' spec returns no violations`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getSwaggerContext(
-            """
-            swagger: '2.0'
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getSwaggerContext(
+                """
+                swagger: '2.0'
+                """.trimIndent(),
+            )
 
         val violations = cut.checkAll(context)
 
@@ -37,22 +37,23 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkAll with 'perfect' spec returns no violations`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getSwaggerContext(
-            """
-            swagger: '2.0'
-            tags:
-              - name: Things
-                description: Operations dealing with Things
-            paths:
-              '/things':
-                post:
-                  tags:
-                    - Things
-                  responses:
-                    200:
-                      description: Done
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getSwaggerContext(
+                """
+                swagger: '2.0'
+                tags:
+                  - name: Things
+                    description: Operations dealing with Things
+                paths:
+                  '/things':
+                    post:
+                      tags:
+                        - Things
+                      responses:
+                        200:
+                          description: Done
+                """.trimIndent(),
+            )
 
         val violations = cut.checkAll(context)
 
@@ -64,17 +65,18 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkOperationsAreTagged with untagged operations returns violations`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getSwaggerContext(
-            """
-            swagger: '2.0'
-            paths:
-              '/things':
-                post:
-                  responses:
-                    200:
-                      description: Done
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getSwaggerContext(
+                """
+                swagger: '2.0'
+                paths:
+                  '/things':
+                    post:
+                      responses:
+                        200:
+                          description: Done
+                """.trimIndent(),
+            )
 
         val violations = cut.checkOperationsAreTagged(context)
 
@@ -87,19 +89,20 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkOperationTagsAreDefined with undefined tag returns violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getSwaggerContext(
-            """
-            swagger: '2.0'
-            paths:
-              '/things':
-                post:
-                  tags:
-                    - Things
-                  responses:
-                    200:
-                      description: Done
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getSwaggerContext(
+                """
+                swagger: '2.0'
+                paths:
+                  '/things':
+                    post:
+                      tags:
+                        - Things
+                      responses:
+                        200:
+                          description: Done
+                """.trimIndent(),
+            )
 
         val violations = cut.checkOperationTagsAreDefined(context)
 
@@ -112,13 +115,14 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkDefinedTagsAreUsed with unused tag returns violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getSwaggerContext(
-            """
-            swagger: '2.0'
-            tags:
-              - name: Things
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getSwaggerContext(
+                """
+                swagger: '2.0'
+                tags:
+                  - name: Things
+                """.trimIndent(),
+            )
 
         val violations = cut.checkDefinedTagsAreUsed(context)
 
@@ -131,13 +135,14 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkDefinedTagsAreDescribed without tag description returns violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getSwaggerContext(
-            """
-            swagger: '2.0'
-            tags:
-              - name: Things
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getSwaggerContext(
+                """
+                swagger: '2.0'
+                tags:
+                  - name: Things
+                """.trimIndent(),
+            )
 
         val violations = cut.checkDefinedTagsAreDescribed(context)
 
@@ -150,13 +155,14 @@ class TagAllOperationsRuleTest {
     @Test
     fun `checkDefinedTagsAreNamed without tag name returns violation`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getSwaggerContext(
-            """
-            swagger: '2.0'
-            tags:
-              - description: Operations dealing with Things
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getSwaggerContext(
+                """
+                swagger: '2.0'
+                tags:
+                  - description: Operations dealing with Things
+                """.trimIndent(),
+            )
 
         val violations = cut.checkDefinedTagsAreNamed(context)
 

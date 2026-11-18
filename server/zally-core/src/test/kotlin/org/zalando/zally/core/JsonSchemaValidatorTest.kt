@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import org.zalando.zally.test.ZallyAssertions.assertThat
 
 class JsonSchemaValidatorTest {
-
     @Test
     fun shouldLoadSchemaFromResourcesWithRef() {
         val onlineSchema = "http://simple-referenced-schema.json/schema"
@@ -17,15 +16,16 @@ class JsonSchemaValidatorTest {
         val json = ObjectTreeReader().read(schemaUrl)
         val jsonSchemaValidator = JsonSchemaValidator(json, mapOf(onlineSchema to localResource))
 
-        val jsonToValidate = ObjectTreeReader().read(
-            """
+        val jsonToValidate =
+            ObjectTreeReader().read(
+                """
         {
             "firstName": "MyName",
             "lastName": "MyLastName",
             "age": -10
         }
-        """
-        )
+        """,
+            )
 
         val valResult = jsonSchemaValidator.validate(jsonToValidate)
         assertThat(valResult.isEmpty()).isFalse()
@@ -40,13 +40,14 @@ class JsonSchemaValidatorTest {
         val file = "schemas/swagger-schema.json"
         val schemaUrl = Resources.getResource(file)
         val json = ObjectTreeReader().read(schemaUrl)
-        var jsonSchemaValidator = JsonSchemaValidator(
-            json,
-            mapOf(
-                onlineSchema to localResource,
-                "http://swagger.io/v2/schema.json" to schemaUrl.toString()
+        var jsonSchemaValidator =
+            JsonSchemaValidator(
+                json,
+                mapOf(
+                    onlineSchema to localResource,
+                    "http://swagger.io/v2/schema.json" to schemaUrl.toString(),
+                ),
             )
-        )
         val specJson = ObjectTreeReader().read(Resources.getResource("fixtures/api_tinbox.yaml"))
 
         val valResult = jsonSchemaValidator.validate(specJson)
@@ -61,8 +62,9 @@ class JsonSchemaValidatorTest {
         val ref = "\$ref"
         val json = reader.read("""{ "$ref": "#unresolvable" }""".trimIndent())
 
-        val result = JsonSchemaValidator(json)
-            .validate(reader.read("""{ "key": "value" }"""))
+        val result =
+            JsonSchemaValidator(json)
+                .validate(reader.read("""{ "key": "value" }"""))
 
         assertThat(result)
             .isNotEmpty

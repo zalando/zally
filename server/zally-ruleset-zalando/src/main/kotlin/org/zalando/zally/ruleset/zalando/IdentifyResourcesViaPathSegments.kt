@@ -14,7 +14,7 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "143",
     severity = Severity.MUST,
-    title = "Resources must be identified via path segments"
+    title = "Resources must be identified via path segments",
 )
 class IdentifyResourcesViaPathSegments {
     private val pathStartsWithParameter = "Path must start with a resource"
@@ -23,21 +23,23 @@ class IdentifyResourcesViaPathSegments {
     private val pathStartingWithAParameter = """(^/\{[^/]+\}|/)""".toRegex()
 
     @Check(severity = Severity.MUST)
-    fun pathStartsWithResource(context: Context): List<Violation> = context.validatePaths(
-        pathFilter = { pathStartingWithAParameter.matches(it.key) },
-        action = { context.violations(pathStartsWithParameter, PATHS.toJsonPointer() + it.key.toEscapedJsonPointer()) }
-    )
+    fun pathStartsWithResource(context: Context): List<Violation> =
+        context.validatePaths(
+            pathFilter = { pathStartingWithAParameter.matches(it.key) },
+            action = { context.violations(pathStartsWithParameter, PATHS.toJsonPointer() + it.key.toEscapedJsonPointer()) },
+        )
 
     private val pathContainingPrefixedOrSuffixedParameter = """.*/([^/]+\{[^/]+\}|\{[^/]+\}[^/]+).*""".toRegex()
 
     @Check(severity = Severity.MUST)
-    fun pathParameterDoesNotContainPrefixAndSuffix(context: Context): List<Violation> = context.validatePaths(
-        pathFilter = { pathContainingPrefixedOrSuffixedParameter.matches(it.key) },
-        action = {
-            context.violations(
-                pathParameterContainsPrefixOrSuffix,
-                PATHS.toJsonPointer() + it.key.toEscapedJsonPointer()
-            )
-        }
-    )
+    fun pathParameterDoesNotContainPrefixAndSuffix(context: Context): List<Violation> =
+        context.validatePaths(
+            pathFilter = { pathContainingPrefixedOrSuffixedParameter.matches(it.key) },
+            action = {
+                context.violations(
+                    pathParameterContainsPrefixOrSuffix,
+                    PATHS.toJsonPointer() + it.key.toEscapedJsonPointer(),
+                )
+            },
+        )
 }

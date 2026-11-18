@@ -6,14 +6,15 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.zalando.zally.core.CaseChecker
 import org.zalando.zally.core.rulesConfig
 
-class CaseCheckerParameterizedTest() {
-
-    class TestParam(val case: String, val term: String, val expectation: Boolean) {
+class CaseCheckerParameterizedTest {
+    class TestParam(
+        val case: String,
+        val term: String,
+        val expectation: Boolean,
+    ) {
         operator fun not(): TestParam = TestParam(case, term, !expectation)
 
-        override fun toString(): String {
-            return "$term ${if (expectation) "matches" else "does not match"} $case"
-        }
+        override fun toString(): String = "$term ${if (expectation) "matches" else "does not match"} $case"
     }
 
     companion object {
@@ -21,43 +22,52 @@ class CaseCheckerParameterizedTest() {
 
         @JvmStatic
         fun parameters(): List<TestParam> {
-            val parameters = parameters(
-                "camelCase",
-                listOf("testCase", "testACRONYMCase", "test1234"),
-                listOf("TestCase")
-            ) + parameters(
-                "PascalCase",
-                listOf("TestCase", "ACRONYMTestCase", "TestCase1234"),
-                listOf("testCase", "test-case")
-            ) + parameters(
-                "snake_case",
-                listOf("test_case", "test", "v1_id", "test_0_1_2_3"),
-                listOf("test__case", "Test_Case", "", "_", "_cust_no", "CUST_NO")
-            ) + parameters(
-                "SCREAMING_SNAKE_CASE",
-                listOf("TEST_CASE", "TEST", "V1_ID", "TEST_0_1_2_3"),
-                listOf("TEST__CASE", "TestCase", "_")
-            ) + parameters(
-                "kebab-case",
-                listOf("test-case", "test-case-1234"),
-                listOf("test-Case", "testCase")
-            ) + parameters(
-                "COBOL-CASE",
-                listOf("TEST-CASE", "TEST-CASE-1234"),
-                listOf("test-case", "testCase")
-            ) + parameters(
-                "hyphenated-Camel-Case",
-                listOf("test-Case", "test-ACRONYMCase", "test1234-C1234ase1234", "test-1234-Case"),
-                listOf("Test-Case", "testCase", "TestCase")
-            ) + parameters(
-                "Hyphenated-Pascal-Case",
-                listOf("Test-Case", "X-Flow-Id", "ETag", "Test-Case1234", "Test-Case-1234"),
-                listOf("test-Case", "TestCase", "testCase", "1234-Test-Case")
-            ) + parameters(
-                "Title Case",
-                listOf("Test Case", "TestCase", "Test-Case"),
-                listOf("test-Case")
-            )
+            val parameters =
+                parameters(
+                    "camelCase",
+                    listOf("testCase", "testACRONYMCase", "test1234"),
+                    listOf("TestCase"),
+                ) +
+                    parameters(
+                        "PascalCase",
+                        listOf("TestCase", "ACRONYMTestCase", "TestCase1234"),
+                        listOf("testCase", "test-case"),
+                    ) +
+                    parameters(
+                        "snake_case",
+                        listOf("test_case", "test", "v1_id", "test_0_1_2_3"),
+                        listOf("test__case", "Test_Case", "", "_", "_cust_no", "CUST_NO"),
+                    ) +
+                    parameters(
+                        "SCREAMING_SNAKE_CASE",
+                        listOf("TEST_CASE", "TEST", "V1_ID", "TEST_0_1_2_3"),
+                        listOf("TEST__CASE", "TestCase", "_"),
+                    ) +
+                    parameters(
+                        "kebab-case",
+                        listOf("test-case", "test-case-1234"),
+                        listOf("test-Case", "testCase"),
+                    ) +
+                    parameters(
+                        "COBOL-CASE",
+                        listOf("TEST-CASE", "TEST-CASE-1234"),
+                        listOf("test-case", "testCase"),
+                    ) +
+                    parameters(
+                        "hyphenated-Camel-Case",
+                        listOf("test-Case", "test-ACRONYMCase", "test1234-C1234ase1234", "test-1234-Case"),
+                        listOf("Test-Case", "testCase", "TestCase"),
+                    ) +
+                    parameters(
+                        "Hyphenated-Pascal-Case",
+                        listOf("Test-Case", "X-Flow-Id", "ETag", "Test-Case1234", "Test-Case-1234"),
+                        listOf("test-Case", "TestCase", "testCase", "1234-Test-Case"),
+                    ) +
+                    parameters(
+                        "Title Case",
+                        listOf("Test Case", "TestCase", "Test-Case"),
+                        listOf("test-Case"),
+                    )
 
             val excess = parameters.map { it.case }.toSet() - checker.cases.keys
             Assertions
@@ -86,11 +96,14 @@ class CaseCheckerParameterizedTest() {
             return parameters
         }
 
-        private fun parameters(case: String, matches: List<String>, mismatches: List<String>): List<TestParam> {
-            return matches.map { TestParam(case, it, true) } +
+        private fun parameters(
+            case: String,
+            matches: List<String>,
+            mismatches: List<String>,
+        ): List<TestParam> =
+            matches.map { TestParam(case, it, true) } +
                 mismatches.map { TestParam(case, it, false) } +
                 TestParam(case, case, true)
-        }
     }
 
     @ParameterizedTest

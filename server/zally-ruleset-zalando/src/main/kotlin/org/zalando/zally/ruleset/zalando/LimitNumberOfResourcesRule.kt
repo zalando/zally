@@ -12,39 +12,41 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "146",
     severity = Severity.SHOULD,
-    title = "Limit number of resource types"
+    title = "Limit number of resource types",
 )
-class LimitNumberOfResourcesRule(rulesConfig: Config) {
+class LimitNumberOfResourcesRule(
+    rulesConfig: Config,
+) {
     private val resourceTypesLimit = rulesConfig.getConfig(javaClass.simpleName).getInt("resource_types_limit")
     private val pathWhitelist = rulesConfig.getConfig(javaClass.simpleName).getStringList("path_whitelist").map { it.toRegex() }
 
     @Check(severity = Severity.SHOULD)
     fun checkLimitOfResources(context: Context): Violation? {
-        val paths = context.api
-            .paths
-            .orEmpty()
-            .keys
-            .filterNot { isWhitelisted(it) }
+        val paths =
+            context.api
+                .paths
+                .orEmpty()
+                .keys
+                .filterNot { isWhitelisted(it) }
         val resourceTypes = resourceTypes(paths)
         return if (resourceTypes.size > resourceTypesLimit) {
             context.violation(
                 "Identified ${resourceTypes.size} resource resource types, " +
                     "greater than recommended limit of $resourceTypesLimit",
-                context.api.paths
+                context.api.paths,
             )
         } else {
             null
         }
     }
 
-    internal fun resourceTypes(paths: Collection<String>): List<String> {
-        return paths.map(this::resourceType).distinct()
-    }
+    internal fun resourceTypes(paths: Collection<String>): List<String> = paths.map(this::resourceType).distinct()
 
     internal fun resourceType(path: String): String {
-        val components = path
-            .split(Regex("/+"))
-            .filter(String::isNotEmpty)
+        val components =
+            path
+                .split(Regex("/+"))
+                .filter(String::isNotEmpty)
         val size = components.size
 
         return when {

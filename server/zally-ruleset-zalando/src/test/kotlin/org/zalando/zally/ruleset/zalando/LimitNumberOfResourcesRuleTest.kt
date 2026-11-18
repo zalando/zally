@@ -8,24 +8,25 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.core.util.OpenApiSections.Companion.PATHS
 
 class LimitNumberOfResourcesRuleTest {
-
-    private val config = ConfigFactory.parseString(
-        """
-        LimitNumberOfResourcesRule {
-          resource_types_limit: 8
-          path_whitelist: [
-            "/whitelisted.*"
-          ]
-        }
-        """.trimIndent()
-    )
+    private val config =
+        ConfigFactory.parseString(
+            """
+            LimitNumberOfResourcesRule {
+              resource_types_limit: 8
+              path_whitelist: [
+                "/whitelisted.*"
+              ]
+            }
+            """.trimIndent(),
+        )
 
     private val rule = LimitNumberOfResourcesRule(config)
 
     @Test
     fun `checkLimitOfResources should return a violation if the limit is reached`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               /resource1: {}
@@ -39,7 +40,7 @@ class LimitNumberOfResourcesRuleTest {
               /resource7: {}
               /resource8: {}
               /resource9: {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violation = rule.checkLimitOfResources(context)
@@ -52,7 +53,8 @@ class LimitNumberOfResourcesRuleTest {
     @Test
     fun `checkLimitOfResources should return no violations if paths are whitelisted`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               /whitelisted1: {}
@@ -66,7 +68,7 @@ class LimitNumberOfResourcesRuleTest {
               /whitelisted7: {}
               /whitelisted8: {}
               /whitelisted9: {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violation = rule.checkLimitOfResources(context)
@@ -77,11 +79,12 @@ class LimitNumberOfResourcesRuleTest {
     @Test
     fun `checkLimitOfResources should no return violation in case the number is under the limit`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               /resource: {}
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violation = rule.checkLimitOfResources(context)
@@ -91,17 +94,18 @@ class LimitNumberOfResourcesRuleTest {
 
     @Test
     fun resourceTypesWithCustomersAndAddressesExampleReturns3ResourceTypes() {
-        val paths = listOf(
-            "/",
-            "/{id}",
-            "/customers",
-            "/customers/{id}",
-            "/customers/{id}/preferences",
-            "/addresses",
-            "/addresses/{id}",
-            "/customers/{id}/addresses",
-            "/customers/{id}/addresses/{addr}"
-        )
+        val paths =
+            listOf(
+                "/",
+                "/{id}",
+                "/customers",
+                "/customers/{id}",
+                "/customers/{id}/preferences",
+                "/addresses",
+                "/addresses/{id}",
+                "/customers/{id}/addresses",
+                "/customers/{id}/addresses/{addr}",
+            )
 
         val resourceTypes = rule.resourceTypes(paths)
         assertThat(resourceTypes).hasSameElementsAs(
@@ -109,8 +113,8 @@ class LimitNumberOfResourcesRuleTest {
                 "/",
                 "/customers",
                 "/addresses",
-                "/customers/{id}/addresses"
-            )
+                "/customers/{id}/addresses",
+            ),
         )
     }
 

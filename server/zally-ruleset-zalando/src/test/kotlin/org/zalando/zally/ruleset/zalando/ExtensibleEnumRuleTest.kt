@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 
 class ExtensibleEnumRuleTest {
-
     val rule = ExtensibleEnumRule()
 
     @Test
     fun `checkForEnums should return violation if an enum is used in schema`() {
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             components:
               schemas:
@@ -21,7 +21,7 @@ class ExtensibleEnumRuleTest {
                       enum:
                         - white
                         - black
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkForEnums(context)
@@ -33,7 +33,8 @@ class ExtensibleEnumRuleTest {
 
     @Test
     fun `checkForEnums should return violation if an enum is used as parameter`() {
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -46,7 +47,7 @@ class ExtensibleEnumRuleTest {
                         enum:
                           - germany
                           - sweden
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkForEnums(context)
@@ -58,7 +59,8 @@ class ExtensibleEnumRuleTest {
 
     @Test
     fun `checkForEnums should return violation if no enums are used`() {
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             components:
               schemas:
@@ -66,7 +68,7 @@ class ExtensibleEnumRuleTest {
                   properties:
                     color:
                       type: string
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkForEnums(context)

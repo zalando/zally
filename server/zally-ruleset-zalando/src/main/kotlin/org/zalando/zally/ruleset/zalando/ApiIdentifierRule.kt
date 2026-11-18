@@ -11,7 +11,7 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "215",
     severity = Severity.MUST,
-    title = "Provide API Identifier"
+    title = "Provide API Identifier",
 )
 class ApiIdentifierRule {
     private val apiIdPattern = """^[a-z0-9][a-z0-9-:.]{6,62}[a-z0-9]$""".toRegex()
@@ -24,7 +24,10 @@ class ApiIdentifierRule {
 
     @Check(severity = Severity.MUST)
     fun validate(context: Context): Violation? {
-        val apiId = context.api.info?.extensions?.get(extensionName)
+        val apiId =
+            context.api.info
+                ?.extensions
+                ?.get(extensionName)
 
         return when {
             apiId == null || apiId !is String -> context.violation(noApiIdDesc, extensionPointer)

@@ -6,19 +6,19 @@ import org.zalando.zally.core.ObjectTreeReader
 import org.zalando.zally.test.ZallyAssertions
 
 class AvoidXZallyIgnoreRuleTest {
-
     private val rule = AvoidXZallyIgnoreRule()
     private val reader = ObjectTreeReader()
 
     @Test
     fun `validate swagger with inline ignores returns violation`() {
         @Language("YAML")
-        val root = reader.read(
-            """
-            swagger: 2.0
-            x-zally-ignore: [ ONE, TWO, THREE]
-            """.trimIndent()
-        )
+        val root =
+            reader.read(
+                """
+                swagger: 2.0
+                x-zally-ignore: [ ONE, TWO, THREE]
+                """.trimIndent(),
+            )
 
         val violations = rule.validate(root)
 
@@ -31,15 +31,16 @@ class AvoidXZallyIgnoreRuleTest {
     @Test
     fun `validate swagger with dashed ignores returns violation`() {
         @Language("YAML")
-        val root = reader.read(
-            """
-            swagger: 2.0
-            x-zally-ignore:
-              - ONE
-              - TWO
-              - THREE
-            """.trimIndent()
-        )
+        val root =
+            reader.read(
+                """
+                swagger: 2.0
+                x-zally-ignore:
+                  - ONE
+                  - TWO
+                  - THREE
+                """.trimIndent(),
+            )
 
         val violations = rule.validate(root)
 
@@ -52,13 +53,14 @@ class AvoidXZallyIgnoreRuleTest {
     @Test
     fun `validate swagger with ignores within object returns violation`() {
         @Language("YAML")
-        val root = reader.read(
-            """
-            swagger: 2.0
-            info:
-              x-zally-ignore: [ ONE, TWO, THREE]
-            """.trimIndent()
-        )
+        val root =
+            reader.read(
+                """
+                swagger: 2.0
+                info:
+                  x-zally-ignore: [ ONE, TWO, THREE]
+                """.trimIndent(),
+            )
 
         val violations = rule.validate(root)
 
@@ -71,14 +73,15 @@ class AvoidXZallyIgnoreRuleTest {
     @Test
     fun `validate openapi with ignores within array returns violation`() {
         @Language("YAML")
-        val root = reader.read(
-            """
-            openapi: 3.0.0
-            servers:
-              - url: http://example.com
-                x-zally-ignore: [ONE, TWO, THREE]
-            """.trimIndent()
-        )
+        val root =
+            reader.read(
+                """
+                openapi: 3.0.0
+                servers:
+                  - url: http://example.com
+                    x-zally-ignore: [ONE, TWO, THREE]
+                """.trimIndent(),
+            )
 
         val violations = rule.validate(root)
 
@@ -91,12 +94,13 @@ class AvoidXZallyIgnoreRuleTest {
     @Test
     fun `validate openapi with invalid ignores string returns violation`() {
         @Language("YAML")
-        val root = reader.read(
-            """
-            swagger: 2.0
-            x-zally-ignore: INVALID
-            """.trimIndent()
-        )
+        val root =
+            reader.read(
+                """
+                swagger: 2.0
+                x-zally-ignore: INVALID
+                """.trimIndent(),
+            )
 
         val violations = rule.validate(root)
 
@@ -109,13 +113,14 @@ class AvoidXZallyIgnoreRuleTest {
     @Test
     fun `validate openapi with invalid ignores object returns violation`() {
         @Language("YAML")
-        val root = reader.read(
-            """
-            swagger: 2.0
-            x-zally-ignore:
-              invalid: INVALID
-            """.trimIndent()
-        )
+        val root =
+            reader.read(
+                """
+                swagger: 2.0
+                x-zally-ignore:
+                  invalid: INVALID
+                """.trimIndent(),
+            )
 
         val violations = rule.validate(root)
 

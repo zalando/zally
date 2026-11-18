@@ -15,7 +15,6 @@ import org.zalando.zally.rule.api.Violation
 
 @Suppress("UndocumentedPublicClass", "StringLiteralDuplication")
 class SwaggerRulesValidatorTest {
-
     private val swaggerContent =
         resourceToString("fixtures/api_spp.json")
 
@@ -25,10 +24,9 @@ class SwaggerRulesValidatorTest {
         ruleSet = RulesValidatorTestRuleSet::class,
         id = "TestFirstRule",
         severity = Severity.SHOULD,
-        title = "First Rule"
+        title = "First Rule",
     )
     class TestFirstRule {
-
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.SHOULD)
         fun validate(swagger: Swagger): List<Violation> = listOf("dummy1", "dummy2").map { Violation(it, EMPTY_JSON_POINTER) }
@@ -38,10 +36,9 @@ class SwaggerRulesValidatorTest {
         ruleSet = RulesValidatorTestRuleSet::class,
         id = "TestSecondRule",
         severity = Severity.MUST,
-        title = "Second Rule"
+        title = "Second Rule",
     )
     class TestSecondRule {
-
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
         fun validate(swagger: Swagger): Violation? = Violation("dummy3", EMPTY_JSON_POINTER)
@@ -51,17 +48,20 @@ class SwaggerRulesValidatorTest {
         ruleSet = RulesValidatorTestRuleSet::class,
         id = "TestBadRule",
         severity = Severity.MUST,
-        title = "Third Rule"
+        title = "Third Rule",
     )
     class TestBadRule {
-
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
         fun invalid(swagger: Swagger): String = "Hello World!"
 
         @Suppress("UNUSED_PARAMETER")
         @Check(severity = Severity.MUST)
-        fun invalidParams(swagger: Swagger, json: JsonNode, text: String): Violation? = null
+        fun invalidParams(
+            swagger: Swagger,
+            json: JsonNode,
+            text: String,
+        ): Violation? = null
     }
 
     @Test
@@ -114,12 +114,17 @@ class SwaggerRulesValidatorTest {
 
     private fun rulesValidator(rules: List<Any>): RulesValidator<Swagger> =
         object : RulesValidator<Swagger>(RulesManager.fromInstances(ConfigFactory.empty(), rules)) {
-            override fun parse(content: String, authorization: String?): ContentParseResult<Swagger> =
-                ContentParseResult.ParsedSuccessfully(Swagger())
+            override fun parse(
+                content: String,
+                authorization: String?,
+            ): ContentParseResult<Swagger> = ContentParseResult.ParsedSuccessfully(Swagger())
 
-            override fun ignore(root: Swagger, pointer: JsonPointer, ruleId: String): Boolean = false
+            override fun ignore(
+                root: Swagger,
+                pointer: JsonPointer,
+                ruleId: String,
+            ): Boolean = false
         }
 
-    private fun resourceToString(resourceName: String): String =
-        IOUtils.toString(ClassLoader.getSystemResourceAsStream(resourceName), Charsets.UTF_8)
+    private fun resourceToString(resourceName: String): String = IOUtils.toString(ClassLoader.getSystemResourceAsStream(resourceName), Charsets.UTF_8)
 }

@@ -16,7 +16,9 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
 
-class ReverseAstBuilder<T : Any> internal constructor(root: T) {
+class ReverseAstBuilder<T : Any> internal constructor(
+    root: T,
+) {
     private val log = LoggerFactory.getLogger(ReverseAstBuilder::class.java)
     private val extensionMethodNames = HashSet<String>()
 
@@ -24,7 +26,10 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
     private val objectsToNodes = IdentityHashMap<Any, Node>()
     private val pointersToNodes = HashMap<String, Node>()
 
-    class ReverseAstException internal constructor(message: String, cause: Throwable) : Exception(message, cause)
+    class ReverseAstException internal constructor(
+        message: String,
+        cause: Throwable,
+    ) : Exception(message, cause)
 
     fun withExtensionMethodNames(vararg names: String): ReverseAstBuilder<T> {
         this.extensionMethodNames += listOf(*names)
@@ -46,13 +51,14 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
                 continue
             }
             if (node.obj.javaClass !in Util.PRIMITIVES) {
-                val children = when {
-                    node.obj is Map<*, *> -> handleMap(node.obj, node.pointer, node.marker)
-                    node.obj is List<*> -> handleList(node.obj, node.pointer, node.marker)
-                    node.obj is Set<*> -> handleSet(node.obj, node.pointer, node.marker)
-                    node.obj is Array<*> -> handleArray(node.obj, node.pointer, node.marker)
-                    else -> handleObject(node.obj, node.pointer, node.marker)
-                }
+                val children =
+                    when {
+                        node.obj is Map<*, *> -> handleMap(node.obj, node.pointer, node.marker)
+                        node.obj is List<*> -> handleList(node.obj, node.pointer, node.marker)
+                        node.obj is Set<*> -> handleSet(node.obj, node.pointer, node.marker)
+                        node.obj is Array<*> -> handleArray(node.obj, node.pointer, node.marker)
+                        else -> handleObject(node.obj, node.pointer, node.marker)
+                    }
                 nodes += children
                 node.children += children
             }
@@ -64,32 +70,49 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
         return ReverseAst(objectsToNodes, pointersToNodes)
     }
 
-    private fun handleMap(map: Map<*, *>, pointer: JsonPointer, defaultMarker: Marker?): Deque<Node> {
-        return ArrayDeque<Node>(
+    private fun handleMap(
+        map: Map<*, *>,
+        pointer: JsonPointer,
+        defaultMarker: Marker?,
+    ): Deque<Node> =
+        ArrayDeque<Node>(
             map.mapNotNull { (key, value) ->
                 if (key is String && value != null) {
                     Node(value, pointer + key.toEscapedJsonPointer(), getMarker(map) ?: defaultMarker)
                 } else {
                     null
                 }
-            }
+            },
         )
-    }
 
-    private fun handleList(list: List<*>, pointer: JsonPointer, marker: Marker?): Deque<Node> =
-        handleArray(list.toTypedArray(), pointer, marker)
+    private fun handleList(
+        list: List<*>,
+        pointer: JsonPointer,
+        marker: Marker?,
+    ): Deque<Node> = handleArray(list.toTypedArray(), pointer, marker)
 
-    private fun handleSet(set: Set<*>, pointer: JsonPointer, marker: Marker?): Deque<Node> =
-        handleArray(set.toTypedArray(), pointer, marker)
+    private fun handleSet(
+        set: Set<*>,
+        pointer: JsonPointer,
+        marker: Marker?,
+    ): Deque<Node> = handleArray(set.toTypedArray(), pointer, marker)
 
-    private fun handleArray(objects: Array<*>, pointer: JsonPointer, marker: Marker?): Deque<Node> =
+    private fun handleArray(
+        objects: Array<*>,
+        pointer: JsonPointer,
+        marker: Marker?,
+    ): Deque<Node> =
         ArrayDeque(
             objects.filterNotNull().mapIndexed { i, value ->
                 Node(value, pointer + i.toString().toEscapedJsonPointer(), marker)
-            }
+            },
         )
 
-    private fun handleObject(obj: Any, pointer: JsonPointer, defaultMarker: Marker?): Deque<Node> {
+    private fun handleObject(
+        obj: Any,
+        pointer: JsonPointer,
+        defaultMarker: Marker?,
+    ): Deque<Node> {
         val nodes = ArrayDeque<Node>()
         val marker = getMarker(obj) ?: defaultMarker
 
@@ -100,16 +123,19 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
                     if (m.isAnnotationPresent(JsonAnyGetter::class.java)) {
                         // A `JsonAnyGetter` method is simply a wrapper for nested properties.
                         // We must not use the method name but re-use the current pointer.
-                        nodes.push(Node(value, pointer, marker, /* skip */true))
+                        nodes.push(Node(value, pointer, marker, skip = true))
                     } else {
                         // Do not add extension names to the JsonNode path
-                        val nextPath = m.name
-                            .takeIf { it !in this.extensionMethodNames }
-                            ?.removePrefix("get")
-                            ?.replaceFirstChar({ it.lowercase() })
-                            ?: ""
+                        val nextPath =
+                            m.name
+                                .takeIf { it !in this.extensionMethodNames }
+                                ?.removePrefix("get")
+                                ?.replaceFirstChar({ it.lowercase() })
 
-                        nodes.push(Node(value, pointer + nextPath.toEscapedJsonPointer(), marker))
+                        // An extension method keeps the current pointer. (Appending an empty segment only worked
+                        // because JsonPointer.append in Jackson 2.14 dropped the trailing slash; newer versions keep it.)
+                        val next = nextPath?.let { pointer + it.toEscapedJsonPointer() } ?: pointer
+                        nodes.push(Node(value, next, marker))
                     }
                 }
             } catch (e: ReflectiveOperationException) {
@@ -127,7 +153,10 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
         getVendorExtensions(obj, Marker.TYPE_X_ZALLY_IGNORE)
             ?.let { Marker(Marker.TYPE_X_ZALLY_IGNORE, it) }
 
-    private fun getVendorExtensions(obj: Any, extensionName: String): Collection<String>? {
+    private fun getVendorExtensions(
+        obj: Any,
+        extensionName: String,
+    ): Collection<String>? {
         if (obj is Map<*, *>) {
             return getVendorExtensions(obj, extensionName)
         }
@@ -146,7 +175,10 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
         return null
     }
 
-    private fun getVendorExtensions(map: Map<*, *>, extensionName: String): Collection<String>? =
+    private fun getVendorExtensions(
+        map: Map<*, *>,
+        extensionName: String,
+    ): Collection<String>? =
         map[extensionName]?.let { value ->
             when (value) {
                 is String -> return setOf(value)
@@ -156,20 +188,20 @@ class ReverseAstBuilder<T : Any> internal constructor(root: T) {
         }
 
     companion object {
-        fun traversalMethods(clazz: Class<*>) = clazz
-            .methods
-            .filter {
-                it.name.startsWith("get") &&
-                    it.name != "getClass" &&
-                    it.name != "getDeclaringClass" &&
-                    it.parameterCount == 0 &&
-                    Modifier.isPublic(it.modifiers) &&
-                    !it.isAnnotationPresent(JsonIgnore::class.java)
-            }
-            .sortedWith(
-                Comparator
-                    .comparing { method: Method -> method.name == "getPaths" }
-                    .thenComparing { method: Method -> method.name }
-            )
+        fun traversalMethods(clazz: Class<*>) =
+            clazz
+                .methods
+                .filter {
+                    it.name.startsWith("get") &&
+                        it.name != "getClass" &&
+                        it.name != "getDeclaringClass" &&
+                        it.parameterCount == 0 &&
+                        Modifier.isPublic(it.modifiers) &&
+                        !it.isAnnotationPresent(JsonIgnore::class.java)
+                }.sortedWith(
+                    Comparator
+                        .comparing { method: Method -> method.name == "getPaths" }
+                        .thenComparing { method: Method -> method.name },
+                )
     }
 }

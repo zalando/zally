@@ -7,10 +7,6 @@ spring:
     hibernate:
       ddl-auto: validate
 
-security:
-  basic:
-    enabled: false
-
 management.server.port: 0
 
 twintip:

@@ -11,7 +11,6 @@ import org.zalando.zally.core.rulesConfig
 import org.zalando.zally.ruleset.zalando.util.getResourceJson
 
 class UseOpenApiRuleTest {
-
     private val rule = UseOpenApiRule(rulesConfig)
 
     @Test
@@ -43,13 +42,14 @@ class UseOpenApiRuleTest {
 
     @Test
     fun shouldLoadSchemaFromResourceIfUrlNotSpecified() {
-        val config = ConfigFactory.parseString(
-            """
+        val config =
+            ConfigFactory.parseString(
+                """
         UseOpenApiRule {
              // swagger_schema_url not defined
         }
-        """
-        )
+        """,
+            )
 
         val json = ObjectTreeReader().read("foo: bar")
         val validations = UseOpenApiRule(config).validateSchema(json)
@@ -58,13 +58,14 @@ class UseOpenApiRuleTest {
 
     @Test
     fun shouldLoadSchemaFromResourceIfLoadFromUrlFailed() {
-        val config = ConfigFactory.parseString(
-            """
+        val config =
+            ConfigFactory.parseString(
+                """
         UseOpenApiRule {
              swagger_schema_url: "http://localhost/random_url.html"
         }
-        """
-        )
+        """,
+            )
 
         val json = ObjectTreeReader().read("foo: bar")
         val validations = UseOpenApiRule(config).validateSchema(json)
@@ -92,15 +93,16 @@ class UseOpenApiRuleTest {
 
     @Test
     fun `validateSchema should return no violation for valid OpenAPI 3 specification`() {
-        val jsonNode = ObjectTreeReader().read(
-            """
-            openapi: 3.0.1
-            info:
-              title: "Minimal API"
-              version: "1.0.0"
-            paths: {}
-            """.trimIndent()
-        )
+        val jsonNode =
+            ObjectTreeReader().read(
+                """
+                openapi: 3.0.1
+                info:
+                  title: "Minimal API"
+                  version: "1.0.0"
+                paths: {}
+                """.trimIndent(),
+            )
 
         val violations = rule.validateSchema(jsonNode)
 
@@ -110,22 +112,23 @@ class UseOpenApiRuleTest {
     @Test
     fun `validateSchema should return no violation for valid OpenAPI 3 specification with uri-reference`() {
         @Language("YAML")
-        val jsonNode = ObjectTreeReader().read(
-            """
-            openapi: 3.0.0
-            info:
-              title: Example API with contact url
-              version: 1.0.0
-              contact:
-                url: http://example.com
-            paths:
-              /path:
-                post:
-                  responses:
-                    '200':
-                      description: Example response
-            """.trimIndent()
-        )
+        val jsonNode =
+            ObjectTreeReader().read(
+                """
+                openapi: 3.0.0
+                info:
+                  title: Example API with contact url
+                  version: 1.0.0
+                  contact:
+                    url: http://example.com
+                paths:
+                  /path:
+                    post:
+                      responses:
+                        '200':
+                          description: Example response
+                """.trimIndent(),
+            )
 
         val violations = rule.validateSchema(jsonNode)
 

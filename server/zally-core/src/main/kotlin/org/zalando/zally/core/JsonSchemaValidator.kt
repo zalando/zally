@@ -15,12 +15,14 @@ import com.github.fge.msgsimple.source.PropertiesMessageSource
 import org.zalando.zally.rule.api.Violation
 import java.io.IOException
 
-class JsonSchemaValidator(val schema: JsonNode, schemaRedirects: Map<String, String> = mapOf()) {
-
+class JsonSchemaValidator(
+    val schema: JsonNode,
+    schemaRedirects: Map<String, String> = mapOf(),
+) {
     private object Keywords {
-        const val oneOf = "oneOf"
-        const val anyOf = "anyOf"
-        const val additionalProperties = "additionalProperties"
+        const val ONE_OF = "oneOf"
+        const val ANY_OF = "anyOf"
+        const val ADDITIONAL_PROPERTIES = "additionalProperties"
     }
 
     private val factory: JsonSchemaFactory
@@ -30,22 +32,24 @@ class JsonSchemaValidator(val schema: JsonNode, schemaRedirects: Map<String, Str
     }
 
     @Throws(ProcessingException::class, IOException::class)
-    fun validate(jsonToValidate: JsonNode): List<Violation> = factory
-        .validator
-        .validateUnchecked(schema, jsonToValidate, true)
-        .map(this::toValidationMessage)
-        .toList()
+    fun validate(jsonToValidate: JsonNode): List<Violation> =
+        factory
+            .validator
+            .validateUnchecked(schema, jsonToValidate, true)
+            .map(this::toValidationMessage)
+            .toList()
 
     private fun toValidationMessage(processingMessage: ProcessingMessage): Violation {
         val node = processingMessage.asJson()
         val keyword = node.path("keyword").textValue()
         val message = node.path("message").textValue().replaceFirstChar({ it.uppercase() })
-        val pointer = node.at("/instance/pointer")?.textValue()?.toJsonPointer()
-            ?: JsonPointer.empty()
+        val pointer =
+            node.at("/instance/pointer")?.textValue()?.toJsonPointer()
+                ?: JsonPointer.empty()
 
         return when (keyword) {
-            Keywords.oneOf, Keywords.anyOf -> createValidationMessageWithSchemaRefs(node, message, pointer, keyword)
-            Keywords.additionalProperties -> createValidationMessageWithSchemaPath(node, message, pointer)
+            Keywords.ONE_OF, Keywords.ANY_OF -> createValidationMessageWithSchemaRefs(node, message, pointer, keyword)
+            Keywords.ADDITIONAL_PROPERTIES -> createValidationMessageWithSchemaPath(node, message, pointer)
             else -> Violation(message, pointer)
         }
     }
@@ -54,15 +58,16 @@ class JsonSchemaValidator(val schema: JsonNode, schemaRedirects: Map<String, Str
         node: JsonNode,
         message: String,
         pointer: JsonPointer,
-        keyword: String
+        keyword: String,
     ): Violation {
         val schemaPath = node.at("/schema/pointer").textValue()
         return if (!schemaPath.isNullOrBlank()) {
             val schemaRefNodes = schema.at("$schemaPath/$keyword")
-            val schemaRefs = schemaRefNodes
-                .map { it.path("\$ref") }
-                .filterNot(JsonNode::isMissingNode)
-                .joinToString("; ", transform = JsonNode::textValue)
+            val schemaRefs =
+                schemaRefNodes
+                    .map { it.path("\$ref") }
+                    .filterNot(JsonNode::isMissingNode)
+                    .joinToString("; ", transform = JsonNode::textValue)
             Violation(message + schemaRefs, pointer)
         } else {
             Violation(message, pointer)
@@ -72,7 +77,7 @@ class JsonSchemaValidator(val schema: JsonNode, schemaRedirects: Map<String, Str
     private fun createValidationMessageWithSchemaPath(
         node: JsonNode,
         message: String,
-        pointer: JsonPointer
+        pointer: JsonPointer,
     ): Violation {
         val schemaPath = node.at("/schema/pointer").textValue()
         return Violation(message + schemaPath, pointer)
@@ -80,13 +85,16 @@ class JsonSchemaValidator(val schema: JsonNode, schemaRedirects: Map<String, Str
 
     private fun createValidatorFactory(schemaRedirects: Map<String, String>): JsonSchemaFactory {
         val validationMessages = getValidationMessagesBundle()
-        val validationConfiguration = ValidationConfiguration.newBuilder()
-            .setValidationMessages(validationMessages)
-            .freeze()
+        val validationConfiguration =
+            ValidationConfiguration
+                .newBuilder()
+                .setValidationMessages(validationMessages)
+                .freeze()
 
         val loadingConfig = createLoadingConfiguration(schemaRedirects)
 
-        return JsonSchemaFactory.newBuilder()
+        return JsonSchemaFactory
+            .newBuilder()
             .setValidationConfiguration(validationConfiguration)
             .setLoadingConfiguration(loadingConfig)
             .freeze()
@@ -96,14 +104,16 @@ class JsonSchemaValidator(val schema: JsonNode, schemaRedirects: Map<String, Str
         val urlTranslatorConfig = URITranslatorConfiguration.newBuilder()
         schemaRedirects.forEach { (from, to) -> urlTranslatorConfig.addSchemaRedirect(from, to) }
 
-        return LoadingConfiguration.newBuilder()
+        return LoadingConfiguration
+            .newBuilder()
             .setURITranslatorConfiguration(urlTranslatorConfig.freeze())
             .freeze()
     }
 
     private fun getValidationMessagesBundle(): MessageBundle {
         val customValidationMessages = PropertiesMessageSource.fromResource("/schema-validation-messages.properties")
-        return MessageBundles.getBundle(JsonSchemaValidationBundle::class.java)
+        return MessageBundles
+            .getBundle(JsonSchemaValidationBundle::class.java)
             .thaw()
             .appendSource(customValidationMessages)
             .freeze()

@@ -7,9 +7,6 @@ import org.springframework.core.convert.support.DefaultConversionService
 
 @Configuration
 class ConversionServiceConfiguration {
-
     @Bean
-    fun conversionService(): ConversionService {
-        return DefaultConversionService()
-    }
+    fun conversionService(): ConversionService = DefaultConversionService()
 }

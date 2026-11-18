@@ -10,10 +10,9 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZallyRuleSet::class,
     id = "M011",
     severity = Severity.MUST,
-    title = "Tag all operations"
+    title = "Tag all operations",
 )
 class TagAllOperationsRule {
-
     @Check(severity = Severity.MUST)
     fun checkOperationsAreTagged(context: Context): List<Violation> =
         context.validateOperations { (_, operation) ->
@@ -26,10 +25,11 @@ class TagAllOperationsRule {
 
     @Check(severity = Severity.MUST)
     fun checkOperationTagsAreDefined(context: Context): List<Violation> {
-        val defined = context.api.tags
-            .orEmpty()
-            .map { it.name }
-            .toSet()
+        val defined =
+            context.api.tags
+                .orEmpty()
+                .map { it.name }
+                .toSet()
 
         return context.validateOperations { (_, operation) ->
             operation?.tags.orEmpty().filter { it !in defined }.flatMap {
@@ -40,12 +40,14 @@ class TagAllOperationsRule {
 
     @Check(severity = Severity.MUST)
     fun checkDefinedTagsAreUsed(context: Context): List<Violation> {
-        val used = context.api.paths?.values
-            .orEmpty()
-            .filterNotNull()
-            .flatMap { it.readOperations() }
-            .flatMap { it?.tags.orEmpty() }
-            .toSet()
+        val used =
+            context.api.paths
+                ?.values
+                .orEmpty()
+                .filterNotNull()
+                .flatMap { it.readOperations() }
+                .flatMap { it?.tags.orEmpty() }
+                .toSet()
 
         return context.api.tags
             .orEmpty()
@@ -56,18 +58,20 @@ class TagAllOperationsRule {
     }
 
     @Check(severity = Severity.MUST)
-    fun checkDefinedTagsAreNamed(context: Context): List<Violation> = context.api.tags
-        .orEmpty()
-        .filter { it.name == null }
-        .map {
-            context.violation("Tag has no name", it)
-        }
+    fun checkDefinedTagsAreNamed(context: Context): List<Violation> =
+        context.api.tags
+            .orEmpty()
+            .filter { it.name == null }
+            .map {
+                context.violation("Tag has no name", it)
+            }
 
     @Check(severity = Severity.MUST)
-    fun checkDefinedTagsAreDescribed(context: Context): List<Violation> = context.api.tags
-        .orEmpty()
-        .filter { it.description == null }
-        .map {
-            context.violation("Tag '${it.name}' has no description", it)
-        }
+    fun checkDefinedTagsAreDescribed(context: Context): List<Violation> =
+        context.api.tags
+            .orEmpty()
+            .filter { it.description == null }
+            .map {
+                context.violation("Tag '${it.name}' has no description", it)
+            }
 }

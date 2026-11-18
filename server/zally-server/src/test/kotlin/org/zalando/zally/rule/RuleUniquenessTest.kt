@@ -11,7 +11,6 @@ import org.zalando.zally.core.RulesManager
 @SpringBootTest
 @ActiveProfiles("test", "all-annotated-rules")
 class RuleUniquenessTest {
-
     @Autowired
     private lateinit var rules: RulesManager
 
@@ -20,10 +19,11 @@ class RuleUniquenessTest {
 
     @Test
     fun ruleIdsShouldBeUnique() {
-        val duplicatedCodes = rules.rules
-            .filterNot { it.rule.title == "TestUseOpenApiRule" }
-            .groupBy { it.rule.id }
-            .filterValues { it.size > 1 }
+        val duplicatedCodes =
+            rules.rules
+                .filterNot { it.rule.title == "TestUseOpenApiRule" }
+                .groupBy { it.rule.id }
+                .filterValues { it.size > 1 }
 
         assertThat(duplicatedCodes)
             .hasToString("{}")
@@ -31,10 +31,11 @@ class RuleUniquenessTest {
 
     @Test
     fun ruleTitlesShouldBeUnique() {
-        val duplicatedCodes = rules.rules
-            .filterNot { it.rule.title == "TestUseOpenApiRule" }
-            .groupBy { it.rule.title }
-            .filterValues { it.size > 1 }
+        val duplicatedCodes =
+            rules.rules
+                .filterNot { it.rule.title == "TestUseOpenApiRule" }
+                .groupBy { it.rule.title }
+                .filterValues { it.size > 1 }
 
         assertThat(duplicatedCodes)
             .hasToString("{}")

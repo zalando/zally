@@ -14,7 +14,7 @@ import org.zalando.zally.rule.api.Violation
     ruleSet = ZalandoRuleSet::class,
     id = "136",
     severity = Severity.MUST,
-    title = "Avoid Trailing Slashes"
+    title = "Avoid Trailing Slashes",
 )
 class AvoidTrailingSlashesRule {
     private val description = "Rule avoid trailing slashes is not followed"
@@ -30,7 +30,7 @@ class AvoidTrailingSlashesRule {
                         else -> false
                     }
                 }
-            }
+            },
         ) { (path, _) ->
             context.violations(description, PATHS.toJsonPointer() + path.toEscapedJsonPointer())
         }

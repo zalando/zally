@@ -7,37 +7,37 @@ import org.zalando.zally.core.DefaultContextFactory
 import org.zalando.zally.test.ZallyAssertions.assertThat
 
 class PathParameterRuleTest {
-
     private val rule = PathParameterRule()
 
     @Test
     internal fun `return violation if a path parameter is not marked as 'required'`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: '3.0.0'
-            info:
-              title: API 1
-              contact: 
-                name: "Team One"
-            paths:
-              /items/{item-id}:
-                get:
-                  parameters:
-                  - name: item-id
-                    in: path                  
-                    description: The id of the pet to retrieve
-                    schema:
-                      type: string
-                  responses: 
-                    default:
-                     description: Response
-                     content:                        
-                       application/json:
-                         schema: 
-                           type: string
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: '3.0.0'
+                info:
+                  title: API 1
+                  contact: 
+                    name: "Team One"
+                paths:
+                  /items/{item-id}:
+                    get:
+                      parameters:
+                      - name: item-id
+                        in: path                  
+                        description: The id of the pet to retrieve
+                        schema:
+                          type: string
+                      responses: 
+                        default:
+                         description: Response
+                         content:                        
+                           application/json:
+                             schema: 
+                               type: string
+                """.trimIndent(),
+            )
 
         val violations = rule.checkRequiredPathAttribute(context)
 
@@ -49,32 +49,33 @@ class PathParameterRuleTest {
     @Test
     fun `return no violations if a path parameter marked as 'required'`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: '3.0.0'
-            info:
-              title: API 1
-              contact: 
-                name: "Team One"
-            paths:
-              /items/{item-id}:
-                get:
-                  parameters:
-                  - name: item-id
-                    in: path
-                    required: true
-                    description: The id of the pet to retrieve
-                    schema:
-                      type: string
-                  responses: 
-                    default:
-                     description: Response
-                     content:                        
-                       application/json:
-                         schema: 
-                           type: string
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: '3.0.0'
+                info:
+                  title: API 1
+                  contact: 
+                    name: "Team One"
+                paths:
+                  /items/{item-id}:
+                    get:
+                      parameters:
+                      - name: item-id
+                        in: path
+                        required: true
+                        description: The id of the pet to retrieve
+                        schema:
+                          type: string
+                      responses: 
+                        default:
+                         description: Response
+                         content:                        
+                           application/json:
+                             schema: 
+                               type: string
+                """.trimIndent(),
+            )
         val violations = rule.checkRequiredPathAttribute(context)
         assertThat(violations).isEmpty()
     }
@@ -82,35 +83,36 @@ class PathParameterRuleTest {
     @Test
     internal fun `return violation if a path parameter in components is not marked as 'required'`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: '3.0.0'
-            info:
-              title: API 1
-              contact: 
-                name: "Team One"
-            paths:
-              /items/{item-id}:
-                get:
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: '3.0.0'
+                info:
+                  title: API 1
+                  contact: 
+                    name: "Team One"
+                paths:
+                  /items/{item-id}:
+                    get:
+                      parameters:
+                        - $\ref: "#/components/parameters/QueryParameter"
+                      responses: 
+                        default:
+                         description: Response
+                         content:                        
+                           application/json:
+                             schema: 
+                               type: string
+                components: 
                   parameters:
-                    - $\ref: "#/components/parameters/QueryParameter"
-                  responses: 
-                    default:
-                     description: Response
-                     content:                        
-                       application/json:
-                         schema: 
-                           type: string
-            components: 
-              parameters:
-                QueryParameter:
-                  name: item-id
-                  in: path                  
-                  description: The id of the pet to retrieve
-                  schema:
-                    type: string
-            """.trimIndent()
-        )
+                    QueryParameter:
+                      name: item-id
+                      in: path                  
+                      description: The id of the pet to retrieve
+                      schema:
+                        type: string
+                """.trimIndent(),
+            )
 
         val violations = rule.checkRequiredPathAttribute(context)
 
@@ -122,85 +124,87 @@ class PathParameterRuleTest {
     @Test
     fun `return violation if parameter has no 'schema' and 'content' defined`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: '3.0.0'
-            info:
-              title: Schema and content Parameter properties validation
-              contact: 
-                name: "Team One"
-            paths:
-              /endpoint:
-                post:
-                  summary: |
-                    Some summary.
-                  security:
-                    - oauth2: ["uid"]
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: '3.0.0'
+                info:
+                  title: Schema and content Parameter properties validation
+                  contact: 
+                    name: "Team One"
+                paths:
+                  /endpoint:
+                    post:
+                      summary: |
+                        Some summary.
+                      security:
+                        - oauth2: ["uid"]
+                      parameters:
+                        - name: X-HEADER-ID
+                          description: |
+                            Header description
+                          in: header
+                          required: false
+                        - $\ref: "#/components/parameters/QueryParameter"
+                components: 
                   parameters:
-                    - name: X-HEADER-ID
-                      description: |
-                        Header description
-                      in: header
-                      required: false
-                    - $\ref: "#/components/parameters/QueryParameter"
-            components: 
-              parameters:
-                QueryParameter:
-                  name: item-id
-                  in: path                  
-                  description: The id of the pet to retrieve
-            """.trimIndent()
-        )
+                    QueryParameter:
+                      name: item-id
+                      in: path                  
+                      description: The id of the pet to retrieve
+                """.trimIndent(),
+            )
 
         val violations = rule.checkSchemaOrContentProperty(context)
 
         assertThat(violations).hasSize(2)
         assertThat(violations).containsDescriptionsInAnyOrder(
             PathParameterRule.requiredSchemaOrContentErrorMessage("X-HEADER-ID"),
-            PathParameterRule.requiredSchemaOrContentErrorMessage("item-id")
+            PathParameterRule.requiredSchemaOrContentErrorMessage("item-id"),
         )
     }
 
     @Test
     fun `return no violations if either 'schema' or 'content' are present`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: '3.0.0'
-            info:
-              title: Schema and content Parameter properties validation
-              contact: 
-                name: "Team One"
-            paths:
-              /endpoint:
-                post:
-                  summary: |
-                    Some summary.
-                  security:
-                    - oauth2: ["uid"]
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: '3.0.0'
+                info:
+                  title: Schema and content Parameter properties validation
+                  contact: 
+                    name: "Team One"
+                paths:
+                  /endpoint:
+                    post:
+                      summary: |
+                        Some summary.
+                      security:
+                        - oauth2: ["uid"]
+                      parameters:
+                        - name: X-HEADER-ID
+                          description: Header description
+                          in: header
+                          required: false
+                          content:
+                            application/json:
+                              schema:
+                                type: object
+                                properties: 
+                                  x:
+                                    type: string
+                        - $\ref: "#/components/parameters/QueryParameter"
+                components: 
                   parameters:
-                    - name: X-HEADER-ID
-                      description: Header description
-                      in: header
-                      required: false
-                      content:
-                        application/json:
-                          schema:
-                            type: object
-                            properties: 
-                              x:
-                                type: string
-                    - $\ref: "#/components/parameters/QueryParameter"
-            components: 
-              parameters:
-                QueryParameter:
-                  name: item-id
-                  in: path                  
-                  description: The id of the pet to retrieve
-                  schema:
-                    type: string
-            """.trimIndent()
-        )
+                    QueryParameter:
+                      name: item-id
+                      in: path                  
+                      description: The id of the pet to retrieve
+                      schema:
+                        type: string
+                """.trimIndent(),
+            )
 
         val violations = rule.checkSchemaOrContentProperty(context)
 
@@ -211,104 +215,106 @@ class PathParameterRuleTest {
     @Disabled("Test is failing to produce a violation, since the latest swagger-parser 2.0.32 creates an empty content in this case.")
     fun `return violation if 'content' field contains more than one key`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: '3.0.0'
-            info:
-              title: Schema and content Parameter properties validation
-              contact: 
-                name: "Team One"
-            paths:
-              /endpoint:
-                post:
-                  summary: |
-                    Some summary.
-                  security:
-                    - oauth2: ["uid"]
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: '3.0.0'
+                info:
+                  title: Schema and content Parameter properties validation
+                  contact: 
+                    name: "Team One"
+                paths:
+                  /endpoint:
+                    post:
+                      summary: |
+                        Some summary.
+                      security:
+                        - oauth2: ["uid"]
+                      parameters:
+                        - name: X-VALID-HEADER
+                          description: Header description
+                          in: header
+                          required: false
+                          content:
+                            application/json:
+                              schema:
+                                type: object
+                                properties: 
+                                  x:
+                                    type: string
+                        - name: X-HEADER-ID
+                          description: Header description
+                          in: header
+                          required: false
+                          content:
+                            application/json:
+                              schema:
+                                type: object
+                                properties: 
+                                  x:
+                                    type: string
+                            application/xml:
+                              schema:
+                                type: object
+                                properties: 
+                                  x:
+                                    type: string
+                        - $\ref: "#/components/parameters/QueryParameter"
+                components: 
                   parameters:
-                    - name: X-VALID-HEADER
-                      description: Header description
-                      in: header
-                      required: false
-                      content:
-                        application/json:
-                          schema:
-                            type: object
-                            properties: 
-                              x:
-                                type: string
-                    - name: X-HEADER-ID
-                      description: Header description
-                      in: header
-                      required: false
-                      content:
-                        application/json:
-                          schema:
-                            type: object
-                            properties: 
-                              x:
-                                type: string
-                        application/xml:
-                          schema:
-                            type: object
-                            properties: 
-                              x:
-                                type: string
-                    - $\ref: "#/components/parameters/QueryParameter"
-            components: 
-              parameters:
-                QueryParameter:
-                  name: item-id
-                  in: path                  
-                  description: The id of the pet to retrieve
-                  content: 
-                  
-            """.trimIndent()
-        )
+                    QueryParameter:
+                      name: item-id
+                      in: path                  
+                      description: The id of the pet to retrieve
+                      content: 
+                      
+                """.trimIndent(),
+            )
 
         val violations = rule.validateParameterContentMapStructure(context)
 
         assertThat(violations).hasSize(1)
         assertThat(violations).descriptionsAllEqualTo(
-            PathParameterRule.contentMapStructureErrorMessage("X-HEADER-ID")
+            PathParameterRule.contentMapStructureErrorMessage("X-HEADER-ID"),
         )
     }
 
     @Test
     fun `return no violations if 'content' is not defined`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: '3.0.0'
-            info:
-              title: Schema and content Parameter properties validation
-              contact: 
-                name: "Team One"
-            paths:
-              /endpoint:
-                post:
-                  summary: |
-                    Some summary.
-                  security:
-                    - oauth2: ["uid"]
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: '3.0.0'
+                info:
+                  title: Schema and content Parameter properties validation
+                  contact: 
+                    name: "Team One"
+                paths:
+                  /endpoint:
+                    post:
+                      summary: |
+                        Some summary.
+                      security:
+                        - oauth2: ["uid"]
+                      parameters:
+                        - name: X-HEADER-ID
+                          description: Header description
+                          in: header
+                          required: false
+                          schema:
+                            type: string
+                        - $\ref: "#/components/parameters/QueryParameter"
+                components: 
                   parameters:
-                    - name: X-HEADER-ID
-                      description: Header description
-                      in: header
-                      required: false
+                    QueryParameter:
+                      name: item-id
+                      in: path                  
+                      description: The id of the pet to retrieve
                       schema:
                         type: string
-                    - $\ref: "#/components/parameters/QueryParameter"
-            components: 
-              parameters:
-                QueryParameter:
-                  name: item-id
-                  in: path                  
-                  description: The id of the pet to retrieve
-                  schema:
-                    type: string
-            """.trimIndent()
-        )
+                """.trimIndent(),
+            )
 
         val violations = rule.validateParameterContentMapStructure(context)
 
@@ -318,24 +324,25 @@ class PathParameterRuleTest {
     @Test
     fun `return no violations if parameter ref is not correct`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: '3.0.0'
-            info:
-              title: Schema and content Parameter properties validation
-              contact: 
-                name: "Team One"
-            paths:
-              /endpoint:
-                post:
-                  summary: |
-                    Some summary.
-                  security:
-                    - oauth2: ["uid"]
-                  parameters:
-                    - $\ref: "https://invalid-url/X-Flow-ID"
-            """.trimIndent()
-        )
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: '3.0.0'
+                info:
+                  title: Schema and content Parameter properties validation
+                  contact: 
+                    name: "Team One"
+                paths:
+                  /endpoint:
+                    post:
+                      summary: |
+                        Some summary.
+                      security:
+                        - oauth2: ["uid"]
+                      parameters:
+                        - $\ref: "https://invalid-url/X-Flow-ID"
+                """.trimIndent(),
+            )
 
         val violations = rule.checkSchemaOrContentProperty(context)
 
@@ -345,37 +352,38 @@ class PathParameterRuleTest {
     @Test
     internal fun `return no violations when validating referenced parameters on OpenAPI 3-1-0`() {
         @Language("YAML")
-        val context = DefaultContextFactory().getOpenApiContext(
-            """
-            openapi: '3.1.0'
-            info:
-              title: API 1
-              contact: 
-                name: "Team One"
-              version: 1.0.0
-            paths:
-              /items/{item-id}:
-                get:
+        val context =
+            DefaultContextFactory().getOpenApiContext(
+                """
+                openapi: '3.1.0'
+                info:
+                  title: API 1
+                  contact: 
+                    name: "Team One"
+                  version: 1.0.0
+                paths:
+                  /items/{item-id}:
+                    get:
+                      parameters:
+                        - ${'$'}ref: "#/components/parameters/PathParameter"
+                      responses: 
+                        default:
+                         description: Response
+                         content:                        
+                           application/json:
+                             schema: 
+                               type: string
+                components: 
                   parameters:
-                    - ${'$'}ref: "#/components/parameters/PathParameter"
-                  responses: 
-                    default:
-                     description: Response
-                     content:                        
-                       application/json:
-                         schema: 
-                           type: string
-            components: 
-              parameters:
-                PathParameter:
-                  in: path  
-                  name: item-id                            
-                  description: The id of the pet to retrieve
-                  required: true
-                  schema:
-                    type: string
-            """.trimIndent()
-        )
+                    PathParameter:
+                      in: path  
+                      name: item-id                            
+                      description: The id of the pet to retrieve
+                      required: true
+                      schema:
+                        type: string
+                """.trimIndent(),
+            )
 
         val violations = rule.checkSchemaOrContentProperty(context)
 

@@ -8,12 +8,9 @@ import java.util.regex.Pattern
 
 @Configuration
 class ContextFactoryConfiguration {
-
     @Value("\${zally.propagateAuthorizationUrls:}")
     private lateinit var propagateAuthorizationUrls: List<Pattern>
 
     @Bean
-    fun contextFactory(): DefaultContextFactory {
-        return DefaultContextFactory(propagateAuthorizationUrls)
-    }
+    fun contextFactory(): DefaultContextFactory = DefaultContextFactory(propagateAuthorizationUrls)
 }

@@ -13,7 +13,6 @@ import org.zalando.zally.core.RulesManager
 
 @Configuration
 class RulesValidatorConfiguration {
-
     @Autowired
     private lateinit var rules: RulesManager
 
@@ -22,10 +21,9 @@ class RulesValidatorConfiguration {
 
     @Bean
     @Primary
-    fun validator(): ApiValidator {
-        return CompositeRulesValidator(
+    fun validator(): ApiValidator =
+        CompositeRulesValidator(
             ContextRulesValidator(rules, defaultContextFactory),
-            JsonRulesValidator(rules)
+            JsonRulesValidator(rules),
         )
-    }
 }

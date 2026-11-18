@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test
 import org.zalando.zally.core.DefaultContextFactory
 
 class SuccessResponseAsJsonObjectRuleTest {
-
     private val rule = SuccessResponseAsJsonObjectRule()
 
     @Test
     fun `checkJSONObjectIsUsedAsSuccessResponseType should return violation if other then JSON object is specified`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -25,7 +25,7 @@ class SuccessResponseAsJsonObjectRuleTest {
                             type: array
                             items:
                               type: string
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkJSONObjectIsUsedAsSuccessResponseType(context)
@@ -38,7 +38,8 @@ class SuccessResponseAsJsonObjectRuleTest {
     @Test
     fun `checkJSONObjectIsUsedAsSuccessResponseType should return no violation if only JSON object is specified`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -49,7 +50,7 @@ class SuccessResponseAsJsonObjectRuleTest {
                         application/json:
                           schema:
                             type: object
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkJSONObjectIsUsedAsSuccessResponseType(context)
@@ -60,7 +61,8 @@ class SuccessResponseAsJsonObjectRuleTest {
     @Test
     fun `checkJSONObjectIsUsedAsSuccessResponseType should support referenced schema`() {
         @Language("YAML")
-        val content = """
+        val content =
+            """
             openapi: 3.0.1
             paths:
               /article:
@@ -77,7 +79,7 @@ class SuccessResponseAsJsonObjectRuleTest {
                   properties:
                     name:
                       type: string
-        """.trimIndent()
+            """.trimIndent()
         val context = DefaultContextFactory().getOpenApiContext(content)
 
         val violations = rule.checkJSONObjectIsUsedAsSuccessResponseType(context)
